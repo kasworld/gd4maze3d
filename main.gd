@@ -1,7 +1,7 @@
 extends Node3D
 
 enum Act {Stop, Forward, Turn_Right , Turn_Left}
-enum Dir {Up, Right, Down, Left}
+enum Dir {North, East, South, West}
 var wall_scene = preload("res://wall_z.tscn")
 
 var action :Act
@@ -25,6 +25,7 @@ func _process(delta: float) -> void:
 		act_start_time = t
 		action = randi_range(0,3)
 		start_action(action)
+		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Dir.keys()[actor_dir_new] ]
 	else:
 		do_action(dur)
 
@@ -45,18 +46,18 @@ func start_action(a :Act)->void:
 			pass
 		Act.Forward:
 			match actor_dir_old:
-				Dir.Up:
+				Dir.North:
 					actor_pos_new.y = actor_pos_old.y -1
-				Dir.Right:
+				Dir.East:
 					actor_pos_new.x = actor_pos_old.x -1
-				Dir.Down:
+				Dir.South:
 					actor_pos_new.y = actor_pos_old.y +1
-				Dir.Left:
+				Dir.West:
 					actor_pos_new.x = actor_pos_old.x +1
 		Act.Turn_Left:
-			actor_dir_new = (actor_dir_old -1+4)%4
-		Act.Turn_Right:
 			actor_dir_new = (actor_dir_old +1)%4
+		Act.Turn_Right:
+			actor_dir_new = (actor_dir_old -1+4)%4
 
 
 	#$Camera3D.rotate_y(delta/2)

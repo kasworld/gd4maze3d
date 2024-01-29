@@ -33,6 +33,31 @@ func _process(delta: float) -> void:
 	else:
 		do_action(dur)
 
+func set_top_view()->void:
+	$PlayerCamera3D.current = false
+	$Ceiling.visible = false
+	$TopViewCamera3D.current = true
+
+func set_player_view()->void:
+	$PlayerCamera3D.current = true
+	$Ceiling.visible = true
+	$TopViewCamera3D.current = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_ESCAPE:
+			get_tree().quit()
+		elif event.keycode == KEY_ENTER:
+			set_top_view()
+		elif event.keycode == KEY_SPACE:
+			set_player_view()
+		else:
+			pass
+
+	elif event is InputEventMouseButton and event.is_pressed():
+		pass
+
+
 func do_action(dur :float)->void:
 	match action:
 		Act.Stop:
@@ -90,13 +115,13 @@ func move_forward(dur :float)->void:
 		1,
 		0.5+ lerpf(actor_pos_old.y , actor_pos_new.y , dur ) ,
 	)
-	$Camera3D.position = vt
+	$PlayerCamera3D.position = vt
 # dur : 0 - 1 :second
 func turn_right(dur :float)->void:
 	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$Camera3D.rotation.y = a
+	$PlayerCamera3D.rotation.y = a
 
 # dur : 0 - 1 :second
 func turn_left(dur :float)->void:
 	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$Camera3D.rotation.y = a
+	$PlayerCamera3D.rotation.y = a

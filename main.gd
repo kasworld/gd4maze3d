@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
 		act_start_time = t
-		action = randi_range(0,3)
+		action = randi_range(0,3) as Act
 		start_action(action)
 		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Dir.keys()[actor_dir_new] ]
 	else:
@@ -79,11 +79,26 @@ func do_action(dur :float)->void:
 		Act.Turn_Right:
 			turn_right(dur)
 
+func can_move(dir :Dir)->bool:
+	match dir:
+		Dir.North:
+			return actor_pos_old.y > 0
+		Dir.East:
+			return actor_pos_old.x > 0
+		Dir.South:
+			return actor_pos_old.y < maze_size.y -1
+		Dir.West:
+			return actor_pos_old.x < maze_size.x -1
+	return false
+
 func start_action(a :Act)->void:
 	match a:
 		Act.Stop:
 			pass
 		Act.Forward:
+			if not can_move(actor_dir_old):
+				print_debug("act blocked %s" % [ Dir.keys()[actor_dir_old] ])
+				return
 			match actor_dir_old:
 				Dir.North:
 					actor_pos_new.y = actor_pos_old.y -1
@@ -94,9 +109,9 @@ func start_action(a :Act)->void:
 				Dir.West:
 					actor_pos_new.x = actor_pos_old.x +1
 		Act.Turn_Left:
-			actor_dir_new = (actor_dir_old +1)%4
+			actor_dir_new = (actor_dir_old +1)%4 as Dir
 		Act.Turn_Right:
-			actor_dir_new = (actor_dir_old -1+4)%4
+			actor_dir_new = (actor_dir_old -1+4)%4 as Dir
 
 
 	#$Camera3D.rotate_y(delta/2)

@@ -1,10 +1,11 @@
 class_name Maze
 
-
-const N = 1
-const S = 2
-const E = 4
-const W = 8
+enum {
+	N = 1,
+	S = 2,
+	E = 4,
+	W = 8,
+}
 
 const Dir2Vt = {
 	N : Vector2i.UP,

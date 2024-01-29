@@ -11,9 +11,13 @@ var actor_dir_new : Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
+var maze_size = Vector2i(100,100)
+var maze_cells :Maze
+
 func _ready() -> void:
-	for i in 3000:
-		add_wall_at(randi_range(-50,50), randi_range(-50,50), randi_range(0,1) == 0)
+	maze_cells = Maze.new(maze_size)
+	maze_cells.make_random()
+	make_wall_by_maze()
 	act_start_time = Time.get_unix_time_from_system()
 
 func _process(delta: float) -> void:
@@ -61,6 +65,16 @@ func start_action(a :Act)->void:
 
 
 	#$Camera3D.rotate_y(delta/2)
+
+func make_wall_by_maze()->void:
+	for y in maze_size.y:
+		for x in maze_size.x :
+			var c = maze_cells.get_cell(x,y)
+			var dirs = maze_cells.get_cell_dirs(c)
+			if Maze.N in dirs:
+				add_wall_at( x - maze_size.x/2, y - maze_size.y/2, false)
+			if Maze.E in dirs:
+				add_wall_at( x - maze_size.x/2, y - maze_size.y/2, true)
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
 	var w = wall_scene.instantiate()

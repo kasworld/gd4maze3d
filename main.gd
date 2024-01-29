@@ -1,5 +1,6 @@
 extends Node3D
 
+const ACT_DUR = 1.0 # sec
 enum Act {Stop, Forward, Turn_Right , Turn_Left}
 enum Dir {North, East, South, West}
 var wall_scene = preload("res://wall_z.tscn")
@@ -15,6 +16,15 @@ var maze_size = Vector2i(100,100)
 var maze_cells :Maze
 
 func _ready() -> void:
+	$Floor.position.x = maze_size.x/2
+	$Floor.position.z = maze_size.y/2
+	$Ceiling.position.x = maze_size.x/2
+	$Ceiling.position.z = maze_size.y/2
+	$TopViewCamera3D.position.x = maze_size.x/2
+	$TopViewCamera3D.position.z = maze_size.y/2
+	actor_pos_old = maze_size/2
+	actor_pos_new = maze_size/2
+
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_random()
 	make_wall_by_maze()
@@ -23,7 +33,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
 	var dur = t - act_start_time
-	if dur > 1 :
+	if dur > ACT_DUR :
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
 		act_start_time = t
@@ -31,7 +41,7 @@ func _process(delta: float) -> void:
 		start_action(action)
 		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Dir.keys()[actor_dir_new] ]
 	else:
-		do_action(dur)
+		do_action(dur/ACT_DUR)
 
 func set_top_view()->void:
 	$PlayerCamera3D.current = false
@@ -97,9 +107,9 @@ func make_wall_by_maze()->void:
 			var c = maze_cells.get_cell(x,y)
 			var dirs = maze_cells.get_cell_dirs(c)
 			if Maze.N in dirs:
-				add_wall_at( x - maze_size.x/2, y - maze_size.y/2, false)
+				add_wall_at( x , y , false)
 			if Maze.E in dirs:
-				add_wall_at( x - maze_size.x/2, y - maze_size.y/2, true)
+				add_wall_at( x , y , true)
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
 	var w = wall_scene.instantiate()

@@ -31,16 +31,32 @@ func make_random()->void:
 			if randi_range(0,1)==0:
 				cells[x][y] |= E
 
-func get_cell(x :int, y :int)->int:
-	return cells[x][y]
+	add_Hline_wall(0,maze_size.x,0, N)
+	add_Hline_wall(0,maze_size.x,maze_size.y-1, S)
+	add_Vline_wall(0,maze_size.y,0, E)
+	add_Vline_wall(0,maze_size.y,maze_size.x-1, W)
 
-func get_cell_dirs(c :int)->Array:
+func get_wall_at(x :int, y :int)->Array:
 	var rtn = []
 	for k in Dir2Vt.keys():
-		if c & k != 0 :
+		if cells[x][y] & k != 0 :
 			rtn.append(k)
 	return rtn
 
-# need update affected near cell
-func set_cell_dir_at(x :int, y :int, dir :int)->void:
+func add_wall_at(x :int, y :int, dir :int)->void:
+	cells[x][y] |= dir
+
+func set_wall_at(x :int, y :int, dir :int)->void:
+	cells[x][y] = dir
+
+func add_Hline_wall(x1:int, x2:int , y:int, dir :int)->void:
+	for x in range(x1,x2):
+		cells[x][y] |= dir
+
+func add_Vline_wall(y1:int, y2:int , x:int, dir :int)->void:
+	for y in range(y1,y2):
+		cells[x][y] |= dir
+
+# fix wall
+func nomalize()->void:
 	pass

@@ -11,7 +11,7 @@ func init(msize :Vector2i)->void:
 	$Floor.position = Vector3(maze_size.x/2,0,maze_size.y/2)
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position = Vector3(maze_size.x/2,2,maze_size.y/2)
-	$TopViewCamera3D.position = Vector3( maze_size.x/2 ,maze_size.x/1.5,maze_size.y/2)
+	$TopViewCamera3D.position = Vector3( maze_size.x/2 ,maze_size.x/1.4,maze_size.y/2)
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_random()
 	make_wall_by_maze()
@@ -19,12 +19,22 @@ func init(msize :Vector2i)->void:
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
-			var c = maze_cells.get_cell(x,y)
-			var dirs = maze_cells.get_cell_dirs(c)
+			var dirs = maze_cells.get_wall_at(x,y)
 			if Maze.N in dirs:
 				add_wall_at( x , y , false)
 			if Maze.E in dirs:
 				add_wall_at( x , y , true)
+
+	for x in maze_size.x :
+		var dirs = maze_cells.get_wall_at(x,maze_size.y-1)
+		if Maze.S in dirs:
+			add_wall_at( x , maze_size.y , false)
+
+	for y in maze_size.y:
+		var dirs = maze_cells.get_wall_at(maze_size.x-1,y)
+		if Maze.W in dirs:
+			add_wall_at( maze_size.x , y , true)
+
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
 	#var w = new_box(Vector3(1,2,0.01),wall_mat)

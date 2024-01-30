@@ -11,7 +11,7 @@ var actor_dir_new : Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
-var maze_size = Vector2i(100,100)
+var maze_size = Vector2i(32,32)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
@@ -54,9 +54,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_ESCAPE:
 			get_tree().quit()
-		elif event.keycode == KEY_ENTER:
+		elif event.keycode == KEY_1:
 			set_top_view()
-		elif event.keycode == KEY_SPACE:
+		elif event.keycode == KEY_2:
 			set_player_view()
 		else:
 			pass

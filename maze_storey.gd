@@ -13,7 +13,8 @@ func init(msize :Vector2i)->void:
 	$Ceiling.position = Vector3(maze_size.x/2,2,maze_size.y/2)
 	$TopViewCamera3D.position = Vector3( maze_size.x/2 ,maze_size.x/1.4,maze_size.y/2)
 	maze_cells = Maze.new(maze_size)
-	maze_cells.make_random()
+	#maze_cells.make_random()
+	maze_cells.make_maze()
 	make_wall_by_maze()
 
 func make_wall_by_maze()->void:

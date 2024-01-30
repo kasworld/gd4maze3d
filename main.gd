@@ -18,14 +18,10 @@ var wall_z_mesh = preload("res://wall_z.tres")
 
 func _ready() -> void:
 	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
-	$Floor.position.x = maze_size.x/2
-	$Floor.position.z = maze_size.y/2
+	$Floor.position = Vector3(maze_size.x/2,0,maze_size.y/2)
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
-	$Ceiling.position.x = maze_size.x/2
-	$Ceiling.position.z = maze_size.y/2
-	$TopViewCamera3D.position.x = maze_size.x/2
-	$TopViewCamera3D.position.y = maze_size.x/1.5
-	$TopViewCamera3D.position.z = maze_size.y/2
+	$Ceiling.position = Vector3(maze_size.x/2,2,maze_size.y/2)
+	$TopViewCamera3D.position = Vector3( maze_size.x/2 ,maze_size.x/1.5,maze_size.y/2)
 	actor_pos_old = maze_size/2
 	actor_pos_new = maze_size/2
 	move_forward(0)
@@ -42,11 +38,20 @@ func _process(delta: float) -> void:
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
 		act_start_time = t
-		action = randi_range(0,3) as Act
-		start_action(action)
+		act_random()
 		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Dir.keys()[actor_dir_new] ]
 	else:
 		do_action(dur/ACT_DUR)
+
+func act_random()->void:
+	if randi_range(0,1)==0:
+		action = Act.Forward
+	elif randi_range(0,1)==0:
+		action = Act.Turn_Left
+	else:
+		action = Act.Turn_Right
+	start_action(action)
+
 
 func set_top_view()->void:
 	$PlayerCamera3D.current = false
@@ -137,7 +142,7 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 		w.position = Vector3( x  , 1.0 , y as float +0.5)
 	else :
 		w.position = Vector3( x as float +0.5 , 1.0 , y)
-	add_child(w)
+	$WallContainer.add_child(w)
 
 # dur : 0 - 1 :second
 func move_forward(dur :float)->void:

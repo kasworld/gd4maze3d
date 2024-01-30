@@ -26,7 +26,10 @@ func _init(msize :Vector2i)->void:
 func make_random()->void:
 	for y in maze_size.x:
 		for x in maze_size.y :
-			cells[x][y] = randi_range(0,8)
+			if randi_range(0,1)==0:
+				cells[x][y] = N
+			if randi_range(0,1)==0:
+				cells[x][y] |= E
 
 func get_cell(x :int, y :int)->int:
 	return cells[x][y]
@@ -38,5 +41,6 @@ func get_cell_dirs(c :int)->Array:
 			rtn.append(k)
 	return rtn
 
-func set_cell_dir(dir :int)->void:
+# need update affected near cell
+func set_cell_dir_at(x :int, y :int, dir :int)->void:
 	pass

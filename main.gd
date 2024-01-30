@@ -12,23 +12,12 @@ var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
 var maze_size = Vector2i(100,100)
-var maze_cells :Maze
-
-var wall_z_mesh = preload("res://wall_z.tres")
 
 func _ready() -> void:
-	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
-	$Floor.position = Vector3(maze_size.x/2,0,maze_size.y/2)
-	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
-	$Ceiling.position = Vector3(maze_size.x/2,2,maze_size.y/2)
-	$TopViewCamera3D.position = Vector3( maze_size.x/2 ,maze_size.x/1.5,maze_size.y/2)
+	$MazeStorey.init(maze_size)
 	actor_pos_old = maze_size/2
 	actor_pos_new = maze_size/2
 	move_forward(0)
-
-	maze_cells = Maze.new(maze_size)
-	maze_cells.make_random()
-	make_wall_by_maze()
 	act_start_time = Time.get_unix_time_from_system()
 
 func _process(delta: float) -> void:
@@ -55,13 +44,11 @@ func act_random()->void:
 
 func set_top_view()->void:
 	$PlayerCamera3D.current = false
-	$Ceiling.visible = false
-	$TopViewCamera3D.current = true
+	$MazeStorey.set_top_view(true)
 
 func set_player_view()->void:
 	$PlayerCamera3D.current = true
-	$Ceiling.visible = true
-	$TopViewCamera3D.current = false
+	$MazeStorey.set_top_view(false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -123,26 +110,6 @@ func start_action(a :Act)->void:
 		Act.Turn_Right:
 			actor_dir_new = (actor_dir_old -1+4)%4 as Dir
 
-func make_wall_by_maze()->void:
-	for y in maze_size.y:
-		for x in maze_size.x :
-			var c = maze_cells.get_cell(x,y)
-			var dirs = maze_cells.get_cell_dirs(c)
-			if Maze.N in dirs:
-				add_wall_at( x , y , false)
-			if Maze.E in dirs:
-				add_wall_at( x , y , true)
-
-func add_wall_at(x:int,y :int, face_x :bool)->void:
-	#var w = new_box(Vector3(1,2,0.01),wall_mat)
-	var w = MeshInstance3D.new()
-	w.mesh = wall_z_mesh
-	if face_x:
-		w.rotate_y(-PI/2)
-		w.position = Vector3( x  , 1.0 , y as float +0.5)
-	else :
-		w.position = Vector3( x as float +0.5 , 1.0 , y)
-	$WallContainer.add_child(w)
 
 # dur : 0 - 1 :second
 func move_forward(dur :float)->void:

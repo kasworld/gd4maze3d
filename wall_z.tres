@@ -8,4 +8,4 @@ uv1_triplanar = true
 
 [resource]
 material = SubResource("StandardMaterial3D_4tskx")
-size = Vector3(1, 2, 0.01)
+size = Vector3(1, 2, 0.1)

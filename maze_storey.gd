@@ -1,6 +1,6 @@
 extends Node3D
 
-var maze_size = Vector2i(100,100)
+var maze_size = Vector2i(16,16)
 var maze_cells :Maze
 
 var wall_z_mesh = preload("res://wall_z.tres")
@@ -20,20 +20,17 @@ func init(msize :Vector2i)->void:
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
-			var dirs = maze_cells.get_wall_at(x,y)
-			if Maze.N in dirs:
+			if not maze_cells.is_open_dir_at(x,y,Maze.N):
 				add_wall_at( x , y , false)
-			if Maze.E in dirs:
+			if not maze_cells.is_open_dir_at(x,y,Maze.E):
 				add_wall_at( x , y , true)
 
 	for x in maze_size.x :
-		var dirs = maze_cells.get_wall_at(x,maze_size.y-1)
-		if Maze.S in dirs:
+		if not maze_cells.is_open_dir_at(x,maze_size.y-1,Maze.S):
 			add_wall_at( x , maze_size.y , false)
 
 	for y in maze_size.y:
-		var dirs = maze_cells.get_wall_at(maze_size.x-1,y)
-		if Maze.W in dirs:
+		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.W):
 			add_wall_at( maze_size.x , y , true)
 
 

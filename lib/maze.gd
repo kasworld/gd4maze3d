@@ -15,12 +15,13 @@ const Opppsite = {
 }
 
 const Dir2Vt = {
-	N : Vector2i.UP,
-	S : Vector2i.DOWN,
-	E : Vector2i.LEFT,
-	W : Vector2i.RIGHT,
+	N : Vector2i(0,-1),
+	S : Vector2i(0, 1),
+	E : Vector2i(-1,0),
+	W : Vector2i( 1,0),
 }
 
+# opened dir NOT wall
 var cells : Array[PackedInt32Array]
 var maze_size : Vector2i
 func _init(msize :Vector2i)->void:
@@ -40,14 +41,7 @@ func make_random()->void:
 				cells[x][y] = N
 			if randi_range(0,1)==0:
 				cells[x][y] |= E
-	add_bound()
 	nomalize()
-
-func add_bound()->void:
-	add_Hline_wall(0,maze_size.x,0, N)
-	add_Hline_wall(0,maze_size.x,maze_size.y-1, S)
-	add_Vline_wall(0,maze_size.y,0, E)
-	add_Vline_wall(0,maze_size.y,maze_size.x-1, W)
 
 var visted_pos : Array[Vector2i]
 func select_visited()->int:
@@ -55,6 +49,7 @@ func select_visited()->int:
 		return visted_pos.size()-1
 	else:
 		return randi_range(0,visted_pos.size()-1)
+
 func make_maze()->void:
 	visted_pos =[]
 	var pos = Vector2i( randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1),)
@@ -76,50 +71,41 @@ func make_maze()->void:
 		if delpos:
 			visted_pos.remove_at(posidx)
 
-	add_bound()
-	#nomalize()
+func is_open_dir_at(x :int, y :int, dir :int)->bool:
+	return (cells[x][y] & dir) !=0
 
-
-
-func get_wall_at(x :int, y :int)->Array:
-	var rtn = []
-	for k in Dir2Vt.keys():
-		if cells[x][y] & k != 0 :
-			rtn.append(k)
-	return rtn
-
-func add_wall_at(x :int, y :int, dir :int)->void:
+func add_open_at(x :int, y :int, dir :int)->void:
 	cells[x][y] |= dir
 
-func set_wall_at(x :int, y :int, dir :int)->void:
+func set_open_at(x :int, y :int, dir :int)->void:
 	cells[x][y] = dir
 
-func add_Hline_wall(x1:int, x2:int , y:int, dir :int)->void:
+func add_Hline_open(x1:int, x2:int , y:int, dir :int)->void:
 	for x in range(x1,x2):
 		cells[x][y] |= dir
 
-func add_Vline_wall(y1:int, y2:int , x:int, dir :int)->void:
+func add_Vline_open(y1:int, y2:int , x:int, dir :int)->void:
 	for y in range(y1,y2):
 		cells[x][y] |= dir
 
-func set_Hline_wall(x1:int, x2:int , y:int, dir :int)->void:
+func set_Hline_open(x1:int, x2:int , y:int, dir :int)->void:
 	for x in range(x1,x2):
 		cells[x][y] = dir
 
-func set_Vline_wall(y1:int, y2:int , x:int, dir :int)->void:
+func set_Vline_open(y1:int, y2:int , x:int, dir :int)->void:
 	for y in range(y1,y2):
 		cells[x][y] = dir
 
-# fix wall
+# fix open
 func nomalize()->void:
 	for x in maze_size.x-1:
 		for y in maze_size.y-1:
-			if W in get_wall_at(x,y):
-				add_wall_at(x+1,y, E)
-			elif E in get_wall_at(x+1,y):
-				add_wall_at(x,y, W)
-			if S in get_wall_at(x,y):
-				add_wall_at(x,y+1, N)
-			elif N in get_wall_at(x,y+1):
-				add_wall_at(x,y, S)
+			if is_open_dir_at(x,y,W):
+				add_open_at(x+1,y, E)
+			elif is_open_dir_at(x+1,y,E):
+				add_open_at(x,y, W)
+			if is_open_dir_at(x,y,S):
+				add_open_at(x,y+1, N)
+			elif is_open_dir_at(x,y+1,N):
+				add_open_at(x,y, S)
 

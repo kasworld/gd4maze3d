@@ -3,7 +3,6 @@ extends Node3D
 const ACT_DUR = 1.0 # sec
 enum Act {Stop, Forward, Turn_Right , Turn_Left}
 enum Dir {North, East, South, West}
-var wall_scene = preload("res://wall_z.tscn")
 
 var action :Act
 var act_start_time :float # unixtime sec
@@ -15,15 +14,21 @@ var actor_pos_new :Vector2i
 var maze_size = Vector2i(100,100)
 var maze_cells :Maze
 
+var wall_z_mesh = preload("res://wall_z.tres")
+
 func _ready() -> void:
+	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Floor.position.x = maze_size.x/2
 	$Floor.position.z = maze_size.y/2
+	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position.x = maze_size.x/2
 	$Ceiling.position.z = maze_size.y/2
 	$TopViewCamera3D.position.x = maze_size.x/2
+	$TopViewCamera3D.position.y = maze_size.x/1.5
 	$TopViewCamera3D.position.z = maze_size.y/2
 	actor_pos_old = maze_size/2
 	actor_pos_new = maze_size/2
+	move_forward(0)
 
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_random()
@@ -113,9 +118,6 @@ func start_action(a :Act)->void:
 		Act.Turn_Right:
 			actor_dir_new = (actor_dir_old -1+4)%4 as Dir
 
-
-	#$Camera3D.rotate_y(delta/2)
-
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
@@ -127,10 +129,14 @@ func make_wall_by_maze()->void:
 				add_wall_at( x , y , true)
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
-	var w = wall_scene.instantiate()
-	w.position = Vector3(x,0 , y)
+	#var w = new_box(Vector3(1,2,0.01),wall_mat)
+	var w = MeshInstance3D.new()
+	w.mesh = wall_z_mesh
 	if face_x:
 		w.rotate_y(-PI/2)
+		w.position = Vector3( x  , 1.0 , y as float +0.5)
+	else :
+		w.position = Vector3( x as float +0.5 , 1.0 , y)
 	add_child(w)
 
 # dur : 0 - 1 :second

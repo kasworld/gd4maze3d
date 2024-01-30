@@ -11,7 +11,7 @@ var actor_dir_new : Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
-var maze_size = Vector2i(32,32)
+var maze_size = Vector2i(64,64)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
@@ -40,7 +40,6 @@ func act_random()->void:
 	else:
 		action = Act.Turn_Right
 	start_action(action)
-
 
 func set_top_view()->void:
 	$PlayerCamera3D.current = false

@@ -47,6 +47,6 @@ func set_top_view(b :bool)->void:
 	$Ceiling.visible = not b
 	$TopViewCamera3D.current = b
 
-func can_move(p :Vector2i, dir :Maze.Dir)->bool:
-	return maze_cells.is_open_dir_at(p.x,p.y,dir)
+func can_move(x :int , y :int, dir :Maze.Dir)->bool:
+	return maze_cells.is_open_dir_at(x,y,dir)
 

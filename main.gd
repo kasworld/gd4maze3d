@@ -16,6 +16,8 @@ func _ready() -> void:
 	$MazeStorey.init(maze_size)
 	actor_pos_old = maze_size/2
 	actor_pos_new = maze_size/2
+	actor_dir_old = Maze.Dir.North
+	actor_dir_new = Maze.Dir.North
 	move_forward(0)
 	act_start_time = Time.get_unix_time_from_system()
 
@@ -27,7 +29,7 @@ func _process(delta: float) -> void:
 		actor_pos_old = actor_pos_new
 		act_start_time = t
 		act_random()
-		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Maze.Dir.keys()[actor_dir_new] ]
+		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Maze.Dir2Str[actor_dir_new] ]
 	else:
 		do_action(dur/ACT_DUR)
 
@@ -39,6 +41,55 @@ func act_random()->void:
 	else:
 		action = Act.Turn_Right
 	start_action(action)
+
+
+func do_action(dur :float)->void:
+	match action:
+		Act.Stop:
+			pass
+		Act.Forward:
+			move_forward(dur)
+		Act.Turn_Left:
+			turn_left(dur)
+		Act.Turn_Right:
+			turn_right(dur)
+
+func can_move(dir :Maze.Dir)->bool:
+	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, dir)
+
+func start_action(a :Act)->void:
+	match a:
+		Act.Stop:
+			pass
+		Act.Forward:
+			if not can_move(actor_dir_old):
+				print_debug("act blocked %s" % [ Maze.Dir2Str[actor_dir_old] ])
+				return
+			actor_pos_new = actor_pos_old + Maze.Dir2Vt[actor_dir_old]
+		Act.Turn_Left:
+			actor_dir_new = Maze.TurnLeft[actor_dir_old]
+		Act.Turn_Right:
+			actor_dir_new = Maze.TurnRight[actor_dir_old]
+
+
+# dur : 0 - 1 :second
+func move_forward(dur :float)->void:
+	var vt = Vector3(
+		0.5+ lerpf(actor_pos_old.x , actor_pos_new.x , dur ) ,
+		1,
+		0.5+ lerpf(actor_pos_old.y , actor_pos_new.y , dur ) ,
+	)
+	$PlayerCamera3D.position = vt
+
+# dur : 0 - 1 :second
+func turn_right(dur :float)->void:
+	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
+	$PlayerCamera3D.rotation.y = a
+
+# dur : 0 - 1 :second
+func turn_left(dur :float)->void:
+	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
+	$PlayerCamera3D.rotation.y = a
 
 func set_top_view()->void:
 	$PlayerCamera3D.current = false
@@ -62,67 +113,3 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
-
-func do_action(dur :float)->void:
-	match action:
-		Act.Stop:
-			pass
-		Act.Forward:
-			move_forward(dur)
-		Act.Turn_Left:
-			turn_left(dur)
-		Act.Turn_Right:
-			turn_right(dur)
-
-func can_move(dir :Maze.Dir)->bool:
-	match dir:
-		Maze.Dir.North:
-			return actor_pos_old.y > 0
-		Maze.Dir.East:
-			return actor_pos_old.x > 0
-		Maze.Dir.South:
-			return actor_pos_old.y < maze_size.y -1
-		Maze.Dir.West:
-			return actor_pos_old.x < maze_size.x -1
-	return false
-
-func start_action(a :Act)->void:
-	match a:
-		Act.Stop:
-			pass
-		Act.Forward:
-			if not can_move(actor_dir_old):
-				print_debug("act blocked %s" % [ Maze.Dir.keys()[actor_dir_old] ])
-				return
-			match actor_dir_old:
-				Maze.Dir.North:
-					actor_pos_new.y = actor_pos_old.y -1
-				Maze.Dir.East:
-					actor_pos_new.x = actor_pos_old.x -1
-				Maze.Dir.South:
-					actor_pos_new.y = actor_pos_old.y +1
-				Maze.Dir.West:
-					actor_pos_new.x = actor_pos_old.x +1
-		Act.Turn_Left:
-			actor_dir_new = (actor_dir_old +1)%4 as Maze.Dir
-		Act.Turn_Right:
-			actor_dir_new = (actor_dir_old -1+4)%4 as Maze.Dir
-
-
-# dur : 0 - 1 :second
-func move_forward(dur :float)->void:
-	var vt = Vector3(
-		0.5+ lerpf(actor_pos_old.x , actor_pos_new.x , dur ) ,
-		1,
-		0.5+ lerpf(actor_pos_old.y , actor_pos_new.y , dur ) ,
-	)
-	$PlayerCamera3D.position = vt
-# dur : 0 - 1 :second
-func turn_right(dur :float)->void:
-	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$PlayerCamera3D.rotation.y = a
-
-# dur : 0 - 1 :second
-func turn_left(dur :float)->void:
-	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$PlayerCamera3D.rotation.y = a

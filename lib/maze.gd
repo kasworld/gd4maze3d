@@ -7,6 +7,14 @@ enum Dir {
 	West = 8,
 }
 
+const Dir2Str = {
+	Dir.North : "South",
+	Dir.South : "North",
+	Dir.East : "West",
+	Dir.West : "East",
+}
+
+
 const Opppsite = {
 	Dir.North : Dir.South,
 	Dir.South : Dir.North,
@@ -15,6 +23,20 @@ const Opppsite = {
 }
 
 const DirList = [Dir.North,Dir.South,Dir.East,Dir.West]
+
+const TurnLeft = {
+	Dir.North : Dir.West,
+	Dir.South : Dir.East,
+	Dir.East : Dir.South,
+	Dir.West : Dir.North,
+}
+
+const TurnRight = {
+	Dir.North : Dir.East,
+	Dir.South : Dir.West,
+	Dir.East : Dir.North,
+	Dir.West : Dir.South,
+}
 
 const Dir2Vt = {
 	Dir.North : Vector2i(0,-1),

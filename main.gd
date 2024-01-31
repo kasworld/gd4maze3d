@@ -3,7 +3,7 @@ extends Node3D
 const ACT_DUR = 1.0 # sec
 enum Act {Stop, Forward, Turn_Right , Turn_Left}
 
-var action :Act
+var action_queue :Array[Act]
 var act_start_time :float # unixtime sec
 var actor_dir_old : Maze.Dir
 var actor_dir_new : Maze.Dir
@@ -16,61 +16,62 @@ func _ready() -> void:
 	$MazeStorey.init(maze_size)
 	actor_pos_old = maze_size/2
 	actor_pos_new = maze_size/2
-	actor_dir_old = Maze.Dir.North
-	actor_dir_new = Maze.Dir.North
+	actor_dir_old = Maze.Dir.West
+	actor_dir_new = Maze.Dir.West
+	#$PlayerCamera3D.look_at(Vector3(0,1,-100))
 	move_forward(0)
 	act_start_time = Time.get_unix_time_from_system()
 
 func _process(delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
 	var dur = t - act_start_time
+
 	if dur > ACT_DUR :
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
 		act_start_time = t
-		act_random()
-		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Maze.Dir2Str[actor_dir_new] ]
+		action_queue.pop_front() # del done act
+		if action_queue.size() == 0:
+			make_action()
+		match action_queue[0]:
+			Act.Forward:
+				actor_pos_new = actor_pos_old + Maze.Dir2Vt[actor_dir_old]
+			Act.Turn_Left:
+				actor_dir_new = Maze.TurnLeft[actor_dir_old]
+			Act.Turn_Right:
+				actor_dir_new = Maze.TurnRight[actor_dir_old]
+		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action_queue[0]], actor_pos_new.x, actor_pos_new.y , Maze.Dir2Str[actor_dir_new] ]
 	else:
 		do_action(dur/ACT_DUR)
 
-func act_random()->void:
-	if randi_range(0,1)==0:
-		action = Act.Forward
-	elif randi_range(0,1)==0:
-		action = Act.Turn_Left
-	else:
-		action = Act.Turn_Right
-	start_action(action)
+func make_action()->void:
+	if can_move(Maze.TurnRight[actor_dir_old]):
+		action_queue.push_back(Act.Turn_Right)
+		action_queue.push_back(Act.Forward)
+	elif can_move(actor_dir_old):
+		action_queue.push_back(Act.Forward)
+	elif can_move(Maze.TurnLeft[actor_dir_old]):
+		action_queue.push_back(Act.Turn_Left)
+		action_queue.push_back(Act.Forward)
+	else :
+		action_queue.push_back(Act.Turn_Left)
+		action_queue.push_back(Act.Turn_Left)
+		action_queue.push_back(Act.Forward)
 
+
+func can_move(dir :Maze.Dir)->bool:
+	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, dir)
 
 func do_action(dur :float)->void:
-	match action:
-		Act.Stop:
-			pass
+	if action_queue.size()==0:
+		return
+	match action_queue[0]:
 		Act.Forward:
 			move_forward(dur)
 		Act.Turn_Left:
 			turn_left(dur)
 		Act.Turn_Right:
 			turn_right(dur)
-
-func can_move(dir :Maze.Dir)->bool:
-	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, dir)
-
-func start_action(a :Act)->void:
-	match a:
-		Act.Stop:
-			pass
-		Act.Forward:
-			if not can_move(actor_dir_old):
-				print_debug("act blocked %s" % [ Maze.Dir2Str[actor_dir_old] ])
-				return
-			actor_pos_new = actor_pos_old + Maze.Dir2Vt[actor_dir_old]
-		Act.Turn_Left:
-			actor_dir_new = Maze.TurnLeft[actor_dir_old]
-		Act.Turn_Right:
-			actor_dir_new = Maze.TurnRight[actor_dir_old]
-
 
 # dur : 0 - 1 :second
 func move_forward(dur :float)->void:

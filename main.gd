@@ -2,16 +2,15 @@ extends Node3D
 
 const ACT_DUR = 1.0 # sec
 enum Act {Stop, Forward, Turn_Right , Turn_Left}
-enum Dir {North, East, South, West}
 
 var action :Act
 var act_start_time :float # unixtime sec
-var actor_dir_old : Dir
-var actor_dir_new : Dir
+var actor_dir_old : Maze.Dir
+var actor_dir_new : Maze.Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
-var maze_size = Vector2i(64,64)
+var maze_size = Vector2i(32,32)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
@@ -28,7 +27,7 @@ func _process(delta: float) -> void:
 		actor_pos_old = actor_pos_new
 		act_start_time = t
 		act_random()
-		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Dir.keys()[actor_dir_new] ]
+		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action], actor_pos_new.x, actor_pos_new.y , Maze.Dir.keys()[actor_dir_new] ]
 	else:
 		do_action(dur/ACT_DUR)
 
@@ -75,15 +74,15 @@ func do_action(dur :float)->void:
 		Act.Turn_Right:
 			turn_right(dur)
 
-func can_move(dir :Dir)->bool:
+func can_move(dir :Maze.Dir)->bool:
 	match dir:
-		Dir.North:
+		Maze.Dir.North:
 			return actor_pos_old.y > 0
-		Dir.East:
+		Maze.Dir.East:
 			return actor_pos_old.x > 0
-		Dir.South:
+		Maze.Dir.South:
 			return actor_pos_old.y < maze_size.y -1
-		Dir.West:
+		Maze.Dir.West:
 			return actor_pos_old.x < maze_size.x -1
 	return false
 
@@ -93,21 +92,21 @@ func start_action(a :Act)->void:
 			pass
 		Act.Forward:
 			if not can_move(actor_dir_old):
-				print_debug("act blocked %s" % [ Dir.keys()[actor_dir_old] ])
+				print_debug("act blocked %s" % [ Maze.Dir.keys()[actor_dir_old] ])
 				return
 			match actor_dir_old:
-				Dir.North:
+				Maze.Dir.North:
 					actor_pos_new.y = actor_pos_old.y -1
-				Dir.East:
+				Maze.Dir.East:
 					actor_pos_new.x = actor_pos_old.x -1
-				Dir.South:
+				Maze.Dir.South:
 					actor_pos_new.y = actor_pos_old.y +1
-				Dir.West:
+				Maze.Dir.West:
 					actor_pos_new.x = actor_pos_old.x +1
 		Act.Turn_Left:
-			actor_dir_new = (actor_dir_old +1)%4 as Dir
+			actor_dir_new = (actor_dir_old +1)%4 as Maze.Dir
 		Act.Turn_Right:
-			actor_dir_new = (actor_dir_old -1+4)%4 as Dir
+			actor_dir_new = (actor_dir_old -1+4)%4 as Maze.Dir
 
 
 # dur : 0 - 1 :second

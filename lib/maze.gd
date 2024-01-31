@@ -1,26 +1,26 @@
 class_name Maze
 
-enum {
-	N = 1,
-	S = 2,
-	E = 4,
-	W = 8,
+enum Dir {
+	North = 1,
+	South = 2,
+	East = 4,
+	West = 8,
 }
 
 const Opppsite = {
-	N : S,
-	S : N,
-	E : W,
-	W : E,
+	Dir.North : Dir.South,
+	Dir.South : Dir.North,
+	Dir.East : Dir.West,
+	Dir.West : Dir.East,
 }
 
-const DirList = [N,S,E,W]
+const DirList = [Dir.North,Dir.South,Dir.East,Dir.West]
 
 const Dir2Vt = {
-	N : Vector2i(0,-1),
-	S : Vector2i(0, 1),
-	E : Vector2i(-1,0),
-	W : Vector2i( 1,0),
+	Dir.North : Vector2i(0,-1),
+	Dir.South : Vector2i(0, 1),
+	Dir.East : Vector2i(-1,0),
+	Dir.West : Vector2i( 1,0),
 }
 
 # opened dir NOT wall
@@ -47,7 +47,7 @@ func make_maze()->void:
 		var posidx = select_visited()
 		pos = visted_pos[posidx]
 		var delpos = true
-		var rnddir = [N,S,E,W]
+		var rnddir = [Dir.North,Dir.South,Dir.East,Dir.West]
 		rnddir.shuffle()
 		for dir in rnddir:
 			var npos = pos + Dir2Vt[dir]
@@ -63,7 +63,7 @@ func make_maze()->void:
 func is_in(x:int,y:int)->bool:
 	return x >=0 && y>=0 && x < maze_size.x && y < maze_size.y
 
-func is_open_dir_at(x :int, y :int, dir :int)->bool:
+func is_open_dir_at(x :int, y :int, dir :Dir)->bool:
 	return (cells[x][y] & dir) !=0
 
 func get_open_dir_at(x :int, y :int)->Array:

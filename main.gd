@@ -40,10 +40,10 @@ var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
-	actor_pos_old = Vector2i(15,15) #maze_size/2
-	actor_pos_new = Vector2i(15,15) #maze_size/2
+	actor_pos_old = maze_size/2
+	actor_pos_new = actor_pos_old
 	actor_dir_old = Dir.North
-	actor_dir_new = Dir.North
+	actor_dir_new = actor_dir_old
 	forward_by_dur(0)
 	act_start_time = Time.get_unix_time_from_system()
 
@@ -112,7 +112,7 @@ func try_queue_move_backward()->bool:
 	return false
 
 func can_move(dir :Dir)->bool:
-	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, to_maze_dir(dir) )
+	return $MazeStorey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
 
 func do_action(dur :float)->void:
 	if action_queue.size()==0:
@@ -126,14 +126,14 @@ func do_action(dur :float)->void:
 # dur : 0 - 1 :second
 func forward_by_dur(dur :float)->void:
 	$Player.position = Vector3(
-		0.5+ lerpf(actor_pos_old.x , actor_pos_new.x , dur ) ,
+		0.5+ lerpf(actor_pos_old.x, actor_pos_new.x, dur),
 		1,
-		0.5+ lerpf(actor_pos_old.y , actor_pos_new.y , dur ) ,
+		0.5+ lerpf(actor_pos_old.y, actor_pos_new.y, dur),
 	)
 
 # dur : 0 - 1 :second
 func turn_by_dur(dur :float)->void:
-	$Player.rotation.y = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
+	$Player.rotation.y = -lerp_angle(deg_to_rad(actor_dir_old*90.0), deg_to_rad(actor_dir_new*90.0), dur)
 
 func set_top_view()->void:
 	$Player.camera_current(false)

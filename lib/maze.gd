@@ -39,13 +39,13 @@ const Dir2Vt = {
 }
 
 # opened dir NOT wall
-var cells : Array[PackedInt32Array]
-var maze_size : Vector2i
+var _cells : Array[PackedInt32Array]
+var _maze_size : Vector2i
 func _init(msize :Vector2i)->void:
-	maze_size = msize
-	cells.resize(maze_size.x)
-	for cl in cells:
-		cl.resize(maze_size.y)
+	_maze_size = msize
+	_cells.resize(_maze_size.y)
+	for cl in _cells:
+		cl.resize(_maze_size.x)
 
 var visted_pos : Array[Vector2i]
 func select_visited()->int:
@@ -56,7 +56,7 @@ func select_visited()->int:
 
 func make_maze()->void:
 	visted_pos =[]
-	var pos = Vector2i( randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1),)
+	var pos = Vector2i( randi_range(0,_maze_size.x-1),randi_range(0,_maze_size.y-1),)
 	visted_pos.append(pos)
 	while visted_pos.size() > 0:
 		var posidx = select_visited()
@@ -66,9 +66,9 @@ func make_maze()->void:
 		rnddir.shuffle()
 		for dir in rnddir:
 			var npos = pos + Dir2Vt[dir]
-			if is_in(npos.x,npos.y) && cells[npos.x][npos.y]==0:
-				cells[pos.x][pos.y] |= dir
-				cells[npos.x][npos.y] |= Opppsite[dir]
+			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
+				or_cell(pos.x,pos.y, dir)
+				or_cell(npos.x,npos.y, Opppsite[dir])
 				visted_pos.append(npos)
 				delpos = false
 				break
@@ -76,14 +76,20 @@ func make_maze()->void:
 			visted_pos.remove_at(posidx)
 
 func is_in(x:int,y:int)->bool:
-	return x >=0 && y>=0 && x < maze_size.x && y < maze_size.y
+	return x >=0 && y>=0 && x < _maze_size.x && y < _maze_size.y
+
+func get_cell(x :int, y:int)->int:
+	return _cells[y][x]
+
+func or_cell(x:int,y:int, d :int)->void:
+	_cells[y][x] |= d
 
 func is_open_dir_at(x :int, y :int, dir :Dir)->bool:
-	return (cells[x][y] & dir) !=0
+	return (_cells[y][x] & dir) !=0
 
 func get_open_dir_at(x :int, y :int)->Array:
 	var rtn = []
 	for d in DirList:
-		if (cells[x][y] & d) !=0:
+		if (_cells[y][x] & d) !=0:
 			rtn.append(d)
 	return rtn

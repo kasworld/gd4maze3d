@@ -1,7 +1,7 @@
 extends Node3D
 
 const ACT_DUR = 1.0 # sec
-enum Act {Forward, Turn_Right , Turn_Left}
+enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
 
@@ -16,9 +16,9 @@ func to_maze_dir(d :Dir)->Maze.Dir:
 	return Maze.DirList[d%4]
 func dir2str(d :Dir)->String:
 	return Dir.keys()[d]
-func dir_right(d:Dir)->Dir:
-	return (d+1)%4
 func dir_left(d:Dir)->Dir:
+	return (d+1)%4
+func dir_right(d:Dir)->Dir:
 	return (d-1+4)%4
 func dir_opposite(d:Dir)->Dir:
 	return (d+2)%4
@@ -31,6 +31,7 @@ func queue_to_str()->String:
 	return rtn
 
 var act_start_time :float # unixtime sec
+var act_current : Act
 var actor_dir_old : Dir
 var actor_dir_new : Dir
 var actor_pos_old :Vector2i
@@ -45,35 +46,41 @@ func _ready() -> void:
 	actor_dir_old = Dir.North
 	actor_dir_new = actor_dir_old
 	forward_by_dur(0)
-	act_start_time = Time.get_unix_time_from_system()
+	turn_by_dur(0)
 
 func _process(delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
 	var dur = t - act_start_time
 
-	if dur > ACT_DUR :
+	# action ended
+	if act_current != Act.None && dur > ACT_DUR :
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
+		act_current = Act.None
+
+	if act_current == Act.None && action_queue.size() > 0: # start new action
 		act_start_time = t
-		action_queue.pop_front() # del done act
-		if action_queue.size() == 0:
-			return
-			make_queue_action()
-		match action_queue[0]:
+		act_current = action_queue.pop_front()
+		match act_current:
 			Act.Forward:
-				actor_pos_new = actor_pos_old + Maze.Dir2Vt[to_maze_dir(actor_dir_old)]
+				if can_move(actor_dir_old):
+					actor_pos_new = actor_pos_old + Maze.Dir2Vt[to_maze_dir(actor_dir_old)]
+				else :
+					act_current = Act.None
 			Act.Turn_Left:
 				actor_dir_new = dir_left(actor_dir_old)
 			Act.Turn_Right:
 				actor_dir_new = dir_right(actor_dir_old)
-	else:
-		do_action(dur/ACT_DUR)
+
+	if act_current != Act.None :
+		do_act_dur(act_current, dur/ACT_DUR)
 
 	update_info()
 
+
 func update_info()->void:
-	$Label.text = "[%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
-		queue_to_str(),
+	$Label.text = "%s [%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
+		act2str(act_current), queue_to_str(),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
 		$MazeStorey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
 		dir2str(actor_dir_old), dir2str(actor_dir_new)
@@ -114,10 +121,8 @@ func try_queue_move_backward()->bool:
 func can_move(dir :Dir)->bool:
 	return $MazeStorey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
 
-func do_action(dur :float)->void:
-	if action_queue.size()==0:
-		return
-	match action_queue[0]:
+func do_act_dur(act :Act, dur :float)->void:
+	match act:
 		Act.Forward:
 			forward_by_dur(dur)
 		Act.Turn_Left, Act.Turn_Right:
@@ -133,7 +138,7 @@ func forward_by_dur(dur :float)->void:
 
 # dur : 0 - 1 :second
 func turn_by_dur(dur :float)->void:
-	$Player.rotation.y = -lerp_angle(deg_to_rad(actor_dir_old*90.0), deg_to_rad(actor_dir_new*90.0), dur)
+	$Player.rotation.y = lerp_angle(deg_to_rad(actor_dir_old*90.0), deg_to_rad(actor_dir_new*90.0), dur)
 
 func set_top_view()->void:
 	$Player.camera_current(false)
@@ -152,7 +157,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_2:
 			set_player_view()
 		elif event.keycode == KEY_UP:
-			try_queue_move_foward()
+			action_queue.push_back(Act.Forward)
 		elif event.keycode == KEY_LEFT:
 			action_queue.push_back(Act.Turn_Left)
 		elif event.keycode == KEY_RIGHT:

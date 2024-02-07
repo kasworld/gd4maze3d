@@ -21,15 +21,15 @@ const Opppsite = {
 }
 const TurnLeft = {
 	Dir.North : Dir.West,
+	Dir.West : Dir.South,
 	Dir.South : Dir.East,
-	Dir.East : Dir.South,
-	Dir.West : Dir.North,
+	Dir.East : Dir.North,
 }
 const TurnRight = {
 	Dir.North : Dir.East,
+	Dir.East : Dir.South,
 	Dir.South : Dir.West,
-	Dir.East : Dir.North,
-	Dir.West : Dir.South,
+	Dir.West : Dir.North,
 }
 const Dir2Vt = {
 	Dir.North : Vector2i(0,-1),

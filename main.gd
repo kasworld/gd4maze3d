@@ -1,9 +1,15 @@
 extends Node3D
 
 const ACT_DUR = 1.0 # sec
-enum Act {Stop, Forward, Turn_Right , Turn_Left}
+enum Act {Forward, Turn_Right , Turn_Left}
 
 var action_queue :Array[Act]
+func queue_to_str()->String:
+	var rtn = ""
+	for a in action_queue:
+		rtn += "%s " % [ Act.keys()[a] ]
+	return rtn
+
 var act_start_time :float # unixtime sec
 var actor_dir_old : Maze.Dir
 var actor_dir_new : Maze.Dir
@@ -32,7 +38,8 @@ func _process(delta: float) -> void:
 		act_start_time = t
 		action_queue.pop_front() # del done act
 		if action_queue.size() == 0:
-			make_action()
+			return
+			make_queue_action()
 		match action_queue[0]:
 			Act.Forward:
 				actor_pos_new = actor_pos_old + Maze.Dir2Vt[actor_dir_old]
@@ -40,24 +47,46 @@ func _process(delta: float) -> void:
 				actor_dir_new = Maze.TurnLeft[actor_dir_old]
 			Act.Turn_Right:
 				actor_dir_new = Maze.TurnRight[actor_dir_old]
-		$Label.text = "%s (%d, %d) %s" % [Act.keys()[action_queue[0]], actor_pos_new.x, actor_pos_new.y , Maze.Dir2Str[actor_dir_new] ]
 	else:
 		do_action(dur/ACT_DUR)
+	$Label.text = "%s (%d, %d) %s" % [
+		queue_to_str(), actor_pos_new.x, actor_pos_new.y , Maze.Dir2Str[actor_dir_new] ]
 
-func make_action()->void:
+
+func make_queue_action()->void:
+	if try_queue_move_right() || try_queue_move_foward() || try_queue_move_left():
+		return
+	action_queue.push_back(Act.Turn_Left)
+	action_queue.push_back(Act.Turn_Left)
+	action_queue.push_back(Act.Forward)
+
+func try_queue_move_foward()->bool:
+	if can_move(actor_dir_old):
+		action_queue.push_back(Act.Forward)
+		return true
+	return false
+
+func try_queue_move_right()->bool:
 	if can_move(Maze.TurnRight[actor_dir_old]):
 		action_queue.push_back(Act.Turn_Right)
 		action_queue.push_back(Act.Forward)
-	elif can_move(actor_dir_old):
-		action_queue.push_back(Act.Forward)
-	elif can_move(Maze.TurnLeft[actor_dir_old]):
-		action_queue.push_back(Act.Turn_Left)
-		action_queue.push_back(Act.Forward)
-	else :
-		action_queue.push_back(Act.Turn_Left)
-		action_queue.push_back(Act.Turn_Left)
-		action_queue.push_back(Act.Forward)
+		return true
+	return false
 
+func try_queue_move_left()->bool:
+	if can_move(Maze.TurnLeft[actor_dir_old]):
+		action_queue.push_back(Act.Turn_Left)
+		action_queue.push_back(Act.Forward)
+		return true
+	return false
+
+func try_queue_move_backward()->bool:
+	if can_move(Maze.Opppsite[actor_dir_old]):
+		action_queue.push_back(Act.Turn_Left)
+		action_queue.push_back(Act.Turn_Left)
+		action_queue.push_back(Act.Forward)
+		return true
+	return false
 
 func can_move(dir :Maze.Dir)->bool:
 	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, dir)
@@ -108,6 +137,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_top_view()
 		elif event.keycode == KEY_2:
 			set_player_view()
+		elif event.keycode == KEY_UP:
+			try_queue_move_foward()
+		elif event.keycode == KEY_LEFT:
+			try_queue_move_left()
+		elif event.keycode == KEY_RIGHT:
+			try_queue_move_right()
 		else:
 			pass
 

@@ -2,17 +2,35 @@ extends Node3D
 
 const ACT_DUR = 1.0 # sec
 enum Act {Forward, Turn_Right , Turn_Left}
+func act2str(a :Act)->String:
+	return Act.keys()[a]
+
+# x90 == degree
+enum Dir {
+	North = 0,
+	West = 1,
+	South = 2,
+	East = 3,
+}
+func to_maze_dir(d :Dir)->Maze.Dir:
+	return Maze.DirList[d%4]
+func dir2str(d :Dir)->String:
+	return Dir.keys()[d]
+func dir_right(d:Dir)->Dir:
+	return (d+1)%4
+func dir_left(d:Dir)->Dir:
+	return (d-1+4)%4
 
 var action_queue :Array[Act]
 func queue_to_str()->String:
 	var rtn = ""
 	for a in action_queue:
-		rtn += "%s " % [ Act.keys()[a] ]
+		rtn += "%s " % [ act2str(a) ]
 	return rtn
 
 var act_start_time :float # unixtime sec
-var actor_dir_old : Maze.Dir
-var actor_dir_new : Maze.Dir
+var actor_dir_old : Dir
+var actor_dir_new : Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
@@ -22,8 +40,8 @@ func _ready() -> void:
 	$MazeStorey.init(maze_size)
 	actor_pos_old = Vector2i(7,7) #maze_size/2
 	actor_pos_new = Vector2i(7,7) #maze_size/2
-	actor_dir_old = Maze.Dir.North
-	actor_dir_new = Maze.Dir.North
+	actor_dir_old = Dir.North
+	actor_dir_new = Dir.North
 	forward_by_dur(0)
 	act_start_time = Time.get_unix_time_from_system()
 
@@ -43,9 +61,9 @@ func _process(delta: float) -> void:
 			Act.Forward:
 				actor_pos_new = actor_pos_old + Maze.Dir2Vt[actor_dir_old]
 			Act.Turn_Left:
-				actor_dir_new = Maze.TurnLeft[actor_dir_old]
+				actor_dir_new = dir_left(actor_dir_old)
 			Act.Turn_Right:
-				actor_dir_new = Maze.TurnRight[actor_dir_old]
+				actor_dir_new = dir_right(actor_dir_old)
 	else:
 		do_action(dur/ACT_DUR)
 
@@ -53,7 +71,7 @@ func _process(delta: float) -> void:
 		queue_to_str(),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
 		$MazeStorey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
-		Maze.Dir2Str[actor_dir_old], Maze.Dir2Str[actor_dir_new]
+		dir2str(actor_dir_old), dir2str(actor_dir_new)
 		]
 
 
@@ -88,8 +106,8 @@ func try_queue_move_backward()->bool:
 		return true
 	return false
 
-func can_move(dir :Maze.Dir)->bool:
-	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, dir)
+func can_move(dir :Dir)->bool:
+	return $MazeStorey.can_move(actor_pos_old.x,actor_pos_old.y, to_maze_dir(dir) )
 
 func do_action(dur :float)->void:
 	if action_queue.size()==0:

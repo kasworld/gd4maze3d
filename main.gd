@@ -58,6 +58,9 @@ func _process(delta: float) -> void:
 		actor_pos_old = actor_pos_new
 		act_current = Act.None
 
+	if act_current == Act.None && action_queue.size() == 0: # add new ai action
+		make_queue_action()
+
 	if act_current == Act.None && action_queue.size() > 0: # start new action
 		act_start_time = t
 		dur = 0

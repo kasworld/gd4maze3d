@@ -60,6 +60,7 @@ func _process(delta: float) -> void:
 
 	if act_current == Act.None && action_queue.size() > 0: # start new action
 		act_start_time = t
+		dur = 0
 		act_current = action_queue.pop_front()
 		match act_current:
 			Act.Forward:

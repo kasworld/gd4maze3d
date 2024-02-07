@@ -50,3 +50,8 @@ func set_top_view(b :bool)->void:
 func can_move(x :int , y :int, dir :Maze.Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y,dir)
 
+func open_dir_str(x :int , y :int)->String:
+	var rtn = ""
+	for d in maze_cells.get_open_dir_at(x,y):
+		rtn += "%s " %[Maze.Dir2Str[d]]
+	return rtn

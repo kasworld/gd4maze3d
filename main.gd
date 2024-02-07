@@ -49,8 +49,12 @@ func _process(delta: float) -> void:
 				actor_dir_new = Maze.TurnRight[actor_dir_old]
 	else:
 		do_action(dur/ACT_DUR)
-	$Label.text = "%s (%d, %d) %s" % [
-		queue_to_str(), actor_pos_new.x, actor_pos_new.y , Maze.Dir2Str[actor_dir_new] ]
+
+	$Label.text = "[%s] (%d, %d) [%s] %s" % [
+		queue_to_str(),
+		actor_pos_old.x, actor_pos_old.y ,
+		$MazeStorey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
+		Maze.Dir2Str[actor_dir_new] ]
 
 
 func make_queue_action()->void:

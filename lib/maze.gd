@@ -9,15 +9,15 @@ enum Dir {
 const DirList = [Dir.North,Dir.West,Dir.South,Dir.East]
 const Dir2Str = {
 	Dir.North : "North",
+	Dir.West : "West",
 	Dir.South : "South",
 	Dir.East : "East",
-	Dir.West : "West",
 }
 const Opppsite = {
 	Dir.North : Dir.South,
+	Dir.West : Dir.East,
 	Dir.South : Dir.North,
 	Dir.East : Dir.West,
-	Dir.West : Dir.East,
 }
 const TurnLeft = {
 	Dir.North : Dir.West,
@@ -33,9 +33,9 @@ const TurnRight = {
 }
 const Dir2Vt = {
 	Dir.North : Vector2i(0,-1),
+	Dir.West : Vector2i(-1,0),
 	Dir.South : Vector2i(0, 1),
 	Dir.East : Vector2i(1,0),
-	Dir.West : Vector2i(-1,0),
 }
 
 # opened dir NOT wall
@@ -67,8 +67,8 @@ func make_maze()->void:
 		for dir in rnddir:
 			var npos = pos + Dir2Vt[dir]
 			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
-				or_cell(pos.x,pos.y, dir)
-				or_cell(npos.x,npos.y, Opppsite[dir])
+				open_dir_at(pos.x,pos.y, dir)
+				open_dir_at(npos.x,npos.y, Opppsite[dir])
 				visted_pos.append(npos)
 				delpos = false
 				break
@@ -81,7 +81,7 @@ func is_in(x:int,y:int)->bool:
 func get_cell(x :int, y:int)->int:
 	return _cells[y][x]
 
-func or_cell(x:int,y:int, d :int)->void:
+func open_dir_at(x:int,y:int, d :int)->void:
 	_cells[y][x] |= d
 
 func is_open_dir_at(x :int, y :int, dir :Dir)->bool:
@@ -90,6 +90,6 @@ func is_open_dir_at(x :int, y :int, dir :Dir)->bool:
 func get_open_dir_at(x :int, y :int)->Array:
 	var rtn = []
 	for d in DirList:
-		if (_cells[y][x] & d) !=0:
+		if is_open_dir_at(x,y,d):
 			rtn.append(d)
 	return rtn

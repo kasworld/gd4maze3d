@@ -21,7 +21,7 @@ func make_wall_by_maze()->void:
 		for x in maze_size.x :
 			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
 				add_wall_at( x , y , false)
-			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.East):
+			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.West):
 				add_wall_at( x , y , true)
 
 	for x in maze_size.x :
@@ -29,15 +29,14 @@ func make_wall_by_maze()->void:
 			add_wall_at( x , maze_size.y , false)
 
 	for y in maze_size.y:
-		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.West):
+		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , true)
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
-	#var w = new_box(Vector3(1,2,0.01),wall_mat)
 	var w = MeshInstance3D.new()
 	w.mesh = wall_z_mesh
 	if face_x:
-		w.rotate_y(-PI/2)
+		w.rotate_y(PI/2)
 		w.position = Vector3( x  , 1.0 , y as float +0.5)
 	else :
 		w.position = Vector3( x as float +0.5 , 1.0 , y)

@@ -20,12 +20,11 @@ var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
-	actor_pos_old = Vector2i(15,15) #maze_size/2
-	actor_pos_new = Vector2i(15,15) #maze_size/2
+	actor_pos_old = Vector2i(0,0) #maze_size/2
+	actor_pos_new = Vector2i(0,0) #maze_size/2
 	actor_dir_old = Maze.Dir.North
 	actor_dir_new = Maze.Dir.North
-	#$PlayerCamera3D.look_at(Vector3(0,1,-100))
-	move_forward(0)
+	forward_by_dur(0)
 	act_start_time = Time.get_unix_time_from_system()
 
 func _process(delta: float) -> void:
@@ -58,12 +57,8 @@ func _process(delta: float) -> void:
 		]
 
 
-func make_queue_action()->void:
-	if try_queue_move_right() || try_queue_move_foward() || try_queue_move_left():
-		return
-	action_queue.push_back(Act.Turn_Left)
-	action_queue.push_back(Act.Turn_Left)
-	action_queue.push_back(Act.Forward)
+func make_queue_action()->bool:
+	return try_queue_move_right() || try_queue_move_foward() || try_queue_move_left() || try_queue_move_backward()
 
 func try_queue_move_foward()->bool:
 	if can_move(actor_dir_old):
@@ -101,37 +96,32 @@ func do_action(dur :float)->void:
 		return
 	match action_queue[0]:
 		Act.Forward:
-			move_forward(dur)
+			forward_by_dur(dur)
 		Act.Turn_Left:
-			turn_left(dur)
+			turn_by_dur(dur)
 		Act.Turn_Right:
-			turn_right(dur)
+			turn_by_dur(dur)
 
 # dur : 0 - 1 :second
-func move_forward(dur :float)->void:
+func forward_by_dur(dur :float)->void:
 	var vt = Vector3(
 		0.5+ lerpf(actor_pos_old.x , actor_pos_new.x , dur ) ,
 		1,
 		0.5+ lerpf(actor_pos_old.y , actor_pos_new.y , dur ) ,
 	)
-	$PlayerCamera3D.position = vt
+	$Player.position = vt
 
 # dur : 0 - 1 :second
-func turn_right(dur :float)->void:
+func turn_by_dur(dur :float)->void:
 	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$PlayerCamera3D.rotation.y = a
-
-# dur : 0 - 1 :second
-func turn_left(dur :float)->void:
-	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$PlayerCamera3D.rotation.y = a
+	$Player.rotation.y = a
 
 func set_top_view()->void:
-	$PlayerCamera3D.current = false
+	$Player/PlayerCamera3D.current = false
 	$MazeStorey.set_top_view(true)
 
 func set_player_view()->void:
-	$PlayerCamera3D.current = true
+	$Player/PlayerCamera3D.current = true
 	$MazeStorey.set_top_view(false)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -145,9 +135,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_UP:
 			try_queue_move_foward()
 		elif event.keycode == KEY_LEFT:
-			try_queue_move_left()
+			action_queue.push_back(Act.Turn_Left)
 		elif event.keycode == KEY_RIGHT:
-			try_queue_move_right()
+			action_queue.push_back(Act.Turn_Right)
 		else:
 			pass
 

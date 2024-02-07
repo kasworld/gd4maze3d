@@ -5,6 +5,7 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 albedo_texture = ExtResource("1_jiio6")
+emission_enabled = true
 emission = Color(0.188235, 0.188235, 0.188235, 1)
 uv1_scale = Vector3(0.1, 0.1, 0.1)
 uv1_triplanar = true
@@ -44,4 +45,4 @@ skeleton = NodePath("../..")
 [node name="TopViewCamera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 50, 0)
 
-[node name="WallContainer" type="Node" parent="."]
+[node name="WallContainer" type="Node3D" parent="."]

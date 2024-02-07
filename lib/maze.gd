@@ -2,16 +2,16 @@ class_name Maze
 
 enum Dir {
 	North = 1,
-	South = 2,
-	East = 4,
-	West = 8,
+	West = 2,
+	South = 4,
+	East = 8,
 }
-const DirList = [Dir.North,Dir.South,Dir.East,Dir.West]
+const DirList = [Dir.North,Dir.West,Dir.South,Dir.East]
 const Dir2Str = {
-	Dir.North : "South",
-	Dir.South : "North",
-	Dir.East : "West",
-	Dir.West : "East",
+	Dir.North : "North",
+	Dir.South : "South",
+	Dir.East : "East",
+	Dir.West : "West",
 }
 const Opppsite = {
 	Dir.North : Dir.South,
@@ -34,8 +34,8 @@ const TurnRight = {
 const Dir2Vt = {
 	Dir.North : Vector2i(0,-1),
 	Dir.South : Vector2i(0, 1),
-	Dir.East : Vector2i(-1,0),
-	Dir.West : Vector2i( 1,0),
+	Dir.East : Vector2i(1,0),
+	Dir.West : Vector2i(-1,0),
 }
 
 # opened dir NOT wall

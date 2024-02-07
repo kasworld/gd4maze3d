@@ -16,14 +16,14 @@ var actor_dir_new : Maze.Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
-var maze_size = Vector2i(32,32)
+var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
-	actor_pos_old = maze_size/2
-	actor_pos_new = maze_size/2
-	actor_dir_old = Maze.Dir.West
-	actor_dir_new = Maze.Dir.West
+	actor_pos_old = Vector2i(15,15) #maze_size/2
+	actor_pos_new = Vector2i(15,15) #maze_size/2
+	actor_dir_old = Maze.Dir.North
+	actor_dir_new = Maze.Dir.North
 	#$PlayerCamera3D.look_at(Vector3(0,1,-100))
 	move_forward(0)
 	act_start_time = Time.get_unix_time_from_system()
@@ -50,11 +50,12 @@ func _process(delta: float) -> void:
 	else:
 		do_action(dur/ACT_DUR)
 
-	$Label.text = "[%s] (%d, %d) [%s] %s" % [
+	$Label.text = "[%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
 		queue_to_str(),
-		actor_pos_old.x, actor_pos_old.y ,
+		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
 		$MazeStorey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
-		Maze.Dir2Str[actor_dir_new] ]
+		Maze.Dir2Str[actor_dir_old], Maze.Dir2Str[actor_dir_new]
+		]
 
 
 func make_queue_action()->void:

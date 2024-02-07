@@ -2,12 +2,10 @@
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="PackedScene" uid="uid://c76t0bgq0j8ux" path="res://maze_storey.tscn" id="2_c0ty4"]
+[ext_resource type="PackedScene" uid="uid://huxiv0a21wm" path="res://player.tscn" id="3_y34d0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2txll"]
 font_size = 32
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gmrbb"]
-emission_enabled = true
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
@@ -22,17 +20,4 @@ label_settings = SubResource("LabelSettings_2txll")
 
 [node name="MazeStorey" parent="." instance=ExtResource("2_c0ty4")]
 
-[node name="Player" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-radius = 0.3
-height = 1.0
-cone = true
-material = SubResource("StandardMaterial3D_gmrbb")
-
-[node name="PlayerCamera3D" type="Camera3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-current = true
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Player/PlayerCamera3D"]
-light_energy = 10.0
-spot_range = 20.0
+[node name="Player" parent="." instance=ExtResource("3_y34d0")]

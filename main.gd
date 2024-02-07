@@ -20,8 +20,8 @@ var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
-	actor_pos_old = Vector2i(0,0) #maze_size/2
-	actor_pos_new = Vector2i(0,0) #maze_size/2
+	actor_pos_old = Vector2i(7,7) #maze_size/2
+	actor_pos_new = Vector2i(7,7) #maze_size/2
 	actor_dir_old = Maze.Dir.North
 	actor_dir_new = Maze.Dir.North
 	forward_by_dur(0)
@@ -117,11 +117,11 @@ func turn_by_dur(dur :float)->void:
 	$Player.rotation.y = a
 
 func set_top_view()->void:
-	$Player/PlayerCamera3D.current = false
+	$Player.camera_current(false)
 	$MazeStorey.set_top_view(true)
 
 func set_player_view()->void:
-	$Player/PlayerCamera3D.current = true
+	$Player.camera_current(true)
 	$MazeStorey.set_top_view(false)
 
 func _unhandled_input(event: InputEvent) -> void:

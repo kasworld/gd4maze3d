@@ -158,6 +158,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_player_view()
 		elif event.keycode == KEY_UP:
 			action_queue.push_back(Act.Forward)
+		elif event.keycode == KEY_DOWN:
+			action_queue.push_back(Act.Turn_Left)
+			action_queue.push_back(Act.Turn_Left)
 		elif event.keycode == KEY_LEFT:
 			action_queue.push_back(Act.Turn_Left)
 		elif event.keycode == KEY_RIGHT:

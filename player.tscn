@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://player.gd" id="1_ve76y"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4hvs"]
-emission_enabled = true
 
 [node name="Player" type="Node3D"]
 script = ExtResource("1_ve76y")

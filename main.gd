@@ -20,6 +20,8 @@ func dir_right(d:Dir)->Dir:
 	return (d+1)%4
 func dir_left(d:Dir)->Dir:
 	return (d-1+4)%4
+func dir_opposite(d:Dir)->Dir:
+	return (d+2)%4
 
 var action_queue :Array[Act]
 func queue_to_str()->String:
@@ -38,8 +40,8 @@ var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
-	actor_pos_old = Vector2i(7,7) #maze_size/2
-	actor_pos_new = Vector2i(7,7) #maze_size/2
+	actor_pos_old = Vector2i(15,15) #maze_size/2
+	actor_pos_new = Vector2i(15,15) #maze_size/2
 	actor_dir_old = Dir.North
 	actor_dir_new = Dir.North
 	forward_by_dur(0)
@@ -59,7 +61,7 @@ func _process(delta: float) -> void:
 			make_queue_action()
 		match action_queue[0]:
 			Act.Forward:
-				actor_pos_new = actor_pos_old + Maze.Dir2Vt[actor_dir_old]
+				actor_pos_new = actor_pos_old + Maze.Dir2Vt[to_maze_dir(actor_dir_old)]
 			Act.Turn_Left:
 				actor_dir_new = dir_left(actor_dir_old)
 			Act.Turn_Right:
@@ -67,6 +69,9 @@ func _process(delta: float) -> void:
 	else:
 		do_action(dur/ACT_DUR)
 
+	update_info()
+
+func update_info()->void:
 	$Label.text = "[%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
 		queue_to_str(),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
@@ -85,21 +90,21 @@ func try_queue_move_foward()->bool:
 	return false
 
 func try_queue_move_right()->bool:
-	if can_move(Maze.TurnRight[actor_dir_old]):
+	if can_move(dir_right(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Right)
 		action_queue.push_back(Act.Forward)
 		return true
 	return false
 
 func try_queue_move_left()->bool:
-	if can_move(Maze.TurnLeft[actor_dir_old]):
+	if can_move(dir_left(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Forward)
 		return true
 	return false
 
 func try_queue_move_backward()->bool:
-	if can_move(Maze.Opppsite[actor_dir_old]):
+	if can_move(dir_opposite(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Forward)
@@ -115,24 +120,20 @@ func do_action(dur :float)->void:
 	match action_queue[0]:
 		Act.Forward:
 			forward_by_dur(dur)
-		Act.Turn_Left:
-			turn_by_dur(dur)
-		Act.Turn_Right:
+		Act.Turn_Left, Act.Turn_Right:
 			turn_by_dur(dur)
 
 # dur : 0 - 1 :second
 func forward_by_dur(dur :float)->void:
-	var vt = Vector3(
+	$Player.position = Vector3(
 		0.5+ lerpf(actor_pos_old.x , actor_pos_new.x , dur ) ,
 		1,
 		0.5+ lerpf(actor_pos_old.y , actor_pos_new.y , dur ) ,
 	)
-	$Player.position = vt
 
 # dur : 0 - 1 :second
 func turn_by_dur(dur :float)->void:
-	var a = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
-	$Player.rotation.y = a
+	$Player.rotation.y = lerp_angle( deg_to_rad(actor_dir_old*90.0),deg_to_rad(actor_dir_new*90.0) , dur  )
 
 func set_top_view()->void:
 	$Player.camera_current(false)

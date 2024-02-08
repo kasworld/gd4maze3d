@@ -1,7 +1,6 @@
 extends Node3D
 
 var maze_storey_scene = preload("res://maze_storey.tscn")
-
 var maze_storey :MazeStorey
 
 const ACT_DUR = 1.0/2 # sec
@@ -21,11 +20,11 @@ func to_maze_dir(d :Dir)->Maze.Dir:
 func dir2str(d :Dir)->String:
 	return Dir.keys()[d]
 func dir_left(d:Dir)->Dir:
-	return (d+1)%4
+	return (d+1)%4 as Dir
 func dir_right(d:Dir)->Dir:
-	return (d-1+4)%4
+	return (d-1+4)%4 as Dir
 func dir_opposite(d:Dir)->Dir:
-	return (d+2)%4
+	return (d+2)%4 as Dir
 
 var action_queue :Array[Act]
 func queue_to_str()->String:
@@ -41,7 +40,7 @@ var actor_dir_new : Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
-var maze_size = Vector2i(16,16)
+var maze_size = Vector2i(32,18)
 
 func _ready() -> void:
 	start_new_maze()
@@ -60,7 +59,7 @@ func start_new_maze()->void:
 	turn_by_dur(0)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
 	var dur = t - act_start_time
 

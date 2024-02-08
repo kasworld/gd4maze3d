@@ -18,7 +18,7 @@ func init(msize :Vector2i)->void:
 	$Floor.position = Vector3(maze_size.x/2.0,0,maze_size.y/2.0)
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position = Vector3(maze_size.x/2.0,2.0,maze_size.y/2.0)
-	$TopViewCamera3D.position = Vector3( maze_size.x/2.0 ,maze_size.x/1.2,maze_size.y/2.0)
+	$TopViewCamera3D.position = Vector3( maze_size.x/2.0 ,maze_size.y/1.4,maze_size.y/2.0)
 	$DirectionalLight3D.position = Vector3( maze_size.x/2.0 ,maze_size.x,maze_size.y/2.0)
 	#$DirectionalLight3D.look_at(Vector3( maze_size.x/2.0 ,0,maze_size.y/2.0))
 	maze_cells = Maze.new(maze_size)

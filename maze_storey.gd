@@ -7,7 +7,6 @@ var goal_pos :Vector2i
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
 var capsule_pos_dic :Dictionary
-var capsule_list :Array
 
 var wall_z_mesh = preload("res://wall_z.tres")
 
@@ -34,7 +33,6 @@ func init(msize :Vector2i)->void:
 				var co = NamedColorList.color_list.pick_random()[0]
 				var c = add_capsule_at(p, co)
 				capsule_pos_dic[p]=c
-				capsule_list.append(c)
 
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
@@ -55,8 +53,8 @@ func rand_pos()->Vector2i:
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
-	for c in capsule_list:
-		c.rotate_y(delta)
+	for p in capsule_pos_dic:
+		capsule_pos_dic[p].rotate_y(delta)
 
 
 func make_wall_by_maze()->void:

@@ -1,6 +1,6 @@
 extends Node3D
 
-const ACT_DUR = 1.0 # sec
+const ACT_DUR = 1.0/2 # sec
 enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
@@ -41,7 +41,7 @@ var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
 	$MazeStorey.init(maze_size)
-	actor_pos_old = maze_size/2
+	actor_pos_old = $MazeStorey.start_pos
 	actor_pos_new = actor_pos_old
 	actor_dir_old = Dir.North
 	actor_dir_new = actor_dir_old
@@ -60,6 +60,7 @@ func _process(delta: float) -> void:
 
 	if act_current == Act.None && action_queue.size() == 0: # add new ai action
 		make_queue_action()
+		pass
 
 	if act_current == Act.None && action_queue.size() > 0: # start new action
 		act_start_time = t

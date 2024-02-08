@@ -1,5 +1,9 @@
 extends Node3D
 
+var maze_storey_scene = preload("res://maze_storey.tscn")
+
+var maze_storey :MazeStorey
+
 const ACT_DUR = 1.0/2 # sec
 enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
@@ -40,13 +44,21 @@ var actor_pos_new :Vector2i
 var maze_size = Vector2i(16,16)
 
 func _ready() -> void:
-	$MazeStorey.init(maze_size)
-	actor_pos_old = $MazeStorey.start_pos
+	start_new_maze()
+
+func start_new_maze()->void:
+	if maze_storey != null:
+		remove_child(maze_storey)
+	maze_storey = maze_storey_scene.instantiate()
+	add_child(maze_storey)
+	maze_storey.init(maze_size)
+	actor_pos_old = maze_storey.start_pos
 	actor_pos_new = actor_pos_old
 	actor_dir_old = Dir.North
 	actor_dir_new = actor_dir_old
 	forward_by_dur(0)
 	turn_by_dur(0)
+
 
 func _process(delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
@@ -57,6 +69,8 @@ func _process(delta: float) -> void:
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
 		act_current = Act.None
+		if actor_pos_old == maze_storey.goal_pos:
+			start_new_maze()
 
 	if act_current == Act.None && action_queue.size() == 0: # add new ai action
 		make_queue_action()
@@ -86,7 +100,7 @@ func update_info()->void:
 	$Label.text = "%s [%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
 		act2str(act_current), queue_to_str(),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
-		$MazeStorey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
+		maze_storey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
 		dir2str(actor_dir_old), dir2str(actor_dir_new)
 		]
 
@@ -122,7 +136,7 @@ func try_queue_move_backward()->bool:
 	return false
 
 func can_move(dir :Dir)->bool:
-	return $MazeStorey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
+	return maze_storey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
 
 func do_act_dur(act :Act, dur :float)->void:
 	match act:
@@ -145,11 +159,11 @@ func turn_by_dur(dur :float)->void:
 
 func set_top_view()->void:
 	$Player.camera_current(false)
-	$MazeStorey.set_top_view(true)
+	maze_storey.set_top_view(true)
 
 func set_player_view()->void:
 	$Player.camera_current(true)
-	$MazeStorey.set_top_view(false)
+	maze_storey.set_top_view(false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:

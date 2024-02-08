@@ -3,7 +3,7 @@ extends Node3D
 var maze_storey_scene = preload("res://maze_storey.tscn")
 var maze_storey :MazeStorey
 
-const ACT_DUR = 1.0/2 # sec
+const ACT_DUR = 1.0/5 # sec
 enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
@@ -42,7 +42,11 @@ var actor_pos_new :Vector2i
 
 var maze_size = Vector2i(32,18)
 
+enum ViewMode {Player, Top}
+var view_mode :ViewMode
+
 func _ready() -> void:
+	view_mode = ViewMode.Player
 	start_new_maze()
 
 func start_new_maze()->void:
@@ -57,7 +61,16 @@ func start_new_maze()->void:
 	actor_dir_new = actor_dir_old
 	forward_by_dur(0)
 	turn_by_dur(0)
+	set_view_mode()
 
+func set_view_mode()->void:
+	match view_mode:
+		ViewMode.Player:
+			$Player.camera_current(true)
+			maze_storey.set_top_view(false)
+		ViewMode.Top:
+			$Player.camera_current(false)
+			maze_storey.set_top_view(true)
 
 func _process(_delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
@@ -156,22 +169,17 @@ func forward_by_dur(dur :float)->void:
 func turn_by_dur(dur :float)->void:
 	$Player.rotation.y = lerp_angle(deg_to_rad(actor_dir_old*90.0), deg_to_rad(actor_dir_new*90.0), dur)
 
-func set_top_view()->void:
-	$Player.camera_current(false)
-	maze_storey.set_top_view(true)
-
-func set_player_view()->void:
-	$Player.camera_current(true)
-	maze_storey.set_top_view(false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_ESCAPE:
 			get_tree().quit()
 		elif event.keycode == KEY_1:
-			set_top_view()
+			view_mode = ViewMode.Top
+			set_view_mode()
 		elif event.keycode == KEY_2:
-			set_player_view()
+			view_mode = ViewMode.Player
+			set_view_mode()
 		elif event.keycode == KEY_UP:
 			action_queue.push_back(Act.Forward)
 		elif event.keycode == KEY_DOWN:

@@ -6,6 +6,8 @@ var start_pos :Vector2i
 var goal_pos :Vector2i
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
+var capsule_pos_dic :Dictionary
+var capsule_list :Array
 
 var wall_z_mesh = preload("res://wall_z.tres")
 
@@ -21,18 +23,38 @@ func init(msize :Vector2i)->void:
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
 	make_wall_by_maze()
-	start_pos = Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
-	start_node = new_text(5.0,0.01,get_color_mat(Color.YELLOW),"Start")
-	start_node.position=Vector3(0.5+ start_pos.x, 1,0.5+  start_pos.y)
-	add_child(start_node)
-	goal_pos = Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
-	goal_node = new_text(5.0,0.01,get_color_mat(Color.YELLOW),"Goal")
-	goal_node.position=Vector3(0.5+ goal_pos.x, 1, 0.5+  goal_pos.y)
-	add_child(goal_node)
+	start_pos = rand_pos()
+	start_node = add_text_mark_at(start_pos, Color.YELLOW, "Start")
+	goal_pos = rand_pos()
+	goal_node = add_text_mark_at(goal_pos, Color.YELLOW, "Goal")
+	for i in 100:
+		var p = rand_pos()
+		var co = NamedColorList.color_list.pick_random()[0]
+		var c = add_capsule_at(p, co)
+		capsule_pos_dic[p]=c
+		capsule_list.append(c)
+
+func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
+	var n = new_text(5.0,0.01,get_color_mat(co),text)
+	n.position=Vector3(0.5+ p.x, 1,0.5+  p.y)
+	add_child(n)
+	return n
+
+func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
+	var n = new_capsule(0.3,0.05,get_color_mat(co))
+	n.position=Vector3(0.5+ p.x, 0.5, 0.5+  p.y)
+	add_child(n)
+	return n
+
+func rand_pos()->Vector2i:
+	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
+	for c in capsule_list:
+		c.rotate_y(delta)
+
 
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
@@ -98,13 +120,14 @@ func new_torus(r :float, mat :Material)->MeshInstance3D:
 	sp.mesh = mesh
 	return sp
 
-func new_capsule(r :float, mat :Material)->MeshInstance3D:
+func new_capsule(h :float,r:float, mat :Material)->MeshInstance3D:
 	var mesh = CapsuleMesh.new()
-	mesh.height = r*3
-	mesh.radius = r*0.75
+	mesh.height = h
+	mesh.radius = r
 	mesh.material = mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
+	sp.rotate_x(PI/2)
 	return sp
 
 func get_color_mat(co: Color)->Material:

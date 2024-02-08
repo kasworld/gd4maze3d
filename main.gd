@@ -82,7 +82,6 @@ func _process(delta: float) -> void:
 
 	update_info()
 
-
 func update_info()->void:
 	$Label.text = "%s [%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
 		act2str(act_current), queue_to_str(),
@@ -90,7 +89,6 @@ func update_info()->void:
 		$MazeStorey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
 		dir2str(actor_dir_old), dir2str(actor_dir_new)
 		]
-
 
 func make_queue_action()->bool:
 	return try_queue_move_right() || try_queue_move_foward() || try_queue_move_left() || try_queue_move_backward()

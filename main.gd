@@ -16,6 +16,12 @@ enum Dir {
 	South = 2,
 	East = 3,
 }
+const Dir2Vt = {
+	Dir.North : Vector2i(0,-1),
+	Dir.West : Vector2i(-1,0),
+	Dir.South : Vector2i(0, 1),
+	Dir.East : Vector2i(1,0),
+}
 func to_maze_dir(d :Dir)->Maze.Dir:
 	return Maze.DirList[d%4]
 func dir2str(d :Dir)->String:
@@ -26,6 +32,9 @@ func dir_right(d:Dir)->Dir:
 	return (d-1+4)%4 as Dir
 func dir_opposite(d:Dir)->Dir:
 	return (d+2)%4 as Dir
+func dir2rad(d:Dir)->float:
+	return deg_to_rad(d*90.0)
+
 
 var action_queue :Array[Act]
 func queue_to_str()->String:
@@ -95,7 +104,7 @@ func _process(_delta: float) -> void:
 		match act_current:
 			Act.Forward:
 				if can_move(actor_dir_old):
-					actor_pos_new = actor_pos_old + Maze.Dir2Vt[to_maze_dir(actor_dir_old)]
+					actor_pos_new = actor_pos_old + Dir2Vt[actor_dir_old]
 				else :
 					act_current = Act.None
 			Act.Turn_Left:
@@ -160,7 +169,7 @@ func forward_by_dur(dur :float)->void:
 
 # dur : 0 - 1 :second
 func turn_by_dur(dur :float)->void:
-	$Player.rotation.y = lerp_angle(deg_to_rad(actor_dir_old*90.0), deg_to_rad(actor_dir_new*90.0), dur)
+	$Player.rotation.y = lerp_angle(dir2rad(actor_dir_old), dir2rad(actor_dir_new), dur)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:

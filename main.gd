@@ -44,6 +44,14 @@ var maze_size = Vector2i(32,18)
 
 enum ViewMode {Player, Top}
 var view_mode :ViewMode
+func set_view_mode()->void:
+	match view_mode:
+		ViewMode.Player:
+			$Player.camera_current(true)
+			maze_storey.set_top_view(false)
+		ViewMode.Top:
+			$Player.camera_current(false)
+			maze_storey.set_top_view(true)
 
 func _ready() -> void:
 	view_mode = ViewMode.Player
@@ -63,15 +71,6 @@ func start_new_maze()->void:
 	turn_by_dur(0)
 	set_view_mode()
 
-func set_view_mode()->void:
-	match view_mode:
-		ViewMode.Player:
-			$Player.camera_current(true)
-			maze_storey.set_top_view(false)
-		ViewMode.Top:
-			$Player.camera_current(false)
-			maze_storey.set_top_view(true)
-
 func _process(_delta: float) -> void:
 	var t = Time.get_unix_time_from_system()
 	var dur = t - act_start_time
@@ -85,7 +84,7 @@ func _process(_delta: float) -> void:
 			start_new_maze()
 
 	if act_current == Act.None && action_queue.size() == 0: # add new ai action
-		make_queue_action()
+		make_ai_action()
 		pass
 
 	if act_current == Act.None && action_queue.size() > 0: # start new action
@@ -116,30 +115,22 @@ func update_info()->void:
 		dir2str(actor_dir_old), dir2str(actor_dir_new)
 		]
 
-func make_queue_action()->bool:
-	return try_queue_move_right() || try_queue_move_foward() || try_queue_move_left() || try_queue_move_backward()
-
-func try_queue_move_foward()->bool:
-	if can_move(actor_dir_old):
-		action_queue.push_back(Act.Forward)
-		return true
-	return false
-
-func try_queue_move_right()->bool:
+func make_ai_action()->bool:
+	# try right
 	if can_move(dir_right(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Right)
 		action_queue.push_back(Act.Forward)
 		return true
-	return false
-
-func try_queue_move_left()->bool:
+	# try forward
+	if can_move(actor_dir_old):
+		action_queue.push_back(Act.Forward)
+		return true
+	# try left
 	if can_move(dir_left(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Forward)
 		return true
-	return false
-
-func try_queue_move_backward()->bool:
+	# try backward
 	if can_move(dir_opposite(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Turn_Left)
@@ -169,7 +160,6 @@ func forward_by_dur(dur :float)->void:
 func turn_by_dur(dur :float)->void:
 	$Player.rotation.y = lerp_angle(deg_to_rad(actor_dir_old*90.0), deg_to_rad(actor_dir_new*90.0), dur)
 
-
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_ESCAPE:
@@ -194,4 +184,3 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
-

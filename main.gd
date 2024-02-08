@@ -9,33 +9,6 @@ enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
 
-# x90 == degree
-enum Dir {
-	North = 0,
-	West = 1,
-	South = 2,
-	East = 3,
-}
-const Dir2Vt = {
-	Dir.North : Vector2i(0,-1),
-	Dir.West : Vector2i(-1,0),
-	Dir.South : Vector2i(0, 1),
-	Dir.East : Vector2i(1,0),
-}
-func to_maze_dir(d :Dir)->Maze.Dir:
-	return Maze.DirList[d%4]
-func dir2str(d :Dir)->String:
-	return Dir.keys()[d]
-func dir_left(d:Dir)->Dir:
-	return (d+1)%4 as Dir
-func dir_right(d:Dir)->Dir:
-	return (d-1+4)%4 as Dir
-func dir_opposite(d:Dir)->Dir:
-	return (d+2)%4 as Dir
-func dir2rad(d:Dir)->float:
-	return deg_to_rad(d*90.0)
-
-
 var action_queue :Array[Act]
 func queue_to_str()->String:
 	var rtn = ""
@@ -45,8 +18,8 @@ func queue_to_str()->String:
 
 var act_start_time :float # unixtime sec
 var act_current : Act
-var actor_dir_old : Dir
-var actor_dir_new : Dir
+var actor_dir_old : Storey.Dir
+var actor_dir_new : Storey.Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
@@ -76,7 +49,7 @@ func start_new_maze()->void:
 	storey.init(maze_size)
 	actor_pos_old = storey.start_pos
 	actor_pos_new = actor_pos_old
-	actor_dir_old = Dir.North
+	actor_dir_old = Storey.Dir.North
 	actor_dir_new = actor_dir_old
 	forward_by_dur(0)
 	turn_by_dur(0)
@@ -104,13 +77,13 @@ func _process(_delta: float) -> void:
 		match act_current:
 			Act.Forward:
 				if can_move(actor_dir_old):
-					actor_pos_new = actor_pos_old + Dir2Vt[actor_dir_old]
+					actor_pos_new = actor_pos_old + Storey.Dir2Vt[actor_dir_old]
 				else :
 					act_current = Act.None
 			Act.Turn_Left:
-				actor_dir_new = dir_left(actor_dir_old)
+				actor_dir_new = Storey.dir_left(actor_dir_old)
 			Act.Turn_Right:
-				actor_dir_new = dir_right(actor_dir_old)
+				actor_dir_new = Storey.dir_right(actor_dir_old)
 
 	if act_current != Act.None :
 		do_act_dur(act_current, dur/ACT_DUR)
@@ -121,14 +94,14 @@ func update_info()->void:
 	$Label.text = "view:%s automove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
 		ViewMode.keys()[view_mode], auto_move,
 		act2str(act_current), queue_to_str(),
-		dir2str(actor_dir_old), dir2str(actor_dir_new),
+		Storey.dir2str(actor_dir_old), Storey.dir2str(actor_dir_new),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
 		storey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
 		]
 
 func make_ai_action()->bool:
 	# try right
-	if can_move(dir_right(actor_dir_old)):
+	if can_move(Storey.dir_right(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Right)
 		action_queue.push_back(Act.Forward)
 		return true
@@ -137,20 +110,20 @@ func make_ai_action()->bool:
 		action_queue.push_back(Act.Forward)
 		return true
 	# try left
-	if can_move(dir_left(actor_dir_old)):
+	if can_move(Storey.dir_left(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Forward)
 		return true
 	# try backward
-	if can_move(dir_opposite(actor_dir_old)):
+	if can_move(Storey.dir_opposite(actor_dir_old)):
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Turn_Left)
 		action_queue.push_back(Act.Forward)
 		return true
 	return false
 
-func can_move(dir :Dir)->bool:
-	return storey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
+func can_move(dir :Storey.Dir)->bool:
+	return storey.can_move(actor_pos_old.x, actor_pos_old.y, dir )
 
 func do_act_dur(act :Act, dur :float)->void:
 	match act:
@@ -169,7 +142,7 @@ func forward_by_dur(dur :float)->void:
 
 # dur : 0 - 1 :second
 func turn_by_dur(dur :float)->void:
-	$Player.rotation.y = lerp_angle(dir2rad(actor_dir_old), dir2rad(actor_dir_new), dur)
+	$Player.rotation.y = lerp_angle(Storey.dir2rad(actor_dir_old), Storey.dir2rad(actor_dir_new), dur)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:

@@ -2,6 +2,32 @@ extends Node3D
 
 class_name Storey
 
+# x90 == degree
+enum Dir {
+	North = 0,
+	West = 1,
+	South = 2,
+	East = 3,
+}
+const Dir2Vt = {
+	Dir.North : Vector2i(0,-1),
+	Dir.West : Vector2i(-1,0),
+	Dir.South : Vector2i(0, 1),
+	Dir.East : Vector2i(1,0),
+}
+static func to_maze_dir(d :Dir)->Maze.Dir:
+	return Maze.DirList[d%4]
+static func dir2str(d :Dir)->String:
+	return Dir.keys()[d]
+static func dir_left(d:Dir)->Dir:
+	return (d+1)%4 as Dir
+static func dir_right(d:Dir)->Dir:
+	return (d-1+4)%4 as Dir
+static func dir_opposite(d:Dir)->Dir:
+	return (d+2)%4 as Dir
+static func dir2rad(d:Dir)->float:
+	return deg_to_rad(d*90.0)
+
 var maze_size : Vector2i
 var maze_cells :Maze
 var start_pos :Vector2i
@@ -94,8 +120,8 @@ func set_top_view(b :bool)->void:
 	else :
 		$WallContainer.position.y = 0.0
 
-func can_move(x :int , y :int, dir :Maze.Dir)->bool:
-	return maze_cells.is_open_dir_at(x,y,dir)
+func can_move(x :int , y :int, dir :Dir)->bool:
+	return maze_cells.is_open_dir_at(x,y, to_maze_dir(dir) )
 
 func open_dir_str(x :int , y :int)->String:
 	var rtn = ""

@@ -2,6 +2,7 @@ extends Node3D
 
 var maze_storey_scene = preload("res://maze_storey.tscn")
 var maze_storey :MazeStorey
+var maze_size = Vector2i(32,18)
 
 const ACT_DUR = 1.0/5 # sec
 enum Act {None, Forward, Turn_Right , Turn_Left}
@@ -40,8 +41,6 @@ var actor_dir_new : Dir
 var actor_pos_old :Vector2i
 var actor_pos_new :Vector2i
 
-var maze_size = Vector2i(32,18)
-
 enum ViewMode {Player, Top}
 var view_mode :ViewMode
 func set_view_mode()->void:
@@ -53,8 +52,11 @@ func set_view_mode()->void:
 			$Player.camera_current(false)
 			maze_storey.set_top_view(true)
 
+var auto_move :bool
+
 func _ready() -> void:
 	view_mode = ViewMode.Player
+	auto_move = true
 	start_new_maze()
 
 func start_new_maze()->void:
@@ -83,9 +85,8 @@ func _process(_delta: float) -> void:
 		if actor_pos_old == maze_storey.goal_pos:
 			start_new_maze()
 
-	if act_current == Act.None && action_queue.size() == 0: # add new ai action
+	if auto_move && act_current == Act.None && action_queue.size() == 0: # add new ai action
 		make_ai_action()
-		pass
 
 	if act_current == Act.None && action_queue.size() > 0: # start new action
 		act_start_time = t
@@ -108,11 +109,12 @@ func _process(_delta: float) -> void:
 	update_info()
 
 func update_info()->void:
-	$Label.text = "%s [%s]\n(%d, %d)->(%d, %d)\n[%s] %s->%s" % [
+	$Label.text = "view:%s automove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
+		ViewMode.keys()[view_mode], auto_move,
 		act2str(act_current), queue_to_str(),
+		dir2str(actor_dir_old), dir2str(actor_dir_new),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
 		maze_storey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
-		dir2str(actor_dir_old), dir2str(actor_dir_new)
 		]
 
 func make_ai_action()->bool:
@@ -170,6 +172,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_2:
 			view_mode = ViewMode.Player
 			set_view_mode()
+		elif event.keycode == KEY_3:
+			auto_move = !auto_move
+
 		elif event.keycode == KEY_UP:
 			action_queue.push_back(Act.Forward)
 		elif event.keycode == KEY_DOWN:

@@ -1,7 +1,7 @@
 extends Node3D
 
-var maze_storey_scene = preload("res://storey.tscn")
-var maze_storey :Storey
+var storey_scene = preload("res://storey.tscn")
+var storey :Storey
 var maze_size = Vector2i(32,18)
 
 const ACT_DUR = 1.0/5 # sec
@@ -56,10 +56,10 @@ func set_view_mode()->void:
 	match view_mode:
 		ViewMode.Player:
 			$Player.camera_current(true)
-			maze_storey.set_top_view(false)
+			storey.set_top_view(false)
 		ViewMode.Top:
 			$Player.camera_current(false)
-			maze_storey.set_top_view(true)
+			storey.set_top_view(true)
 
 var auto_move :bool
 
@@ -69,12 +69,12 @@ func _ready() -> void:
 	start_new_maze()
 
 func start_new_maze()->void:
-	if maze_storey != null:
-		remove_child(maze_storey)
-	maze_storey = maze_storey_scene.instantiate()
-	add_child(maze_storey)
-	maze_storey.init(maze_size)
-	actor_pos_old = maze_storey.start_pos
+	if storey != null:
+		remove_child(storey)
+	storey = storey_scene.instantiate()
+	add_child(storey)
+	storey.init(maze_size)
+	actor_pos_old = storey.start_pos
 	actor_pos_new = actor_pos_old
 	actor_dir_old = Dir.North
 	actor_dir_new = actor_dir_old
@@ -91,7 +91,7 @@ func _process(_delta: float) -> void:
 		actor_dir_old = actor_dir_new
 		actor_pos_old = actor_pos_new
 		act_current = Act.None
-		if actor_pos_old == maze_storey.goal_pos:
+		if actor_pos_old == storey.goal_pos:
 			start_new_maze()
 
 	if auto_move && act_current == Act.None && action_queue.size() == 0: # add new ai action
@@ -123,7 +123,7 @@ func update_info()->void:
 		act2str(act_current), queue_to_str(),
 		dir2str(actor_dir_old), dir2str(actor_dir_new),
 		actor_pos_old.x, actor_pos_old.y, actor_pos_new.x, actor_pos_new.y,
-		maze_storey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
+		storey.open_dir_str(actor_pos_old.x, actor_pos_old.y),
 		]
 
 func make_ai_action()->bool:
@@ -150,7 +150,7 @@ func make_ai_action()->bool:
 	return false
 
 func can_move(dir :Dir)->bool:
-	return maze_storey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
+	return storey.can_move(actor_pos_old.x, actor_pos_old.y, to_maze_dir(dir) )
 
 func do_act_dur(act :Act, dur :float)->void:
 	match act:

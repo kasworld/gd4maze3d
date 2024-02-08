@@ -1,6 +1,6 @@
 extends Node3D
 
-class_name MazeStorey
+class_name Storey
 
 var maze_size : Vector2i
 var maze_cells :Maze

@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://c76t0bgq0j8ux"]
 
-[ext_resource type="Texture2D" uid="uid://dx0mpjc7du2kf" path="res://image/floorwood.jpg" id="1_jiio6"]
-[ext_resource type="Script" path="res://maze_storey.gd" id="1_uth0l"]
+[ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
+[ext_resource type="Texture2D" uid="uid://dx0mpjc7du2kf" path="res://image/floorwood.jpg" id="2_xhglk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
-albedo_texture = ExtResource("1_jiio6")
+albedo_texture = ExtResource("2_xhglk")
 emission = Color(0.188235, 0.188235, 0.188235, 1)
 uv1_scale = Vector3(0.1, 0.1, 0.1)
 uv1_triplanar = true
@@ -29,8 +29,8 @@ material = SubResource("StandardMaterial3D_dhpxw")
 flip_faces = true
 size = Vector2(100, 100)
 
-[node name="MazeStorey" type="Node3D"]
-script = ExtResource("1_uth0l")
+[node name="Storey" type="Node3D"]
+script = ExtResource("1_vfl4n")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_pgvr8")

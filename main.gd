@@ -1,7 +1,7 @@
 extends Node3D
 
-var maze_storey_scene = preload("res://maze_storey.tscn")
-var maze_storey :MazeStorey
+var maze_storey_scene = preload("res://storey.tscn")
+var maze_storey :Storey
 var maze_size = Vector2i(32,18)
 
 const ACT_DUR = 1.0/5 # sec

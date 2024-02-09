@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=3 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
-[ext_resource type="PackedScene" uid="uid://huxiv0a21wm" path="res://player.tscn" id="3_y34d0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2txll"]
 font_size = 32
@@ -16,5 +15,3 @@ offset_right = 76.0
 offset_bottom = 45.0
 text = "hello"
 label_settings = SubResource("LabelSettings_2txll")
-
-[node name="Player" parent="." instance=ExtResource("3_y34d0")]

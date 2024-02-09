@@ -105,3 +105,13 @@ func make_ai_action()->bool:
 
 func can_move(dir :Storey.Dir)->bool:
 	return storey.can_move(pos_old.x, pos_old.y, dir )
+
+func calc_animate_forward_by_dur(dur :float)->Vector3:
+	return Vector3(
+		0.5+ lerpf(pos_old.x, pos_new.x, dur),
+		1,
+		0.5+ lerpf(pos_old.y, pos_new.y, dur),
+	)
+
+func calc_animate_turn_by_dur(dur :float)->float:
+	return lerp_angle(Storey.dir2rad(dir_old), Storey.dir2rad(dir_new), dur)

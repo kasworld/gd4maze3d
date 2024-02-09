@@ -26,9 +26,12 @@ var act_current : Act
 
 var auto_move :bool
 
-func enter_storey(st :Storey)->void:
+func enter_storey(st :Storey, rndpos:bool)->void:
 	storey = st
-	pos_old = storey.start_pos
+	if rndpos :
+		pos_old = storey.rand_pos()
+	else:
+		pos_old = storey.start_pos
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old

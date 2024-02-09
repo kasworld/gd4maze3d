@@ -121,7 +121,7 @@ func set_top_view(b :bool)->void:
 		$WallContainer.position.y = 0.0
 
 func can_move(x :int , y :int, dir :Dir)->bool:
-	return maze_cells.is_open_dir_at(x,y, to_maze_dir(dir) )
+	return maze_cells.is_open_dir_at(x,y, Storey.to_maze_dir(dir) )
 
 func open_dir_str(x :int , y :int)->String:
 	var rtn = ""

@@ -66,7 +66,6 @@ func start_new_act()->bool:
 		return true
 	return false
 
-
 func info_str()->String:
 	return "automove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
 		auto_move,
@@ -75,7 +74,6 @@ func info_str()->String:
 		pos_old.x, pos_old.y, pos_new.x, pos_new.y,
 		storey.open_dir_str(pos_old.x, pos_old.y),
 		]
-
 
 func camera_current(b :bool)->void:
 	$Camera3D.current = b

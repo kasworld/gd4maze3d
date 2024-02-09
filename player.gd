@@ -4,7 +4,7 @@ class_name Player
 
 var storey :Storey
 
-const ACT_DUR = 1.0/5 # sec
+const ANI_ACT_DUR = 1.0/5 # sec
 enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
@@ -32,6 +32,40 @@ func enter_storey(st :Storey)->void:
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old
+
+# return true on goal
+func act_end(dur :float)->bool:
+	# action ended
+	if act_current != Act.None && dur > ANI_ACT_DUR :
+		dir_old = dir_new
+		pos_old = pos_new
+		act_current = Act.None
+		if pos_old == storey.goal_pos:
+			return true
+	return false
+
+func ai_act()->void:
+	if auto_move && act_current == Act.None && act_queue.size() == 0: # add new ai action
+		make_ai_action()
+
+# return true on new act
+func start_new_act()->bool:
+	if act_current == Act.None && act_queue.size() > 0: # start new action
+		act_start_time = Time.get_unix_time_from_system()
+		act_current = act_queue.pop_front()
+		match act_current:
+			Act.Forward:
+				if can_move(dir_old):
+					pos_new = pos_old + Storey.Dir2Vt[dir_old]
+				else :
+					act_current = Act.None
+			Act.Turn_Left:
+				dir_new = Storey.dir_left(dir_old)
+			Act.Turn_Right:
+				dir_new = Storey.dir_right(dir_old)
+		return true
+	return false
+
 
 func info_str()->String:
 	return "automove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [

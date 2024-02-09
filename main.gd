@@ -28,61 +28,38 @@ func start_new_maze()->void:
 	add_child(storey)
 	storey.init(maze_size)
 	$Player.enter_storey(storey)
-	forward_by_dur(0)
-	turn_by_dur(0)
+	animate_forward_by_dur(0)
+	animate_turn_by_dur(0)
 	set_view_mode()
 
 func _process(_delta: float) -> void:
-	var t = Time.get_unix_time_from_system()
-	var dur = t - $Player.act_start_time
+	var ani_dur = Time.get_unix_time_from_system() - $Player.act_start_time
 
-	# action ended
-	if $Player.act_current != Player.Act.None && dur > Player.ACT_DUR :
-		$Player.dir_old = $Player.dir_new
-		$Player.pos_old = $Player.pos_new
-		$Player.act_current = Player.Act.None
-		if $Player.pos_old == storey.goal_pos:
-			start_new_maze()
+	if $Player.act_end(ani_dur): # goal reached
+		start_new_maze()
 
-	if $Player.auto_move && $Player.act_current == Player.Act.None && $Player.act_queue.size() == 0: # add new ai action
-		$Player.make_ai_action()
+	$Player.ai_act()
 
-	if $Player.act_current == Player.Act.None && $Player.act_queue.size() > 0: # start new action
-		$Player.act_start_time = t
-		dur = 0
-		$Player.act_current = $Player.act_queue.pop_front()
-		match $Player.act_current:
-			Player.Act.Forward:
-				if $Player.can_move($Player.dir_old):
-					$Player.pos_new = $Player.pos_old + Storey.Dir2Vt[$Player.dir_old]
-				else :
-					$Player.act_current = Player.Act.None
-			Player.Act.Turn_Left:
-				$Player.dir_new = Storey.dir_left($Player.dir_old)
-			Player.Act.Turn_Right:
-				$Player.dir_new = Storey.dir_right($Player.dir_old)
+	if $Player.start_new_act(): # new act start
+		ani_dur = 0
 
 	if $Player.act_current != Player.Act.None :
-		do_act_dur($Player.act_current, dur/Player.ACT_DUR)
+		animate_act($Player.act_current, ani_dur/Player.ANI_ACT_DUR)
 
 	update_info()
 
 func update_info()->void:
-	$Label.text = "view:%s %s" % [
-		ViewMode.keys()[view_mode],
-		$Player.info_str(),
-		]
+	$Label.text = "view:%s %s" % [ViewMode.keys()[view_mode], $Player.info_str()]
 
-
-func do_act_dur(act :Player.Act, dur :float)->void:
+func animate_act(act :Player.Act, dur :float)->void:
 	match act:
 		Player.Act.Forward:
-			forward_by_dur(dur)
+			animate_forward_by_dur(dur)
 		Player.Act.Turn_Left, Player.Act.Turn_Right:
-			turn_by_dur(dur)
+			animate_turn_by_dur(dur)
 
 # dur : 0 - 1 :second
-func forward_by_dur(dur :float)->void:
+func animate_forward_by_dur(dur :float)->void:
 	$Player.position = Vector3(
 		0.5+ lerpf($Player.pos_old.x, $Player.pos_new.x, dur),
 		1,
@@ -90,7 +67,7 @@ func forward_by_dur(dur :float)->void:
 	)
 
 # dur : 0 - 1 :second
-func turn_by_dur(dur :float)->void:
+func animate_turn_by_dur(dur :float)->void:
 	$Player.rotation.y = lerp_angle(Storey.dir2rad($Player.dir_old), Storey.dir2rad($Player.dir_new), dur)
 
 func _unhandled_input(event: InputEvent) -> void:

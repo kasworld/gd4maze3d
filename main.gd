@@ -4,8 +4,8 @@ var storey_scene = preload("res://storey.tscn")
 var storey :Storey
 var maze_size = Vector2i(32,18)
 
-var player_scene = preload("res://player.tscn")
-var player :Player
+var player_scene = preload("res://character.tscn")
+var player :Character
 
 enum ViewMode {Player, Top}
 var view_mode :ViewMode
@@ -43,26 +43,26 @@ func _process(_delta: float) -> void:
 	player.ai_act()
 	if player.start_new_act(): # new act start
 		ani_dur = 0
-	if player.act_current != Player.Act.None :
-		animate_act(player, ani_dur/Player.ANI_ACT_DUR)
+	if player.act_current != Character.Act.None :
+		animate_act(player, ani_dur/Character.ANI_ACT_DUR)
 	update_info()
 
 func update_info()->void:
 	$Label.text = "view:%s %s" % [ViewMode.keys()[view_mode], player.info_str()]
 
-func animate_act(pl :Player, dur :float)->void:
+func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:
-		Player.Act.Forward:
+		Character.Act.Forward:
 			animate_forward_by_dur(pl, dur)
-		Player.Act.Turn_Left, Player.Act.Turn_Right:
+		Character.Act.Turn_Left, Character.Act.Turn_Right:
 			animate_turn_by_dur(pl, dur)
 
 # dur : 0 - 1 :second
-func animate_forward_by_dur(pl :Player, dur :float)->void:
+func animate_forward_by_dur(pl :Character, dur :float)->void:
 	pl.position = pl.calc_animate_forward_by_dur(dur)
 
 # dur : 0 - 1 :second
-func animate_turn_by_dur(pl :Player, dur :float)->void:
+func animate_turn_by_dur(pl :Character, dur :float)->void:
 	pl.rotation.y = pl.calc_animate_turn_by_dur(dur)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -79,14 +79,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			player.auto_move = !player.auto_move
 
 		elif event.keycode == KEY_UP:
-			player.act_queue.push_back(Player.Act.Forward)
+			player.act_queue.push_back(Character.Act.Forward)
 		elif event.keycode == KEY_DOWN:
-			player.act_queue.push_back(Player.Act.Turn_Left)
-			player.act_queue.push_back(Player.Act.Turn_Left)
+			player.act_queue.push_back(Character.Act.Turn_Left)
+			player.act_queue.push_back(Character.Act.Turn_Left)
 		elif event.keycode == KEY_LEFT:
-			player.act_queue.push_back(Player.Act.Turn_Left)
+			player.act_queue.push_back(Character.Act.Turn_Left)
 		elif event.keycode == KEY_RIGHT:
-			player.act_queue.push_back(Player.Act.Turn_Right)
+			player.act_queue.push_back(Character.Act.Turn_Right)
 		else:
 			pass
 

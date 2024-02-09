@@ -1,6 +1,6 @@
 extends Node3D
 
-class_name Player
+class_name Character
 
 var storey :Storey
 

@@ -33,10 +33,14 @@ func enter_storey(st :Storey)->void:
 	dir_old = Storey.Dir.North
 	dir_new = dir_old
 
+# return 0 - 1
+func get_ani_dur()->float:
+	return (Time.get_unix_time_from_system() - act_start_time)/ANI_ACT_DUR
+
 # return true on goal
-func act_end(dur :float)->bool:
+func act_end(ani_dur :float)->bool:
 	# action ended
-	if act_current != Act.None && dur > ANI_ACT_DUR :
+	if act_current != Act.None && ani_dur > 1.0:
 		dir_old = dir_new
 		pos_old = pos_new
 		act_current = Act.None

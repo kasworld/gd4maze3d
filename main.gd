@@ -37,14 +37,14 @@ func start_new_maze()->void:
 	set_view_mode()
 
 func _process(_delta: float) -> void:
-	var ani_dur = Time.get_unix_time_from_system() - player.act_start_time
+	var ani_dur = player.get_ani_dur()
 	if player.act_end(ani_dur): # goal reached
 		start_new_maze()
 	player.ai_act()
 	if player.start_new_act(): # new act start
 		ani_dur = 0
 	if player.act_current != Character.Act.None :
-		animate_act(player, ani_dur/Character.ANI_ACT_DUR)
+		animate_act(player, ani_dur)
 	update_info(player)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -57,9 +57,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_2:
 			view_mode = ViewMode.Player
 			set_view_mode()
+
 		elif event.keycode == KEY_3:
 			player.auto_move = !player.auto_move
-
 		elif event.keycode == KEY_UP:
 			player.act_queue.push_back(Character.Act.Forward)
 		elif event.keycode == KEY_DOWN:
@@ -69,6 +69,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			player.act_queue.push_back(Character.Act.Turn_Left)
 		elif event.keycode == KEY_RIGHT:
 			player.act_queue.push_back(Character.Act.Turn_Right)
+
 		else:
 			pass
 

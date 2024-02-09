@@ -4,7 +4,7 @@ var storey_scene = preload("res://storey.tscn")
 var storey :Storey
 var maze_size = Vector2i(32,18)
 
-var player_scene = preload("res://character.tscn")
+var character_scene = preload("res://character.tscn")
 var player :Character
 
 enum ViewMode {Player, Top}
@@ -19,7 +19,7 @@ func set_view_mode()->void:
 			storey.set_top_view(true)
 
 func _ready() -> void:
-	player = player_scene.instantiate()
+	player = character_scene.instantiate()
 	add_child(player)
 	view_mode = ViewMode.Player
 	player.auto_move = true
@@ -45,25 +45,7 @@ func _process(_delta: float) -> void:
 		ani_dur = 0
 	if player.act_current != Character.Act.None :
 		animate_act(player, ani_dur/Character.ANI_ACT_DUR)
-	update_info()
-
-func update_info()->void:
-	$Label.text = "view:%s %s" % [ViewMode.keys()[view_mode], player.info_str()]
-
-func animate_act(pl :Character, dur :float)->void:
-	match pl.act_current:
-		Character.Act.Forward:
-			animate_forward_by_dur(pl, dur)
-		Character.Act.Turn_Left, Character.Act.Turn_Right:
-			animate_turn_by_dur(pl, dur)
-
-# dur : 0 - 1 :second
-func animate_forward_by_dur(pl :Character, dur :float)->void:
-	pl.position = pl.calc_animate_forward_by_dur(dur)
-
-# dur : 0 - 1 :second
-func animate_turn_by_dur(pl :Character, dur :float)->void:
-	pl.rotation.y = pl.calc_animate_turn_by_dur(dur)
+	update_info(player)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -92,3 +74,21 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
+
+func update_info(pl :Character)->void:
+	$Label.text = "view:%s %s" % [ViewMode.keys()[view_mode], pl.info_str()]
+
+func animate_act(pl :Character, dur :float)->void:
+	match pl.act_current:
+		Character.Act.Forward:
+			animate_forward_by_dur(pl, dur)
+		Character.Act.Turn_Left, Character.Act.Turn_Right:
+			animate_turn_by_dur(pl, dur)
+
+# dur : 0 - 1 :second
+func animate_forward_by_dur(pl :Character, dur :float)->void:
+	pl.position = pl.calc_animate_forward_by_dur(dur)
+
+# dur : 0 - 1 :second
+func animate_turn_by_dur(pl :Character, dur :float)->void:
+	pl.rotation.y = pl.calc_animate_turn_by_dur(dur)

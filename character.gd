@@ -26,6 +26,10 @@ var act_current : Act
 
 var auto_move :bool
 
+func _ready() -> void:
+	var mi3d = new_cylinder(0.5, 0.2, NamedColorList.color_list.pick_random()[0])
+	add_child(mi3d)
+
 func enter_storey(st :Storey, rndpos:bool)->void:
 	ani_act_dur = randf_range(0.1,1.0)
 	storey = st
@@ -35,8 +39,6 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 	else:
 		pos_old = storey.start_pos
 		$SpotLight3D.visible = true
-	var mi3d = new_cylinder(0.5, 0.2, NamedColorList.color_list.pick_random()[0])
-	add_child(mi3d)
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old

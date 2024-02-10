@@ -1,14 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://huxiv0a21wm"]
+[gd_scene load_steps=2 format=3 uid="uid://huxiv0a21wm"]
 
 [ext_resource type="Script" path="res://character.gd" id="1_b8x15"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_60b26"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_d6m1o"]
-material = SubResource("StandardMaterial3D_60b26")
-top_radius = 0.0
-bottom_radius = 0.2
-height = 0.5
 
 [node name="Character" type="Node3D"]
 script = ExtResource("1_b8x15")
@@ -19,7 +11,3 @@ current = true
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 light_energy = 10.0
 spot_range = 20.0
-
-[node name="MeshInst3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("CylinderMesh_d6m1o")

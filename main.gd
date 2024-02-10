@@ -5,7 +5,7 @@ var storey :Storey
 var maze_size = Vector2i(32,18)
 
 var character_scene = preload("res://character.tscn")
-const PlayerCount = 10
+const PlayerCount = 100
 var player_list :Array[Character]
 
 enum ViewMode {Player, Top}

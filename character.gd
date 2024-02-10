@@ -4,7 +4,7 @@ class_name Character
 
 var storey :Storey
 
-const ANI_ACT_DUR = 1.0/5 # sec
+var ani_act_dur :float # sec
 enum Act {None, Forward, Turn_Right , Turn_Left}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
@@ -27,18 +27,38 @@ var act_current : Act
 var auto_move :bool
 
 func enter_storey(st :Storey, rndpos:bool)->void:
+	ani_act_dur = randf_range(0.1,1.0)
 	storey = st
 	if rndpos :
 		pos_old = storey.rand_pos()
+		$SpotLight3D.visible = false
 	else:
 		pos_old = storey.start_pos
+		$SpotLight3D.visible = true
+	var mi3d = new_cylinder(0.5, 0.2, NamedColorList.color_list.pick_random()[0])
+	add_child(mi3d)
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old
 
+func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = co
+	#mat.metallic = 1
+	#mat.clearcoat = true
+	var mesh = CylinderMesh.new()
+	mesh.height = h
+	mesh.bottom_radius = r
+	mesh.top_radius = 0
+	mesh.material = mat
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.rotation.x = -PI/2
+	return sp
+
 # return 0 - 1
 func get_ani_dur()->float:
-	return (Time.get_unix_time_from_system() - act_start_time)/ANI_ACT_DUR
+	return (Time.get_unix_time_from_system() - act_start_time)/ani_act_dur
 
 # return true on goal
 func act_end(ani_dur :float)->bool:

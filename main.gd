@@ -29,7 +29,7 @@ func _ready() -> void:
 
 func start_new_maze()->void:
 	if storey != null:
-		remove_child(storey)
+		storey.queue_free()
 	storey = storey_scene.instantiate()
 	add_child(storey)
 	storey.init(maze_size)

@@ -7,7 +7,9 @@ script = ExtResource("1_b8x15")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 current = true
+fov = 90.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-light_energy = 10.0
+light_energy = 3.0
 spot_range = 20.0
+spot_angle = 60.0

@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://c76t0bgq0j8ux"]
+
+[ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
+[ext_resource type="Texture2D" uid="uid://dufoxsuyy8a41" path="res://image/yellowstone.png" id="2_pwntn"]
+[ext_resource type="Texture2D" uid="uid://cdveci1jdmug5" path="res://image/pinkstone.png" id="3_5cdxw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
+albedo_texture = ExtResource("2_pwntn")
+emission = Color(0.188235, 0.188235, 0.188235, 1)
+uv1_scale = Vector3(0.1, 0.1, 0.1)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pgvr8"]
+material = SubResource("StandardMaterial3D_ydl53")
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhpxw"]
+albedo_texture = ExtResource("3_5cdxw")
+emission = Color(0.384314, 0.384314, 0.384314, 1)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_me8ve"]
+material = SubResource("StandardMaterial3D_dhpxw")
+flip_faces = true
+size = Vector2(100, 100)
+
+[node name="Storey" type="Node3D"]
+script = ExtResource("1_vfl4n")
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_pgvr8")
+skeleton = NodePath("../..")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PlaneMesh_me8ve")
+skeleton = NodePath("../..")
+
+[node name="TopViewCamera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 50, 0)
+
+[node name="WallContainer" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+visible = false
+shadow_enabled = true
+sky_mode = 1

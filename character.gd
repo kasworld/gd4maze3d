@@ -136,7 +136,7 @@ func can_move(dir :Storey.Dir)->bool:
 func calc_animate_forward_by_dur(dur :float)->Vector3:
 	return Vector3(
 		0.5+ lerpf(pos_old.x, pos_new.x, dur),
-		1,
+		storey.storey_h/2.0,
 		0.5+ lerpf(pos_old.y, pos_new.y, dur),
 	)
 

@@ -35,15 +35,14 @@ var goal_pos :Vector2i
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
 var capsule_pos_dic :Dictionary
-
-var wall_z_mesh = preload("res://wall_z.tres")
+var storey_h = 1.0
 
 func init(msize :Vector2i)->void:
 	maze_size = msize
 	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
-	$Floor.position = Vector3(maze_size.x/2.0,0,maze_size.y/2.0)
+	$Floor.position = Vector3(maze_size.x/2.0, 0, maze_size.y/2.0)
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
-	$Ceiling.position = Vector3(maze_size.x/2.0,2.0,maze_size.y/2.0)
+	$Ceiling.position = Vector3(maze_size.x/2.0, storey_h, maze_size.y/2.0)
 	$TopViewCamera3D.position = Vector3( maze_size.x/2.0 ,maze_size.y/1.4,maze_size.y/2.0)
 	$DirectionalLight3D.position = Vector3( maze_size.x/2.0 ,maze_size.x,maze_size.y/2.0)
 	#$DirectionalLight3D.look_at(Vector3( maze_size.x/2.0 ,0,maze_size.y/2.0))
@@ -65,13 +64,13 @@ func init(msize :Vector2i)->void:
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
-	n.position=Vector3(0.5+ p.x, 1,0.5+  p.y)
+	n.position=Vector3(0.5+ p.x, storey_h/2.0, 0.5+  p.y)
 	add_child(n)
 	return n
 
 func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = new_capsule(0.3,0.05,get_color_mat(co))
-	n.position=Vector3(0.5+ p.x, 0.5, 0.5+  p.y)
+	n.position=Vector3(0.5+ p.x, storey_h/4.0, 0.5+  p.y)
 	add_child(n)
 	return n
 
@@ -101,14 +100,17 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , true)
 
+var wall_tex = preload("res://image/brownbrick.png")
+
 func add_wall_at(x:int,y :int, face_x :bool)->void:
-	var w = MeshInstance3D.new()
-	w.mesh = wall_z_mesh
+	var mat = StandardMaterial3D.new()
+	mat.albedo_texture = wall_tex
+	var w = new_box(Vector3(1,1,0.1), mat)
 	if face_x:
 		w.rotate_y(PI/2)
-		w.position = Vector3( x  , 1.0 , y as float +0.5)
+		w.position = Vector3( x  , storey_h/2.0 , y as float +0.5)
 	else :
-		w.position = Vector3( x as float +0.5 , 1.0 , y)
+		w.position = Vector3( x as float +0.5 , storey_h/2.0 , y)
 	$WallContainer.add_child(w)
 
 func set_top_view(b :bool)->void:
@@ -116,7 +118,7 @@ func set_top_view(b :bool)->void:
 	$TopViewCamera3D.current = b
 	$DirectionalLight3D.visible = b
 	if b :
-		$WallContainer.position.y = -1.5
+		$WallContainer.position.y = -storey_h/2.0
 	else :
 		$WallContainer.position.y = 0.0
 
@@ -158,6 +160,15 @@ func new_capsule(h :float,r:float, mat :Material)->MeshInstance3D:
 	sp.mesh = mesh
 	sp.rotate_x(PI/2)
 	return sp
+
+func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
+	var mesh = BoxMesh.new()
+	mesh.size = bsize
+	mesh.material = mat
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	return sp
+
 
 func get_color_mat(co: Color)->Material:
 	var mat = StandardMaterial3D.new()

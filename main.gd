@@ -71,12 +71,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_UP:
 			player_list[0].act_queue.push_back(Character.Act.Forward)
 		elif event.keycode == KEY_DOWN:
-			player_list[0].act_queue.push_back(Character.Act.Turn_Left)
-			player_list[0].act_queue.push_back(Character.Act.Turn_Left)
+			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
+			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
 		elif event.keycode == KEY_LEFT:
-			player_list[0].act_queue.push_back(Character.Act.Turn_Left)
+			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
-			player_list[0].act_queue.push_back(Character.Act.Turn_Right)
+			player_list[0].act_queue.push_back(Character.Act.TurnRight)
 
 		else:
 			pass
@@ -91,7 +91,7 @@ func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:
 		Character.Act.Forward:
 			animate_forward_by_dur(pl, dur)
-		Character.Act.Turn_Left, Character.Act.Turn_Right:
+		Character.Act.TurnLeft, Character.Act.TurnRight:
 			animate_turn_by_dur(pl, dur)
 
 # dur : 0 - 1 :second

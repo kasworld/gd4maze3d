@@ -5,7 +5,7 @@ class_name Character
 var storey :Storey
 
 var ani_act_dur :float # sec
-enum Act {None, Forward, Turn_Right , Turn_Left}
+enum Act {None, Forward, TurnRight , TurnLeft, RotateCamera}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
 
@@ -20,6 +20,7 @@ var dir_old : Storey.Dir
 var dir_new : Storey.Dir
 var pos_old :Vector2i
 var pos_new :Vector2i
+var camera_up :bool
 
 var act_start_time :float # unixtime sec
 var act_current : Act
@@ -27,7 +28,7 @@ var act_current : Act
 var auto_move :bool
 
 func _ready() -> void:
-	var mi3d = new_cylinder(0.5, 0.2, NamedColorList.color_list.pick_random()[0])
+	var mi3d = new_cylinder(0.4, 0.15, NamedColorList.color_list.pick_random()[0])
 	add_child(mi3d)
 
 func enter_storey(st :Storey, rndpos:bool)->void:
@@ -88,10 +89,12 @@ func start_new_act()->bool:
 					pos_new = pos_old + Storey.Dir2Vt[dir_old]
 				else :
 					act_current = Act.None
-			Act.Turn_Left:
+			Act.TurnLeft:
 				dir_new = Storey.dir_left(dir_old)
-			Act.Turn_Right:
+			Act.TurnRight:
 				dir_new = Storey.dir_right(dir_old)
+			Act.RotateCamera:
+				camera_up = !camera_up
 		return true
 	return false
 
@@ -110,7 +113,7 @@ func camera_current(b :bool)->void:
 func make_ai_action()->bool:
 	# try right
 	if can_move(Storey.dir_right(dir_old)):
-		act_queue.push_back(Act.Turn_Right)
+		act_queue.push_back(Act.TurnRight)
 		act_queue.push_back(Act.Forward)
 		return true
 	# try forward
@@ -119,13 +122,13 @@ func make_ai_action()->bool:
 		return true
 	# try left
 	if can_move(Storey.dir_left(dir_old)):
-		act_queue.push_back(Act.Turn_Left)
+		act_queue.push_back(Act.TurnLeft)
 		act_queue.push_back(Act.Forward)
 		return true
 	# try backward
 	if can_move(Storey.dir_opposite(dir_old)):
-		act_queue.push_back(Act.Turn_Left)
-		act_queue.push_back(Act.Turn_Left)
+		act_queue.push_back(Act.TurnLeft)
+		act_queue.push_back(Act.TurnLeft)
 		act_queue.push_back(Act.Forward)
 		return true
 	return false
@@ -142,3 +145,9 @@ func calc_animate_forward_by_dur(dur :float)->Vector3:
 
 func calc_animate_turn_by_dur(dur :float)->float:
 	return lerp_angle(Storey.dir2rad(dir_old), Storey.dir2rad(dir_new), dur)
+
+func calc_animate_camera_rotate(dur :float)->float:
+	if camera_up:
+		return lerp_angle(0, PI, dur)
+	else :
+		return lerp_angle(PI, 0, dur)

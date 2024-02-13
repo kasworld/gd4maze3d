@@ -100,11 +100,22 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , true)
 
-var wall_tex = preload("res://image/brownbrick.png")
+var wall_tex_brownbrick = preload("res://image/brownbrick.png")
+var wall_tex_bluestone = preload("res://image/bluestone.png")
+var wall_tex_drymud = preload("res://image/drymud.png")
+var wall_tex_graystone = preload("res://image/graystone.png")
+var wall_tex_pinkstone = preload("res://image/pinkstone.png")
+var wall_tex_greenstone = preload("res://image/greenstone.png")
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
 	var mat = StandardMaterial3D.new()
-	mat.albedo_texture = wall_tex
+	match randi_range(0,2):
+		0:
+			mat.albedo_texture = wall_tex_brownbrick
+		1:
+			mat.albedo_texture = wall_tex_bluestone
+		2:
+			mat.albedo_texture = wall_tex_greenstone
 	var w = new_box(Vector3(1,1,0.1), mat)
 	if face_x:
 		w.rotate_y(PI/2)

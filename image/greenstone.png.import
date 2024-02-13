@@ -3,8 +3,8 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dufoxsuyy8a41"
-path.s3tc="res://.godot/imported/yellowstone.png-38989892b6a6b659e941dd18a425f9ff.s3tc.ctex"
-path.etc2="res://.godot/imported/yellowstone.png-38989892b6a6b659e941dd18a425f9ff.etc2.ctex"
+path.s3tc="res://.godot/imported/greenstone.png-d257a575b612ba4b3c6a14a30e58b27f.s3tc.ctex"
+path.etc2="res://.godot/imported/greenstone.png-d257a575b612ba4b3c6a14a30e58b27f.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://image/yellowstone.png"
-dest_files=["res://.godot/imported/yellowstone.png-38989892b6a6b659e941dd18a425f9ff.s3tc.ctex", "res://.godot/imported/yellowstone.png-38989892b6a6b659e941dd18a425f9ff.etc2.ctex"]
+source_file="res://image/greenstone.png"
+dest_files=["res://.godot/imported/greenstone.png-d257a575b612ba4b3c6a14a30e58b27f.s3tc.ctex", "res://.godot/imported/greenstone.png-d257a575b612ba4b3c6a14a30e58b27f.etc2.ctex"]
 
 [params]
 

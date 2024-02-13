@@ -1,11 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://c76t0bgq0j8ux"]
 
 [ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
-[ext_resource type="Texture2D" uid="uid://op2lkyo6s0xp" path="res://image/bluestone.png" id="2_lpmm0"]
+[ext_resource type="Texture2D" uid="uid://bbc217m5oxtrk" path="res://image/drymud.png" id="2_pgsrp"]
 [ext_resource type="Texture2D" uid="uid://cdveci1jdmug5" path="res://image/pinkstone.png" id="3_5cdxw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
-albedo_texture = ExtResource("2_lpmm0")
+albedo_texture = ExtResource("2_pgsrp")
 emission = Color(0.188235, 0.188235, 0.188235, 1)
 uv1_triplanar = true
 

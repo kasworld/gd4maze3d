@@ -151,3 +151,6 @@ func calc_animate_camera_rotate(dur :float)->float:
 		return lerp_angle(0, PI, dur)
 	else :
 		return lerp_angle(PI, 0, dur)
+
+func rotate_camera( rad :float)->void:
+	$Camera3D.rotation.z = rad

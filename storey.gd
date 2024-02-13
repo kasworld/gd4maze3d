@@ -116,7 +116,7 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 			mat.albedo_texture = wall_tex_bluestone
 		2:
 			mat.albedo_texture = wall_tex_greenstone
-	var w = new_box(Vector3(1,1,0.1), mat)
+	var w = new_box(Vector3(1,1,0.01), mat)
 	if face_x:
 		w.rotate_y(PI/2)
 		w.position = Vector3( x  , storey_h/2.0 , y as float +0.5)

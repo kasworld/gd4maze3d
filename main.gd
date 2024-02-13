@@ -77,6 +77,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
 			player_list[0].act_queue.push_back(Character.Act.TurnRight)
+		elif event.keycode == KEY_SPACE:
+			player_list[0].act_queue.push_back(Character.Act.RotateCamera)
 
 		else:
 			pass
@@ -93,6 +95,8 @@ func animate_act(pl :Character, dur :float)->void:
 			animate_forward_by_dur(pl, dur)
 		Character.Act.TurnLeft, Character.Act.TurnRight:
 			animate_turn_by_dur(pl, dur)
+		Character.Act.RotateCamera:
+			animate_rotate_camera_by_dur(pl,dur)
 
 # dur : 0 - 1 :second
 func animate_forward_by_dur(pl :Character, dur :float)->void:
@@ -101,3 +105,6 @@ func animate_forward_by_dur(pl :Character, dur :float)->void:
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:
 	pl.rotation.y = pl.calc_animate_turn_by_dur(dur)
+
+func animate_rotate_camera_by_dur(pl :Character, dur :float)->void:
+	pl.rotate_camera(pl.calc_animate_camera_rotate(dur))

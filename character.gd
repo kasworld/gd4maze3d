@@ -63,15 +63,14 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 func get_ani_dur()->float:
 	return (Time.get_unix_time_from_system() - act_start_time)/ani_act_dur
 
-# return true on goal
+# return true on act end
 func act_end(ani_dur :float)->bool:
-	# action ended
-	if act_current != Act.None && ani_dur > 1.0:
+	if act_current != Act.None && ani_dur > 1.0: # action ended
 		dir_old = dir_new
 		pos_old = pos_new
 		act_current = Act.None
-		if pos_old == storey.goal_pos:
-			return true
+		$Camera3D.rotation.z = snapped($Camera3D.rotation.z, PI)
+		return true
 	return false
 
 func ai_act()->void:

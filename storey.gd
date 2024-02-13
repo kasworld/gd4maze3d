@@ -32,9 +32,20 @@ var maze_size : Vector2i
 var maze_cells :Maze
 var start_pos :Vector2i
 var goal_pos :Vector2i
+func is_goal_pos(p :Vector2i)->bool:
+	return goal_pos == p
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
 var capsule_pos_dic :Dictionary
+func is_capsule_pos(p :Vector2i)->bool:
+	return capsule_pos_dic.get(p)!=null
+func remove_capsule_at(p :Vector2i)->bool:
+	var c = capsule_pos_dic.get(p)
+	capsule_pos_dic.erase(p)
+	if c != null :
+		c.queue_free()
+		return true
+	return false
 var storey_h = 1.0
 
 func init(msize :Vector2i)->void:
@@ -179,7 +190,6 @@ func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
 	return sp
-
 
 func get_color_mat(co: Color)->Material:
 	var mat = StandardMaterial3D.new()

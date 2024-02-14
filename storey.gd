@@ -2,6 +2,16 @@ extends Node3D
 
 class_name Storey
 
+var tex_dict = {
+	brownbrick = preload("res://image/brownbrick.png"),
+	bluestone = preload("res://image/bluestone.png"),
+	drymud = preload("res://image/drymud.png"),
+	graystone = preload("res://image/graystone.png"),
+	pinkstone = preload("res://image/pinkstone.png"),
+	greenstone = preload("res://image/greenstone.png"),
+}
+
+
 # x90 == degree
 enum Dir {
 	North = 0,
@@ -48,12 +58,22 @@ func remove_capsule_at(p :Vector2i)->bool:
 	return false
 var storey_h = 1.0
 
+
+var main_wall_tex :CompressedTexture2D
+var sub_wall_tex :CompressedTexture2D
 func init(msize :Vector2i)->void:
 	maze_size = msize
 	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Floor.position = Vector3(maze_size.x/2.0, 0, maze_size.y/2.0)
+	$Floor.mesh.material.albedo_texture = tex_dict[tex_dict.keys().pick_random()]
+
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position = Vector3(maze_size.x/2.0, storey_h, maze_size.y/2.0)
+	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_dict.keys().pick_random()]
+
+	main_wall_tex = tex_dict[tex_dict.keys().pick_random()]
+	sub_wall_tex = tex_dict[tex_dict.keys().pick_random()]
+
 	$TopViewCamera3D.position = Vector3( maze_size.x/2.0 ,maze_size.y/1.4,maze_size.y/2.0)
 	$DirectionalLight3D.position = Vector3( maze_size.x/2.0 ,maze_size.x,maze_size.y/2.0)
 	#$DirectionalLight3D.look_at(Vector3( maze_size.x/2.0 ,0,maze_size.y/2.0))
@@ -111,22 +131,14 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , true)
 
-var wall_tex_brownbrick = preload("res://image/brownbrick.png")
-var wall_tex_bluestone = preload("res://image/bluestone.png")
-var wall_tex_drymud = preload("res://image/drymud.png")
-var wall_tex_graystone = preload("res://image/graystone.png")
-var wall_tex_pinkstone = preload("res://image/pinkstone.png")
-var wall_tex_greenstone = preload("res://image/greenstone.png")
 
 func add_wall_at(x:int,y :int, face_x :bool)->void:
 	var mat = StandardMaterial3D.new()
-	match randi_range(0,2):
+	match randi_range(0,10):
 		0:
-			mat.albedo_texture = wall_tex_brownbrick
-		1:
-			mat.albedo_texture = wall_tex_bluestone
-		2:
-			mat.albedo_texture = wall_tex_greenstone
+			mat.albedo_texture = sub_wall_tex
+		_:
+			mat.albedo_texture = main_wall_tex
 	var w = new_box(Vector3(1,1,0.01), mat)
 	if face_x:
 		w.rotate_y(PI/2)

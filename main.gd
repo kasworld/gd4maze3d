@@ -44,19 +44,20 @@ func start_new_maze()->void:
 
 func _process(_delta: float) -> void:
 	for i in PlayerCount:
-		var ani_dur = player_list[i].get_ani_dur()
-		if player_list[i].act_end(ani_dur): # true on act end
-			if i == 0 && storey.is_goal_pos(player_list[i].pos_old):
+		var pl = player_list[i]
+		var ani_dur = pl.get_ani_dur()
+		if pl.act_end(ani_dur): # true on act end
+			if i == 0 && storey.is_goal_pos(pl.pos_old):
 				start_new_maze()
 				return
-			if i == 0 && storey.is_capsule_pos(player_list[i].pos_old) : # capsule encounter
-				player_list[0].act_queue.push_back(Character.Act.RotateCamera)
-				storey.remove_capsule_at(player_list[0].pos_old)
-		player_list[i].ai_act()
-		if player_list[i].start_new_act(): # new act start
+			if i == 0 && storey.is_capsule_pos(pl.pos_old) : # capsule encounter
+				pl.act_queue.push_back(Character.Act.RotateCamera)
+				storey.remove_capsule_at(pl.pos_old)
+		pl.ai_act()
+		if pl.start_new_act(): # new act start
 			ani_dur = 0
-		if player_list[i].act_current != Character.Act.None :
-			animate_act(player_list[i], ani_dur)
+		if pl.act_current != Character.Act.None :
+			animate_act(pl, ani_dur)
 	update_info(player_list[0])
 
 func _unhandled_input(event: InputEvent) -> void:

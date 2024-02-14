@@ -58,21 +58,23 @@ func remove_capsule_at(p :Vector2i)->bool:
 	return false
 var storey_h = 1.0
 
-
 var main_wall_tex :CompressedTexture2D
 var sub_wall_tex :CompressedTexture2D
 func init(msize :Vector2i)->void:
 	maze_size = msize
+
+	var tex_keys = tex_dict.keys()
+	tex_keys.shuffle()
+	main_wall_tex = tex_dict[tex_keys[2]]
+	sub_wall_tex = tex_dict[tex_keys[3]]
+
 	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Floor.position = Vector3(maze_size.x/2.0, 0, maze_size.y/2.0)
-	$Floor.mesh.material.albedo_texture = tex_dict[tex_dict.keys().pick_random()]
+	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
 
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position = Vector3(maze_size.x/2.0, storey_h, maze_size.y/2.0)
-	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_dict.keys().pick_random()]
-
-	main_wall_tex = tex_dict[tex_dict.keys().pick_random()]
-	sub_wall_tex = tex_dict[tex_dict.keys().pick_random()]
+	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
 
 	$TopViewCamera3D.position = Vector3( maze_size.x/2.0 ,maze_size.y/1.4,maze_size.y/2.0)
 	$DirectionalLight3D.position = Vector3( maze_size.x/2.0 ,maze_size.x,maze_size.y/2.0)

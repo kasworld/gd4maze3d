@@ -4,6 +4,9 @@ var storey_scene = preload("res://storey.tscn")
 var storey :Storey
 var maze_size = Vector2i(32,18)
 
+var minimap_scene = preload("res://mini_map.tscn")
+var minimap :MiniMap
+
 var character_scene = preload("res://character.tscn")
 const PlayerCount = 100
 var player_list :Array[Character]
@@ -20,6 +23,10 @@ func set_view_mode()->void:
 			storey.set_top_view(true)
 
 func _ready() -> void:
+	minimap = minimap_scene.instantiate()
+	add_child(minimap)
+	minimap.position = Vector2(1250,700)
+
 	for i in PlayerCount:
 		player_list.append(character_scene.instantiate())
 		add_child(player_list[i])
@@ -33,6 +40,7 @@ func start_new_maze()->void:
 	storey = storey_scene.instantiate()
 	add_child(storey)
 	storey.init(maze_size)
+	minimap.init(storey)
 	for i in PlayerCount:
 		if i == 0:
 			player_list[i].enter_storey(storey,false)

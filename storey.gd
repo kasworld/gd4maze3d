@@ -11,7 +11,6 @@ var tex_dict = {
 	greenstone = preload("res://image/greenstone.png"),
 }
 
-
 # x90 == degree
 enum Dir {
 	North = 0,

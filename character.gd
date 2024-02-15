@@ -22,6 +22,9 @@ var pos_old :Vector2i
 var pos_new :Vector2i
 var camera_up :bool
 
+var total_step :int
+var step_in_storey :int
+
 var act_start_time :float # unixtime sec
 var act_current : Act
 
@@ -43,6 +46,7 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old
+	step_in_storey = 0
 
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()
@@ -86,6 +90,8 @@ func start_new_act()->bool:
 			Act.Forward:
 				if can_move(dir_old):
 					pos_new = pos_old + Storey.Dir2Vt[dir_old]
+					total_step += 1
+					step_in_storey += 1
 				else :
 					act_current = Act.None
 			Act.TurnLeft:
@@ -98,7 +104,8 @@ func start_new_act()->bool:
 	return false
 
 func info_str()->String:
-	return "automove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
+	return "step total:%d in storey:%d\nautomove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
+		total_step, step_in_storey,
 		auto_move,
 		act2str(act_current), queue_to_str(),
 		Storey.dir2str(dir_old), Storey.dir2str(dir_new),

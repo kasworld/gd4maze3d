@@ -2,9 +2,7 @@ extends Node3D
 
 # stats
 var storey_score :int
-var total_step :int
 var total_capsule :int
-var step_in_storey :int
 var capsule_in_storey :int
 
 var storey_scene = preload("res://storey.tscn")
@@ -51,7 +49,6 @@ func start_new_maze()->void:
 	minimap.init(storey)
 	$Label.position.x = minimap.get_width()
 	storey_score += 1
-	step_in_storey = 0
 	capsule_in_storey = 0
 
 	for i in PlayerCount:
@@ -81,9 +78,6 @@ func _process(_delta: float) -> void:
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
-			if i == 0 && pl.act_current == Character.Act.Forward :
-				total_step += 1
-				step_in_storey += 1
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
 	update_info(player_list[0])
@@ -120,11 +114,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(pl :Character)->void:
-	$Label.text = "storey %d\ntotal step:%s capsule:%d\nin storey step:%d capsule:%d\nview:%s %s" % [
-		storey_score,
-		total_step, total_capsule,
-		step_in_storey, capsule_in_storey,
+	$Label.text = "view:%s storey %d\ncapsule total:%d in storey:%d\n%s" % [
 		ViewMode.keys()[view_mode],
+		storey_score, total_capsule, capsule_in_storey,
 		pl.info_str()]
 
 func animate_act(pl :Character, dur :float)->void:

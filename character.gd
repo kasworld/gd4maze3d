@@ -9,6 +9,20 @@ enum Act {None, Forward, TurnRight , TurnLeft, RotateCamera}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
 
+var total_act_stats :Dictionary
+var storey_act_stats :Dictionary
+func new_act_stats_dict()->Dictionary:
+	var rtn = {}
+	for k in Act.values():
+		rtn[k]=0
+	return rtn
+func act_stats_str(d:Dictionary)->String:
+	var rtn = ""
+	for i in Act.values():
+		var k = Act.keys()[i]
+		rtn += " %s:%d" % [k, d[i]]
+	return rtn
+
 var act_queue :Array[Act]
 func queue_to_str()->String:
 	var rtn = ""
@@ -22,9 +36,6 @@ var pos_old :Vector2i
 var pos_new :Vector2i
 var camera_up :bool
 
-var total_step :int
-var step_in_storey :int
-
 var act_start_time :float # unixtime sec
 var act_current : Act
 
@@ -33,6 +44,7 @@ var auto_move :bool
 func _ready() -> void:
 	var mi3d = new_cylinder(0.4, 0.15, NamedColorList.color_list.pick_random()[0])
 	add_child(mi3d)
+	total_act_stats = new_act_stats_dict()
 
 func enter_storey(st :Storey, rndpos:bool)->void:
 	ani_act_dur = randf_range(0.1,1.0)
@@ -46,7 +58,7 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old
-	step_in_storey = 0
+	storey_act_stats = new_act_stats_dict()
 
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()
@@ -90,8 +102,6 @@ func start_new_act()->bool:
 			Act.Forward:
 				if can_move(dir_old):
 					pos_new = pos_old + Storey.Dir2Vt[dir_old]
-					total_step += 1
-					step_in_storey += 1
 				else :
 					act_current = Act.None
 			Act.TurnLeft:
@@ -100,12 +110,14 @@ func start_new_act()->bool:
 				dir_new = Storey.dir_right(dir_old)
 			Act.RotateCamera:
 				camera_up = !camera_up
+		total_act_stats[act_current] += 1
+		storey_act_stats[act_current] += 1
 		return true
 	return false
 
 func info_str()->String:
-	return "step total:%d in storey:%d\nautomove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
-		total_step, step_in_storey,
+	return "total:%s\nin storey:%s\nautomove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
+		act_stats_str(total_act_stats), act_stats_str(storey_act_stats),
 		auto_move,
 		act2str(act_current), queue_to_str(),
 		Storey.dir2str(dir_old), Storey.dir2str(dir_new),

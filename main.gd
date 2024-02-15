@@ -23,10 +23,6 @@ func set_view_mode()->void:
 			storey.set_top_view(true)
 
 func _ready() -> void:
-	minimap = minimap_scene.instantiate()
-	add_child(minimap)
-	minimap.position = Vector2(1250,700)
-
 	for i in PlayerCount:
 		player_list.append(character_scene.instantiate())
 		add_child(player_list[i])
@@ -40,7 +36,14 @@ func start_new_maze()->void:
 	storey = storey_scene.instantiate()
 	add_child(storey)
 	storey.init(maze_size)
+
+	if minimap !=null:
+		minimap.queue_free()
+	minimap = minimap_scene.instantiate()
+	add_child(minimap)
 	minimap.init(storey)
+	$Label.position.x = minimap.get_width()
+
 	for i in PlayerCount:
 		if i == 0:
 			player_list[i].enter_storey(storey,false)
@@ -55,12 +58,14 @@ func _process(_delta: float) -> void:
 		var pl = player_list[i]
 		var ani_dur = pl.get_ani_dur()
 		if pl.act_end(ani_dur): # true on act end
-			if i == 0 && storey.is_goal_pos(pl.pos_old):
-				start_new_maze()
-				return
-			if i == 0 && storey.is_capsule_pos(pl.pos_old) : # capsule encounter
-				pl.act_queue.push_back(Character.Act.RotateCamera)
-				storey.remove_capsule_at(pl.pos_old)
+			if i == 0:
+				if storey.is_goal_pos(pl.pos_old):
+					start_new_maze()
+					return
+				if storey.is_capsule_pos(pl.pos_old) : # capsule encounter
+					pl.act_queue.push_back(Character.Act.RotateCamera)
+					storey.remove_capsule_at(pl.pos_old)
+				minimap.move_player(pl.pos_old.x, pl.pos_old.y)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0

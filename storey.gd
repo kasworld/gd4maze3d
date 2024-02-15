@@ -56,11 +56,13 @@ func remove_capsule_at(p :Vector2i)->bool:
 		return true
 	return false
 var storey_h = 1.0
+var wall_thick :float
 
 var main_wall_tex :CompressedTexture2D
 var sub_wall_tex :CompressedTexture2D
 func init(msize :Vector2i)->void:
 	maze_size = msize
+	wall_thick = randf_range(0.01,0.1)
 
 	var tex_keys = tex_dict.keys()
 	tex_keys.shuffle()
@@ -140,7 +142,7 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 			mat.albedo_texture = sub_wall_tex
 		_:
 			mat.albedo_texture = main_wall_tex
-	var w = new_box(Vector3(1,1,0.01), mat)
+	var w = new_box(Vector3(1,1,wall_thick), mat)
 	if face_x:
 		w.rotate_y(PI/2)
 		w.position = Vector3( x  , storey_h/2.0 , y as float +0.5)

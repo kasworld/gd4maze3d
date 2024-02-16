@@ -85,7 +85,7 @@ func open_dir_at(x:int,y:int, d :int)->void:
 	_cells[y][x] |= d
 
 func is_open_dir_at(x :int, y :int, dir :Dir)->bool:
-	return (_cells[y][x] & dir) !=0
+	return (_cells[y][x] & dir) != 0
 
 func get_open_dir_at(x :int, y :int)->Array:
 	var rtn = []
@@ -94,9 +94,12 @@ func get_open_dir_at(x :int, y :int)->Array:
 			rtn.append(d)
 	return rtn
 
+func is_wall_dir_at(x :int, y :int, dir :Dir)->bool:
+	return (_cells[y][x] & dir) == 0
+
 func get_wall_dir_at(x :int, y :int)->Array:
 	var rtn = []
 	for d in DirList:
-		if not is_open_dir_at(x,y,d):
+		if is_wall_dir_at(x,y,d):
 			rtn.append(d)
 	return rtn

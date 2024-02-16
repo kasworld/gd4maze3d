@@ -24,8 +24,19 @@ const Dir2Vt = {
 	Dir.South : Vector2i(0, 1),
 	Dir.East : Vector2i(1,0),
 }
-static func to_maze_dir(d :Dir)->Maze.Dir:
-	return Maze.DirList[d%4]
+const MazeDir2Dir = {
+	Maze.Dir.North : Dir.North,
+	Maze.Dir.West : Dir.West,
+	Maze.Dir.South : Dir.South,
+	Maze.Dir.East : Dir.East,
+}
+const Dir2MazeDir = {
+	Dir.North : Maze.Dir.North,
+	Dir.West : Maze.Dir.West,
+	Dir.South : Maze.Dir.South,
+	Dir.East : Maze.Dir.East,
+}
+
 static func dir2str(d :Dir)->String:
 	return Dir.keys()[d]
 static func dir_left(d:Dir)->Dir:
@@ -118,7 +129,6 @@ func _process(delta: float) -> void:
 	for p in capsule_pos_dic:
 		capsule_pos_dic[p].rotate_y(delta)
 
-
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
@@ -161,7 +171,7 @@ func set_top_view(b :bool)->void:
 		$WallContainer.position.y = 0.0
 
 func can_move(x :int , y :int, dir :Dir)->bool:
-	return maze_cells.is_open_dir_at(x,y, Storey.to_maze_dir(dir) )
+	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )
 
 func open_dir_str(x :int , y :int)->String:
 	var rtn = ""

@@ -40,14 +40,14 @@ func add_wall_at(x:int,y :int, dir :Storey.Dir)->void:
 	set_wall_at(x,y,dir)
 	var ln :Line2D
 	match dir:
-		Storey.Dir.East:
-			ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x,y+1)*Scale])
 		Storey.Dir.North:
 			ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x+1,y)*Scale])
 		Storey.Dir.West:
-			ln = new_line( 2, Color.WHITE, [Vector2(x+1,y)*Scale,Vector2(x+1,y+1)*Scale])
+			ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x,y+1)*Scale])
 		Storey.Dir.South:
 			ln = new_line( 2, Color.WHITE, [Vector2(x,y+1)*Scale,Vector2(x+1,y+1)*Scale])
+		Storey.Dir.East:
+			ln = new_line( 2, Color.WHITE, [Vector2(x+1,y)*Scale,Vector2(x+1,y+1)*Scale])
 	add_child(ln)
 
 # between wall

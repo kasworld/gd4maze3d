@@ -10,6 +10,9 @@ var maze_size = Vector2i(32,18)
 var minimap_scene = preload("res://mini_map.tscn")
 var minimap :MiniMap
 
+var minimap2draw_scene = preload("res://mini_map_2_draw.tscn")
+var minimap2draw :MiniMap2Draw
+
 var character_scene = preload("res://character.tscn")
 const PlayerCount = 10
 var player_list :Array[Character]
@@ -40,11 +43,19 @@ func start_new_maze()->void:
 	add_child(storey)
 	storey.init(maze_size)
 
-	if minimap !=null:
+	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
 	minimap.init(storey)
+
+	if minimap2draw != null:
+		minimap2draw.queue_free()
+	minimap2draw = minimap2draw_scene.instantiate()
+	add_child(minimap2draw)
+	minimap2draw.init(storey)
+	minimap2draw.position.y = minimap.get_height()
+
 	$Label.position.x = minimap.get_width()
 	storey_score += 1
 
@@ -70,9 +81,14 @@ func _process(_delta: float) -> void:
 					pl.act_queue.push_back(Character.Act.RotateCamera)
 					storey.remove_capsule_at(pl.pos_old)
 				minimap.move_player(pl.pos_old.x, pl.pos_old.y)
+				minimap2draw.move_player(pl.pos_old.x, pl.pos_old.y)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
+			if i == 0:
+				var walldir = storey.maze_cells.get_wall_dir_at(pl.pos_old.x,pl.pos_old.y)
+				for d in walldir:
+					minimap2draw.add_wall_at(pl.pos_old.x,pl.pos_old.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
 	update_info(player_list[0])

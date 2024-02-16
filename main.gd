@@ -11,7 +11,7 @@ var minimap_scene = preload("res://mini_map.tscn")
 var minimap :MiniMap
 
 var character_scene = preload("res://character.tscn")
-const PlayerCount = 100
+const PlayerCount = 10
 var player_list :Array[Character]
 
 enum ViewMode {Player, Top}

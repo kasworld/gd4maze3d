@@ -93,3 +93,10 @@ func get_open_dir_at(x :int, y :int)->Array:
 		if is_open_dir_at(x,y,d):
 			rtn.append(d)
 	return rtn
+
+func get_wall_dir_at(x :int, y :int)->Array:
+	var rtn = []
+	for d in DirList:
+		if not is_open_dir_at(x,y,d):
+			rtn.append(d)
+	return rtn

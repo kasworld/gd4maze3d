@@ -72,6 +72,7 @@ func init(msize :Vector2i)->void:
 	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Floor.position = Vector3(maze_size.x/2.0, 0, maze_size.y/2.0)
 	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
+	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position = Vector3(maze_size.x/2.0, storey_h, maze_size.y/2.0)

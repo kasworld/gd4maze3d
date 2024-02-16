@@ -51,14 +51,17 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 	storey = st
 	if rndpos :
 		pos_old = storey.rand_pos()
-		$SpotLight3D.visible = false
 	else:
 		pos_old = storey.start_pos
-		$SpotLight3D.visible = true
 	pos_new = pos_old
 	dir_old = Storey.Dir.North
 	dir_new = dir_old
 	storey_act_stats = new_act_stats_dict()
+
+func light_on(b :bool)->void:
+	$SpotLight3D.visible = b
+	$Camera3D.visible = b
+	$Camera3D.current = b
 
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()
@@ -124,9 +127,6 @@ func info_str()->String:
 		pos_old.x, pos_old.y, pos_new.x, pos_new.y,
 		storey.open_dir_str(pos_old.x, pos_old.y),
 		]
-
-func camera_current(b :bool)->void:
-	$Camera3D.current = b
 
 func make_ai_action()->bool:
 	# try right

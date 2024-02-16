@@ -30,17 +30,31 @@ var view_floor_ceiling :bool
 
 func _ready() -> void:
 	for i in PlayerCount:
-		player_list.append(character_scene.instantiate())
-		add_child(player_list[i])
-		player_list[i].auto_move = true
+		var pl = character_scene.instantiate()
+		player_list.append(pl)
+		add_child(pl)
+		pl.auto_move = true
+
+	var st = new_storey()
+	st.position.y = 1.01
+	st.view_floor_ceiling(false)
+	st = new_storey()
+	st.position.y = -1.01
+	st.view_floor_ceiling(false)
+
 	start_new_maze()
+
+func new_storey()->Storey:
+	var st = storey_scene.instantiate()
+	add_child(st)
+	st.init(maze_size)
+	return st
 
 func start_new_maze()->void:
 	if storey != null:
 		storey.queue_free()
-	storey = storey_scene.instantiate()
-	add_child(storey)
-	storey.init(maze_size)
+	storey = new_storey()
+	storey.view_floor_ceiling(view_floor_ceiling)
 
 	if minimap != null:
 		minimap.queue_free()
@@ -60,6 +74,7 @@ func start_new_maze()->void:
 	for i in PlayerCount:
 		if i == 0:
 			player_list[i].enter_storey(storey,false)
+			player_list[i].light_on(true)
 		else:
 			player_list[i].enter_storey(storey, true)
 		animate_forward_by_dur(player_list[i], 0)

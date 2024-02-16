@@ -89,9 +89,6 @@ func init(msize :Vector2i)->void:
 	$Ceiling.position = Vector3(maze_size.x/2.0, storey_h, maze_size.y/2.0)
 	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
 
-	$TopViewCamera3D.position = Vector3( maze_size.x/2.0 ,maze_size.y/1.4,maze_size.y/2.0)
-	$DirectionalLight3D.position = Vector3( maze_size.x/2.0 ,maze_size.x,maze_size.y/2.0)
-	#$DirectionalLight3D.look_at(Vector3( maze_size.x/2.0 ,0,maze_size.y/2.0))
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
 	make_wall_by_maze()
@@ -129,6 +126,10 @@ func _process(delta: float) -> void:
 	for p in capsule_pos_dic:
 		capsule_pos_dic[p].rotate_y(delta)
 
+func view_floor_ceiling(b :bool)->void:
+	$Floor.visible = b
+	$Ceiling.visible = b
+
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
@@ -160,15 +161,6 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 	else :
 		w.position = Vector3( x as float +0.5 , storey_h/2.0 , y)
 	$WallContainer.add_child(w)
-
-func set_top_view(b :bool)->void:
-	$Ceiling.visible = not b
-	$TopViewCamera3D.current = b
-	$DirectionalLight3D.visible = b
-	if b :
-		$WallContainer.position.y = -storey_h/2.0
-	else :
-		$WallContainer.position.y = 0.0
 
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )

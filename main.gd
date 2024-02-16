@@ -17,23 +17,22 @@ var character_scene = preload("res://character.tscn")
 const PlayerCount = 10
 var player_list :Array[Character]
 
-enum ViewMode {Player, Top}
-var view_mode :ViewMode
-func set_view_mode()->void:
-	match view_mode:
-		ViewMode.Player:
-			player_list[0].camera_current(true)
-			storey.set_top_view(false)
-		ViewMode.Top:
-			player_list[0].camera_current(false)
-			storey.set_top_view(true)
+var full_minimap :bool
+func set_minimap_mode()->void:
+	if full_minimap:
+		minimap.visible = true
+		minimap2draw.visible = false
+	else :
+		minimap.visible = false
+		minimap2draw.visible = true
+
+var view_floor_ceiling :bool
 
 func _ready() -> void:
 	for i in PlayerCount:
 		player_list.append(character_scene.instantiate())
 		add_child(player_list[i])
 		player_list[i].auto_move = true
-	view_mode = ViewMode.Player
 	start_new_maze()
 
 func start_new_maze()->void:
@@ -54,7 +53,6 @@ func start_new_maze()->void:
 	minimap2draw = minimap2draw_scene.instantiate()
 	add_child(minimap2draw)
 	minimap2draw.init(storey)
-	minimap2draw.position.y = minimap.get_height()
 
 	$Label.position.x = minimap.get_width()
 	storey_score += 1
@@ -66,7 +64,7 @@ func start_new_maze()->void:
 			player_list[i].enter_storey(storey, true)
 		animate_forward_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
-	set_view_mode()
+	set_minimap_mode()
 
 func _process(_delta: float) -> void:
 	for i in PlayerCount:
@@ -97,15 +95,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_ESCAPE:
 			get_tree().quit()
-		elif event.keycode == KEY_1:
-			view_mode = ViewMode.Top
-			set_view_mode()
-		elif event.keycode == KEY_2:
-			view_mode = ViewMode.Player
-			set_view_mode()
 
+		elif event.keycode == KEY_1:
+			full_minimap = !full_minimap
+			set_minimap_mode()
+		elif event.keycode == KEY_2:
+			view_floor_ceiling = !view_floor_ceiling
+			storey.view_floor_ceiling(!view_floor_ceiling)
 		elif event.keycode == KEY_3:
 			player_list[0].auto_move = !player_list[0].auto_move
+
 		elif event.keycode == KEY_UP:
 			player_list[0].act_queue.push_back(Character.Act.Forward)
 		elif event.keycode == KEY_DOWN:
@@ -125,8 +124,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(pl :Character)->void:
-	$Label.text = "view:%s storey %d\n%s" % [
-		ViewMode.keys()[view_mode],
+	$Label.text = "fullminimap:%s multistoreyview:%s storey %d\n%s" % [
+		full_minimap, view_floor_ceiling,
 		storey_score,
 		pl.info_str()]
 

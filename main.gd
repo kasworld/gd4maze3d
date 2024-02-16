@@ -46,6 +46,7 @@ func _ready() -> void:
 func start_new_maze()->void:
 	for st in storey_list:
 		st.queue_free()
+	storey_list.resize(0)
 	for i in StoreyCount:
 		var posy = i - StoreyPlay
 		var st = new_storey()

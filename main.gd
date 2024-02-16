@@ -5,7 +5,7 @@ var storey_score :int
 
 var storey_scene = preload("res://storey.tscn")
 var maze_size = Vector2i(32,18)
-const StoreyCount = 5
+const StoreyCount = 7
 const StoreyPlay = int(StoreyCount/2)
 var storey_list :Array[Storey]
 func new_storey()->Storey:
@@ -50,9 +50,11 @@ func start_new_maze()->void:
 	for i in StoreyCount:
 		var posy = i - StoreyPlay
 		var st = new_storey()
-		st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+		st.view_floor_ceiling(false,false)
 		st.position.y = posy
 		storey_list.append(st)
+	storey_list[0].view_floor_ceiling(true,false)
+	storey_list[StoreyCount-1].view_floor_ceiling(false,true)
 
 	if minimap != null:
 		minimap.queue_free()

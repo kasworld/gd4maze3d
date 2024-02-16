@@ -4,8 +4,15 @@ extends Node3D
 var storey_score :int
 
 var storey_scene = preload("res://storey.tscn")
-var storey :Storey
 var maze_size = Vector2i(32,18)
+const StoreyCount = 5
+const StoreyPlay = int(StoreyCount/2)
+var storey_list :Array[Storey]
+func new_storey()->Storey:
+	var st = storey_scene.instantiate()
+	add_child(st)
+	st.init(maze_size)
+	return st
 
 var minimap_scene = preload("res://mini_map.tscn")
 var minimap :MiniMap
@@ -34,49 +41,39 @@ func _ready() -> void:
 		player_list.append(pl)
 		add_child(pl)
 		pl.auto_move = true
-
-	var st = new_storey()
-	st.position.y = 1.01
-	st.view_floor_ceiling(false)
-	st = new_storey()
-	st.position.y = -1.01
-	st.view_floor_ceiling(false)
-
 	start_new_maze()
 
-func new_storey()->Storey:
-	var st = storey_scene.instantiate()
-	add_child(st)
-	st.init(maze_size)
-	return st
-
 func start_new_maze()->void:
-	if storey != null:
-		storey.queue_free()
-	storey = new_storey()
-	storey.view_floor_ceiling(view_floor_ceiling)
+	for st in storey_list:
+		st.queue_free()
+	for i in StoreyCount:
+		var posy = i - StoreyPlay
+		var st = new_storey()
+		st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+		st.position.y = posy
+		storey_list.append(st)
 
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(storey)
+	minimap.init(storey_list[StoreyPlay])
 
 	if minimap2draw != null:
 		minimap2draw.queue_free()
 	minimap2draw = minimap2draw_scene.instantiate()
 	add_child(minimap2draw)
-	minimap2draw.init(storey)
+	minimap2draw.init(storey_list[StoreyPlay])
 
 	$Label.position.x = minimap.get_width()
 	storey_score += 1
 
 	for i in PlayerCount:
 		if i == 0:
-			player_list[i].enter_storey(storey,false)
+			player_list[i].enter_storey(storey_list[StoreyPlay],false)
 			player_list[i].light_on(true)
 		else:
-			player_list[i].enter_storey(storey, true)
+			player_list[i].enter_storey(storey_list[StoreyPlay], true)
 		animate_forward_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
@@ -87,19 +84,19 @@ func _process(_delta: float) -> void:
 		var ani_dur = pl.get_ani_dur()
 		if pl.act_end(ani_dur): # true on act end
 			if i == 0:
-				if storey.is_goal_pos(pl.pos_old):
+				if storey_list[StoreyPlay].is_goal_pos(pl.pos_old):
 					start_new_maze()
 					return
-				if storey.is_capsule_pos(pl.pos_old) : # capsule encounter
+				if storey_list[StoreyPlay].is_capsule_pos(pl.pos_old) : # capsule encounter
 					pl.act_queue.push_back(Character.Act.RotateCamera)
-					storey.remove_capsule_at(pl.pos_old)
+					storey_list[StoreyPlay].remove_capsule_at(pl.pos_old)
 				minimap.move_player(pl.pos_old.x, pl.pos_old.y)
 				minimap2draw.move_player(pl.pos_old.x, pl.pos_old.y)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
 			if i == 0:
-				var walldir = storey.maze_cells.get_wall_dir_at(pl.pos_old.x,pl.pos_old.y)
+				var walldir = storey_list[StoreyPlay].maze_cells.get_wall_dir_at(pl.pos_old.x,pl.pos_old.y)
 				for d in walldir:
 					minimap2draw.add_wall_at(pl.pos_old.x,pl.pos_old.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
@@ -116,7 +113,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_minimap_mode()
 		elif event.keycode == KEY_2:
 			view_floor_ceiling = !view_floor_ceiling
-			storey.view_floor_ceiling(!view_floor_ceiling)
+			storey_list[StoreyPlay].view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 		elif event.keycode == KEY_3:
 			player_list[0].auto_move = !player_list[0].auto_move
 

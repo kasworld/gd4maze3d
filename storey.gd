@@ -126,9 +126,9 @@ func _process(delta: float) -> void:
 	for p in capsule_pos_dic:
 		capsule_pos_dic[p].rotate_y(delta)
 
-func view_floor_ceiling(b :bool)->void:
-	$Floor.visible = b
-	$Ceiling.visible = b
+func view_floor_ceiling(f :bool,c :bool)->void:
+	$Floor.visible = f
+	$Ceiling.visible = c
 
 func make_wall_by_maze()->void:
 	for y in maze_size.y:

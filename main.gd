@@ -87,21 +87,21 @@ func _process(_delta: float) -> void:
 		var ani_dur = pl.get_ani_dur()
 		if pl.act_end(ani_dur): # true on act end
 			if i == 0:
-				if storey_list[StoreyPlay].is_goal_pos(pl.pos_old):
+				if storey_list[StoreyPlay].is_goal_pos(pl.pos_src):
 					start_new_maze()
 					return
-				if storey_list[StoreyPlay].is_capsule_pos(pl.pos_old) : # capsule encounter
+				if storey_list[StoreyPlay].is_capsule_pos(pl.pos_src) : # capsule encounter
 					pl.act_queue.push_back(Character.Act.RotateCamera)
-					storey_list[StoreyPlay].remove_capsule_at(pl.pos_old)
-				minimap.move_player(pl.pos_old.x, pl.pos_old.y)
-				minimap2draw.move_player(pl.pos_old.x, pl.pos_old.y)
+					storey_list[StoreyPlay].remove_capsule_at(pl.pos_src)
+				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
+				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
 			if i == 0:
-				var walldir = storey_list[StoreyPlay].maze_cells.get_wall_dir_at(pl.pos_old.x,pl.pos_old.y)
+				var walldir = storey_list[StoreyPlay].maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
-					minimap2draw.add_wall_at(pl.pos_old.x,pl.pos_old.y,Storey.MazeDir2Dir[d])
+					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
 	update_info(player_list[0])
@@ -129,8 +129,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
 			player_list[0].act_queue.push_back(Character.Act.TurnRight)
+
 		elif event.keycode == KEY_SPACE:
 			player_list[0].act_queue.push_back(Character.Act.RotateCamera)
+		elif event.keycode == KEY_ENTER:
+			player_list[0].act_queue.push_back(Character.Act.EnterStorey)
+			player_list[0].pos_dst = storey_list[StoreyPlay].goal_pos
+
 
 		else:
 			pass
@@ -152,6 +157,8 @@ func animate_act(pl :Character, dur :float)->void:
 			animate_turn_by_dur(pl, dur)
 		Character.Act.RotateCamera:
 			animate_rotate_camera_by_dur(pl,dur)
+		Character.Act.EnterStorey:
+			animate_move_by_dur(pl, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:

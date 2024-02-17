@@ -30,10 +30,10 @@ func queue_to_str()->String:
 		rtn += "%s " % [ act2str(a) ]
 	return rtn
 
-var dir_old : Storey.Dir
-var dir_new : Storey.Dir
-var pos_old :Vector2i
-var pos_new :Vector2i
+var dir_src : Storey.Dir
+var dir_dst : Storey.Dir
+var pos_src :Vector2i
+var pos_dst :Vector2i
 var camera_up :bool
 
 var act_start_time :float # unixtime sec
@@ -50,13 +50,15 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 	ani_act_dur = randf_range(0.1,1.0)
 	storey = st
 	if rndpos :
-		pos_old = storey.rand_pos()
+		pos_dst = storey.rand_pos()
 	else:
-		pos_old = storey.start_pos
-	pos_new = pos_old
-	dir_old = Storey.Dir.North
-	dir_new = dir_old
+		pos_dst = storey.start_pos
+	#pos_dst = pos_src
+	dir_src = Storey.Dir.North
+	#dir_dst = dir_src
 	storey_act_stats = new_act_stats_dict()
+	act_queue.resize(0)
+	act_queue.append(Act.EnterStorey)
 
 func light_on(b :bool)->void:
 	$SpotLight3D.visible = b
@@ -85,8 +87,8 @@ func get_ani_dur()->float:
 # return true on act end
 func act_end(ani_dur :float)->bool:
 	if act_current != Act.None && ani_dur > 1.0: # action ended
-		dir_old = dir_new
-		pos_old = pos_new
+		dir_src = dir_dst
+		pos_src = pos_dst
 		act_current = Act.None
 		$Camera3D.rotation.z = snapped($Camera3D.rotation.z, PI)
 		return true
@@ -102,17 +104,21 @@ func start_new_act()->bool:
 		act_start_time = Time.get_unix_time_from_system()
 		act_current = act_queue.pop_front()
 		match act_current:
+			Act.None:
+				pass
 			Act.Forward:
-				if can_move(dir_old):
-					pos_new = pos_old + Storey.Dir2Vt[dir_old]
+				if can_move(dir_src):
+					pos_dst = pos_src + Storey.Dir2Vt[dir_src]
 				else :
 					act_current = Act.None
 			Act.TurnLeft:
-				dir_new = Storey.dir_left(dir_old)
+				dir_dst = Storey.dir_left(dir_src)
 			Act.TurnRight:
-				dir_new = Storey.dir_right(dir_old)
+				dir_dst = Storey.dir_right(dir_src)
 			Act.RotateCamera:
 				camera_up = !camera_up
+			Act.EnterStorey:
+				pass
 		total_act_stats[act_current] += 1
 		storey_act_stats[act_current] += 1
 		return true
@@ -123,28 +129,28 @@ func info_str()->String:
 		act_stats_str(total_act_stats), act_stats_str(storey_act_stats),
 		auto_move,
 		act2str(act_current), queue_to_str(),
-		Storey.dir2str(dir_old), Storey.dir2str(dir_new),
-		pos_old.x, pos_old.y, pos_new.x, pos_new.y,
-		storey.open_dir_str(pos_old.x, pos_old.y),
+		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
+		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
+		storey.open_dir_str(pos_src.x, pos_src.y),
 		]
 
 func make_ai_action()->bool:
 	# try right
-	if can_move(Storey.dir_right(dir_old)):
+	if can_move(Storey.dir_right(dir_src)):
 		act_queue.push_back(Act.TurnRight)
 		act_queue.push_back(Act.Forward)
 		return true
 	# try forward
-	if can_move(dir_old):
+	if can_move(dir_src):
 		act_queue.push_back(Act.Forward)
 		return true
 	# try left
-	if can_move(Storey.dir_left(dir_old)):
+	if can_move(Storey.dir_left(dir_src)):
 		act_queue.push_back(Act.TurnLeft)
 		act_queue.push_back(Act.Forward)
 		return true
 	# try backward
-	if can_move(Storey.dir_opposite(dir_old)):
+	if can_move(Storey.dir_opposite(dir_src)):
 		act_queue.push_back(Act.TurnLeft)
 		act_queue.push_back(Act.TurnLeft)
 		act_queue.push_back(Act.Forward)
@@ -152,17 +158,17 @@ func make_ai_action()->bool:
 	return false
 
 func can_move(dir :Storey.Dir)->bool:
-	return storey.can_move(pos_old.x, pos_old.y, dir )
+	return storey.can_move(pos_src.x, pos_src.y, dir )
 
 func calc_animate_move_by_dur(dur :float)->Vector3:
 	return Vector3(
-		0.5+ lerpf(pos_old.x, pos_new.x, dur),
+		0.5+ lerpf(pos_src.x, pos_dst.x, dur),
 		storey.storey_h/2.0,
-		0.5+ lerpf(pos_old.y, pos_new.y, dur),
+		0.5+ lerpf(pos_src.y, pos_dst.y, dur),
 	)
 
 func calc_animate_turn_by_dur(dur :float)->float:
-	return lerp_angle(Storey.dir2rad(dir_old), Storey.dir2rad(dir_new), dur)
+	return lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
 
 func calc_animate_camera_rotate(dur :float)->float:
 	if camera_up:

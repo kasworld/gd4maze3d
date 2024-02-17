@@ -8,6 +8,7 @@ var maze_size = Vector2i(32,18)
 const StoreyCount = 7
 const StoreyPlay = int(StoreyCount/2)
 var storey_list :Array[Storey]
+
 func new_storey()->Storey:
 	var st = storey_scene.instantiate()
 	add_child(st)
@@ -43,11 +44,10 @@ func _ready() -> void:
 		pl.auto_move = true
 	for i in StoreyCount:
 		var st = new_storey()
-		st.view_floor_ceiling(false,false)
 		storey_list.append(st)
-	start_new_maze()
+	enter_new_storey()
 
-func start_new_maze()->void:
+func enter_new_storey()->void:
 	var todelst = storey_list.pop_front()
 	remove_child(todelst)
 	todelst.queue_free()
@@ -55,7 +55,7 @@ func start_new_maze()->void:
 	storey_list.push_back(toaddst)
 	for i in StoreyCount:
 		var posy = i - StoreyPlay
-		storey_list[i].position.y = posy
+		#storey_list[i].position.y = posy
 		storey_list[i].view_floor_ceiling(false,false)
 	storey_list[0].view_floor_ceiling(true,false)
 	storey_list[StoreyCount-1].view_floor_ceiling(false,true)
@@ -92,7 +92,7 @@ func _process(_delta: float) -> void:
 		if pl.act_end(ani_dur): # true on act end
 			if i == 0:
 				if storey_list[StoreyPlay].is_goal_pos(pl.pos_src):
-					start_new_maze()
+					enter_new_storey()
 					return
 				if storey_list[StoreyPlay].is_capsule_pos(pl.pos_src) : # capsule encounter
 					pl.queue_act(Character.Act.RotateCamera)
@@ -137,9 +137,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_SPACE:
 			player_list[0].queue_act(Character.Act.RotateCamera)
 		elif event.keycode == KEY_ENTER:
-			player_list[0].queue_act(Character.Act.EnterStorey)
-			player_list[0].pos_dst = storey_list[StoreyPlay].goal_pos
-
+			enter_new_storey()
 
 		else:
 			pass
@@ -163,6 +161,13 @@ func animate_act(pl :Character, dur :float)->void:
 			animate_rotate_camera_by_dur(pl,dur)
 		Character.Act.EnterStorey:
 			animate_move_by_dur(pl, dur)
+			for i in StoreyCount:
+				animate_storey_y_by_dur(i,dur)
+
+# dur : 0 - 1 :second
+func animate_storey_y_by_dur(i :int, dur :float)->void:
+	var posy = i - StoreyPlay
+	storey_list[i].position.y = lerpf(posy+1, posy, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:

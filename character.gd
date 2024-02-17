@@ -54,9 +54,7 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 		pos_dst = storey.rand_pos()
 	else:
 		pos_dst = storey.start_pos
-	#pos_dst = pos_src
 	dir_src = Storey.Dir.North
-	#dir_dst = dir_src
 	storey_act_stats = new_act_stats_dict()
 	act_queue.resize(0)
 	act_queue.append(Act.EnterStorey)

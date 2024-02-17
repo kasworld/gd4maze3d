@@ -77,7 +77,7 @@ func start_new_maze()->void:
 			player_list[i].light_on(true)
 		else:
 			player_list[i].enter_storey(storey_list[StoreyPlay], true)
-		animate_forward_by_dur(player_list[i], 0)
+		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
 
@@ -147,15 +147,15 @@ func update_info(pl :Character)->void:
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:
 		Character.Act.Forward:
-			animate_forward_by_dur(pl, dur)
+			animate_move_by_dur(pl, dur)
 		Character.Act.TurnLeft, Character.Act.TurnRight:
 			animate_turn_by_dur(pl, dur)
 		Character.Act.RotateCamera:
 			animate_rotate_camera_by_dur(pl,dur)
 
 # dur : 0 - 1 :second
-func animate_forward_by_dur(pl :Character, dur :float)->void:
-	pl.position = pl.calc_animate_forward_by_dur(dur)
+func animate_move_by_dur(pl :Character, dur :float)->void:
+	pl.position = pl.calc_animate_move_by_dur(dur)
 
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:

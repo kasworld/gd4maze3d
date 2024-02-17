@@ -5,7 +5,7 @@ class_name Character
 var storey :Storey
 
 var ani_act_dur :float # sec
-enum Act {None, Forward, TurnRight , TurnLeft, RotateCamera}
+enum Act {None, EnterStorey, Forward, TurnRight , TurnLeft, RotateCamera}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
 
@@ -154,7 +154,7 @@ func make_ai_action()->bool:
 func can_move(dir :Storey.Dir)->bool:
 	return storey.can_move(pos_old.x, pos_old.y, dir )
 
-func calc_animate_forward_by_dur(dur :float)->Vector3:
+func calc_animate_move_by_dur(dur :float)->Vector3:
 	return Vector3(
 		0.5+ lerpf(pos_old.x, pos_new.x, dur),
 		storey.storey_h/2.0,

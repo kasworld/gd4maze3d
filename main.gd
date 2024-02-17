@@ -91,7 +91,7 @@ func _process(_delta: float) -> void:
 					start_new_maze()
 					return
 				if storey_list[StoreyPlay].is_capsule_pos(pl.pos_src) : # capsule encounter
-					pl.act_queue.push_back(Character.Act.RotateCamera)
+					pl.queue_act(Character.Act.RotateCamera)
 					storey_list[StoreyPlay].remove_capsule_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
@@ -121,19 +121,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			player_list[0].auto_move = !player_list[0].auto_move
 
 		elif event.keycode == KEY_UP:
-			player_list[0].act_queue.push_back(Character.Act.Forward)
+			player_list[0].queue_act(Character.Act.Forward)
 		elif event.keycode == KEY_DOWN:
-			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
-			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
+			player_list[0].queue_act(Character.Act.TurnLeft)
+			player_list[0].queue_act(Character.Act.TurnLeft)
 		elif event.keycode == KEY_LEFT:
-			player_list[0].act_queue.push_back(Character.Act.TurnLeft)
+			player_list[0].queue_act(Character.Act.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
-			player_list[0].act_queue.push_back(Character.Act.TurnRight)
+			player_list[0].queue_act(Character.Act.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			player_list[0].act_queue.push_back(Character.Act.RotateCamera)
+			player_list[0].queue_act(Character.Act.RotateCamera)
 		elif event.keycode == KEY_ENTER:
-			player_list[0].act_queue.push_back(Character.Act.EnterStorey)
+			player_list[0].queue_act(Character.Act.EnterStorey)
 			player_list[0].pos_dst = storey_list[StoreyPlay].goal_pos
 
 

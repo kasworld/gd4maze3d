@@ -19,11 +19,12 @@ func new_act_stats_dict()->Dictionary:
 func act_stats_str(d:Dictionary)->String:
 	var rtn = ""
 	for i in Act.values():
-		var k = Act.keys()[i]
-		rtn += " %s:%d" % [k, d[i]]
+		rtn += " %s:%d" % [act2str(i), d[i]]
 	return rtn
 
 var act_queue :Array[Act]
+func queue_act(a :Act)->void:
+	act_queue.push_back(a)
 func queue_to_str()->String:
 	var rtn = ""
 	for a in act_queue:
@@ -137,23 +138,23 @@ func info_str()->String:
 func make_ai_action()->bool:
 	# try right
 	if can_move(Storey.dir_right(dir_src)):
-		act_queue.push_back(Act.TurnRight)
-		act_queue.push_back(Act.Forward)
+		queue_act(Act.TurnRight)
+		queue_act(Act.Forward)
 		return true
 	# try forward
 	if can_move(dir_src):
-		act_queue.push_back(Act.Forward)
+		queue_act(Act.Forward)
 		return true
 	# try left
 	if can_move(Storey.dir_left(dir_src)):
-		act_queue.push_back(Act.TurnLeft)
-		act_queue.push_back(Act.Forward)
+		queue_act(Act.TurnLeft)
+		queue_act(Act.Forward)
 		return true
 	# try backward
 	if can_move(Storey.dir_opposite(dir_src)):
-		act_queue.push_back(Act.TurnLeft)
-		act_queue.push_back(Act.TurnLeft)
-		act_queue.push_back(Act.Forward)
+		queue_act(Act.TurnLeft)
+		queue_act(Act.TurnLeft)
+		queue_act(Act.Forward)
 		return true
 	return false
 

@@ -56,6 +56,7 @@ func start_new_maze()->void:
 	for i in StoreyCount:
 		var posy = i - StoreyPlay
 		storey_list[i].position.y = posy
+		storey_list[i].view_floor_ceiling(false,false)
 	storey_list[0].view_floor_ceiling(true,false)
 	storey_list[StoreyCount-1].view_floor_ceiling(false,true)
 

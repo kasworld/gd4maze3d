@@ -41,18 +41,21 @@ func _ready() -> void:
 		player_list.append(pl)
 		add_child(pl)
 		pl.auto_move = true
+	for i in StoreyCount:
+		var st = new_storey()
+		st.view_floor_ceiling(false,false)
+		storey_list.append(st)
 	start_new_maze()
 
 func start_new_maze()->void:
-	for st in storey_list:
-		st.queue_free()
-	storey_list.resize(0)
+	var todelst = storey_list.pop_front()
+	remove_child(todelst)
+	todelst.queue_free()
+	var toaddst = new_storey()
+	storey_list.push_back(toaddst)
 	for i in StoreyCount:
 		var posy = i - StoreyPlay
-		var st = new_storey()
-		st.view_floor_ceiling(false,false)
-		st.position.y = posy
-		storey_list.append(st)
+		storey_list[i].position.y = posy
 	storey_list[0].view_floor_ceiling(true,false)
 	storey_list[StoreyCount-1].view_floor_ceiling(false,true)
 

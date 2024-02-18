@@ -102,7 +102,7 @@ func _process(_delta: float) -> void:
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
-			if i == 0:
+			if i == 0 and pl.act_current != Character.Act.EnterStorey:
 				var walldir = storey_list[StoreyPlay].maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
 					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])

@@ -46,6 +46,7 @@ func _ready() -> void:
 	var mi3d = new_cylinder(0.4, 0.15, NamedColorList.color_list.pick_random()[0])
 	add_child(mi3d)
 	total_act_stats = new_act_stats_dict()
+	dir_src = Storey.Dir.North
 
 func enter_storey(st :Storey, rndpos:bool)->void:
 	ani_act_dur = randf_range(0.1,1.0)
@@ -54,7 +55,7 @@ func enter_storey(st :Storey, rndpos:bool)->void:
 		pos_dst = storey.rand_pos()
 	else:
 		pos_dst = storey.start_pos
-	dir_src = Storey.Dir.North
+	#dir_src = Storey.Dir.North
 	storey_act_stats = new_act_stats_dict()
 	act_queue.resize(0)
 	act_queue.append(Act.EnterStorey)

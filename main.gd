@@ -54,56 +54,56 @@ func enter_new_storey()->void:
 	var toaddst = new_storey()
 	storey_list.push_back(toaddst)
 	for i in StoreyCount:
-		var posy = i - StoreyPlay
-		#storey_list[i].position.y = posy
 		storey_list[i].view_floor_ceiling(false,false)
 	storey_list[0].view_floor_ceiling(true,false)
 	storey_list[StoreyCount-1].view_floor_ceiling(false,true)
 
+	var cur_storey = storey_list[StoreyPlay]
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(storey_list[StoreyPlay])
+	minimap.init(cur_storey)
 
 	if minimap2draw != null:
 		minimap2draw.queue_free()
 	minimap2draw = minimap2draw_scene.instantiate()
 	add_child(minimap2draw)
-	minimap2draw.init(storey_list[StoreyPlay])
+	minimap2draw.init(cur_storey)
 
 	$Label.position.x = minimap.get_width()
 	storey_score += 1
 
 	for i in PlayerCount:
 		if i == 0:
-			player_list[i].enter_storey(storey_list[StoreyPlay],false)
+			player_list[i].enter_storey(cur_storey,false)
 			player_list[i].light_on(true)
 		else:
-			player_list[i].enter_storey(storey_list[StoreyPlay], true)
+			player_list[i].enter_storey(cur_storey, true)
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
 
 func _process(_delta: float) -> void:
+	var cur_storey = storey_list[StoreyPlay]
 	for i in PlayerCount:
 		var pl = player_list[i]
 		var ani_dur = pl.get_ani_dur()
 		if pl.act_end(ani_dur): # true on act end
 			if i == 0:
-				if storey_list[StoreyPlay].is_goal_pos(pl.pos_src):
+				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
-				if storey_list[StoreyPlay].is_capsule_pos(pl.pos_src) : # capsule encounter
+				if cur_storey.is_capsule_pos(pl.pos_src) : # capsule encounter
 					pl.queue_act(Character.Act.RotateCamera)
-					storey_list[StoreyPlay].remove_capsule_at(pl.pos_src)
+					cur_storey.remove_capsule_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
 			if i == 0 and pl.act_current != Character.Act.EnterStorey:
-				var walldir = storey_list[StoreyPlay].maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
+				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
 					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :

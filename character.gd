@@ -35,12 +35,19 @@ var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
-var camera_up :bool
 
 var act_start_time :float # unixtime sec
 var act_current : Act
 
+var is_player :bool
 var auto_move :bool
+var camera_up :bool
+
+func init(pl:bool, auto :bool)->void:
+	is_player = pl
+	auto_move = auto
+	if is_player:
+		light_on(true)
 
 func _ready() -> void:
 	var mi3d = new_cylinder(0.4, 0.15, NamedColorList.color_list.pick_random()[0])
@@ -48,13 +55,13 @@ func _ready() -> void:
 	total_act_stats = new_act_stats_dict()
 	dir_src = Storey.Dir.North
 
-func enter_storey(st :Storey, rndpos:bool)->void:
+func enter_storey(st :Storey)->void:
 	ani_act_dur = randf_range(0.1,1.0)
 	storey = st
-	if rndpos :
-		pos_dst = storey.rand_pos()
-	else:
+	if is_player :
 		pos_dst = storey.start_pos
+	else:
+		pos_dst = storey.rand_pos()
 	#dir_src = Storey.Dir.North
 	storey_act_stats = new_act_stats_dict()
 	act_queue.resize(0)

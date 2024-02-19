@@ -41,7 +41,10 @@ func _ready() -> void:
 		var pl = character_scene.instantiate()
 		player_list.append(pl)
 		add_child(pl)
-		pl.auto_move = true
+		if i == 0:
+			pl.init(true, true)
+		else :
+			pl.init(false, true)
 	for i in StoreyCount:
 		var st = new_storey()
 		storey_list.append(st)
@@ -75,11 +78,7 @@ func enter_new_storey()->void:
 	storey_score += 1
 
 	for i in PlayerCount:
-		if i == 0:
-			player_list[i].enter_storey(cur_storey,false)
-			player_list[i].light_on(true)
-		else:
-			player_list[i].enter_storey(cur_storey, true)
+		player_list[i].enter_storey(cur_storey)
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
@@ -90,7 +89,7 @@ func _process(_delta: float) -> void:
 		var pl = player_list[i]
 		var ani_dur = pl.get_ani_dur()
 		if pl.act_end(ani_dur): # true on act end
-			if i == 0:
+			if pl.is_player:
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
@@ -102,7 +101,7 @@ func _process(_delta: float) -> void:
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
-			if i == 0 and pl.act_current != Character.Act.EnterStorey:
+			if pl.is_player and pl.act_current != Character.Act.EnterStorey:
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
 					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
@@ -161,8 +160,9 @@ func animate_act(pl :Character, dur :float)->void:
 			animate_rotate_camera_by_dur(pl,dur)
 		Character.Act.EnterStorey:
 			animate_move_by_dur(pl, dur)
-			for i in StoreyCount:
-				animate_storey_y_by_dur(i,dur)
+			if pl.is_player:
+				for i in StoreyCount:
+					animate_storey_y_by_dur(i,dur)
 
 # dur : 0 - 1 :second
 func animate_storey_y_by_dur(i :int, dur :float)->void:

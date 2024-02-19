@@ -145,7 +145,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(pl :Character)->void:
-	$Label.text = "fullminimap:%s multistoreyview:%s storey %d\n%s" % [
+	$Label.text = "fullminimap:%s, single storey view:%s, storey %d\n%s" % [
 		full_minimap, view_floor_ceiling,
 		storey_score,
 		pl.info_str()]

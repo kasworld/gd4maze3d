@@ -27,12 +27,8 @@ var player_list :Array[Character]
 
 var full_minimap :bool
 func set_minimap_mode()->void:
-	if full_minimap:
-		minimap.visible = true
-		minimap2draw.visible = false
-	else :
-		minimap.visible = false
-		minimap2draw.visible = true
+	minimap.visible = full_minimap
+	minimap2draw.visible = !minimap.visible
 
 var view_floor_ceiling :bool
 

@@ -90,7 +90,8 @@ func _process(_delta: float) -> void:
 					enter_new_storey()
 					return
 				if cur_storey.is_capsule_pos(pl.pos_src) : # capsule encounter
-					pl.queue_act(Character.Act.RotateCamera)
+					pl.queue_act(Character.Act.RotateCameraRight)
+					pl.queue_act(Character.Act.RotateCameraRight)
 					cur_storey.remove_capsule_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
@@ -130,7 +131,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			player_list[0].queue_act(Character.Act.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			player_list[0].queue_act(Character.Act.RotateCamera)
+			player_list[0].queue_act(Character.Act.RotateCameraRight)
+			player_list[0].queue_act(Character.Act.RotateCameraRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -152,7 +154,7 @@ func animate_act(pl :Character, dur :float)->void:
 			animate_move_by_dur(pl, dur)
 		Character.Act.TurnLeft, Character.Act.TurnRight:
 			animate_turn_by_dur(pl, dur)
-		Character.Act.RotateCamera:
+		Character.Act.RotateCameraRight,Character.Act.RotateCameraLeft:
 			animate_rotate_camera_by_dur(pl,dur)
 		Character.Act.EnterStorey:
 			animate_move_by_dur(pl, dur)

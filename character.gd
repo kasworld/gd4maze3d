@@ -4,8 +4,20 @@ class_name Character
 
 var storey :Storey
 
+enum ViewDir {Up,Right,Down,Left}
+static func viewdir2str(vd :ViewDir)->String:
+	return ViewDir.keys()[vd]
+static func viewdir_left(d:ViewDir)->ViewDir:
+	return (d+1)%4 as ViewDir
+static func viewdir_right(d:ViewDir)->ViewDir:
+	return (d-1+4)%4 as ViewDir
+static func viewdir_opposite(d:ViewDir)->ViewDir:
+	return (d+2)%4 as ViewDir
+static func viewdir2rad(d:ViewDir)->float:
+	return deg_to_rad(d*90.0)
+
 var ani_act_dur :float # sec
-enum Act {None, EnterStorey, Forward, TurnRight , TurnLeft, RotateCamera}
+enum Act {None, EnterStorey, Forward, TurnRight , TurnLeft, RotateCameraRight, RotateCameraLeft}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
 
@@ -35,13 +47,14 @@ var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
+var view_dir :ViewDir
+var view_dir_dst :ViewDir
 
 var act_start_time :float # unixtime sec
 var act_current : Act
 
 var is_player :bool
 var auto_move :bool
-var camera_up :bool
 
 func init(pl:bool, auto :bool)->void:
 	is_player = pl
@@ -95,6 +108,7 @@ func act_end(ani_dur :float)->bool:
 	if act_current != Act.None && ani_dur > 1.0: # action ended
 		dir_src = dir_dst
 		pos_src = pos_dst
+		view_dir = view_dir_dst
 		act_current = Act.None
 		$Camera3D.rotation.z = snapped($Camera3D.rotation.z, PI)
 		return true
@@ -121,8 +135,10 @@ func start_new_act()->bool:
 				dir_dst = Storey.dir_left(dir_src)
 			Act.TurnRight:
 				dir_dst = Storey.dir_right(dir_src)
-			Act.RotateCamera:
-				camera_up = !camera_up
+			Act.RotateCameraRight:
+				view_dir_dst = Character.viewdir_right(view_dir)
+			Act.RotateCameraLeft:
+				view_dir_dst = Character.viewdir_left(view_dir)
 			Act.EnterStorey:
 				pass
 		total_act_stats[act_current] += 1
@@ -177,10 +193,7 @@ func calc_animate_turn_by_dur(dur :float)->float:
 	return lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
 
 func calc_animate_camera_rotate(dur :float)->float:
-	if camera_up:
-		return lerp_angle(0, PI, dur)
-	else :
-		return lerp_angle(PI, 0, dur)
+	return lerp_angle(Character.viewdir2rad(view_dir), Character.viewdir2rad(view_dir_dst), dur)
 
 func rotate_camera( rad :float)->void:
 	$Camera3D.rotation.z = rad

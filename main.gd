@@ -93,6 +93,10 @@ func _process(_delta: float) -> void:
 					pl.queue_act(Character.Act.RotateCameraRight)
 					pl.queue_act(Character.Act.RotateCameraRight)
 					cur_storey.remove_capsule_at(pl.pos_src)
+				if cur_storey.is_donut_pos(pl.pos_src) : # donut encounter
+					pl.queue_act(Character.Act.RotateCameraLeft)
+					pl.queue_act(Character.Act.RotateCameraLeft)
+					cur_storey.remove_donut_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
 		pl.ai_act()

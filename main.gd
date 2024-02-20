@@ -1,8 +1,5 @@
 extends Node3D
 
-# stats
-var storey_score :int
-
 var storey_scene = preload("res://storey.tscn")
 var maze_size = Vector2i(32,18)
 const StoreyCount = 7
@@ -69,8 +66,6 @@ func enter_new_storey()->void:
 	minimap2draw = minimap2draw_scene.instantiate()
 	add_child(minimap2draw)
 	minimap2draw.init(cur_storey)
-
-	storey_score += 1
 
 	for i in PlayerCount:
 		player_list[i].enter_storey(cur_storey)
@@ -149,9 +144,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(pl :Character)->void:
-	$Label.text = "fullminimap:%s, single storey view:%s, storey %d\n%s" % [
+	$Label.text = "fullminimap:%s, single storey view:%s\n%s" % [
 		full_minimap, view_floor_ceiling,
-		storey_score,
 		pl.info_str()]
 
 func animate_act(pl :Character, dur :float)->void:

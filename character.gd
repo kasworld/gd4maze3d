@@ -147,9 +147,9 @@ func start_new_act()->bool:
 	return false
 
 func info_str()->String:
-	return "total:%s\nin storey:%s\nautomove:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\n[%s]" % [
+	return "total:%s\nin storey:%s\nautomove:%s, view rotate:%s°\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\nOpen: %s" % [
 		act_stats_str(total_act_stats), act_stats_str(storey_act_stats),
-		auto_move,
+		auto_move, view_dir*90,
 		act2str(act_current), queue_to_str(),
 		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,

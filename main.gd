@@ -91,10 +91,10 @@ func _process(_delta: float) -> void:
 					return
 				if cur_storey.is_capsule_pos(pl.pos_src) : # capsule encounter
 					pl.queue_act(Character.Act.RotateCameraRight)
-					pl.queue_act(Character.Act.RotateCameraRight)
+					#pl.queue_act(Character.Act.RotateCameraRight)
 					cur_storey.remove_capsule_at(pl.pos_src)
 				if cur_storey.is_donut_pos(pl.pos_src) : # donut encounter
-					pl.queue_act(Character.Act.RotateCameraLeft)
+					#pl.queue_act(Character.Act.RotateCameraLeft)
 					pl.queue_act(Character.Act.RotateCameraLeft)
 					cur_storey.remove_donut_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
@@ -136,7 +136,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 		elif event.keycode == KEY_SPACE:
 			player_list[0].queue_act(Character.Act.RotateCameraRight)
-			player_list[0].queue_act(Character.Act.RotateCameraRight)
+			#player_list[0].queue_act(Character.Act.RotateCameraRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 

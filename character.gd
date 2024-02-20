@@ -110,7 +110,7 @@ func act_end(ani_dur :float)->bool:
 		pos_src = pos_dst
 		view_dir = view_dir_dst
 		act_current = Act.None
-		$Camera3D.rotation.z = snapped($Camera3D.rotation.z, PI)
+		$Camera3D.rotation.z = snapped($Camera3D.rotation.z, PI/2)
 		return true
 	return false
 

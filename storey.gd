@@ -56,6 +56,7 @@ func is_goal_pos(p :Vector2i)->bool:
 	return goal_pos == p
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
+
 var capsule_pos_dic :Dictionary
 func is_capsule_pos(p :Vector2i)->bool:
 	return capsule_pos_dic.get(p)!=null
@@ -66,6 +67,29 @@ func remove_capsule_at(p :Vector2i)->bool:
 		c.queue_free()
 		return true
 	return false
+func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
+	var n = new_capsule(0.3,0.05,get_color_mat(co))
+	n.position=Vector3(0.5+ p.x, storey_h/4.0, 0.5+  p.y)
+	add_child(n)
+	return n
+
+var donut_pos_dic :Dictionary
+func is_donut_pos(p :Vector2i)->bool:
+	return donut_pos_dic.get(p)!=null
+func remove_donut_at(p :Vector2i)->bool:
+	var c = donut_pos_dic.get(p)
+	donut_pos_dic.erase(p)
+	if c != null :
+		c.queue_free()
+		return true
+	return false
+func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
+	var n = new_torus(0.1, 0.2, get_color_mat(co))
+	n.position=Vector3(0.5+ p.x, storey_h/4.0, 0.5+  p.y)
+	add_child(n)
+	return n
+
+
 var storey_h = 1.0
 var wall_thick :float
 
@@ -103,18 +127,16 @@ func init(msize :Vector2i)->void:
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
 				var co = NamedColorList.color_list.pick_random()[0]
-				var c = add_capsule_at(p, co)
-				capsule_pos_dic[p]=c
+				if randi_range(0,1)==0:
+					var c = add_capsule_at(p, co)
+					capsule_pos_dic[p]=c
+				else:
+					var c = add_donut_at(p, co)
+					donut_pos_dic[p]=c
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
 	n.position=Vector3(0.5+ p.x, storey_h/2.0, 0.5+  p.y)
-	add_child(n)
-	return n
-
-func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_capsule(0.3,0.05,get_color_mat(co))
-	n.position=Vector3(0.5+ p.x, storey_h/4.0, 0.5+  p.y)
 	add_child(n)
 	return n
 
@@ -126,6 +148,8 @@ func _process(delta: float) -> void:
 	goal_node.rotate_y(delta)
 	for p in capsule_pos_dic:
 		capsule_pos_dic[p].rotate_y(delta)
+	for p in donut_pos_dic:
+		donut_pos_dic[p].rotate_y(delta)
 
 func view_floor_ceiling(f :bool,c :bool)->void:
 	$Floor.visible = f
@@ -183,13 +207,14 @@ func new_text(fsize :float, d :float, mat :Material, text :String)->MeshInstance
 	sp.mesh = mesh
 	return sp
 
-func new_torus(r :float, mat :Material)->MeshInstance3D:
+func new_torus(r1 :float, r2 :float, mat :Material)->MeshInstance3D:
 	var mesh = TorusMesh.new()
-	mesh.inner_radius = r/2
-	mesh.outer_radius = r
+	mesh.inner_radius = r1
+	mesh.outer_radius = r2
 	mesh.material = mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
+	sp.rotate_x(PI/2)
 	return sp
 
 func new_capsule(h :float,r:float, mat :Material)->MeshInstance3D:

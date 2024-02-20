@@ -99,7 +99,7 @@ func init(msize :Vector2i)->void:
 	for y in maze_size.y:
 		for x in maze_size.x:
 			var p = Vector2i(x,y)
-			if p == goal_pos || p == start_node :
+			if p == goal_pos || p == start_pos :
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
 				var co = NamedColorList.color_list.pick_random()[0]

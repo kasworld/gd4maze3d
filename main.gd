@@ -70,7 +70,6 @@ func enter_new_storey()->void:
 	add_child(minimap2draw)
 	minimap2draw.init(cur_storey)
 
-	$Label.position.x = minimap.get_width()
 	storey_score += 1
 
 	for i in PlayerCount:
@@ -78,6 +77,9 @@ func enter_new_storey()->void:
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
+
+	minimap.position.y = ProjectSettings.get_setting("display/window/size/viewport_height")-minimap.get_height()
+	minimap2draw.position.y = minimap.position.y
 
 func _process(_delta: float) -> void:
 	var cur_storey = storey_list[StoreyPlay]

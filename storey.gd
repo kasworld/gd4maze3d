@@ -98,12 +98,13 @@ func init(msize :Vector2i)->void:
 	goal_node = add_text_mark_at(goal_pos, Color.YELLOW, "Goal")
 	for y in maze_size.y:
 		for x in maze_size.x:
+			var p = Vector2i(x,y)
+			if p == goal_pos || p == start_node :
+				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
-				var p = Vector2i(x,y)
 				var co = NamedColorList.color_list.pick_random()[0]
 				var c = add_capsule_at(p, co)
 				capsule_pos_dic[p]=c
-
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)

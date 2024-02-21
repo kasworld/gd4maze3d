@@ -3,12 +3,13 @@ extends Node3D
 class_name Storey
 
 var tex_dict = {
-	brownbrick = preload("res://image/brownbrick.png"),
-	bluestone = preload("res://image/bluestone.png"),
-	drymud = preload("res://image/drymud.png"),
-	graystone = preload("res://image/graystone.png"),
-	pinkstone = preload("res://image/pinkstone.png"),
-	greenstone = preload("res://image/greenstone.png"),
+	brownbrick = preload("res://image/brownbrick50.png"),
+	bluestone = preload("res://image/bluestone50.png"),
+	drymud = preload("res://image/drymud50.png"),
+	graystone = preload("res://image/graystone50.png"),
+	pinkstone = preload("res://image/pinkstone50.png"),
+	greenstone = preload("res://image/greenstone50.png"),
+	ice50 = preload("res://image/ice50.png")
 }
 
 # x90 == degree
@@ -107,11 +108,12 @@ func init(msize :Vector2i)->void:
 	$Floor.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Floor.position = Vector3(maze_size.x/2.0, 0, maze_size.y/2.0)
 	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
-	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 
 	$Ceiling.mesh.size = Vector2(maze_size.x, maze_size.y)
 	$Ceiling.position = Vector3(maze_size.x/2.0, storey_h, maze_size.y/2.0)
 	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
+	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
@@ -177,9 +179,10 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 	match randi_range(0,10):
 		0:
 			mat.albedo_texture = sub_wall_tex
+			mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 		_:
 			mat.albedo_texture = main_wall_tex
-	var w = new_box(Vector3(1,1,wall_thick), mat)
+	var w = new_box(Vector3(0.99,0.99,wall_thick), mat)
 	if face_x:
 		w.rotate_y(PI/2)
 		w.position = Vector3( x  , storey_h/2.0 , y as float +0.5)

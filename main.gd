@@ -144,8 +144,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(pl :Character)->void:
-	$Label.text = "fullminimap:%s, single storey view:%s\n%s" % [
+	$Label.text = "fullminimap:%s, single storey view:%s\nstorey %s\n%s" % [
 		full_minimap, view_floor_ceiling,
+		storey_list[StoreyPlay].info_str(),
 		pl.info_str()]
 
 func animate_act(pl :Character, dur :float)->void:

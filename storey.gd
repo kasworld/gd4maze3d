@@ -69,7 +69,7 @@ func remove_capsule_at(p :Vector2i)->bool:
 		return true
 	return false
 func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_capsule(0.3,0.05,get_color_mat(co))
+	var n = new_capsule(storey_h*0.3,storey_h*0.05,get_color_mat(co))
 	n.position=Vector3(0.5+ p.x, storey_h/4.0, 0.5+  p.y)
 	add_child(n)
 	return n
@@ -85,14 +85,16 @@ func remove_donut_at(p :Vector2i)->bool:
 		return true
 	return false
 func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_torus(0.1, 0.2, get_color_mat(co))
+	var n = new_torus(storey_h*0.1,storey_h* 0.2, get_color_mat(co))
 	n.position=Vector3(0.5+ p.x, storey_h/4.0, 0.5+  p.y)
 	add_child(n)
 	return n
 
-
 var storey_h = 1.0
 var wall_thick :float
+
+func info_str()->String:
+	return "size:%s, wall thick:%f" % [maze_size, wall_thick ]
 
 var main_wall_tex :CompressedTexture2D
 var sub_wall_tex :CompressedTexture2D
@@ -182,7 +184,7 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 			mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 		_:
 			mat.albedo_texture = main_wall_tex
-	var w = new_box(Vector3(0.99,0.99,wall_thick), mat)
+	var w = new_box(Vector3(storey_h*0.99,storey_h*0.99,wall_thick), mat)
 	if face_x:
 		w.rotate_y(PI/2)
 		w.position = Vector3( x  , storey_h/2.0 , y as float +0.5)

@@ -2,15 +2,20 @@ extends Node3D
 
 var storey_scene = preload("res://storey.tscn")
 var maze_size = Vector2i(32,18)
-const StoreyCount = 7
-const StoreyPlay = int(StoreyCount/2)
+const StoreyCount :int = 7
+const StoreyPlay :int = int(StoreyCount/2)
 var storey_list :Array[Storey]
-
-func new_storey()->Storey:
+func get_cur_storey()->Storey:
+	return storey_list[StoreyPlay]
+func add_new_storey()->void:
 	var st = storey_scene.instantiate()
 	add_child(st)
 	st.init(maze_size)
-	return st
+	storey_list.append(st)
+func del_old_storey()->void:
+	var st = storey_list.pop_front()
+	remove_child(st)
+	st.queue_free()
 
 var minimap_scene = preload("res://mini_map.tscn")
 var minimap :MiniMap
@@ -21,6 +26,8 @@ var minimap2draw :MiniMap2Draw
 var character_scene = preload("res://character.tscn")
 const PlayerCount = 10
 var player_list :Array[Character]
+func get_main_char()->Character:
+	return player_list[0]
 
 var full_minimap :bool
 func set_minimap_mode()->void:
@@ -34,27 +41,23 @@ func _ready() -> void:
 		var pl = character_scene.instantiate()
 		player_list.append(pl)
 		add_child(pl)
-		if i == 0:
+		if i == 0: # set is_player
 			pl.init(true, true)
 		else :
 			pl.init(false, true)
 	for i in StoreyCount:
-		var st = new_storey()
-		storey_list.append(st)
+		add_new_storey()
 	enter_new_storey()
 
 func enter_new_storey()->void:
-	var todelst = storey_list.pop_front()
-	remove_child(todelst)
-	todelst.queue_free()
-	var toaddst = new_storey()
-	storey_list.push_back(toaddst)
+	del_old_storey()
+	add_new_storey()
 	for i in StoreyCount:
 		storey_list[i].view_floor_ceiling(false,false)
 	storey_list[0].view_floor_ceiling(true,false)
 	storey_list[StoreyCount-1].view_floor_ceiling(false,true)
 
-	var cur_storey = storey_list[StoreyPlay]
+	var cur_storey = get_cur_storey()
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
@@ -77,7 +80,7 @@ func enter_new_storey()->void:
 	minimap2draw.position.y = minimap.position.y
 
 func _process(_delta: float) -> void:
-	var cur_storey = storey_list[StoreyPlay]
+	var cur_storey = get_cur_storey()
 	for i in PlayerCount:
 		var pl = player_list[i]
 		var ani_dur = pl.get_ani_dur()
@@ -105,7 +108,7 @@ func _process(_delta: float) -> void:
 					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
-	update_info(player_list[0])
+	update_info()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -117,23 +120,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_minimap_mode()
 		elif event.keycode == KEY_2:
 			view_floor_ceiling = !view_floor_ceiling
-			storey_list[StoreyPlay].view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+			get_cur_storey().view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 		elif event.keycode == KEY_3:
-			player_list[0].auto_move = !player_list[0].auto_move
+			get_main_char().auto_move = !get_main_char().auto_move
 
 		elif event.keycode == KEY_UP:
-			player_list[0].queue_act(Character.Act.Forward)
+			get_main_char().queue_act(Character.Act.Forward)
 		elif event.keycode == KEY_DOWN:
-			player_list[0].queue_act(Character.Act.TurnLeft)
-			player_list[0].queue_act(Character.Act.TurnLeft)
+			get_main_char().queue_act(Character.Act.TurnLeft)
+			get_main_char().queue_act(Character.Act.TurnLeft)
 		elif event.keycode == KEY_LEFT:
-			player_list[0].queue_act(Character.Act.TurnLeft)
+			get_main_char().queue_act(Character.Act.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
-			player_list[0].queue_act(Character.Act.TurnRight)
+			get_main_char().queue_act(Character.Act.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			player_list[0].queue_act(Character.Act.RotateCameraRight)
-			#player_list[0].queue_act(Character.Act.RotateCameraRight)
+			get_main_char().queue_act(Character.Act.RotateCameraRight)
+			#get_main_char().queue_act(Character.Act.RotateCameraRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -143,11 +146,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
-func update_info(pl :Character)->void:
+func update_info()->void:
 	$Label.text = "fullminimap:%s, single storey view:%s\nstorey %s\n%s" % [
 		full_minimap, view_floor_ceiling,
-		storey_list[StoreyPlay].info_str(),
-		pl.info_str()]
+		get_cur_storey().info_str(),
+		get_main_char().info_str()]
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

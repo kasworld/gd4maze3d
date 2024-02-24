@@ -58,6 +58,7 @@ func is_goal_pos(p :Vector2i)->bool:
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
 
+
 var capsule_pos_dic :Dictionary
 func is_capsule_pos(p :Vector2i)->bool:
 	return capsule_pos_dic.get(p)!=null
@@ -70,7 +71,7 @@ func remove_capsule_at(p :Vector2i)->bool:
 	return false
 func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = new_capsule(lane_w*0.3,lane_w*0.05,get_color_mat(co))
-	n.position=Vector3(lane_w/2+ p.x, storey_h/4.0, lane_w/2+  p.y)
+	n.position = mazepos2storeypos(p, storey_h/4.0)
 	add_child(n)
 	return n
 
@@ -86,13 +87,15 @@ func remove_donut_at(p :Vector2i)->bool:
 	return false
 func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = new_torus(lane_w*0.1,lane_w* 0.2, get_color_mat(co))
-	n.position=Vector3(lane_w/2+ p.x, storey_h/4.0, lane_w/2+  p.y)
+	n.position = mazepos2storeypos(p, storey_h/4.0)
 	add_child(n)
 	return n
 
 var storey_h = 1.0
 var lane_w = 1.0
 var wall_thick :float
+func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
+	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
 func info_str()->String:
 	return "size:%s, height:%f, lane_w:%f, wall_thick:%f" % [
@@ -142,7 +145,7 @@ func init(msize :Vector2i)->void:
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
-	n.position=Vector3(lane_w/2+ p.x, storey_h/2.0, lane_w/2+  p.y)
+	n.position = mazepos2storeypos(p, storey_h/2.0)
 	add_child(n)
 	return n
 
@@ -178,7 +181,7 @@ func make_wall_by_maze()->void:
 			add_wall_at( maze_size.x , y , true)
 
 
-func add_wall_at(x:int,y :int, face_x :bool)->void:
+func add_wall_at(x :int, y :int, face_x :bool)->void:
 	var mat = StandardMaterial3D.new()
 	match randi_range(0,10):
 		0:
@@ -189,9 +192,9 @@ func add_wall_at(x:int,y :int, face_x :bool)->void:
 	var w = new_box(Vector3(lane_w*0.99,storey_h*0.99,wall_thick), mat)
 	if face_x:
 		w.rotate_y(PI/2)
-		w.position = Vector3( x *lane_w  , storey_h/2.0 , y *lane_w as float +lane_w/2)
+		w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	else :
-		w.position = Vector3( x *lane_w as float +lane_w/2 , storey_h/2.0 , y *lane_w)
+		w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	$WallContainer.add_child(w)
 
 func can_move(x :int , y :int, dir :Dir)->bool:

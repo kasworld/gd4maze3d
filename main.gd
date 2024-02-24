@@ -1,7 +1,7 @@
 extends Node3D
 
 var storey_scene = preload("res://storey.tscn")
-var maze_size = Vector2i(32,18)
+var maze_size = Vector2i(32*2,18*2)
 const StoreyCount :int = 7
 const StoreyPlay :int = int(StoreyCount/2)
 var storey_list :Array[Storey]
@@ -47,7 +47,12 @@ func _ready() -> void:
 			pl.init(false, true)
 	for i in StoreyCount:
 		add_new_storey()
+	get_viewport().size_changed.connect(vpsize_changed)
 	enter_new_storey()
+
+func vpsize_changed()->void:
+	minimap.position.y = get_viewport().get_visible_rect().size.y -minimap.get_height()
+	minimap2draw.position.y = minimap.position.y
 
 func enter_new_storey()->void:
 	del_old_storey()
@@ -76,10 +81,9 @@ func enter_new_storey()->void:
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
 
-	minimap.position.y = ProjectSettings.get_setting("display/window/size/viewport_height")-minimap.get_height()
-	minimap2draw.position.y = minimap.position.y
+	vpsize_changed()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	for i in PlayerCount:
 		var pl = player_list[i]
@@ -108,7 +112,7 @@ func _process(_delta: float) -> void:
 					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
-	update_info()
+	update_info(delta)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -146,9 +150,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
-func update_info()->void:
-	$Label.text = "fullminimap:%s, single storey view:%s\nstorey %s\n%s" % [
-		full_minimap, view_floor_ceiling,
+func update_info(dur :float)->void:
+	$Label.text = "fullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s" % [
+		full_minimap, view_floor_ceiling, 1.0/dur,
 		get_cur_storey().info_str(),
 		get_main_char().info_str()]
 

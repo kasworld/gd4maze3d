@@ -91,8 +91,8 @@ func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	add_child(n)
 	return n
 
-var storey_h = 1.0
-var lane_w = 1.0
+var storey_h = 3.0
+var lane_w = 4.0
 var wall_thick :float
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)

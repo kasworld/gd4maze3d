@@ -1,7 +1,7 @@
 extends Node3D
 
 var storey_scene = preload("res://storey.tscn")
-var maze_size = Vector2i(32*2,18*2)
+var maze_size = Vector2i(32,18)
 const StoreyCount :int = 7
 const StoreyPlay :int = int(StoreyCount/2)
 var storey_list :Array[Storey]
@@ -172,8 +172,9 @@ func animate_act(pl :Character, dur :float)->void:
 
 # dur : 0 - 1 :second
 func animate_storey_y_by_dur(i :int, dur :float)->void:
-	var posy = i - StoreyPlay
-	storey_list[i].position.y = lerpf(posy+1, posy, dur)
+	var storey_h = storey_list[i].storey_h
+	var posy = (i - StoreyPlay)*storey_h
+	storey_list[i].position.y = lerpf(posy+storey_h, posy, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:

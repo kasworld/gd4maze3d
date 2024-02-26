@@ -81,6 +81,7 @@ func enter_storey(st :Storey)->void:
 
 func light_on(b :bool)->void:
 	$SpotLight3D.visible = b
+	#$OmniLight3D.visible = b
 	$Camera3D.visible = b
 	$Camera3D.current = b
 

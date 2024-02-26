@@ -25,6 +25,7 @@ var player :Line2D
 func move_player(x:int, y:int)->void:
 	player.position = Vector2(x,y)*Scale
 
+var walllines :PackedVector2Array =[]
 func init(st :Storey)->void:
 	storey = st
 	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
@@ -34,21 +35,25 @@ func init(st :Storey)->void:
 	for cl in walls:
 		cl.resize(storey.maze_size.x*2+1)
 
+func _draw() -> void:
+	if walllines.size() == 0 :
+		return
+	draw_multiline(walllines,Color(Color.WHITE,0.5), 1.0)
+
 func add_wall_at(x:int,y :int, dir :Storey.Dir)->void:
 	if is_wall_at(x,y,dir):
 		return
 	set_wall_at(x,y,dir)
-	var ln :Line2D
 	match dir:
 		Storey.Dir.North:
-			ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x+1,y)*Scale])
+			walllines.append_array([Vector2(x,y)*Scale,Vector2(x+1,y)*Scale])
 		Storey.Dir.West:
-			ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x,y+1)*Scale])
+			walllines.append_array([Vector2(x,y)*Scale,Vector2(x,y+1)*Scale])
 		Storey.Dir.South:
-			ln = new_line( 2, Color.WHITE, [Vector2(x,y+1)*Scale,Vector2(x+1,y+1)*Scale])
+			walllines.append_array([Vector2(x,y+1)*Scale,Vector2(x+1,y+1)*Scale])
 		Storey.Dir.East:
-			ln = new_line( 2, Color.WHITE, [Vector2(x+1,y)*Scale,Vector2(x+1,y+1)*Scale])
-	add_child(ln)
+			walllines.append_array([Vector2(x+1,y)*Scale,Vector2(x+1,y+1)*Scale])
+	queue_redraw()
 
 # between wall
 func add_point_at(x:int,y :int, co:Color)->Line2D:

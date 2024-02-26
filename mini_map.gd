@@ -13,6 +13,8 @@ func get_width()->int:
 func get_height()->int:
 	return storey.maze_size.y * Scale
 
+var walllines :PackedVector2Array
+
 func init(st :Storey)->void:
 	storey = st
 	make_wall_by_maze()
@@ -40,13 +42,14 @@ func make_wall_by_maze()->void:
 		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , true)
 
+func _draw() -> void:
+	draw_multiline(walllines,Color(Color.WHITE,0.5), 1.0)
+
 func add_wall_at(x:int,y :int, face_x :bool)->void:
-	var ln :Line2D
 	if face_x:
-		ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x,y+1)*Scale])
+		walllines.append_array([Vector2(x,y)*Scale,Vector2(x,y+1)*Scale])
 	else :
-		ln = new_line( 2, Color.WHITE, [Vector2(x,y)*Scale,Vector2(x+1,y)*Scale])
-	add_child(ln)
+		walllines.append_array([Vector2(x,y)*Scale,Vector2(x+1,y)*Scale])
 
 # between wall
 func add_point_at(x:int,y :int, co:Color)->Line2D:

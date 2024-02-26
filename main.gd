@@ -1,7 +1,7 @@
 extends Node3D
 
 var storey_scene = preload("res://storey.tscn")
-var maze_size = Vector2i(32,18)
+var maze_size = Vector2i(32*1,18*1)
 const StoreyCount :int = 7
 const StoreyPlay :int = int(StoreyCount/2)
 var storey_list :Array[Storey]

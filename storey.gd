@@ -50,14 +50,19 @@ static func dir2rad(d:Dir)->float:
 	return deg_to_rad(d*90.0)
 
 var maze_size : Vector2i
-var maze_cells :Maze
+var storey_h :float
+var lane_w :float
+var wall_thick :float
 var start_pos :Vector2i
 var goal_pos :Vector2i
+
+var maze_cells :Maze
 func is_goal_pos(p :Vector2i)->bool:
 	return goal_pos == p
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
-
+func rand_pos()->Vector2i:
+	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
 var capsule_pos_dic :Dictionary
 func is_capsule_pos(p :Vector2i)->bool:
@@ -91,21 +96,22 @@ func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	add_child(n)
 	return n
 
-var storey_h = 3.0
-var lane_w = 4.0
-var wall_thick :float
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
 func info_str()->String:
 	return "size:%s, height:%f, lane_w:%f, wall_thick:%f" % [
-		maze_size,storey_h, lane_w, wall_thick ]
+		maze_size,storey_h, lane_w, wall_thick*lane_w ]
 
 var main_wall_tex :CompressedTexture2D
 var sub_wall_tex :CompressedTexture2D
-func init(msize :Vector2i)->void:
+func init(msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
 	maze_size = msize
-	wall_thick = randf_range(lane_w*0.01,lane_w*0.1)
+	storey_h = h
+	lane_w = lw
+	wall_thick = wt
+	start_pos = stp
+	goal_pos = gp
 
 	var tex_keys = tex_dict.keys()
 	tex_keys.shuffle()
@@ -125,9 +131,7 @@ func init(msize :Vector2i)->void:
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
 	make_wall_by_maze()
-	start_pos = rand_pos()
 	start_node = add_text_mark_at(start_pos, Color.YELLOW, "Start")
-	goal_pos = rand_pos()
 	goal_node = add_text_mark_at(goal_pos, Color.YELLOW, "Goal")
 	for y in maze_size.y:
 		for x in maze_size.x:
@@ -149,8 +153,6 @@ func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	add_child(n)
 	return n
 
-func rand_pos()->Vector2i:
-	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)

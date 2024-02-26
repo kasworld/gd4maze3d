@@ -10,7 +10,11 @@ const StoreyPlay :int = int(StoreyCount/2)
 var storey_list :Array[Storey]
 func get_cur_storey()->Storey:
 	return storey_list[StoreyPlay]
-func add_new_storey(msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
+func add_new_storey(msize :Vector2i, h :float, lw :float, wt :float)->void:
+	var gp = rand_pos()
+	var stp = rand_pos()
+	if storey_list.size() > 0 :
+		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate()
 	add_child(st)
 	st.init(msize,h,lw,wt,stp,gp)
@@ -51,7 +55,7 @@ func _ready() -> void:
 		else :
 			pl.init(false, true)
 	for i in StoreyCount:
-		add_new_storey(maze_size,storey_h,lane_w,wall_thick,rand_pos(),rand_pos())
+		add_new_storey(maze_size,storey_h,lane_w,wall_thick)
 	get_viewport().size_changed.connect(vpsize_changed)
 	enter_new_storey()
 
@@ -61,7 +65,7 @@ func vpsize_changed()->void:
 
 func enter_new_storey()->void:
 	del_old_storey()
-	add_new_storey(maze_size,storey_h,lane_w,wall_thick,rand_pos(),rand_pos())
+	add_new_storey(maze_size,storey_h,lane_w,wall_thick)
 	for i in StoreyCount:
 		storey_list[i].view_floor_ceiling(false,false)
 	storey_list[0].view_floor_ceiling(true,false)
@@ -177,9 +181,9 @@ func animate_act(pl :Character, dur :float)->void:
 
 # dur : 0 - 1 :second
 func animate_storey_y_by_dur(i :int, dur :float)->void:
-	var storey_h = storey_list[i].storey_h
-	var posy = (i - StoreyPlay)*storey_h
-	storey_list[i].position.y = lerpf(posy+storey_h, posy, dur)
+	var sth = storey_list[i].storey_h
+	var posy = (i - StoreyPlay)*sth
+	storey_list[i].position.y = lerpf(posy+sth, posy, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:

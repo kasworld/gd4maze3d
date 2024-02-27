@@ -148,7 +148,7 @@ func start_new_act()->bool:
 	return false
 
 func info_str()->String:
-	return "automove:%s, view rotate:%s°, act %f /sec" % [
+	return "automove:%s, view rotate:%s°, act %.1f /sec" % [
 		auto_move, view_dir*90, 1.0/ani_act_dur,
 		]
 

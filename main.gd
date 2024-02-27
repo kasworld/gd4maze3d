@@ -202,7 +202,7 @@ func update_info(dur :float)->void:
 	var debugstr = ""
 	if debug_on:
 		debugstr = get_main_char().debug_str()
-	$Label.text = "storey %d/%d, fullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s\n%s\n%s" % [
+	$Label.text = "storey %d/%d, fullminimap:%s, single storey view:%s, FPS:%.1f\nstorey %s\n%s\n%s\n%s" % [
 		cur_storey_index,storey_list.size(), full_minimap, view_floor_ceiling, 1.0/dur,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),

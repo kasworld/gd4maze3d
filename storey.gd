@@ -100,7 +100,7 @@ func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
 func info_str()->String:
-	return "size:%s, height:%f, lane_w:%f, wall_thick:%f" % [
+	return "size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f" % [
 		maze_size,storey_h, lane_w, wall_thick*lane_w ]
 
 var main_wall_tex :CompressedTexture2D

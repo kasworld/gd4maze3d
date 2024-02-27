@@ -191,7 +191,7 @@ func add_wall_at(x :int, y :int, face_x :bool)->void:
 			mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 		_:
 			mat.albedo_texture = main_wall_tex
-	var w = new_box(Vector3(lane_w*0.99,storey_h*0.99,wall_thick), mat)
+	var w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
 	if face_x:
 		w.rotate_y(PI/2)
 		w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)

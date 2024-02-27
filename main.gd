@@ -59,6 +59,9 @@ func set_minimap_mode()->void:
 
 var view_floor_ceiling :bool
 
+func help_str()->String:
+	return "gd4maze3d 3.2.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+
 func _ready() -> void:
 	var tex_keys = tex_dict.keys()
 	tex_keys.shuffle()
@@ -86,8 +89,10 @@ func _ready() -> void:
 	enter_new_storey()
 
 func vpsize_changed()->void:
-	minimap.position.y = get_viewport().get_visible_rect().size.y -minimap.get_height()
+	minimap.position.y = get_viewport().get_visible_rect().size.y -minimap.get_height() -2
+	minimap.position.x = 2
 	minimap2draw.position.y = minimap.position.y
+	minimap2draw.position.x = 2
 
 func enter_new_storey()->void:
 	if storey_list.size() >= MaxStoreyCount:
@@ -209,8 +214,6 @@ func update_info(dur :float)->void:
 		helpstr, debugstr,
 		]
 
-func help_str()->String:
-	return "gd4maze3d 3.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

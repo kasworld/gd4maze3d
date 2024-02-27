@@ -1,13 +1,15 @@
 extends Node3D
 
-var storey_scene = preload("res://storey.tscn")
+# main params
 var maze_size = Vector2i(32*1,18*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
-const InitialStoreyCount :int = 3
+const InitialStoreyCount :int = 3 # +1 on enter_new_storey
 const MaxStoreyCount :int = InitialStoreyCount *3
-var cur_storey_index :int = -1
+var cur_storey_index :int = -1 # +1 on enter_new_storey
+
+var storey_scene = preload("res://storey.tscn")
 var storey_list :Array[Storey]
 func get_cur_storey()->Storey:
 	return storey_list[cur_storey_index]
@@ -140,6 +142,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_cur_storey().view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 		elif event.keycode == KEY_3:
 			get_main_char().auto_move = !get_main_char().auto_move
+		elif event.keycode == KEY_H:
+			help_on = !help_on
+		elif event.keycode == KEY_D:
+			debug_on = !debug_on
 
 		elif event.keycode == KEY_UP:
 			get_main_char().queue_act(Character.Act.Forward)
@@ -163,11 +169,24 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
+var help_on :bool = true
+var debug_on :bool
 func update_info(dur :float)->void:
-	$Label.text = "gd4maze3d 2.0.0\nstorey %d/%d, fullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s" % [
+	var helpstr = ""
+	if help_on:
+		helpstr = help_str()
+	var debugstr = ""
+	if debug_on:
+		debugstr = get_main_char().debug_str()
+	$Label.text = "storey %d/%d, fullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s\n%s\n%s" % [
 		cur_storey_index,storey_list.size(), full_minimap, view_floor_ceiling, 1.0/dur,
 		get_cur_storey().info_str(),
-		get_main_char().info_str()]
+		get_main_char().info_str(),
+		helpstr, debugstr,
+		]
+
+func help_str()->String:
+	return "gd4maze3d 2.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

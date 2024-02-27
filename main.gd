@@ -160,7 +160,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(dur :float)->void:
-	$Label.text = "fullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s" % [
+	$Label.text = "gd4maze3d 1.0.0\nfullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s" % [
 		full_minimap, view_floor_ceiling, 1.0/dur,
 		get_cur_storey().info_str(),
 		get_main_char().info_str()]

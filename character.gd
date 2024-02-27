@@ -162,7 +162,6 @@ func debug_str()->String:
 		storey.open_dir_str(pos_src.x, pos_src.y),
 		]
 
-
 func make_ai_action()->bool:
 	# try right
 	if can_move(Storey.dir_right(dir_src)):

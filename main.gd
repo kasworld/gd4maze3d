@@ -19,7 +19,6 @@ var tex_dict = {
 	ice50 = preload("res://image/ice50.png")
 }
 
-
 var storey_scene = preload("res://storey.tscn")
 var storey_list :Array[Storey]
 func get_cur_storey()->Storey:
@@ -72,7 +71,6 @@ func _ready() -> void:
 	$Ceiling.position = Vector3(maze_size.x*lane_w/2.0, storey_h, maze_size.y*lane_w/2.0)
 	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
 	#$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-
 
 	for i in PlayerCount:
 		var pl = character_scene.instantiate()
@@ -143,6 +141,7 @@ func _process(delta: float) -> void:
 					cur_storey.remove_donut_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
+				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
 			ani_dur = 0
@@ -211,7 +210,7 @@ func update_info(dur :float)->void:
 		]
 
 func help_str()->String:
-	return "gd4maze3d 2.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 3.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

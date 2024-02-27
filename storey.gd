@@ -118,13 +118,15 @@ func init(msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Ve
 	main_wall_tex = tex_dict[tex_keys[2]]
 	sub_wall_tex = tex_dict[tex_keys[3]]
 
-	$Floor.mesh.size = Vector2(maze_size.x*lane_w, maze_size.y*lane_w)
-	$Floor.position = Vector3(maze_size.x*lane_w/2.0, 0, maze_size.y*lane_w/2.0)
+	var meshx = maze_size.x*lane_w +wall_thick*2
+	var meshy = maze_size.y*lane_w +wall_thick*2
+	$Floor.mesh.size = Vector2(meshx, meshy)
+	$Floor.position = Vector3(meshx/2, 0, meshy/2)
 	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
 	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 
-	$Ceiling.mesh.size = $Floor.mesh.size
-	$Ceiling.position = Vector3(maze_size.x*lane_w/2.0, storey_h, maze_size.y*lane_w/2.0)
+	$Ceiling.mesh.size = Vector2(meshx, meshy)
+	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
 	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
 	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 

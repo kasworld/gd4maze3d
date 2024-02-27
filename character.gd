@@ -56,15 +56,13 @@ var act_current : Act
 var is_player :bool
 var auto_move :bool
 
-func init(pl:bool, auto :bool)->void:
+func init(lane_w:float, pl:bool, auto :bool)->void:
+	var mi3d = new_cylinder(0.4*lane_w, 0.15*lane_w, NamedColorList.color_list.pick_random()[0])
+	add_child(mi3d)
 	is_player = pl
 	auto_move = auto
 	if is_player:
 		light_on(true)
-
-func _ready() -> void:
-	var mi3d = new_cylinder(0.4, 0.15, NamedColorList.color_list.pick_random()[0])
-	add_child(mi3d)
 	total_act_stats = new_act_stats_dict()
 	dir_src = Storey.Dir.North
 

@@ -1,12 +1,14 @@
 extends Node3D
 
+
 # main params
+const PlayerCount = 10
+const InitialStoreyCount :int = 3 # +1 on enter_new_storey
+const MaxStoreyCount :int = InitialStoreyCount *3
 var maze_size = Vector2i(32*1,18*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
-const InitialStoreyCount :int = 3 # +1 on enter_new_storey
-const MaxStoreyCount :int = InitialStoreyCount *3
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 
 var tex_dict = {
@@ -47,7 +49,6 @@ var minimap2draw_scene = preload("res://mini_map_2_draw.tscn")
 var minimap2draw :MiniMap2Draw
 
 var character_scene = preload("res://character.tscn")
-const PlayerCount = 10
 var player_list :Array[Character]
 func get_main_char()->Character:
 	return player_list[0]
@@ -60,7 +61,7 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func help_str()->String:
-	return "gd4maze3d 3.2.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 3.3.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var tex_keys = tex_dict.keys()
@@ -82,9 +83,9 @@ func _ready() -> void:
 		player_list.append(pl)
 		add_child(pl)
 		if i == 0: # set is_player
-			pl.init(true, true)
+			pl.init(lane_w, true, true)
 		else :
-			pl.init(false, true)
+			pl.init(lane_w, false, true)
 	for i in InitialStoreyCount:
 		add_new_storey(maze_size,storey_h,lane_w,wall_thick)
 	get_viewport().size_changed.connect(vpsize_changed)

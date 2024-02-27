@@ -5,8 +5,9 @@ var maze_size = Vector2i(32*1,18*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
-const InitialStoreyCount :int = 7
-var cur_storey_index :int = 3
+const InitialStoreyCount :int = 3
+const MaxStoreyCount :int = InitialStoreyCount *3
+var cur_storey_index :int = -1
 var storey_list :Array[Storey]
 func get_cur_storey()->Storey:
 	return storey_list[cur_storey_index]
@@ -64,7 +65,10 @@ func vpsize_changed()->void:
 	minimap2draw.position.y = minimap.position.y
 
 func enter_new_storey()->void:
-	del_old_storey()
+	if storey_list.size() >= MaxStoreyCount:
+		del_old_storey()
+	else :
+		cur_storey_index +=1
 	add_new_storey(maze_size,storey_h,lane_w,wall_thick)
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(false,false)
@@ -160,8 +164,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info(dur :float)->void:
-	$Label.text = "gd4maze3d 1.0.0\nfullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s" % [
-		full_minimap, view_floor_ceiling, 1.0/dur,
+	$Label.text = "gd4maze3d 2.0.0\nstorey %d/%d, fullminimap:%s, single storey view:%s, FPS:%f\nstorey %s\n%s" % [
+		cur_storey_index,storey_list.size(), full_minimap, view_floor_ceiling, 1.0/dur,
 		get_cur_storey().info_str(),
 		get_main_char().info_str()]
 

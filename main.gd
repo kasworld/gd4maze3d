@@ -9,6 +9,17 @@ const InitialStoreyCount :int = 3 # +1 on enter_new_storey
 const MaxStoreyCount :int = InitialStoreyCount *3
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 
+var tex_dict = {
+	brownbrick = preload("res://image/brownbrick50.png"),
+	bluestone = preload("res://image/bluestone50.png"),
+	drymud = preload("res://image/drymud50.png"),
+	graystone = preload("res://image/graystone50.png"),
+	pinkstone = preload("res://image/pinkstone50.png"),
+	greenstone = preload("res://image/greenstone50.png"),
+	ice50 = preload("res://image/ice50.png")
+}
+
+
 var storey_scene = preload("res://storey.tscn")
 var storey_list :Array[Storey]
 func get_cur_storey()->Storey:
@@ -21,6 +32,7 @@ func add_new_storey(msize :Vector2i, h :float, lw :float, wt :float)->void:
 	var st = storey_scene.instantiate()
 	add_child(st)
 	st.init(msize,h,lw,wt,stp,gp)
+	st.view_floor_ceiling(false,false)
 	storey_list.append(st)
 func del_old_storey()->void:
 	var st = storey_list.pop_front()
@@ -49,6 +61,19 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func _ready() -> void:
+	var tex_keys = tex_dict.keys()
+	tex_keys.shuffle()
+	$Floor.mesh.size = Vector2(maze_size.x*lane_w, maze_size.y*lane_w)
+	$Floor.position = Vector3(maze_size.x*lane_w/2.0, 0, maze_size.y*lane_w/2.0)
+	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
+	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+
+	$Ceiling.mesh.size = $Floor.mesh.size
+	$Ceiling.position = Vector3(maze_size.x*lane_w/2.0, storey_h, maze_size.y*lane_w/2.0)
+	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
+	#$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+
+
 	for i in PlayerCount:
 		var pl = character_scene.instantiate()
 		player_list.append(pl)
@@ -74,8 +99,8 @@ func enter_new_storey()->void:
 	add_new_storey(maze_size,storey_h,lane_w,wall_thick)
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(false,false)
-	storey_list[0].view_floor_ceiling(true,false)
-	storey_list[-1].view_floor_ceiling(false,true)
+	$Floor.position.y = -storey_h * cur_storey_index
+	$Ceiling.position.y = storey_h * (storey_list.size()-cur_storey_index)
 
 	var cur_storey = get_cur_storey()
 	if minimap != null:

@@ -2,22 +2,22 @@
 
 [ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nsui6"]
 emission = Color(0.188235, 0.188235, 0.188235, 1)
 uv1_scale = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pgvr8"]
-material = SubResource("StandardMaterial3D_ydl53")
+material = SubResource("StandardMaterial3D_nsui6")
 size = Vector2(100, 100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhpxw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eu0lw"]
 emission = Color(0.384314, 0.384314, 0.384314, 1)
 uv1_scale = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_me8ve"]
-material = SubResource("StandardMaterial3D_dhpxw")
+material = SubResource("StandardMaterial3D_eu0lw")
 flip_faces = true
 size = Vector2(100, 100)
 

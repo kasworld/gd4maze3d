@@ -1,9 +1,28 @@
-[gd_scene load_steps=3 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=7 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2txll"]
 font_size = 32
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
+emission = Color(0.188235, 0.188235, 0.188235, 1)
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fo7pf"]
+material = SubResource("StandardMaterial3D_ydl53")
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhpxw"]
+emission = Color(0.384314, 0.384314, 0.384314, 1)
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jjisx"]
+material = SubResource("StandardMaterial3D_dhpxw")
+flip_faces = true
+size = Vector2(100, 100)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
@@ -15,3 +34,12 @@ offset_right = 76.0
 offset_bottom = 45.0
 text = "hello"
 label_settings = SubResource("LabelSettings_2txll")
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_fo7pf")
+skeleton = NodePath("../..")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PlaneMesh_jjisx")
+skeleton = NodePath("../..")

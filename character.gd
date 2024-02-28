@@ -191,8 +191,8 @@ func calc_animate_move_by_dur(dur :float)->Vector3:
 	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
 	return p1.lerp(p2,dur)
 
-func calc_animate_moveup_by_dur(dur :float)->Vector3:
-	var p1 = storey.mazepos2storeypos(pos_src,(storey.storey_num-1)*storey.storey_h+ storey.storey_h/2.0)
+func calc_animate_move_storey_by_dur(dur :float, stn :int)->Vector3:
+	var p1 = storey.mazepos2storeypos(pos_src,stn*storey.storey_h+ storey.storey_h/2.0)
 	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
 	return p1.lerp(p2,dur)
 

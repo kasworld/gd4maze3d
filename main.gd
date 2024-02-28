@@ -71,7 +71,7 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func help_str()->String:
-	return "gd4maze3d 4.0.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 4.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var tex_keys = tex_dict.keys()
@@ -233,14 +233,15 @@ func animate_act(pl :Character, dur :float)->void:
 		Character.Act.RotateCameraRight,Character.Act.RotateCameraLeft:
 			animate_rotate_camera_by_dur(pl,dur)
 		Character.Act.EnterStorey:
-			animate_moveup_by_dur(pl, dur)
+			animate_move_storey_by_dur(pl, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:
 	pl.position = pl.calc_animate_move_by_dur(dur)
 
-func animate_moveup_by_dur(pl :Character, dur :float)->void:
-	pl.position = pl.calc_animate_moveup_by_dur(dur)
+func animate_move_storey_by_dur(pl :Character, dur :float)->void:
+	var from = cur_storey_index -1
+	pl.position = pl.calc_animate_move_storey_by_dur(dur, from)
 
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:

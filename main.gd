@@ -116,8 +116,6 @@ func enter_new_storey()->void:
 
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(false,false)
-	$Floor.position.y = -storey_h * cur_storey_index
-	$Ceiling.position.y = storey_h * (storey_list.size()-cur_storey_index)
 
 	var cur_storey = get_cur_storey()
 	if minimap != null:

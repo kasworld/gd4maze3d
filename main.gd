@@ -71,7 +71,7 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func help_str()->String:
-	return "gd4maze3d 3.3.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 4.0.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var tex_keys = tex_dict.keys()

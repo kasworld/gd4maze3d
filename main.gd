@@ -9,7 +9,6 @@ var maze_size = Vector2i(32*1,18*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
-var cur_storey_index :int = -1 # +1 on enter_new_storey
 
 var tex_dict = {
 	brownbrick = preload("res://image/brownbrick50.png"),
@@ -23,6 +22,7 @@ var tex_dict = {
 
 var storey_scene = preload("res://storey.tscn")
 var storey_list :Array[Storey]
+var cur_storey_index :int = -1 # +1 on enter_new_storey
 func get_cur_storey()->Storey:
 	return storey_list[cur_storey_index]
 func add_new_storey(msize :Vector2i, h :float, lw :float, wt :float)->void:
@@ -198,7 +198,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 		elif event.keycode == KEY_SPACE:
 			get_main_char().queue_act(Character.Act.RotateCameraRight)
-			#get_main_char().queue_act(Character.Act.RotateCameraRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -224,7 +223,6 @@ func update_info(dur :float)->void:
 		get_main_char().info_str(),
 		helpstr, debugstr,
 		]
-
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

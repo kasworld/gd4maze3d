@@ -3,8 +3,8 @@ extends Node3D
 
 # main params
 const PlayerCount = 10
-const InitialStoreyCount :int = 3 # +1 on enter_new_storey
-const MaxStoreyCount :int = InitialStoreyCount *3
+const VisibleStoreyUp :int = 3
+const VisibleStoreyDown :int = 3
 var maze_size = Vector2i(32*1,18*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
@@ -32,13 +32,23 @@ func add_new_storey(msize :Vector2i, h :float, lw :float, wt :float)->void:
 		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate()
 	add_child(st)
-	st.init(msize,h,lw,wt,stp,gp)
+	st.init(storey_list.size(), msize, h, lw, wt, stp, gp)
 	st.view_floor_ceiling(false,false)
+	st.position.y = storey_h * storey_list.size()
 	storey_list.append(st)
-func del_old_storey()->void:
-	var st = storey_list.pop_front()
-	remove_child(st)
-	st.queue_free()
+#func del_old_storey()->void:
+	#var st = storey_list.pop_front()
+	#remove_child(st)
+	#st.queue_free()
+func hide_old_storey()->void:
+	if visible_down_index()-1 >=0 :
+		storey_list[visible_down_index()-1].visible = false
+func visible_down_index()->int:
+	var rtn = cur_storey_index - VisibleStoreyDown
+	if rtn < 0:
+		return 0
+	return rtn
+
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
@@ -86,7 +96,7 @@ func _ready() -> void:
 			pl.init(lane_w, true, true)
 		else :
 			pl.init(lane_w, false, true)
-	for i in InitialStoreyCount:
+	for i in VisibleStoreyUp:
 		add_new_storey(maze_size,storey_h,lane_w,wall_thick)
 	get_viewport().size_changed.connect(vpsize_changed)
 	enter_new_storey()
@@ -98,11 +108,12 @@ func vpsize_changed()->void:
 	minimap2draw.position.x = 2
 
 func enter_new_storey()->void:
-	if storey_list.size() >= MaxStoreyCount:
-		del_old_storey()
-	else :
-		cur_storey_index +=1
+	cur_storey_index +=1
+	hide_old_storey()
 	add_new_storey(maze_size,storey_h,lane_w,wall_thick)
+	$Floor.position.y = visible_down_index()*storey_h
+	$Ceiling.position.y = storey_list.size()*storey_h
+
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(false,false)
 	$Floor.position.y = -storey_h * cur_storey_index
@@ -141,10 +152,8 @@ func _process(delta: float) -> void:
 					return
 				if cur_storey.is_capsule_pos(pl.pos_src) : # capsule encounter
 					pl.queue_act(Character.Act.RotateCameraRight)
-					#pl.queue_act(Character.Act.RotateCameraRight)
 					cur_storey.remove_capsule_at(pl.pos_src)
 				if cur_storey.is_donut_pos(pl.pos_src) : # donut encounter
-					#pl.queue_act(Character.Act.RotateCameraLeft)
 					pl.queue_act(Character.Act.RotateCameraLeft)
 					cur_storey.remove_donut_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
@@ -211,7 +220,8 @@ func update_info(dur :float)->void:
 	if debug_on:
 		debugstr = get_main_char().debug_str()
 	$Label.text = "storey %d/%d, fullminimap:%s, single storey view:%s, FPS:%.1f\nstorey %s\n%s\n%s\n%s" % [
-		cur_storey_index,storey_list.size(), full_minimap, view_floor_ceiling, 1.0/dur,
+		cur_storey_index,storey_list.size(),
+		full_minimap, view_floor_ceiling, 1.0/dur,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),
 		helpstr, debugstr,
@@ -227,20 +237,14 @@ func animate_act(pl :Character, dur :float)->void:
 		Character.Act.RotateCameraRight,Character.Act.RotateCameraLeft:
 			animate_rotate_camera_by_dur(pl,dur)
 		Character.Act.EnterStorey:
-			animate_move_by_dur(pl, dur)
-			if pl.is_player:
-				for i in storey_list.size():
-					animate_storey_y_by_dur(i,dur)
-
-# dur : 0 - 1 :second
-func animate_storey_y_by_dur(i :int, dur :float)->void:
-	var sth = storey_list[i].storey_h
-	var posy = (i - cur_storey_index)*sth
-	storey_list[i].position.y = lerpf(posy+sth, posy, dur)
+			animate_moveup_by_dur(pl, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:
 	pl.position = pl.calc_animate_move_by_dur(dur)
+
+func animate_moveup_by_dur(pl :Character, dur :float)->void:
+	pl.position = pl.calc_animate_moveup_by_dur(dur)
 
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:

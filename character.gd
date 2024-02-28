@@ -187,9 +187,15 @@ func can_move(dir :Storey.Dir)->bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 
 func calc_animate_move_by_dur(dur :float)->Vector3:
-	var p1 = storey.mazepos2storeypos(pos_src,storey.storey_h/2.0)
-	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_h/2.0)
+	var p1 = storey.mazepos2storeypos(pos_src,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
+	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
 	return p1.lerp(p2,dur)
+
+func calc_animate_moveup_by_dur(dur :float)->Vector3:
+	var p1 = storey.mazepos2storeypos(pos_src,(storey.storey_num-1)*storey.storey_h+ storey.storey_h/2.0)
+	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
+	return p1.lerp(p2,dur)
+
 
 func calc_animate_turn_by_dur(dur :float)->float:
 	return lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)

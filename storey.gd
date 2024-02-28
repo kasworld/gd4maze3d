@@ -49,6 +49,7 @@ static func dir_opposite(d:Dir)->Dir:
 static func dir2rad(d:Dir)->float:
 	return deg_to_rad(d*90.0)
 
+var storey_num :int
 var maze_size : Vector2i
 var storey_h :float
 var lane_w :float
@@ -100,12 +101,13 @@ func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
 func info_str()->String:
-	return "size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f" % [
-		maze_size,storey_h, lane_w, wall_thick*lane_w ]
+	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f" % [
+		storey_num, maze_size,storey_h, lane_w, wall_thick*lane_w ]
 
 var main_wall_tex :CompressedTexture2D
 var sub_wall_tex :CompressedTexture2D
-func init(msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
+func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
+	storey_num = stn
 	maze_size = msize
 	storey_h = h
 	lane_w = lw

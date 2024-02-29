@@ -5,7 +5,7 @@ extends Node3D
 const PlayerCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
-var maze_size = Vector2i(32*1,18*1)
+var maze_size = Vector2i(16*2,9*2)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
@@ -25,17 +25,17 @@ var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 func get_cur_storey()->Storey:
 	return storey_list[cur_storey_index]
-func add_new_storey(msize :Vector2i, h :float, lw :float, wt :float)->void:
+func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
 	var gp = rand_pos()
 	var stp = rand_pos()
-	if storey_list.size() > 0 :
+	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate()
-	add_child(st)
-	st.init(storey_list.size(), msize, h, lw, wt, stp, gp)
+	st.init(stnum, msize, h, lw, wt, stp, gp)
 	st.view_floor_ceiling(false,false)
-	st.position.y = storey_h * storey_list.size()
+	st.position.y = storey_h * stnum
 	storey_list.append(st)
+	add_child(st)
 #func del_old_storey()->void:
 	#var st = storey_list.pop_front()
 	#remove_child(st)
@@ -97,7 +97,7 @@ func _ready() -> void:
 		else :
 			pl.init(lane_w, false, true)
 	for i in VisibleStoreyUp:
-		add_new_storey(maze_size,storey_h,lane_w,wall_thick)
+		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
 	get_viewport().size_changed.connect(vpsize_changed)
 	enter_new_storey()
 
@@ -110,7 +110,7 @@ func vpsize_changed()->void:
 func enter_new_storey()->void:
 	cur_storey_index +=1
 	hide_old_storey()
-	add_new_storey(maze_size,storey_h,lane_w,wall_thick)
+	add_new_storey(storey_list.size(), maze_size,storey_h,lane_w,wall_thick)
 	$Floor.position.y = visible_down_index()*storey_h
 	$Ceiling.position.y = storey_list.size()*storey_h
 

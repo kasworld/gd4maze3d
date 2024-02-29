@@ -25,7 +25,15 @@ var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 func get_cur_storey()->Storey:
 	return storey_list[cur_storey_index]
+
+# thread unsafe
 func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
+	var st = new_storey(stnum,msize,h,lw,wt)
+	storey_list.append(st)
+	add_child(st)
+
+# thread safe
+func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->Storey:
 	var gp = rand_pos()
 	var stp = rand_pos()
 	if stnum > 0 :
@@ -34,12 +42,13 @@ func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)
 	st.init(stnum, msize, h, lw, wt, stp, gp)
 	st.view_floor_ceiling(false,false)
 	st.position.y = storey_h * stnum
-	storey_list.append(st)
-	add_child(st)
+	return st
+
 #func del_old_storey()->void:
 	#var st = storey_list.pop_front()
 	#remove_child(st)
 	#st.queue_free()
+
 func hide_old_storey()->void:
 	if visible_down_index()-1 >=0 :
 		storey_list[visible_down_index()-1].visible = false

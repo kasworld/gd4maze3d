@@ -5,7 +5,7 @@ extends Node3D
 const PlayerCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
-var maze_size = Vector2i(16*1,9*1)
+var maze_size = Vector2i(16*2,9*2)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
@@ -105,8 +105,21 @@ func _ready() -> void:
 			pl.init(lane_w, true, true)
 		else :
 			pl.init(lane_w, false, true)
+
+	#var thread_list = []
+	#for i in VisibleStoreyUp:
+		#var th = Thread.new()
+		#thread_list.append(th)
+		#th.start(new_storey.bind(i,maze_size,storey_h,lane_w,wall_thick))
+	#storey_list.resize(VisibleStoreyUp)
+	#for th in thread_list:
+		#var st = th.wait_to_finish()
+		#storey_list[st.storey_num]=st
+	#thread_list.resize(0)
+
 	for i in VisibleStoreyUp:
 		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
+#
 	get_viewport().size_changed.connect(vpsize_changed)
 	enter_new_storey()
 

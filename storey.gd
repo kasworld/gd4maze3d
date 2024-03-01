@@ -157,6 +157,9 @@ func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	add_child(n)
 	return n
 
+func set_start_pos(p :Vector2i)->void:
+	start_pos = p
+	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)

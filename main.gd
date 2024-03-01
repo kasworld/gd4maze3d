@@ -30,7 +30,7 @@ func get_cur_storey()->Storey:
 func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
 	var st = new_storey(stnum,msize,h,lw,wt)
 	if stnum > 0 :
-		st.start_pos = storey_list[-1].goal_pos
+		st.set_start_pos(storey_list[-1].goal_pos)
 	st.position.y = storey_h * stnum
 	storey_list.append(st)
 	add_child(st)
@@ -80,7 +80,7 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func help_str()->String:
-	return "gd4maze3d 4.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 5.0.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var tex_keys = tex_dict.keys()
@@ -119,12 +119,12 @@ func _ready() -> void:
 	thread_list.resize(0)
 	for st in storey_list:
 		if st.storey_num > 0 :
-			st.start_pos = storey_list[st.storey_num-1].goal_pos
+			st.set_start_pos(storey_list[st.storey_num-1].goal_pos)
 		st.position.y = storey_h * st.storey_num
 
 	#for i in VisibleStoreyUp:
 		#add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
-#
+
 	get_viewport().size_changed.connect(vpsize_changed)
 
 

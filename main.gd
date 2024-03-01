@@ -5,7 +5,7 @@ extends Node3D
 const PlayerCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
-var maze_size = Vector2i(16*12,9*12)
+var maze_size = Vector2i(16*2,9*2)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
@@ -119,7 +119,7 @@ func _ready() -> void:
 	thread_list.resize(0)
 	for st in storey_list:
 		if st.storey_num > 0 :
-			st.start_pos = storey_list[-1].goal_pos
+			st.start_pos = storey_list[st.storey_num-1].goal_pos
 		st.position.y = storey_h * st.storey_num
 
 	#for i in VisibleStoreyUp:

@@ -137,13 +137,14 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	make_wall_by_maze()
 	start_node = add_text_mark_at(start_pos, Color.YELLOW, "Start")
 	goal_node = add_text_mark_at(goal_pos, Color.YELLOW, "Goal")
+	var colist = NamedColorList.color_list.duplicate()
 	for y in maze_size.y:
 		for x in maze_size.x:
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
-				var co = NamedColorList.color_list.pick_random()[0]
+				var co = colist.pick_random()[0]
 				if randi_range(0,1)==0:
 					var c = add_capsule_at(p, co)
 					capsule_pos_dic[p]=c

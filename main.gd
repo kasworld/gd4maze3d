@@ -80,7 +80,7 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func help_str()->String:
-	return "gd4maze3d 5.0.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 5.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var tex_keys = tex_dict.keys()
@@ -175,7 +175,7 @@ func enter_new_storey()->void:
 	#$OccluderInstance3D.position = Vector3(meshx/2,total_h/2,meshy/2)
 	#$OccluderInstance3D.set_bake_simplification_distance(0.01)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	for i in PlayerCount:
 		var pl = player_list[i]
@@ -203,7 +203,7 @@ func _process(delta: float) -> void:
 					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
-	update_info(delta)
+	update_info()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -248,7 +248,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 var debug_on :bool
-func update_info(dur :float)->void:
+func update_info()->void:
 	var helpstr = ""
 	if help_on:
 		helpstr = help_str()

@@ -121,6 +121,8 @@ func _ready() -> void:
 		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
 #
 	get_viewport().size_changed.connect(vpsize_changed)
+
+
 	enter_new_storey()
 
 func vpsize_changed()->void:
@@ -138,6 +140,7 @@ func enter_new_storey()->void:
 
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(false,false)
+
 
 	var cur_storey = get_cur_storey()
 	if minimap != null:
@@ -159,6 +162,13 @@ func enter_new_storey()->void:
 	set_minimap_mode()
 
 	vpsize_changed()
+
+	#var meshx = maze_size.x*lane_w +wall_thick*2
+	#var meshy = maze_size.y*lane_w +wall_thick*2
+	#var total_h = storey_h*(VisibleStoreyUp+VisibleStoreyDown+1)
+	#$OccluderInstance3D.occluder.size = Vector3(meshx,total_h,meshy)
+	#$OccluderInstance3D.position = Vector3(meshx/2,total_h/2,meshy/2)
+	#$OccluderInstance3D.set_bake_simplification_distance(0.01)
 
 func _process(delta: float) -> void:
 	var cur_storey = get_cur_storey()
@@ -207,6 +217,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			help_on = !help_on
 		elif event.keycode == KEY_D:
 			debug_on = !debug_on
+		elif event.keycode == KEY_O:
+			get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
 		elif event.keycode == KEY_UP:
 			get_main_char().queue_act(Character.Act.Forward)
@@ -238,13 +250,34 @@ func update_info(dur :float)->void:
 	var debugstr = ""
 	if debug_on:
 		debugstr = get_main_char().debug_str()
-	$Label.text = "storey %d/%d, fullminimap:%s, single storey view:%s, FPS:%.1f\nstorey %s\n%s\n%s\n%s" % [
+	$Label.text = """storey %d/%d, fullminimap:%s, single storey view:%s
+storey %s
+%s
+%s
+%s
+%s""" % [
 		cur_storey_index,storey_list.size(),
-		full_minimap, view_floor_ceiling, 1.0/dur,
+		full_minimap, view_floor_ceiling,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),
 		helpstr, debugstr,
+		performance_info(),
 		]
+
+func performance_info()->String:
+	return 	"""%d FPS (%.2f mspf)
+Currently rendering: occlusion culling:%s
+%d objects
+%dK primitive indices
+%d draw calls
+""" % [
+	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
+	get_tree().root.use_occlusion_culling,
+	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
+	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
+	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+]
+
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

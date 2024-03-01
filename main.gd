@@ -5,7 +5,7 @@ extends Node3D
 const PlayerCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
-var maze_size = Vector2i(16*2,9*2)
+var maze_size = Vector2i(16*12,9*12)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
@@ -31,6 +31,7 @@ func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)
 	var st = new_storey(stnum,msize,h,lw,wt)
 	if stnum > 0 :
 		st.start_pos = storey_list[-1].goal_pos
+	st.position.y = storey_h * stnum
 	storey_list.append(st)
 	add_child(st)
 
@@ -41,7 +42,6 @@ func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->St
 	var st = storey_scene.instantiate()
 	st.init(stnum, msize, h, lw, wt, stp, gp)
 	st.view_floor_ceiling(false,false)
-	st.position.y = storey_h * stnum
 	return st
 
 #func del_old_storey()->void:
@@ -106,19 +106,24 @@ func _ready() -> void:
 		else :
 			pl.init(lane_w, false, true)
 
-	#var thread_list = []
-	#for i in VisibleStoreyUp:
-		#var th = Thread.new()
-		#thread_list.append(th)
-		#th.start(new_storey.bind(i,maze_size,storey_h,lane_w,wall_thick))
-	#storey_list.resize(VisibleStoreyUp)
-	#for th in thread_list:
-		#var st = th.wait_to_finish()
-		#storey_list[st.storey_num]=st
-	#thread_list.resize(0)
-
+	var thread_list = []
 	for i in VisibleStoreyUp:
-		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
+		var th = Thread.new()
+		thread_list.append(th)
+		th.start(new_storey.bind(i,maze_size,storey_h,lane_w,wall_thick))
+	storey_list.resize(VisibleStoreyUp)
+	for th in thread_list:
+		var st = th.wait_to_finish()
+		storey_list[st.storey_num]=st
+		add_child(st)
+	thread_list.resize(0)
+	for st in storey_list:
+		if st.storey_num > 0 :
+			st.start_pos = storey_list[-1].goal_pos
+		st.position.y = storey_h * st.storey_num
+
+	#for i in VisibleStoreyUp:
+		#add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
 #
 	get_viewport().size_changed.connect(vpsize_changed)
 

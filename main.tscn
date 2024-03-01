@@ -47,5 +47,4 @@ mesh = SubResource("PlaneMesh_jjisx")
 skeleton = NodePath("../..")
 
 [node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
-visible = false
 occluder = SubResource("BoxOccluder3D_fa1kh")

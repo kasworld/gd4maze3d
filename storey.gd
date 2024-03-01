@@ -231,7 +231,7 @@ func new_torus(r1 :float, r2 :float, mat :Material)->MeshInstance3D:
 	mesh.material = mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
-	sp.rotate_x(PI/2)
+	sp.call_deferred("rotate_x",PI/2)
 	return sp
 
 func new_capsule(h :float,r:float, mat :Material)->MeshInstance3D:
@@ -241,7 +241,7 @@ func new_capsule(h :float,r:float, mat :Material)->MeshInstance3D:
 	mesh.material = mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
-	sp.rotate_x(PI/2)
+	sp.call_deferred("rotate_x",PI/2)
 	return sp
 
 func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:

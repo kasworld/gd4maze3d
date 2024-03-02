@@ -99,7 +99,7 @@ func set_minimap_mode()->void:
 var view_floor_ceiling :bool
 
 func help_str()->String:
-	return "gd4maze3d 6.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
+	return "gd4maze3d 6.2.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick*2
@@ -110,13 +110,15 @@ func _ready() -> void:
 
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material = mat_dict[mat_keys[0]]
+	$Floor.mesh.material = mat_dict[mat_keys[0]].duplicate()
+	#$Floor.mesh.material.resource_local_to_scene = true
 	$Floor.mesh.material.uv1_scale = Vector3(maze_size.x,(maze_size.x+maze_size.y)/2.0,maze_size.y)
 	#$Floor.mesh.material.uv1_triplanar = true
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material = mat_dict[mat_keys[1]]
+	$Ceiling.mesh.material = mat_dict[mat_keys[1]].duplicate()
+	#$Ceiling.mesh.material.resource_local_to_scene = true
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 	#$Ceiling.mesh.material.uv1_triplanar = true
 

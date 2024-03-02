@@ -5,7 +5,7 @@ extends Node3D
 const PlayerCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
-var maze_size = Vector2i(16*2,9*2)
+var maze_size = Vector2i(16*1,9*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
@@ -18,6 +18,25 @@ var tex_dict = {
 	pinkstone = preload("res://image/pinkstone50.png"),
 	greenstone = preload("res://image/greenstone50.png"),
 	ice50 = preload("res://image/ice50.png")
+}
+
+var mat_dict = {
+	aluminium = preload("res://test_materials/aluminium.tres"),
+	#blue = preload("res://test_materials/blue.tres"),
+	brick = preload("res://test_materials/brick.tres"),
+	cheese = preload("res://test_materials/cheese.tres"),
+	darkwood = preload("res://test_materials/dark_wood.tres"),
+	#gray = preload("res://test_materials/gray.tres"),
+	ice = preload("res://test_materials/ice.tres"),
+	marble = preload("res://test_materials/marble.tres"),
+	#mirror = preload("res://test_materials/mirror.tres"),
+	rock = preload("res://test_materials/rock.tres"),
+	stones = preload("res://test_materials/stones.tres"),
+	#toon = preload("res://test_materials/toon.tres"),
+	wetsand = preload("res://test_materials/wet_sand.tres"),
+	#white = preload("res://test_materials/white.tres"),
+	#whiteplastic = preload("res://test_materials/white_plastic.tres"),
+	wool = preload("res://test_materials/wool.tres"),
 }
 
 var storey_scene = preload("res://storey.tscn")
@@ -83,19 +102,23 @@ func help_str()->String:
 	return "gd4maze3d 5.1.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
-	var tex_keys = tex_dict.keys()
-	tex_keys.shuffle()
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
+
+	var mat_keys = mat_dict.keys()
+	mat_keys.shuffle()
+
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
-	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	$Floor.mesh.material = mat_dict[mat_keys[0]]
+	$Floor.mesh.material.uv1_scale = Vector3(0.5,0.5,0.5)
+	$Floor.mesh.material.uv1_triplanar = true
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
-	#$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	$Ceiling.mesh.material = mat_dict[mat_keys[1]]
+	$Ceiling.mesh.material.uv1_scale = Vector3(0.5,0.5,0.5)
+	$Ceiling.mesh.material.uv1_triplanar = true
 
 	for i in PlayerCount:
 		var pl = character_scene.instantiate()

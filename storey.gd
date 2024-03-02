@@ -12,6 +12,25 @@ var tex_dict = {
 	ice50 = preload("res://image/ice50.png")
 }
 
+var mat_dict = {
+	aluminium = preload("res://test_materials/aluminium.tres"),
+	#blue = preload("res://test_materials/blue.tres"),
+	brick = preload("res://test_materials/brick.tres"),
+	cheese = preload("res://test_materials/cheese.tres"),
+	darkwood = preload("res://test_materials/dark_wood.tres"),
+	#gray = preload("res://test_materials/gray.tres"),
+	ice = preload("res://test_materials/ice.tres"),
+	marble = preload("res://test_materials/marble.tres"),
+	#mirror = preload("res://test_materials/mirror.tres"),
+	rock = preload("res://test_materials/rock.tres"),
+	stones = preload("res://test_materials/stones.tres"),
+	#toon = preload("res://test_materials/toon.tres"),
+	wetsand = preload("res://test_materials/wet_sand.tres"),
+	#white = preload("res://test_materials/white.tres"),
+	#whiteplastic = preload("res://test_materials/white_plastic.tres"),
+	wool = preload("res://test_materials/wool.tres"),
+}
+
 # x90 == degree
 enum Dir {
 	North = 0,
@@ -101,11 +120,14 @@ func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
 func info_str()->String:
-	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f" % [
-		storey_num, maze_size,storey_h, lane_w, wall_thick*lane_w ]
+	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
+		storey_num, maze_size,storey_h, lane_w, wall_thick*lane_w,
+		main_wall_mat_name, sub_wall_tex_name ]
 
-var main_wall_tex :CompressedTexture2D
+var main_wall_mat :StandardMaterial3D
+var main_wall_mat_name :String
 var sub_wall_tex :CompressedTexture2D
+var sub_wall_tex_name :String
 func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
 	storey_num = stn
 	maze_size = msize
@@ -117,8 +139,13 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 
 	var tex_keys = tex_dict.keys()
 	tex_keys.shuffle()
-	main_wall_tex = tex_dict[tex_keys[2]]
-	sub_wall_tex = tex_dict[tex_keys[3]]
+	sub_wall_tex_name = tex_keys[2]
+	sub_wall_tex = tex_dict[sub_wall_tex_name]
+
+	var mat_keys = mat_dict.keys()
+	mat_keys.shuffle()
+	main_wall_mat_name = mat_keys[0]
+	main_wall_mat = mat_dict[main_wall_mat_name]
 
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
@@ -190,21 +217,23 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , true)
 
-
 func add_wall_at(x :int, y :int, face_x :bool)->void:
-	var mat = StandardMaterial3D.new()
+	var mat :StandardMaterial3D
 	match randi_range(0,10):
 		0:
+			mat = StandardMaterial3D.new()
 			mat.albedo_texture = sub_wall_tex
 			mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 		_:
-			mat.albedo_texture = main_wall_tex
+			mat = main_wall_mat
 	var w :MeshInstance3D
 	if face_x:
-		w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
+		#w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
+		w = new_box(Vector3(wall_thick,storey_h,lane_w), mat)
 		w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	else :
-		w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
+		w = new_box(Vector3(lane_w,storey_h,wall_thick), mat)
+		#w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
 		w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	$WallContainer.add_child(w)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=7 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
 
@@ -24,8 +24,6 @@ material = SubResource("StandardMaterial3D_dhpxw")
 flip_faces = true
 size = Vector2(100, 100)
 
-[sub_resource type="BoxOccluder3D" id="BoxOccluder3D_fa1kh"]
-
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
 
@@ -45,6 +43,3 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("PlaneMesh_jjisx")
 skeleton = NodePath("../..")
-
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
-occluder = SubResource("BoxOccluder3D_fa1kh")

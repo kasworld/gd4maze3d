@@ -98,8 +98,6 @@ func set_minimap_mode()->void:
 
 var view_floor_ceiling :bool
 
-func help_str()->String:
-	return "gd4maze3d 6.2.0\nArrowKey to move\n1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove\nSpace:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debuginfo"
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick*2
@@ -246,6 +244,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			help_on = !help_on
 		elif event.keycode == KEY_D:
 			debug_on = !debug_on
+		elif event.keycode == KEY_P:
+			perfo_on = !perfo_on
 		elif event.keycode == KEY_O:
 			get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
@@ -271,41 +271,47 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 var help_on :bool = true
+func help_str()->String:
+	return """gd4maze3d 6.2.0
+Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
+1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
+ArrowKey to move"""
 var debug_on :bool
-func update_info()->void:
-	var helpstr = ""
-	if help_on:
-		helpstr = help_str()
-	var debugstr = ""
-	if debug_on:
-		debugstr = get_main_char().debug_str()
-	$Label.text = """storey %d/%d, fullminimap:%s, single storey view:%s
-storey %s
-%s
-%s
-%s
-%s""" % [
-		cur_storey_index,storey_list.size(),
-		full_minimap, view_floor_ceiling,
-		get_cur_storey().info_str(),
-		get_main_char().info_str(),
-		helpstr, debugstr,
-		performance_info(),
-		]
-
+var perfo_on :bool
 func performance_info()->String:
 	return 	"""%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
 %d objects
 %dK primitive indices
-%d draw calls
-""" % [
+%d draw calls""" % [
 	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
 	get_tree().root.use_occlusion_culling,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 ]
+func update_info()->void:
+	var helpstr = ""
+	if help_on:
+		helpstr = "\n"+ help_str()
+	var debugstr = ""
+	if debug_on:
+		debugstr = "\n"+ get_main_char().debug_str()
+	var perfo_str = ""
+	if perfo_on:
+		perfo_str = "\n"+ performance_info()
+
+	$Label.text = """storey %d/%d, fullminimap:%s, single storey view:%s
+storey %s
+%s%s%s%s""" % [
+		cur_storey_index,storey_list.size(),
+		full_minimap, view_floor_ceiling,
+		get_cur_storey().info_str(),
+		get_main_char().info_str(),
+		helpstr, debugstr,
+		perfo_str,
+		]
+
 
 
 func animate_act(pl :Character, dur :float)->void:

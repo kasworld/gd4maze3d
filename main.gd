@@ -60,7 +60,6 @@ func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->St
 	var stp = rand_pos()
 	var st = storey_scene.instantiate()
 	st.init(stnum, msize, h, lw, wt, stp, gp)
-	st.view_floor_ceiling(false,false)
 	return st
 
 #func del_old_storey()->void:
@@ -96,8 +95,6 @@ func set_minimap_mode()->void:
 	minimap.visible = full_minimap
 	minimap2draw.visible = !minimap.visible
 
-var view_floor_ceiling :bool
-
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick*2
@@ -109,16 +106,12 @@ func _ready() -> void:
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
 	$Floor.mesh.material = mat_dict[mat_keys[0]].duplicate()
-	#$Floor.mesh.material.resource_local_to_scene = true
 	$Floor.mesh.material.uv1_scale = Vector3(maze_size.x,(maze_size.x+maze_size.y)/2.0,maze_size.y)
-	#$Floor.mesh.material.uv1_triplanar = true
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
 	$Ceiling.mesh.material = mat_dict[mat_keys[1]].duplicate()
-	#$Ceiling.mesh.material.resource_local_to_scene = true
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
-	#$Ceiling.mesh.material.uv1_triplanar = true
 
 	for i in PlayerCount:
 		var pl = character_scene.instantiate()
@@ -166,8 +159,6 @@ func enter_new_storey()->void:
 	$Floor.position.y = visible_down_index()*storey_h
 	$Ceiling.position.y = storey_list.size()*storey_h
 
-	for i in storey_list.size():
-		storey_list[i].view_floor_ceiling(false,false)
 
 	var cur_storey = get_cur_storey()
 	if minimap != null:
@@ -190,12 +181,10 @@ func enter_new_storey()->void:
 
 	vpsize_changed()
 
-	#var meshx = maze_size.x*lane_w +wall_thick*2
-	#var meshy = maze_size.y*lane_w +wall_thick*2
-	#var total_h = storey_h*(VisibleStoreyUp+VisibleStoreyDown+1)
-	#$OccluderInstance3D.occluder.size = Vector3(meshx,total_h,meshy)
-	#$OccluderInstance3D.position = Vector3(meshx/2,total_h/2,meshy/2)
-	#$OccluderInstance3D.set_bake_simplification_distance(0.01)
+var view_floor_ceiling :bool = true
+func change_floor_ceiling_visible(f :bool,c :bool)->void:
+	for i in storey_list.size():
+		storey_list[i].view_floor_ceiling(f,f)
 
 func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
@@ -237,7 +226,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			set_minimap_mode()
 		elif event.keycode == KEY_2:
 			view_floor_ceiling = !view_floor_ceiling
-			get_cur_storey().view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+			change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 		elif event.keycode == KEY_3:
 			get_main_char().auto_move = !get_main_char().auto_move
 		elif event.keycode == KEY_H:
@@ -272,7 +261,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 6.2.0
+	return """gd4maze3d 7.0.0
 Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
 1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
 ArrowKey to move"""
@@ -311,8 +300,6 @@ storey %s
 		helpstr, debugstr,
 		perfo_str,
 		]
-
-
 
 func animate_act(pl :Character, dur :float)->void:
 	match pl.act_current:

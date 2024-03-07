@@ -31,6 +31,8 @@ var mat_dict = {
 	wool = preload("res://test_materials/wool.tres"),
 }
 
+var net_mat = preload("res://image/net.png")
+
 # x90 == degree
 enum Dir {
 	North = 0,
@@ -139,7 +141,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 
 	var tex_keys = tex_dict.keys()
 	tex_keys.shuffle()
-	sub_wall_tex_name = tex_keys[2]
+	sub_wall_tex_name = tex_keys[0]
 	sub_wall_tex = tex_dict[sub_wall_tex_name]
 
 	var mat_keys = mat_dict.keys()
@@ -151,13 +153,13 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	var meshy = maze_size.y*lane_w +wall_thick*2
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material.albedo_texture = tex_dict[tex_keys[0]]
-	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	$Floor.mesh.material.albedo_texture = net_mat
+	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material.albedo_texture = tex_dict[tex_keys[1]]
-	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	$Ceiling.mesh.material.albedo_texture = net_mat
+	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
@@ -229,10 +231,10 @@ func add_wall_at(x :int, y :int, face_x :bool)->void:
 	var w :MeshInstance3D
 	if face_x:
 		#w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
-		w = new_box(Vector3(wall_thick,storey_h,lane_w), mat)
+		w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w), mat)
 		w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	else :
-		w = new_box(Vector3(lane_w,storey_h,wall_thick), mat)
+		w = new_box(Vector3(lane_w,storey_h*0.999,wall_thick), mat)
 		#w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
 		w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	$WallContainer.add_child(w)

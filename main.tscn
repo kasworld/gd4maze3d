@@ -6,6 +6,9 @@
 font_size = 32
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
 emission = Color(0.188235, 0.188235, 0.188235, 1)
 uv1_scale = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true

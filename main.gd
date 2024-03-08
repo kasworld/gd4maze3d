@@ -158,7 +158,7 @@ func enter_new_storey()->void:
 	add_new_storey(storey_list.size(), maze_size,storey_h,lane_w,wall_thick)
 	$Floor.position.y = visible_down_index()*storey_h
 	$Ceiling.position.y = storey_list.size()*storey_h
-
+	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 	var cur_storey = get_cur_storey()
 	if minimap != null:
@@ -185,6 +185,9 @@ var view_floor_ceiling :bool = true
 func change_floor_ceiling_visible(f :bool,c :bool)->void:
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(f,f)
+	storey_list[0].view_floor_ceiling(false,f)
+	storey_list[-1].view_floor_ceiling(f,false)
+
 
 func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
@@ -261,7 +264,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 7.0.0
+	return """gd4maze3d 7.1.0
 Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
 1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
 ArrowKey to move"""

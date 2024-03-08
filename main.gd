@@ -264,7 +264,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 7.1.0
+	return """gd4maze3d 7.2.0
 Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
 1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
 ArrowKey to move"""

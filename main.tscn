@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=8 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
+[ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2txll"]
 font_size = 32
@@ -30,6 +31,10 @@ size = Vector2(100, 100)
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
 [node name="Label" type="Label" parent="."]
 top_level = true
 z_index = 1
@@ -46,3 +51,6 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("PlaneMesh_jjisx")
 skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_styvs")

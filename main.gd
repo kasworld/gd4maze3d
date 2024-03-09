@@ -122,7 +122,7 @@ func _ready() -> void:
 		else :
 			pl.init(lane_w, false, true)
 
-	var use_thread = true
+	var use_thread = false
 	if use_thread:
 		var thread_list = []
 		for i in VisibleStoreyUp:
@@ -178,16 +178,14 @@ func enter_new_storey()->void:
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
-
 	vpsize_changed()
 
 var view_floor_ceiling :bool = true
 func change_floor_ceiling_visible(f :bool,c :bool)->void:
 	for i in storey_list.size():
-		storey_list[i].view_floor_ceiling(f,f)
-	storey_list[0].view_floor_ceiling(false,f)
+		storey_list[i].view_floor_ceiling(f,c)
+	storey_list[0].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
-
 
 func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
@@ -264,7 +262,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 7.2.0
+	return """gd4maze3d 8.1.0
 Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
 1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
 ArrowKey to move"""

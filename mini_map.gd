@@ -6,13 +6,12 @@ var map_scale = 20
 var wall_thick = 2
 var storey :Storey
 var player :Line2D
+var walllines :PackedVector2Array
 
 func get_width()->int:
 	return storey.maze_size.x * map_scale
 func get_height()->int:
 	return storey.maze_size.y * map_scale
-
-var walllines :PackedVector2Array
 
 func init(st :Storey, sc :float)->void:
 	map_scale = sc
@@ -20,6 +19,9 @@ func init(st :Storey, sc :float)->void:
 	if wall_thick < 1 :
 		wall_thick = 1
 	storey = st
+	walllines = []
+	for o in get_children():
+		o.queue_free()
 	make_wall_by_maze()
 	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
 	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)

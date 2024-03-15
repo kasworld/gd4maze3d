@@ -5,6 +5,10 @@ class_name MiniMap2Draw
 var map_scale :float = 20
 var wall_thick :float = 2
 var storey :Storey
+var walllines :PackedVector2Array =[]
+var walls : Array[PackedByteArray] # as bool array
+var player :Line2D
+
 func get_width()->int:
 	return storey.maze_size.x * map_scale
 func get_height()->int:
@@ -12,7 +16,6 @@ func get_height()->int:
 
 # cell wall[y*2+1][x*2+1]
 # wall wall[y*2][x*2]
-var walls : Array[PackedByteArray]
 func calc_wall_pos(x :int, y:int, dir :Storey.Dir)->Vector2i:
 	return Vector2i(x*2+1,y*2+1) + Storey.Dir2Vt[dir]
 func is_wall_at(x :int, y:int, dir :Storey.Dir)->bool:
@@ -22,17 +25,19 @@ func set_wall_at(x :int, y:int, dir :Storey.Dir):
 	var wpos = calc_wall_pos(x,y,dir)
 	walls[wpos.y][wpos.x] = 1
 
-var player :Line2D
 func move_player(x:int, y:int)->void:
 	player.position = Vector2(x,y)*map_scale
 
-var walllines :PackedVector2Array =[]
 func init(st :Storey, sc :float)->void:
 	map_scale = sc
 	wall_thick = map_scale*0.1
 	if wall_thick < 1 :
 		wall_thick = 1
 	storey = st
+	walls = []
+	walllines = []
+	for o in get_children():
+		o.queue_free()
 	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
 	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
 	player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)

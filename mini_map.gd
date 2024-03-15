@@ -1,6 +1,6 @@
 extends Node2D
 
-class_name MiniMap2Draw
+class_name MiniMap
 
 var map_scale :float = 20
 var wall_thick :float = 2

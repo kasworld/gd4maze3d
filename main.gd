@@ -78,9 +78,9 @@ func visible_down_index()->int:
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
-var minimap2draw_scene = preload("res://mini_map_2_draw.tscn")
-var minimap2draw :MiniMap2Draw
-var minimap :MiniMap2Draw
+var minimap_scene = preload("res://mini_map.tscn")
+var minimap2draw :MiniMap
+var minimap :MiniMap
 
 var character_scene = preload("res://character.tscn")
 var player_list :Array[Character]
@@ -162,14 +162,14 @@ func enter_new_storey()->void:
 	var cur_storey = get_cur_storey()
 	if minimap != null:
 		minimap.queue_free()
-	minimap = minimap2draw_scene.instantiate()
+	minimap = minimap_scene.instantiate()
 	add_child(minimap)
 	minimap.init(cur_storey,map_scale)
 	minimap.make_allwall_by_maze()
 
 	if minimap2draw != null:
 		minimap2draw.queue_free()
-	minimap2draw = minimap2draw_scene.instantiate()
+	minimap2draw = minimap_scene.instantiate()
 	add_child(minimap2draw)
 	minimap2draw.init(cur_storey,map_scale)
 

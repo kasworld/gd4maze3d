@@ -146,8 +146,10 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(vpsize_changed)
 	enter_new_storey()
 
+var vp_size :Vector2
 func vpsize_changed()->void:
-	minimap.position.y = get_viewport().get_visible_rect().size.y -minimap.get_height() -2
+	vp_size = get_viewport().get_visible_rect().size
+	minimap.position.y = vp_size.y -minimap.get_height() -2
 	minimap.position.x = 2
 	minimap2draw.position.y = minimap.position.y
 	minimap2draw.position.x = 2
@@ -160,18 +162,19 @@ func enter_new_storey()->void:
 	$Ceiling.position.y = storey_list.size()*storey_h
 	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
+	var map_scale = 20
 	var cur_storey = get_cur_storey()
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(cur_storey)
+	minimap.init(cur_storey,map_scale)
 
 	if minimap2draw != null:
 		minimap2draw.queue_free()
 	minimap2draw = minimap2draw_scene.instantiate()
 	add_child(minimap2draw)
-	minimap2draw.init(cur_storey)
+	minimap2draw.init(cur_storey,map_scale)
 
 	for i in PlayerCount:
 		player_list[i].enter_storey(cur_storey)
@@ -262,7 +265,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 8.1.0
+	return """gd4maze3d 8.2.0
 Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
 1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
 ArrowKey to move"""

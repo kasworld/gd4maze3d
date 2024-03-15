@@ -220,20 +220,22 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_tree().quit()
 
 		elif event.keycode == KEY_1:
+			help_on = !help_on
+		elif event.keycode == KEY_2:
 			full_minimap = !full_minimap
 			set_minimap_mode()
-		elif event.keycode == KEY_2:
+		elif event.keycode == KEY_3:
 			view_floor_ceiling = !view_floor_ceiling
 			change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
-		elif event.keycode == KEY_3:
+		elif event.keycode == KEY_4:
 			get_main_char().auto_move = !get_main_char().auto_move
-		elif event.keycode == KEY_H:
-			help_on = !help_on
-		elif event.keycode == KEY_D:
+		elif event.keycode == KEY_5:
 			debug_on = !debug_on
-		elif event.keycode == KEY_P:
+		elif event.keycode == KEY_6:
 			perfo_on = !perfo_on
-		elif event.keycode == KEY_O:
+		elif event.keycode == KEY_7:
+			info_on = !info_on
+		elif event.keycode == KEY_8:
 			get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
 		elif event.keycode == KEY_UP:
@@ -260,8 +262,8 @@ func _unhandled_input(event: InputEvent) -> void:
 var help_on :bool = true
 func help_str()->String:
 	return """gd4maze3d 9.0.0
-Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
-1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
+Space:RotateCamera, Enter:Next storey,
+1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
 ArrowKey to move"""
 var debug_on :bool
 var perfo_on :bool
@@ -277,6 +279,7 @@ Currently rendering: occlusion culling:%s
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 ]
+var info_on :bool
 func update_info()->void:
 	var helpstr = ""
 	if help_on:
@@ -287,16 +290,25 @@ func update_info()->void:
 	var perfo_str = ""
 	if perfo_on:
 		perfo_str = "\n"+ performance_info()
+	var info_s = ""
+	if info_on :
+		info_s = info_str()
+	$Label.text = """%s
+%s%s%s""" % [
+		info_s,
+		helpstr, debugstr,
+		perfo_str,
+		]
 
-	$Label.text = """storey %d/%d, fullminimap:%s, single storey view:%s
+func info_str()->String:
+	return """storey %d/%d, fullminimap:%s, single storey view:%s
 storey %s
-%s%s%s%s""" % [
+%s
+""" % [
 		cur_storey_index,storey_list.size(),
 		full_minimap, view_floor_ceiling,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),
-		helpstr, debugstr,
-		perfo_str,
 		]
 
 func animate_act(pl :Character, dur :float)->void:

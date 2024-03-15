@@ -29,6 +29,7 @@ func init(st :Storey, sc :float)->void:
 	walls_known.resize(storey.maze_size.y*2+1)
 	for cl in walls_known:
 		cl.resize(storey.maze_size.x*2+1)
+	make_allwall_by_maze()
 
 func make_allwall_by_maze()->void:
 	var maze_size = storey.maze_size

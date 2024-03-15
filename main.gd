@@ -146,6 +146,11 @@ func _ready() -> void:
 var vp_size :Vector2
 func vpsize_changed()->void:
 	vp_size = get_viewport().get_visible_rect().size
+
+	var cur_storey = get_cur_storey()
+	var map_scale = min( vp_size.x / cur_storey.maze_size.x , vp_size.y / cur_storey.maze_size.y )
+	minimap.change_scale(map_scale)
+
 	minimap.position.y = vp_size.y -minimap.get_height()
 	minimap.position.x = 0
 
@@ -254,7 +259,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 8.3.0
+	return """gd4maze3d 9.0.0
 Space:RotateCamera, Enter:Next storey, H:Toggle help, D:Toggle debug info, P:Toggle Perfomance info
 1:Minimap, 2:ViewFloorCeiling, 3:Toggle automove
 ArrowKey to move"""

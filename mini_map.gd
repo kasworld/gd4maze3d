@@ -39,6 +39,7 @@ func make_points()->void:
 	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
 	player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)
 
+# make wallline by maze
 func make_walllines_all()->void:
 	walllines_all = []
 	var maze_size = storey.maze_size
@@ -57,8 +58,24 @@ func make_walllines_all()->void:
 		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_all)
 
+# make wallline by walls_known
 func make_walllines_known()->void:
 	walllines_known = []
+	var maze_size = storey.maze_size
+	for y in maze_size.y:
+		for x in maze_size.x :
+			if is_wall_at(x,y,Storey.Dir.North):
+				add_wall_at_raw( x , y , Storey.Dir.North, walllines_known)
+			if is_wall_at(x,y,Storey.Dir.West):
+				add_wall_at_raw( x , y , Storey.Dir.West, walllines_known)
+
+	for x in maze_size.x :
+		if is_wall_at(x,maze_size.y-1,Storey.Dir.South):
+			add_wall_at_raw( x , maze_size.y-1 , Storey.Dir.South, walllines_known)
+
+	for y in maze_size.y:
+		if is_wall_at(maze_size.x-1,y,Storey.Dir.East):
+			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_known)
 
 
 func get_width()->int:

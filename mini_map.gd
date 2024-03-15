@@ -12,23 +12,15 @@ var player :Line2D
 var map_mode_full :bool
 
 func init(st :Storey, sc :float)->void:
-	map_scale = sc
-	wall_thick = map_scale*0.1
-	if wall_thick < 1 :
-		wall_thick = 1
-
-	storey = st
-	walls_known = []
 	map_mode_full = false
-	for o in get_children():
-		o.queue_free()
+	storey = st
+
+	walls_known = []
 	walls_known.resize(storey.maze_size.y*2+1)
 	for cl in walls_known:
 		cl.resize(storey.maze_size.x*2+1)
 
-	make_walllines_all()
-	make_walllines_known()
-	make_points()
+	change_scale(sc)
 
 # call scale changed
 func change_scale(sc :float)->void:
@@ -36,13 +28,13 @@ func change_scale(sc :float)->void:
 	wall_thick = map_scale*0.1
 	if wall_thick < 1 :
 		wall_thick = 1
-	for o in get_children():
-		o.queue_free()
 	make_walllines_all()
 	make_walllines_known()
 	make_points()
 
 func make_points()->void:
+	for o in get_children():
+		o.queue_free()
 	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
 	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
 	player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)

@@ -146,8 +146,8 @@ func _ready() -> void:
 var vp_size :Vector2
 func vpsize_changed()->void:
 	vp_size = get_viewport().get_visible_rect().size
-	minimap.position.y = vp_size.y -minimap.get_height() -2
-	minimap.position.x = 2
+	minimap.position.y = vp_size.y -minimap.get_height()
+	minimap.position.x = 0
 
 func enter_new_storey()->void:
 	cur_storey_index +=1
@@ -157,8 +157,9 @@ func enter_new_storey()->void:
 	$Ceiling.position.y = storey_list.size()*storey_h
 	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
-	var map_scale = 20
+	vp_size = get_viewport().get_visible_rect().size
 	var cur_storey = get_cur_storey()
+	var map_scale = min( vp_size.x / cur_storey.maze_size.x , vp_size.y / cur_storey.maze_size.y )
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()

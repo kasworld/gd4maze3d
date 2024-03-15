@@ -79,7 +79,6 @@ func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
 var minimap_scene = preload("res://mini_map.tscn")
-var minimap2draw :MiniMap
 var minimap :MiniMap
 
 var character_scene = preload("res://character.tscn")
@@ -89,8 +88,10 @@ func get_main_char()->Character:
 
 var full_minimap :bool
 func set_minimap_mode()->void:
-	minimap.visible = full_minimap
-	minimap2draw.visible = !minimap.visible
+	if full_minimap:
+		minimap.view_full_map()
+	else:
+		minimap.view_known_map()
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick*2
@@ -147,8 +148,6 @@ func vpsize_changed()->void:
 	vp_size = get_viewport().get_visible_rect().size
 	minimap.position.y = vp_size.y -minimap.get_height() -2
 	minimap.position.x = 2
-	minimap2draw.position.y = minimap.position.y
-	minimap2draw.position.x = 2
 
 func enter_new_storey()->void:
 	cur_storey_index +=1
@@ -166,12 +165,6 @@ func enter_new_storey()->void:
 	add_child(minimap)
 	minimap.init(cur_storey,map_scale)
 	minimap.make_allwall_by_maze()
-
-	if minimap2draw != null:
-		minimap2draw.queue_free()
-	minimap2draw = minimap_scene.instantiate()
-	add_child(minimap2draw)
-	minimap2draw.init(cur_storey,map_scale)
 
 	for i in PlayerCount:
 		player_list[i].enter_storey(cur_storey)
@@ -204,7 +197,6 @@ func _process(_delta: float) -> void:
 					pl.queue_act(Character.Act.RotateCameraLeft)
 					cur_storey.remove_donut_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
-				minimap2draw.move_player(pl.pos_src.x, pl.pos_src.y)
 				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 		pl.ai_act()
 		if pl.start_new_act(): # new act start
@@ -212,7 +204,7 @@ func _process(_delta: float) -> void:
 			if pl.is_player and pl.act_current != Character.Act.EnterStorey:
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
-					minimap2draw.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
+					minimap.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
 		if pl.act_current != Character.Act.None :
 			animate_act(pl, ani_dur)
 	update_info()

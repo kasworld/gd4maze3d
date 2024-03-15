@@ -5,9 +5,11 @@ class_name MiniMap
 var map_scale :float = 20
 var wall_thick :float = 2
 var storey :Storey
-var walllines :PackedVector2Array =[]
+var walllines_all :PackedVector2Array =[]
+var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
 var player :Line2D
+var map_mode_full :bool
 
 func init(st :Storey, sc :float)->void:
 	map_scale = sc
@@ -16,7 +18,9 @@ func init(st :Storey, sc :float)->void:
 		wall_thick = 1
 	storey = st
 	walls_known = []
-	walllines = []
+	walllines_all = []
+	walllines_known = []
+	map_mode_full = false
 	for o in get_children():
 		o.queue_free()
 	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
@@ -31,22 +35,30 @@ func make_allwall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
 			if not storey.maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
-				add_wall_at( x , y , Storey.Dir.North)
+				add_wall_at_raw( x , y , Storey.Dir.North, walllines_all)
 			if not storey.maze_cells.is_open_dir_at(x,y,Maze.Dir.West):
-				add_wall_at( x , y , Storey.Dir.West)
+				add_wall_at_raw( x , y , Storey.Dir.West, walllines_all)
 
 	for x in maze_size.x :
 		if not storey.maze_cells.is_open_dir_at(x,maze_size.y-1,Maze.Dir.South):
-			add_wall_at( x , maze_size.y-1 , Storey.Dir.South)
+			add_wall_at_raw( x , maze_size.y-1 , Storey.Dir.South, walllines_all)
 
 	for y in maze_size.y:
 		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
-			add_wall_at( maze_size.x-1 , y , Storey.Dir.East)
+			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_all)
 
 func get_width()->int:
 	return storey.maze_size.x * map_scale
 func get_height()->int:
 	return storey.maze_size.y * map_scale
+
+func view_full_map()->void:
+	map_mode_full = true
+	queue_redraw()
+
+func view_known_map()->void:
+	map_mode_full = false
+	queue_redraw()
 
 # cell wall[y*2+1][x*2+1]
 # wall wall[y*2][x*2]
@@ -63,23 +75,29 @@ func move_player(x:int, y:int)->void:
 	player.position = Vector2(x,y)*map_scale
 
 func _draw() -> void:
-	if walllines.size() == 0 :
-		return
-	draw_multiline(walllines,Color(Color.WHITE,0.5), wall_thick)
+	if map_mode_full:
+		draw_multiline(walllines_all,Color(Color.WHITE,0.5), wall_thick)
+	else:
+		if walllines_known.size() == 0 :
+			return
+		draw_multiline(walllines_known,Color(Color.WHITE,0.5), wall_thick)
+
+func add_wall_at_raw(x:int,y :int, dir :Storey.Dir,wl :PackedVector2Array )->void:
+	match dir:
+		Storey.Dir.North:
+			wl.append_array([Vector2(x,y)*map_scale,Vector2(x+1,y)*map_scale])
+		Storey.Dir.West:
+			wl.append_array([Vector2(x,y)*map_scale,Vector2(x,y+1)*map_scale])
+		Storey.Dir.South:
+			wl.append_array([Vector2(x,y+1)*map_scale,Vector2(x+1,y+1)*map_scale])
+		Storey.Dir.East:
+			wl.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
 
 func add_wall_at(x:int,y :int, dir :Storey.Dir)->void:
 	if is_wall_at(x,y,dir):
 		return
 	set_wall_at(x,y,dir)
-	match dir:
-		Storey.Dir.North:
-			walllines.append_array([Vector2(x,y)*map_scale,Vector2(x+1,y)*map_scale])
-		Storey.Dir.West:
-			walllines.append_array([Vector2(x,y)*map_scale,Vector2(x,y+1)*map_scale])
-		Storey.Dir.South:
-			walllines.append_array([Vector2(x,y+1)*map_scale,Vector2(x+1,y+1)*map_scale])
-		Storey.Dir.East:
-			walllines.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
+	add_wall_at_raw(x,y,dir,walllines_known)
 	queue_redraw()
 
 # between wall

@@ -95,7 +95,6 @@ func set_minimap_mode()->void:
 	minimap.visible = full_minimap
 	minimap2draw.visible = !minimap.visible
 
-
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
@@ -175,6 +174,7 @@ func enter_new_storey()->void:
 	minimap2draw = minimap2draw_scene.instantiate()
 	add_child(minimap2draw)
 	minimap2draw.init(cur_storey,map_scale)
+	#minimap2draw.make_allwall_by_maze()
 
 	for i in PlayerCount:
 		player_list[i].enter_storey(cur_storey)

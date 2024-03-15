@@ -6,8 +6,42 @@ var map_scale :float = 20
 var wall_thick :float = 2
 var storey :Storey
 var walllines :PackedVector2Array =[]
-var walls : Array[PackedByteArray] # as bool array
+var walls_known : Array[PackedByteArray] # as bool array
 var player :Line2D
+
+func init(st :Storey, sc :float)->void:
+	map_scale = sc
+	wall_thick = map_scale*0.1
+	if wall_thick < 1 :
+		wall_thick = 1
+	storey = st
+	walls_known = []
+	walllines = []
+	for o in get_children():
+		o.queue_free()
+	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
+	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
+	player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)
+	walls_known.resize(storey.maze_size.y*2+1)
+	for cl in walls_known:
+		cl.resize(storey.maze_size.x*2+1)
+
+func make_allwall_by_maze()->void:
+	var maze_size = storey.maze_size
+	for y in maze_size.y:
+		for x in maze_size.x :
+			if not storey.maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
+				add_wall_at( x , y , Storey.Dir.North)
+			if not storey.maze_cells.is_open_dir_at(x,y,Maze.Dir.West):
+				add_wall_at( x , y , Storey.Dir.West)
+
+	for x in maze_size.x :
+		if not storey.maze_cells.is_open_dir_at(x,maze_size.y-1,Maze.Dir.South):
+			add_wall_at( x , maze_size.y-1 , Storey.Dir.South)
+
+	for y in maze_size.y:
+		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
+			add_wall_at( maze_size.x-1 , y , Storey.Dir.East)
 
 func get_width()->int:
 	return storey.maze_size.x * map_scale
@@ -20,30 +54,13 @@ func calc_wall_pos(x :int, y:int, dir :Storey.Dir)->Vector2i:
 	return Vector2i(x*2+1,y*2+1) + Storey.Dir2Vt[dir]
 func is_wall_at(x :int, y:int, dir :Storey.Dir)->bool:
 	var wpos = calc_wall_pos(x,y,dir)
-	return walls[wpos.y][wpos.x] != 0
+	return walls_known[wpos.y][wpos.x] != 0
 func set_wall_at(x :int, y:int, dir :Storey.Dir):
 	var wpos = calc_wall_pos(x,y,dir)
-	walls[wpos.y][wpos.x] = 1
+	walls_known[wpos.y][wpos.x] = 1
 
 func move_player(x:int, y:int)->void:
 	player.position = Vector2(x,y)*map_scale
-
-func init(st :Storey, sc :float)->void:
-	map_scale = sc
-	wall_thick = map_scale*0.1
-	if wall_thick < 1 :
-		wall_thick = 1
-	storey = st
-	walls = []
-	walllines = []
-	for o in get_children():
-		o.queue_free()
-	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
-	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
-	player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)
-	walls.resize(storey.maze_size.y*2+1)
-	for cl in walls:
-		cl.resize(storey.maze_size.x*2+1)
 
 func _draw() -> void:
 	if walllines.size() == 0 :

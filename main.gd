@@ -235,8 +235,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			perfo_on = !perfo_on
 		elif event.keycode == KEY_7:
 			info_on = !info_on
-		elif event.keycode == KEY_8:
-			get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
+		#elif event.keycode == KEY_8:
+			#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
 		elif event.keycode == KEY_UP:
 			get_main_char().queue_act(Character.Act.Forward)
@@ -261,10 +261,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 var help_on :bool = true
 func help_str()->String:
-	return """gd4maze3d 9.0.0
+	return """gd4maze3d 9.1.0
 Space:RotateCamera, Enter:Next storey,
 1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
-ArrowKey to move"""
+ArrowKey to move
+"""
 var debug_on :bool
 var perfo_on :bool
 func performance_info()->String:
@@ -272,7 +273,8 @@ func performance_info()->String:
 Currently rendering: occlusion culling:%s
 %d objects
 %dK primitive indices
-%d draw calls""" % [
+%d draw calls
+""" % [
 	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
 	get_tree().root.use_occlusion_culling,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
@@ -283,18 +285,17 @@ var info_on :bool
 func update_info()->void:
 	var helpstr = ""
 	if help_on:
-		helpstr = "\n"+ help_str()
+		helpstr = help_str()
 	var debugstr = ""
 	if debug_on:
-		debugstr = "\n"+ get_main_char().debug_str()
+		debugstr = get_main_char().debug_str()
 	var perfo_str = ""
 	if perfo_on:
-		perfo_str = "\n"+ performance_info()
+		perfo_str = performance_info()
 	var info_s = ""
 	if info_on :
 		info_s = info_str()
-	$Label.text = """%s
-%s%s%s""" % [
+	$Label.text = "%s%s%s%s" % [
 		info_s,
 		helpstr, debugstr,
 		perfo_str,

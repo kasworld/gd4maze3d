@@ -151,8 +151,8 @@ func vpsize_changed()->void:
 	var map_scale = min( vp_size.x / cur_storey.maze_size.x , vp_size.y / cur_storey.maze_size.y )
 	minimap.change_scale(map_scale)
 
-	minimap.position.y = vp_size.y -minimap.get_height()
-	minimap.position.x = 0
+	minimap.position.y = (vp_size.y -minimap.get_height())/2
+	minimap.position.x = (vp_size.x - minimap.get_width())/2
 
 func enter_new_storey()->void:
 	cur_storey_index +=1

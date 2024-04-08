@@ -1,23 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://c76t0bgq0j8ux"]
+[gd_scene load_steps=7 format=3 uid="uid://c76t0bgq0j8ux"]
 
 [ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
+[ext_resource type="PackedScene" uid="uid://da370dapcfjwm" path="res://move_line2d/move_line_2d.tscn" id="2_xanyy"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nsui6"]
-emission = Color(0.188235, 0.188235, 0.188235, 1)
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndqwe"]
+transparency = 1
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pgvr8"]
-material = SubResource("StandardMaterial3D_nsui6")
 size = Vector2(100, 100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eu0lw"]
-emission = Color(0.384314, 0.384314, 0.384314, 1)
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jac8r"]
+transparency = 1
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_me8ve"]
-material = SubResource("StandardMaterial3D_eu0lw")
 flip_faces = true
 size = Vector2(100, 100)
 
@@ -25,12 +20,28 @@ size = Vector2(100, 100)
 script = ExtResource("1_vfl4n")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_ndqwe")
 mesh = SubResource("PlaneMesh_pgvr8")
 skeleton = NodePath("../..")
 
 [node name="Ceiling" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("StandardMaterial3D_jac8r")
 mesh = SubResource("PlaneMesh_me8ve")
 skeleton = NodePath("../..")
 
 [node name="WallContainer" type="Node3D" parent="."]
+
+[node name="FloorSubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(2048, 2048)
+render_target_update_mode = 4
+
+[node name="MoveLine2D" parent="FloorSubViewport" instance=ExtResource("2_xanyy")]
+
+[node name="CeilingSubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(2048, 2048)
+render_target_update_mode = 4
+
+[node name="MoveLine2D" parent="CeilingSubViewport" instance=ExtResource("2_xanyy")]

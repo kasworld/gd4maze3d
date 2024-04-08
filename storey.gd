@@ -122,13 +122,17 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	var meshy = maze_size.y*lane_w +wall_thick*2
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
-	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
+	#$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
+	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
+	$FloorSubViewport/MoveLine2D.init(600,2,Vector2($FloorSubViewport.size.x,$FloorSubViewport.size.y))
+	$Floor.material_override.albedo_texture = $FloorSubViewport.get_texture()
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
-	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
+	#$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
+	#$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
+	$CeilingSubViewport/MoveLine2D.init(600,2,Vector2($CeilingSubViewport.size.x,$CeilingSubViewport.size.y))
+	$Ceiling.material_override.albedo_texture = $CeilingSubViewport.get_texture()
 
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
@@ -161,6 +165,8 @@ func set_start_pos(p :Vector2i)->void:
 	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
+	$FloorSubViewport/MoveLine2D.move(1.0/60.0)
+	$CeilingSubViewport/MoveLine2D.move(1.0/60.0)
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
 	for p in capsule_pos_dic:

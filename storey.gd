@@ -98,7 +98,7 @@ func new_tree_at(p :Vector2i)->BarTree:
 
 func make_tree(p :Vector2i)->void:
 	var tr :BarTree = new_tree_at(p)
-	tr.set_params(lane_w*0.8,storey_h*0.8, lane_w/10, 50, 10.0)
+	tr.set_params(lane_w*0.8,storey_h*0.8, lane_w/10, 50, 1.0)
 	match randi_range(0,5):
 		0:
 			tr.init_with_color(Color.BLACK, Color.YELLOW, false)
@@ -116,7 +116,8 @@ func make_tree(p :Vector2i)->void:
 			mat.albedo_texture = Texmat.tree_tex_dict.darkwood
 			mat.uv1_triplanar = true
 			tr.init_with_material(mat)
-	tr.bar_rotation_y(PI/10.0)
+	#tr.bar_rotation_y(PI/10.0)
+
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
@@ -197,8 +198,13 @@ func set_start_pos(p :Vector2i)->void:
 	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
-	$FloorSubViewport/MoveLine2D.move(1.0/60.0)
-	$CeilingSubViewport/MoveLine2D.move(1.0/60.0)
+	$FloorSubViewport/MoveLine2D.move(delta)
+	$CeilingSubViewport/MoveLine2D.move(delta)
+
+func do_animate(delta: float) -> void:
+	for n in tree_list:
+		n.bar_rotate_y(delta)
+
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
 	for p in capsule_pos_dic:

@@ -159,6 +159,7 @@ func change_floor_ceiling_visible(f :bool,c :bool)->void:
 
 func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
+	cur_storey.do_animate(_delta)
 	for i in PlayerCount:
 		var pl = player_list[i]
 		var ani_dur = pl.get_ani_dur()

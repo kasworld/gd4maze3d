@@ -120,18 +120,22 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
+	var size_pixel = Vector2(meshx,meshy) * 64
+	#print_debug(size_pixel)
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
 	#$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
 	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
-	$FloorSubViewport/MoveLine2D.init(600,2,Vector2($FloorSubViewport.size.x,$FloorSubViewport.size.y))
+	$FloorSubViewport.size = size_pixel
+	$FloorSubViewport/MoveLine2D.init(600,4,size_pixel)
 	$Floor.material_override.albedo_texture = $FloorSubViewport.get_texture()
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
 	#$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	#$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
-	$CeilingSubViewport/MoveLine2D.init(600,2,Vector2($CeilingSubViewport.size.x,$CeilingSubViewport.size.y))
+	$CeilingSubViewport.size = size_pixel
+	$CeilingSubViewport/MoveLine2D.init(600,4,size_pixel)
 	$Ceiling.material_override.albedo_texture = $CeilingSubViewport.get_texture()
 
 	maze_cells = Maze.new(maze_size)

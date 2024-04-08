@@ -71,7 +71,7 @@ func reset_bar_rotation()->void:
 	for sp in bar_list:
 		sp.rotation = Vector3.ZERO
 
-func set_bar_rotate_y(delta:float)->void:
+func bar_rotation_y(delta:float)->void:
 	for i in bar_list.size():
 		bar_list[i].rotation.y =  delta * (bar_rotation_base_velocity * float(i)*PI/bar_count)
 

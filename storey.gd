@@ -87,6 +87,36 @@ func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	add_child(n)
 	return n
 
+var tree_scene = preload("res://bar_tree/bar_tree.tscn")
+var tree_list :Array
+func new_tree_at(p :Vector2i)->BarTree:
+	var tr = tree_scene.instantiate()
+	add_child(tr)
+	tree_list.append(tr)
+	tr.position = mazepos2storeypos(p, storey_h*0.1)
+	return tr
+
+func make_tree(p :Vector2i)->void:
+	var tr :BarTree = new_tree_at(p)
+	tr.set_params(lane_w*0.8,storey_h*0.8, lane_w/10, 50, 10.0)
+	match randi_range(0,5):
+		0:
+			tr.init_with_color(Color.BLACK, Color.YELLOW, false)
+		1:
+			tr.init_with_color(Color.RED, Color.BLUE,false)
+		2:
+			tr.init_with_color(Color.BLUE, Color.RED,false)
+		3:
+			var mat = StandardMaterial3D.new()
+			mat.albedo_texture = Texmat.tree_tex_dict.floorwood
+			#mat.uv1_triplanar = true
+			tr.init_with_material(mat)
+		4:
+			var mat = StandardMaterial3D.new()
+			mat.albedo_texture = Texmat.tree_tex_dict.darkwood
+			mat.uv1_triplanar = true
+			tr.init_with_material(mat)
+	tr.bar_rotation_y(PI/10.0)
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
@@ -124,16 +154,12 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	#print_debug(size_pixel)
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	#$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
-	#$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 	$FloorSubViewport.size = size_pixel
 	$FloorSubViewport/MoveLine2D.init(600,4,size_pixel)
 	$Floor.material_override.albedo_texture = $FloorSubViewport.get_texture()
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	#$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
-	#$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 	$CeilingSubViewport.size = size_pixel
 	$CeilingSubViewport/MoveLine2D.init(600,4,size_pixel)
 	$Ceiling.material_override.albedo_texture = $CeilingSubViewport.get_texture()
@@ -157,6 +183,8 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				else:
 					var c = add_donut_at(p, co)
 					donut_pos_dic[p]=c
+			elif randi_range(0,10)==0:
+				make_tree(p)
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)

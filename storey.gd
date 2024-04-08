@@ -2,37 +2,6 @@ extends Node3D
 
 class_name Storey
 
-var tex_dict = {
-	brownbrick = preload("res://image/brownbrick50.png"),
-	bluestone = preload("res://image/bluestone50.png"),
-	drymud = preload("res://image/drymud50.png"),
-	graystone = preload("res://image/graystone50.png"),
-	pinkstone = preload("res://image/pinkstone50.png"),
-	greenstone = preload("res://image/greenstone50.png"),
-	ice50 = preload("res://image/ice50.png")
-}
-
-var mat_dict = {
-	aluminium = preload("res://test_materials/aluminium.tres"),
-	#blue = preload("res://test_materials/blue.tres"),
-	brick = preload("res://test_materials/brick.tres"),
-	cheese = preload("res://test_materials/cheese.tres"),
-	darkwood = preload("res://test_materials/dark_wood.tres"),
-	#gray = preload("res://test_materials/gray.tres"),
-	ice = preload("res://test_materials/ice.tres"),
-	marble = preload("res://test_materials/marble.tres"),
-	#mirror = preload("res://test_materials/mirror.tres"),
-	rock = preload("res://test_materials/rock.tres"),
-	stones = preload("res://test_materials/stones.tres"),
-	#toon = preload("res://test_materials/toon.tres"),
-	wetsand = preload("res://test_materials/wet_sand.tres"),
-	#white = preload("res://test_materials/white.tres"),
-	#whiteplastic = preload("res://test_materials/white_plastic.tres"),
-	wool = preload("res://test_materials/wool.tres"),
-}
-
-var net_mat = preload("res://image/net.png")
-
 # x90 == degree
 enum Dir {
 	North = 0,
@@ -139,26 +108,26 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	start_pos = stp
 	goal_pos = gp
 
-	var tex_keys = tex_dict.keys()
+	var tex_keys = Texmat.wall_tex_dict.keys()
 	tex_keys.shuffle()
 	sub_wall_tex_name = tex_keys[0]
-	sub_wall_tex = tex_dict[sub_wall_tex_name]
+	sub_wall_tex = Texmat.wall_tex_dict[sub_wall_tex_name]
 
-	var mat_keys = mat_dict.keys()
+	var mat_keys = Texmat.wall_mat_dict.keys()
 	mat_keys.shuffle()
 	main_wall_mat_name = mat_keys[0]
-	main_wall_mat = mat_dict[main_wall_mat_name]
+	main_wall_mat = Texmat.wall_mat_dict[main_wall_mat_name]
 
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material.albedo_texture = net_mat
+	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material.albedo_texture = net_mat
+	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 
 	maze_cells = Maze.new(maze_size)

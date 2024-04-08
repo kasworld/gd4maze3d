@@ -9,35 +9,6 @@ var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
 
-var tex_dict = {
-	brownbrick = preload("res://image/brownbrick50.png"),
-	bluestone = preload("res://image/bluestone50.png"),
-	drymud = preload("res://image/drymud50.png"),
-	graystone = preload("res://image/graystone50.png"),
-	pinkstone = preload("res://image/pinkstone50.png"),
-	greenstone = preload("res://image/greenstone50.png"),
-	ice50 = preload("res://image/ice50.png")
-}
-
-var mat_dict = {
-	aluminium = preload("res://test_materials/aluminium.tres"),
-	#blue = preload("res://test_materials/blue.tres"),
-	brick = preload("res://test_materials/brick.tres"),
-	cheese = preload("res://test_materials/cheese.tres"),
-	darkwood = preload("res://test_materials/dark_wood.tres"),
-	#gray = preload("res://test_materials/gray.tres"),
-	ice = preload("res://test_materials/ice.tres"),
-	marble = preload("res://test_materials/marble.tres"),
-	#mirror = preload("res://test_materials/mirror.tres"),
-	rock = preload("res://test_materials/rock.tres"),
-	stones = preload("res://test_materials/stones.tres"),
-	#toon = preload("res://test_materials/toon.tres"),
-	wetsand = preload("res://test_materials/wet_sand.tres"),
-	#white = preload("res://test_materials/white.tres"),
-	#whiteplastic = preload("res://test_materials/white_plastic.tres"),
-	wool = preload("res://test_materials/wool.tres"),
-}
-
 var storey_scene = preload("res://storey.tscn")
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
@@ -97,17 +68,18 @@ func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
 
-	var mat_keys = mat_dict.keys()
+	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
-
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material = mat_dict[mat_keys[0]].duplicate()
+	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
 	$Floor.mesh.material.uv1_scale = Vector3(maze_size.x,(maze_size.x+maze_size.y)/2.0,maze_size.y)
 
+	mat_keys = Texmat.ceiling_mat_dict.keys()
+	mat_keys.shuffle()
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material = mat_dict[mat_keys[1]].duplicate()
+	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[1]].duplicate()
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
 	for i in PlayerCount:
@@ -140,11 +112,11 @@ func _ready() -> void:
 		for i in VisibleStoreyUp:
 			add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
 
-	get_viewport().size_changed.connect(vpsize_changed)
+	get_viewport().size_changed.connect(_on_vpsize_changed)
 	enter_new_storey()
 
 var vp_size :Vector2
-func vpsize_changed()->void:
+func _on_vpsize_changed()->void:
 	vp_size = get_viewport().get_visible_rect().size
 
 	var cur_storey = get_cur_storey()
@@ -176,7 +148,7 @@ func enter_new_storey()->void:
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode()
-	vpsize_changed()
+	_on_vpsize_changed()
 
 var view_floor_ceiling :bool = true
 func change_floor_ceiling_visible(f :bool,c :bool)->void:

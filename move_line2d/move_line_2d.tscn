@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://da370dapcfjwm"]
+
+[ext_resource type="Script" path="res://move_line2d/move_line_2d.gd" id="1_88yft"]
+
+[node name="MoveLine2D" type="Node2D"]
+script = ExtResource("1_88yft")
+
+[node name="LineContainer" type="Node2D" parent="."]

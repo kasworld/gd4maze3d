@@ -187,16 +187,14 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				make_tree(p)
 
 var line2d_list :Array
-var line2d_move_list :Array
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 func make_line2d(sz :Vector2, p :Vector2i)->MeshInstance3D:
 	var mesh = PlaneMesh.new()
 	mesh.size = sz
 	mesh.orientation = PlaneMesh.FACE_X
-	var size_pixel = sz * 256
+	var size_pixel = Vector2i(2000,1500)
 	var l2d = line2d_scene.instantiate()
-	l2d.init(600,4,size_pixel)
-	line2d_move_list.append(l2d)
+	l2d.init(300,4,size_pixel)
 	var sv = SubViewport.new()
 	sv.size = size_pixel
 	sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -235,8 +233,6 @@ func set_start_pos(p :Vector2i)->void:
 	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
-	for n in line2d_move_list:
-		n.move(1.0/60.0)
 	for n in line2d_list:
 		n.rotate_y(delta)
 

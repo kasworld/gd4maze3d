@@ -8,10 +8,12 @@ var line_width = 1
 var point_count :int
 var color_list :PackedColorArray
 var velocity_list :PackedVector2Array
+var auto_move :float
 
-func init(ln_count :int, pt_count :int, dsize :Vector2 ):
+func init(ln_count :int, pt_count :int, dsize :Vector2, amove :float = 1.0/60.0 ):
 	point_count = pt_count
 	draw_area_size = dsize
+	auto_move = amove
 
 	velocity_list = make_vel_list(point_count, draw_area_size)
 	color_list = make_color_list(point_count)
@@ -23,6 +25,10 @@ func init(ln_count :int, pt_count :int, dsize :Vector2 ):
 		ln.gradient.colors = color_list
 		ln.width = line_width
 		$LineContainer.add_child(ln)
+
+func _process(delta: float) -> void:
+	if auto_move != 0.0:
+		move(auto_move)
 
 func move(delta :float)->void:
 	var old_line_points = $LineContainer.get_child(line_cursor).points.duplicate()

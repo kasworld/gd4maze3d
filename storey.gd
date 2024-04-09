@@ -173,7 +173,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		for x in maze_size.x:
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
-				make_line2d(Vector3(0.01,storey_h,lane_w), p)
+				make_line2d(Vector2(lane_w,storey_h), p)
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
 				var co = colist.pick_random()[0]
@@ -189,12 +189,14 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 var line2d_list :Array
 var line2d_move_list :Array
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
-func make_line2d(sz :Vector3, p :Vector2i)->MeshInstance3D:
-	var mesh = BoxMesh.new()
+func make_line2d(sz :Vector2, p :Vector2i)->MeshInstance3D:
+	var mesh = PlaneMesh.new()
 	mesh.size = sz
-	var size_pixel = Vector2(640,480)
+	mesh.orientation = PlaneMesh.FACE_X
+	var size_pixel = sz * 256
 	var l2d = line2d_scene.instantiate()
 	l2d.init(600,4,size_pixel)
+	line2d_move_list.append(l2d)
 	var sv = SubViewport.new()
 	sv.size = size_pixel
 	sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -206,10 +208,19 @@ func make_line2d(sz :Vector3, p :Vector2i)->MeshInstance3D:
 	sp.mesh = mesh
 	sp.position = mazepos2storeypos(p, storey_h*0.5)
 	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	sp.material_override.albedo_texture = sv.get_texture()
 	add_child(sp)
 	line2d_list.append(sp)
-	line2d_move_list.append(l2d)
+	sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.position = mazepos2storeypos(p, storey_h*0.5)
+	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
+	sp.material_override.albedo_texture = sv.get_texture()
+	sp.rotation.y = PI
+	add_child(sp)
+	line2d_list.append(sp)
 	return sp
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:

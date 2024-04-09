@@ -154,13 +154,13 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	var size_pixel = Vector2(meshx,meshy) * 64
 	#print_debug(size_pixel)
 	$Floor.mesh.size = Vector2(meshx, meshy)
-	$Floor.position = Vector3(meshx/2, 0, meshy/2)
+	$Floor.position = Vector3(meshx/2, storey_h * 0.0, meshy/2)
 	$FloorSubViewport.size = size_pixel
 	$FloorSubViewport/MoveLine2D.init(600,4,size_pixel)
 	$Floor.material_override.albedo_texture = $FloorSubViewport.get_texture()
 
 	$Ceiling.mesh.size = Vector2(meshx, meshy)
-	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
+	$Ceiling.position = Vector3(meshx/2, storey_h * 1.0, meshy/2)
 	$CeilingSubViewport.size = size_pixel
 	$CeilingSubViewport/MoveLine2D.init(600,4,size_pixel)
 	$Ceiling.material_override.albedo_texture = $CeilingSubViewport.get_texture()
@@ -198,10 +198,8 @@ func set_start_pos(p :Vector2i)->void:
 	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
-	$FloorSubViewport/MoveLine2D.move(delta)
-	$CeilingSubViewport/MoveLine2D.move(delta)
-
-func do_animate(delta: float) -> void:
+	$FloorSubViewport/MoveLine2D.move(1.0/60.0)
+	$CeilingSubViewport/MoveLine2D.move(1.0/60.0)
 	for n in tree_list:
 		n.bar_rotate_y(delta)
 

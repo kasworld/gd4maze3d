@@ -163,14 +163,6 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Ceiling.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 
-	#var size_pixel = Vector2(meshx,meshy) * 64
-	#$FloorSubViewport.size = size_pixel
-	#$FloorSubViewport/MoveLine2D.init(600,4,size_pixel)
-	#$Floor.material_override.albedo_texture = $FloorSubViewport.get_texture()
-	#$CeilingSubViewport.size = size_pixel
-	#$CeilingSubViewport/MoveLine2D.init(600,4,size_pixel)
-	#$Ceiling.material_override.albedo_texture = $CeilingSubViewport.get_texture()
-
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
 	make_wall_by_maze()
@@ -181,6 +173,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		for x in maze_size.x:
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
+				make_line2d(Vector3(0.01,storey_h,lane_w), p)
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
 				var co = colist.pick_random()[0]
@@ -192,6 +185,32 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 					donut_pos_dic[p]=c
 			elif randi_range(0,10)==0:
 				make_tree(p)
+
+var line2d_list :Array
+var line2d_move_list :Array
+var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
+func make_line2d(sz :Vector3, p :Vector2i)->MeshInstance3D:
+	var mesh = BoxMesh.new()
+	mesh.size = sz
+	var size_pixel = Vector2(640,480)
+	var l2d = line2d_scene.instantiate()
+	l2d.init(600,4,size_pixel)
+	var sv = SubViewport.new()
+	sv.size = size_pixel
+	sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	sv.transparent_bg = true
+	sv.add_child(l2d)
+	add_child(sv)
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.position = mazepos2storeypos(p, storey_h*0.5)
+	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.albedo_texture = sv.get_texture()
+	add_child(sp)
+	line2d_list.append(sp)
+	line2d_move_list.append(l2d)
+	return sp
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
@@ -205,11 +224,13 @@ func set_start_pos(p :Vector2i)->void:
 	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
-	#$FloorSubViewport/MoveLine2D.move(1.0/60.0)
-	#$CeilingSubViewport/MoveLine2D.move(1.0/60.0)
+	for n in line2d_move_list:
+		n.move(1.0/60.0)
+	for n in line2d_list:
+		n.rotate_y(delta)
+
 	for n in tree_list:
 		n.bar_rotate_y(delta)
-
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
 	for p in capsule_pos_dic:

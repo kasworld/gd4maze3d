@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://c76t0bgq0j8ux"]
+[gd_scene load_steps=6 format=3 uid="uid://c76t0bgq0j8ux"]
 
 [ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
-[ext_resource type="PackedScene" uid="uid://da370dapcfjwm" path="res://move_line2d/move_line_2d.tscn" id="2_xanyy"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycwsu"]
 uv1_triplanar = true
@@ -29,17 +28,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("PlaneMesh_me8ve")
 
 [node name="WallContainer" type="Node3D" parent="."]
-
-[node name="FloorSubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(2048, 2048)
-render_target_update_mode = 4
-
-[node name="MoveLine2D" parent="FloorSubViewport" instance=ExtResource("2_xanyy")]
-
-[node name="CeilingSubViewport" type="SubViewport" parent="."]
-transparent_bg = true
-size = Vector2i(2048, 2048)
-render_target_update_mode = 4
-
-[node name="MoveLine2D" parent="CeilingSubViewport" instance=ExtResource("2_xanyy")]

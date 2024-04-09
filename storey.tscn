@@ -3,16 +3,18 @@
 [ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
 [ext_resource type="PackedScene" uid="uid://da370dapcfjwm" path="res://move_line2d/move_line_2d.tscn" id="2_xanyy"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndqwe"]
-transparency = 1
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycwsu"]
+uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_pgvr8"]
+material = SubResource("StandardMaterial3D_ycwsu")
 size = Vector2(100, 100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jac8r"]
-transparency = 1
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_evflo"]
+uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_me8ve"]
+material = SubResource("StandardMaterial3D_evflo")
 flip_faces = true
 size = Vector2(100, 100)
 
@@ -20,15 +22,11 @@ size = Vector2(100, 100)
 script = ExtResource("1_vfl4n")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ndqwe")
 mesh = SubResource("PlaneMesh_pgvr8")
-skeleton = NodePath("../..")
 
 [node name="Ceiling" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-material_override = SubResource("StandardMaterial3D_jac8r")
 mesh = SubResource("PlaneMesh_me8ve")
-skeleton = NodePath("../..")
 
 [node name="WallContainer" type="Node3D" parent="."]
 

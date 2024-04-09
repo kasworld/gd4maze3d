@@ -68,6 +68,7 @@ func remove_capsule_at(p :Vector2i)->bool:
 func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = new_capsule(lane_w*0.3,lane_w*0.05,get_color_mat(co))
 	n.position = mazepos2storeypos(p, storey_h/4.0)
+	n.rotation.y = randf_range(0,2*PI)
 	add_child(n)
 	return n
 
@@ -84,17 +85,19 @@ func remove_donut_at(p :Vector2i)->bool:
 func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = new_torus(lane_w*0.1,lane_w* 0.2, get_color_mat(co))
 	n.position = mazepos2storeypos(p, storey_h/4.0)
+	n.rotation.y = randf_range(0,2*PI)
 	add_child(n)
 	return n
 
 var tree_scene = preload("res://bar_tree/bar_tree.tscn")
 var tree_list :Array
 func new_tree_at(p :Vector2i)->BarTree:
-	var tr = tree_scene.instantiate()
-	add_child(tr)
-	tree_list.append(tr)
-	tr.position = mazepos2storeypos(p, storey_h*0.1)
-	return tr
+	var t = tree_scene.instantiate()
+	add_child(t)
+	tree_list.append(t)
+	t.position = mazepos2storeypos(p, storey_h*0.1)
+	t.rotation.y = randf_range(0,2*PI)
+	return t
 
 func make_tree(p :Vector2i)->void:
 	var tr :BarTree = new_tree_at(p)
@@ -193,6 +196,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
 	n.position = mazepos2storeypos(p, storey_h/2.0)
+	n.rotation.y = randf_range(0,2*PI)
 	add_child(n)
 	return n
 

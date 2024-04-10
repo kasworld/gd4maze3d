@@ -182,26 +182,28 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				make_tree(p)
 			elif randi_range(0,20)==0:
 				var pos = mazepos2storeypos(p, storey_h*0.5)
-				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_X, false)
-				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_X, true)
-				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_Z, false)
-				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_Z, true)
+				var sz = Vector2(lane_w,storey_h)
+				var psz = sz * 500
+				make_line2d(sz, psz, pos, PlaneMesh.FACE_X, false)
+				make_line2d(sz, psz, pos, PlaneMesh.FACE_X, true)
+				make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, false)
+				make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, true)
 
 var line2d_list :Array
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
-func make_line2d(sz :Vector2, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
+func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
 	var mesh = PlaneMesh.new()
 	mesh.size = sz
 	mesh.orientation = face
 	mesh.flip_faces = flip
-	var size_pixel = sz * 500
+	var size_pixel = psz
 	#print_debug(size_pixel)
 	var l2d = line2d_scene.instantiate()
 	l2d.init(300,4,size_pixel)
 	var sv = SubViewport.new()
 	sv.size = size_pixel
-	sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
 	sv.transparent_bg = true
 	sv.add_child(l2d)
 	add_child(sv)

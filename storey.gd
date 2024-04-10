@@ -169,7 +169,6 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		for x in maze_size.x:
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
-				make_line2d(Vector2(lane_w,storey_h), p)
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
 				var co = colist.pick_random()[0]
@@ -179,16 +178,24 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				else:
 					var c = add_donut_at(p, co)
 					donut_pos_dic[p]=c
-			elif randi_range(0,10)==0:
+			elif randi_range(0,20)==0:
 				make_tree(p)
+			elif randi_range(0,20)==0:
+				var pos = mazepos2storeypos(p, storey_h*0.5)
+				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_X, false)
+				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_X, true)
+				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_Z, false)
+				make_line2d(Vector2(lane_w,storey_h), pos, PlaneMesh.FACE_Z, true)
 
 var line2d_list :Array
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
-func make_line2d(sz :Vector2, p :Vector2i)->MeshInstance3D:
+func make_line2d(sz :Vector2, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
 	var mesh = PlaneMesh.new()
 	mesh.size = sz
-	mesh.orientation = PlaneMesh.FACE_X
-	var size_pixel = Vector2i(2000,1500)
+	mesh.orientation = face
+	mesh.flip_faces = flip
+	var size_pixel = sz * 500
+	#print_debug(size_pixel)
 	var l2d = line2d_scene.instantiate()
 	l2d.init(300,4,size_pixel)
 	var sv = SubViewport.new()
@@ -200,16 +207,12 @@ func make_line2d(sz :Vector2, p :Vector2i)->MeshInstance3D:
 	add_child(sv)
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
-	sp.position = mazepos2storeypos(p, storey_h*0.5)
+	sp.position = pos
 	sp.material_override = StandardMaterial3D.new()
 	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	sp.material_override.albedo_texture = sv.get_texture()
 	add_child(sp)
 	line2d_list.append(sp)
-	var sp2 = sp.duplicate()
-	sp2.rotation.y = PI
-	add_child(sp2)
-	line2d_list.append(sp2)
 	return sp
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:

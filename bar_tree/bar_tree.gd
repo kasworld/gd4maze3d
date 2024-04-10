@@ -9,25 +9,20 @@ var bar_rotation_base_velocity :float = 5.0
 
 var bar_height :float = tree_height/bar_count
 var bar_list :Array
+var auto_rotate_bar :float
 
-func set_params(w:float, h :float, bar_w :float, b_count:int, rot_vel :float)->void:
+
+func init_with_color(co1 :Color, co2:Color, emission :bool,
+		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot :float = 1.0/60.0)->void:
 	tree_height = h
 	tree_width = w
 	bar_width_base_rate = bar_w
-	bar_rotation_base_velocity = rot_vel
 	bar_count = b_count
 	bar_height = tree_height/bar_count
+
+	bar_rotation_base_velocity = rot_vel
+	auto_rotate_bar = autorot
 	clear_bar_list()
-
-func clear_bar_list()->void:
-	for sp in bar_list:
-		remove_child(sp)
-	bar_list.clear()
-
-func set_rotate_direction(dir :float)->void:
-	bar_rotation_base_velocity = dir
-
-func init_with_color(co1 :Color, co2:Color, emission :bool)->void:
 	for i in bar_count:
 		var rate = float(i)/bar_count
 		var bar_color = co1.lerp(co2,rate)
@@ -35,15 +30,34 @@ func init_with_color(co1 :Color, co2:Color, emission :bool)->void:
 		if emission:
 			mat.emission_enabled = true
 			mat.emission = bar_color
-		var sp = new_mat_inst3d(i,mat)
+		var sp = new_bar_inst3d(i,mat)
 		bar_list.append(sp)
 		add_child(sp)
 
-func init_with_material(mat :Material)->void:
+func init_with_material(mat :Material,
+		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot :float = 1.0/60.0)->void:
+	tree_height = h
+	tree_width = w
+	bar_width_base_rate = bar_w
+	bar_count = b_count
+	bar_height = tree_height/bar_count
+
+	bar_rotation_base_velocity = rot_vel
+	auto_rotate_bar = autorot
+	clear_bar_list()
 	for i in bar_count:
-		var sp = new_mat_inst3d(i,mat)
+		var sp = new_bar_inst3d(i,mat)
 		bar_list.append(sp)
 		add_child(sp)
+
+func clear_bar_list()->void:
+	for sp in bar_list:
+		remove_child(sp)
+	bar_list.clear()
+
+func _process(delta: float) -> void:
+	if auto_rotate_bar != 0.0:
+		bar_rotate_y(auto_rotate_bar)
 
 func get_color_mat(co: Color)->Material:
 	var mat = StandardMaterial3D.new()
@@ -52,7 +66,7 @@ func get_color_mat(co: Color)->Material:
 	mat.clearcoat = true
 	return mat
 
-func new_mat_inst3d(i :int, mat :Material)->MeshInstance3D:
+func new_bar_inst3d(i :int, mat :Material)->MeshInstance3D:
 	var pos_rev = float(bar_count-i)
 	var pos_rev_rate = pos_rev / float(bar_count)
 	var y = float(i) * bar_height

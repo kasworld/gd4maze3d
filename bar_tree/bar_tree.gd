@@ -11,7 +11,6 @@ var bar_height :float = tree_height/bar_count
 var bar_list :Array
 var auto_rotate_bar :float
 
-
 func init_with_color(co1 :Color, co2:Color, emission :bool,
 		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot :float = 1.0/60.0)->void:
 	tree_height = h

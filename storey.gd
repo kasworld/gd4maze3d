@@ -90,35 +90,32 @@ func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	return n
 
 var tree_scene = preload("res://bar_tree/bar_tree.tscn")
-var tree_list :Array
 func new_tree_at(p :Vector2i)->BarTree:
 	var t = tree_scene.instantiate()
 	add_child(t)
-	tree_list.append(t)
 	t.position = mazepos2storeypos(p, storey_h*0.1)
 	t.rotation.y = randf_range(0,2*PI)
 	return t
 
+func random_color()->Color:
+	return Color(randf(),randf(),randf())
+
 func make_tree(p :Vector2i)->void:
 	var tr :BarTree = new_tree_at(p)
-	match randi_range(0,5):
+	var w = randf_range(lane_w*0.1,lane_w*0.9)
+	var h = randf_range(storey_h*0.1,storey_h*0.9)
+	match randi_range(0,3):
 		0:
-			tr.init_with_color(Color.BLACK, Color.YELLOW, false,lane_w*0.8,storey_h*0.8, lane_w/10, 50, 1.0, 1.0/60.0)
-		1:
-			tr.init_with_color(Color.RED, Color.BLUE,false,lane_w*0.8,storey_h*0.8, lane_w/10, 50, 1.0, 1.0/60.0)
-		2:
-			tr.init_with_color(Color.BLUE, Color.RED,false,lane_w*0.8,storey_h*0.8, lane_w/10, 50, 1.0, 1.0/60.0)
-		3:
 			var mat = StandardMaterial3D.new()
 			mat.albedo_texture = Texmat.tree_tex_dict.floorwood
-			#mat.uv1_triplanar = true
-			tr.init_with_material(mat,lane_w*0.8,storey_h*0.8, lane_w/10, 50, 1.0, 1.0/60.0)
-		4:
+			tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
+		1:
 			var mat = StandardMaterial3D.new()
 			mat.albedo_texture = Texmat.tree_tex_dict.darkwood
 			mat.uv1_triplanar = true
-			tr.init_with_material(mat,lane_w*0.8,storey_h*0.8, lane_w/10, 50, 1.0, 1.0/60.0)
-	#tr.bar_rotation_y(PI/10.0)
+			tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
+		_:
+			tr.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
 
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
@@ -209,15 +206,10 @@ func make_line2d(sz :Vector2, p :Vector2i)->MeshInstance3D:
 	sp.material_override.albedo_texture = sv.get_texture()
 	add_child(sp)
 	line2d_list.append(sp)
-	sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.position = mazepos2storeypos(p, storey_h*0.5)
-	sp.material_override = StandardMaterial3D.new()
-	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
-	sp.material_override.albedo_texture = sv.get_texture()
-	sp.rotation.y = PI
-	add_child(sp)
-	line2d_list.append(sp)
+	var sp2 = sp.duplicate()
+	sp2.rotation.y = PI
+	add_child(sp2)
+	line2d_list.append(sp2)
 	return sp
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:

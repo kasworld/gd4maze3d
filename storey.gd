@@ -180,14 +180,14 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 					donut_pos_dic[p]=c
 			elif randi_range(0,20)==0:
 				make_tree(p)
-			elif randi_range(0,20)==0:
-				var pos = mazepos2storeypos(p, storey_h*0.5)
-				var sz = Vector2(lane_w,storey_h)
-				var psz = sz * 500
-				make_line2d(sz, psz, pos, PlaneMesh.FACE_X, false)
-				make_line2d(sz, psz, pos, PlaneMesh.FACE_X, true)
-				make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, false)
-				make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, true)
+			#elif randi_range(0,20)==0:
+				#var pos = mazepos2storeypos(p, storey_h*0.5)
+				#var sz = Vector2(lane_w,storey_h)
+				#var psz = sz * 500
+				#make_line2d(sz, psz, pos, PlaneMesh.FACE_X, false)
+				#make_line2d(sz, psz, pos, PlaneMesh.FACE_X, true)
+				#make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, false)
+				#make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, true)
 
 var line2d_list :Array
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
@@ -246,19 +246,19 @@ func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
 			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
-				add_wall_at( x , y , false)
+				add_wall_at( x , y , Maze.Dir.North)
 			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.West):
-				add_wall_at( x , y , true)
+				add_wall_at( x , y , Maze.Dir.West)
 
 	for x in maze_size.x :
 		if not maze_cells.is_open_dir_at(x,maze_size.y-1,Maze.Dir.South):
-			add_wall_at( x , maze_size.y , false)
+			add_wall_at( x , maze_size.y , Maze.Dir.South)
 
 	for y in maze_size.y:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
-			add_wall_at( maze_size.x , y , true)
+			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
-func add_wall_at(x :int, y :int, face_x :bool)->void:
+func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var mat :StandardMaterial3D
 	match randi_range(0,10):
 		0:
@@ -268,15 +268,20 @@ func add_wall_at(x :int, y :int, face_x :bool)->void:
 		_:
 			mat = main_wall_mat
 	var w :MeshInstance3D
-	if face_x:
-		#w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
-		w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w), mat)
-		w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
-	else :
-		w = new_box(Vector3(lane_w,storey_h*0.999,wall_thick), mat)
-		#w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
-		w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
+	match dir:
+		Maze.Dir.West, Maze.Dir.East:
+			#w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
+			w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w), mat)
+			w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
+		Maze.Dir.North, Maze.Dir.South:
+			w = new_box(Vector3(lane_w,storey_h*0.999,wall_thick), mat)
+			#w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
+			w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	$WallContainer.add_child(w)
+
+	# add line2d
+	if randi_range(0,10) == 0:
+		pass
 
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )

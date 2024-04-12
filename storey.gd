@@ -223,25 +223,18 @@ func make_wall_by_maze()->void:
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
-	# add line2d
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
+
 	if randi_range(0,maze_size.x *maze_size.y /2) == 0:
-		var l2dsize = Vector2(lane_w,storey_h)
-		var l2dpsize = Vector2i(2000,1500)
+		var sv = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
-			Maze.Dir.West:
-				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,true)
-				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,false)
-			Maze.Dir.East:
-				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,true)
-				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,false)
-			Maze.Dir.South:
-				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,true)
-				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,false)
-			Maze.Dir.North:
-				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,true)
-				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,false)
+			Maze.Dir.West, Maze.Dir.East:
+				var w = make_box_from_subviewport(sv, Vector3(wall_thick,storey_h*0.999,lane_w))
+				w.position = pos_face_ew
+			Maze.Dir.North, Maze.Dir.South:
+				var w = make_box_from_subviewport(sv, Vector3(lane_w,storey_h*0.999,wall_thick))
+				w.position = pos_face_ns
 		return
 
 	var mat :StandardMaterial3D
@@ -255,12 +248,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var w :MeshInstance3D
 	match dir:
 		Maze.Dir.West, Maze.Dir.East:
-			#w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
 			w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w), mat)
 			w.position = pos_face_ew
 		Maze.Dir.North, Maze.Dir.South:
 			w = new_box(Vector3(lane_w,storey_h*0.999,wall_thick), mat)
-			#w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
 			w.position = pos_face_ns
 	$WallContainer.add_child(w)
 
@@ -296,6 +287,17 @@ func make_plane_from_subviewport(sv :SubViewport, sz :Vector2, pos :Vector3, fac
 	add_child(sp)
 	return sp
 
+func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
+	var mesh = BoxMesh.new()
+	mesh.size = sz
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
+	sp.material_override.albedo_texture = sv.get_texture()
+	sp.material_override.uv1_scale = Vector3(3, 2, 1) # same tex to all 6 plane
+	add_child(sp)
+	return sp
 
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )

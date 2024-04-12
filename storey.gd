@@ -222,18 +222,20 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
+var line2d_subviewport :SubViewport
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 
 	if randi_range(0,maze_size.x *maze_size.y /2) == 0:
-		var sv = make_line2d_subvuewport(Vector2i(2000,1500))
+		if line2d_subviewport == null:
+			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
 			Maze.Dir.West, Maze.Dir.East:
-				var w = make_box_from_subviewport(sv, Vector3(wall_thick,storey_h*0.999,lane_w))
+				var w = make_box_from_subviewport(line2d_subviewport, Vector3(wall_thick,storey_h*0.999,lane_w))
 				w.position = pos_face_ew
 			Maze.Dir.North, Maze.Dir.South:
-				var w = make_box_from_subviewport(sv, Vector3(lane_w,storey_h*0.999,wall_thick))
+				var w = make_box_from_subviewport(line2d_subviewport, Vector3(lane_w,storey_h*0.999,wall_thick))
 				w.position = pos_face_ns
 		return
 
@@ -243,8 +245,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			mat = StandardMaterial3D.new()
 			mat.albedo_texture = sub_wall_tex
 			mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+			mat.uv1_scale = Vector3(3, 2, 1)
 		_:
 			mat = main_wall_mat
+			mat.uv1_scale = Vector3(3, 2, 1)
 	var w :MeshInstance3D
 	match dir:
 		Maze.Dir.West, Maze.Dir.East:

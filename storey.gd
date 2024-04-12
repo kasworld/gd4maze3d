@@ -2,6 +2,8 @@ extends Node3D
 
 class_name Storey
 
+var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
+
 # x90 == degree
 enum Dir {
 	North = 0,
@@ -178,44 +180,8 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				else:
 					var c = add_donut_at(p, co)
 					donut_pos_dic[p]=c
-			elif randi_range(0,20)==0:
+			elif randi_range(0,maze_size.x *maze_size.y /4)==0:
 				make_tree(p)
-			#elif randi_range(0,20)==0:
-				#var pos = mazepos2storeypos(p, storey_h*0.5)
-				#var sz = Vector2(lane_w,storey_h)
-				#var psz = sz * 500
-				#make_line2d(sz, psz, pos, PlaneMesh.FACE_X, false)
-				#make_line2d(sz, psz, pos, PlaneMesh.FACE_X, true)
-				#make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, false)
-				#make_line2d(sz, psz, pos, PlaneMesh.FACE_Z, true)
-
-var line2d_list :Array
-var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
-func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
-	var mesh = PlaneMesh.new()
-	mesh.size = sz
-	mesh.orientation = face
-	mesh.flip_faces = flip
-	var size_pixel = psz
-	#print_debug(size_pixel)
-	var l2d = line2d_scene.instantiate()
-	l2d.init(300,4,size_pixel)
-	var sv = SubViewport.new()
-	sv.size = size_pixel
-	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
-	sv.transparent_bg = true
-	sv.add_child(l2d)
-	add_child(sv)
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.position = pos
-	sp.material_override = StandardMaterial3D.new()
-	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
-	sp.material_override.albedo_texture = sv.get_texture()
-	add_child(sp)
-	line2d_list.append(sp)
-	return sp
 
 func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
@@ -229,8 +195,6 @@ func set_start_pos(p :Vector2i)->void:
 	start_node.position = mazepos2storeypos(p, storey_h/2.0)
 
 func _process(delta: float) -> void:
-	for n in line2d_list:
-		n.rotate_y(delta)
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
 	for p in capsule_pos_dic:
@@ -259,6 +223,23 @@ func make_wall_by_maze()->void:
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
+	# add line2d
+	if randi_range(0,maze_size.x *maze_size.y /2) == 0:
+		match dir:
+			Maze.Dir.West:
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,true)
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,false)
+			Maze.Dir.East:
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,true)
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,false)
+			Maze.Dir.South:
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,true)
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,false)
+			Maze.Dir.North:
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,true)
+				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,false)
+		return
+
 	var mat :StandardMaterial3D
 	match randi_range(0,10):
 		0:
@@ -279,9 +260,31 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	$WallContainer.add_child(w)
 
-	# add line2d
-	if randi_range(0,10) == 0:
-		pass
+func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
+	var mesh = PlaneMesh.new()
+	mesh.size = sz
+	mesh.orientation = face
+	mesh.flip_faces = flip
+	var size_pixel = psz
+	#print_debug(size_pixel)
+	var l2d = line2d_scene.instantiate()
+	l2d.init(300,4,size_pixel)
+	var sv = SubViewport.new()
+	sv.size = size_pixel
+	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	sv.transparent_bg = true
+	sv.add_child(l2d)
+	add_child(sv)
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.position = pos
+	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
+	sp.material_override.albedo_texture = sv.get_texture()
+	add_child(sp)
+	return sp
+
 
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )

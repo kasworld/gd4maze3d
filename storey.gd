@@ -104,8 +104,8 @@ func random_color()->Color:
 
 func make_tree(p :Vector2i)->void:
 	var tr :BarTree = new_tree_at(p)
-	var w = randf_range(lane_w*0.1,lane_w*0.9)
-	var h = randf_range(storey_h*0.1,storey_h*0.9)
+	var w = randf_range(lane_w*0.5,lane_w*0.9)
+	var h = randf_range(storey_h*0.5,storey_h*0.9)
 	match randi_range(0,3):
 		0:
 			var mat = StandardMaterial3D.new()
@@ -265,10 +265,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	$WallContainer.add_child(w)
 
 func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
-	var mesh = PlaneMesh.new()
-	mesh.size = sz
-	mesh.orientation = face
-	mesh.flip_faces = flip
+	var sv = make_line2d_subvuewport(psz)
+	return make_plane_from_subviewport(sv,sz,pos,face,flip)
+
+func make_line2d_subvuewport(psz:Vector2i)->SubViewport:
 	var size_pixel = psz
 	#print_debug(size_pixel)
 	var l2d = line2d_scene.instantiate()
@@ -280,6 +280,13 @@ func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orient
 	sv.transparent_bg = true
 	sv.add_child(l2d)
 	add_child(sv)
+	return sv
+
+func make_plane_from_subviewport(sv :SubViewport, sz :Vector2, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
+	var mesh = PlaneMesh.new()
+	mesh.size = sz
+	mesh.orientation = face
+	mesh.flip_faces = flip
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
 	sp.position = pos

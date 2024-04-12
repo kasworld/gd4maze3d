@@ -106,18 +106,18 @@ func make_tree(p :Vector2i)->void:
 	var tr :BarTree = new_tree_at(p)
 	var w = randf_range(lane_w*0.5,lane_w*0.9)
 	var h = randf_range(storey_h*0.5,storey_h*0.9)
-	match randi_range(0,3):
-		0:
-			var mat = StandardMaterial3D.new()
-			mat.albedo_texture = Texmat.tree_tex_dict.floorwood
-			tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
-		1:
-			var mat = StandardMaterial3D.new()
-			mat.albedo_texture = Texmat.tree_tex_dict.darkwood
-			mat.uv1_triplanar = true
-			tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
-		_:
-			tr.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
+	#match randi_range(0,3):
+		#0:
+			#var mat = StandardMaterial3D.new()
+			#mat.albedo_texture = Texmat.tree_tex_dict.floorwood
+			#tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
+		#1:
+			#var mat = StandardMaterial3D.new()
+			#mat.albedo_texture = Texmat.tree_tex_dict.darkwood
+			#mat.uv1_triplanar = true
+			#tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
+		#_:
+	tr.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
 
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)

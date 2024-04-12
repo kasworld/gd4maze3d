@@ -224,20 +224,24 @@ func make_wall_by_maze()->void:
 
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	# add line2d
+	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
+	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	if randi_range(0,maze_size.x *maze_size.y /2) == 0:
+		var l2dsize = Vector2(lane_w,storey_h)
+		var l2dpsize = Vector2i(2000,1500)
 		match dir:
 			Maze.Dir.West:
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,true)
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,false)
+				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,true)
+				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,false)
 			Maze.Dir.East:
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,true)
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2), PlaneMesh.Orientation.FACE_X,false)
+				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,true)
+				make_line2d(l2dsize, l2dpsize, pos_face_ew, PlaneMesh.Orientation.FACE_X,false)
 			Maze.Dir.South:
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,true)
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,false)
+				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,true)
+				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,false)
 			Maze.Dir.North:
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,true)
-				make_line2d(Vector2(lane_w,storey_h), Vector2i(2000,1500),Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w), PlaneMesh.Orientation.FACE_Z,false)
+				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,true)
+				make_line2d(l2dsize, l2dpsize, pos_face_ns, PlaneMesh.Orientation.FACE_Z,false)
 		return
 
 	var mat :StandardMaterial3D
@@ -253,11 +257,11 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 		Maze.Dir.West, Maze.Dir.East:
 			#w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w*0.999), mat)
 			w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w), mat)
-			w.position = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
+			w.position = pos_face_ew
 		Maze.Dir.North, Maze.Dir.South:
 			w = new_box(Vector3(lane_w,storey_h*0.999,wall_thick), mat)
 			#w = new_box(Vector3(lane_w*0.999,storey_h*0.999,wall_thick), mat)
-			w.position = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
+			w.position = pos_face_ns
 	$WallContainer.add_child(w)
 
 func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:

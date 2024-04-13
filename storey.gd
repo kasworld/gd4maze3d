@@ -50,12 +50,26 @@ var start_pos :Vector2i
 var goal_pos :Vector2i
 
 var maze_cells :Maze
-func is_goal_pos(p :Vector2i)->bool:
-	return goal_pos == p
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
+func is_goal_pos(p :Vector2i)->bool:
+	return goal_pos == p
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
+
+class PosDict:
+	var pos_dict :Dictionary
+	func is_pos(p :Vector2i)->bool:
+		return self.pos_dict.get(p)!=null
+	func remove_at(p :Vector2i)->bool:
+		var c = self.pos_dict.get(p)
+		self.pos_dict.erase(p)
+		if c != null :
+			c.queue_free()
+			return true
+		return false
+	func add_at(n :MeshInstance3D, p :Vector2i):
+		self.pos_dict[p]=n
 
 var capsule_pos_dic :Dictionary
 func is_capsule_pos(p :Vector2i)->bool:
@@ -106,17 +120,6 @@ func make_tree(p :Vector2i)->void:
 	var tr :BarTree = new_tree_at(p)
 	var w = randf_range(lane_w*0.5,lane_w*0.9)
 	var h = randf_range(storey_h*0.5,storey_h*0.9)
-	#match randi_range(0,3):
-		#0:
-			#var mat = StandardMaterial3D.new()
-			#mat.albedo_texture = Texmat.tree_tex_dict.floorwood
-			#tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
-		#1:
-			#var mat = StandardMaterial3D.new()
-			#mat.albedo_texture = Texmat.tree_tex_dict.darkwood
-			#mat.uv1_triplanar = true
-			#tr.init_with_material(mat,w,h, w/2, h*10, 1.0, 1.0/60.0)
-		#_:
 	tr.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
 
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
@@ -259,10 +262,6 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			w.position = pos_face_ns
 	$WallContainer.add_child(w)
 
-func make_line2d(sz :Vector2, psz:Vector2i, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
-	var sv = make_line2d_subvuewport(psz)
-	return make_plane_from_subviewport(sv,sz,pos,face,flip)
-
 func make_line2d_subvuewport(psz:Vector2i)->SubViewport:
 	var size_pixel = psz
 	#print_debug(size_pixel)
@@ -276,20 +275,6 @@ func make_line2d_subvuewport(psz:Vector2i)->SubViewport:
 	sv.add_child(l2d)
 	add_child(sv)
 	return sv
-
-func make_plane_from_subviewport(sv :SubViewport, sz :Vector2, pos :Vector3, face :PlaneMesh.Orientation, flip :bool)->MeshInstance3D:
-	var mesh = PlaneMesh.new()
-	mesh.size = sz
-	mesh.orientation = face
-	mesh.flip_faces = flip
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.position = pos
-	sp.material_override = StandardMaterial3D.new()
-	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
-	sp.material_override.albedo_texture = sv.get_texture()
-	add_child(sp)
-	return sp
 
 func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
 	var mesh = BoxMesh.new()

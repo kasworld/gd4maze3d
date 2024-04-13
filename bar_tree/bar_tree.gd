@@ -54,7 +54,7 @@ func clear_bar_list()->void:
 		remove_child(sp)
 	bar_list.clear()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if auto_rotate_bar != 0.0:
 		bar_rotate_y(auto_rotate_bar)
 

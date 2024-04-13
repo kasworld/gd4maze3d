@@ -139,7 +139,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				else:
 					var c = new_donut_at(p, co)
 					donut_pos_dict.add_at(c, p)
-			elif randi_range(0,maze_size.x *maze_size.y /4)==0:
+			elif randi_range(0, maze_size.x*maze_size.y/4)==0:
 				new_tree_at(p)
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
@@ -213,16 +213,16 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 
-	if randi_range(0,maze_size.x *maze_size.y /2) == 0:
+	if randi_range(0, maze_size.x*maze_size.y/2) == 0:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
 			Maze.Dir.West, Maze.Dir.East:
-				var w = make_box_from_subviewport(line2d_subviewport, Vector3(wall_thick,storey_h*0.999,lane_w))
-				w.position = pos_face_ew
+				var b = make_box_from_subviewport(line2d_subviewport, Vector3(wall_thick,storey_h*0.999,lane_w))
+				b.position = pos_face_ew
 			Maze.Dir.North, Maze.Dir.South:
-				var w = make_box_from_subviewport(line2d_subviewport, Vector3(lane_w,storey_h*0.999,wall_thick))
-				w.position = pos_face_ns
+				var b = make_box_from_subviewport(line2d_subviewport, Vector3(lane_w,storey_h*0.999,wall_thick))
+				b.position = pos_face_ns
 		return
 
 	var mat :StandardMaterial3D
@@ -272,7 +272,7 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
 	return sp
 
 func can_move(x :int , y :int, dir :Dir)->bool:
-	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )
+	return maze_cells.is_open_dir_at(x,y, Dir2MazeDir[dir] )
 
 func new_text(fsize :float, d :float, mat :Material, text :String)->MeshInstance3D:
 	var mesh = TextMesh.new()

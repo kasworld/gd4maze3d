@@ -157,7 +157,7 @@ func change_floor_ceiling_visible(f :bool,c :bool)->void:
 	storey_list[0].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	move_character(cur_storey)
 	update_info()

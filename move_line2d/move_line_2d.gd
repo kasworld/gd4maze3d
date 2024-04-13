@@ -26,7 +26,7 @@ func init(ln_count :int, pt_count :int, dsize :Vector2, amove :float = 1.0/60.0 
 		ln.width = line_width
 		$LineContainer.add_child(ln)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if auto_move != 0.0:
 		move(auto_move)
 

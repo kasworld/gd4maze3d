@@ -88,7 +88,7 @@ func info_str()->String:
 
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
-var sub_wall_tex :CompressedTexture2D
+var sub_wall_mat :StandardMaterial3D
 var sub_wall_tex_name :String
 func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
 	storey_num = stn
@@ -102,12 +102,16 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	var tex_keys = Texmat.wall_tex_dict.keys()
 	tex_keys.shuffle()
 	sub_wall_tex_name = tex_keys[0]
-	sub_wall_tex = Texmat.wall_tex_dict[sub_wall_tex_name]
+	sub_wall_mat = StandardMaterial3D.new()
+	sub_wall_mat.albedo_texture = Texmat.wall_tex_dict[sub_wall_tex_name]
+	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
 
 	var mat_keys = Texmat.wall_mat_dict.keys()
 	mat_keys.shuffle()
 	main_wall_mat_name = mat_keys[0]
 	main_wall_mat = Texmat.wall_mat_dict[main_wall_mat_name]
+	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
 
 	var meshx = maze_size.x*lane_w +wall_thick*2
 	var meshy = maze_size.y*lane_w +wall_thick*2
@@ -212,36 +216,34 @@ var line2d_subviewport :SubViewport
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
+	var size_face_ew = Vector3(wall_thick,storey_h*0.999,lane_w)
+	var size_face_ns = Vector3(lane_w,storey_h*0.999,wall_thick)
 
 	if randi_range(0, maze_size.x*maze_size.y/2) == 0:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
 			Maze.Dir.West, Maze.Dir.East:
-				var b = make_box_from_subviewport(line2d_subviewport, Vector3(wall_thick,storey_h*0.999,lane_w))
+				var b = make_box_from_subviewport(line2d_subviewport, size_face_ew)
 				b.position = pos_face_ew
 			Maze.Dir.North, Maze.Dir.South:
-				var b = make_box_from_subviewport(line2d_subviewport, Vector3(lane_w,storey_h*0.999,wall_thick))
+				var b = make_box_from_subviewport(line2d_subviewport, size_face_ns)
 				b.position = pos_face_ns
 		return
 
 	var mat :StandardMaterial3D
 	match randi_range(0,10):
 		0:
-			mat = StandardMaterial3D.new()
-			mat.albedo_texture = sub_wall_tex
-			mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-			mat.uv1_scale = Vector3(3, 2, 1)
+			mat = sub_wall_mat
 		_:
 			mat = main_wall_mat
-			mat.uv1_scale = Vector3(3, 2, 1)
 	var w :MeshInstance3D
 	match dir:
 		Maze.Dir.West, Maze.Dir.East:
-			w = new_box(Vector3(wall_thick,storey_h*0.999,lane_w), mat)
+			w = new_box(size_face_ew, mat)
 			w.position = pos_face_ew
 		Maze.Dir.North, Maze.Dir.South:
-			w = new_box(Vector3(lane_w,storey_h*0.999,wall_thick), mat)
+			w = new_box(size_face_ns, mat)
 			w.position = pos_face_ns
 	$WallContainer.add_child(w)
 

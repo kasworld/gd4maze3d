@@ -60,8 +60,12 @@ func rand_pos()->Vector2i:
 
 class PosDict:
 	var pos_dict :Dictionary
-	func is_pos(p :Vector2i)->bool:
-		return self.pos_dict.get(p)!=null
+	func has(p :Vector2i)->bool:
+		return self.pos_dict.has(p)
+	func keys()->Array:
+		return self.pos_dict.keys()
+	func values()->Array:
+		return self.pos_dict.values()
 	func remove_at(p :Vector2i)->bool:
 		var c = self.pos_dict.get(p)
 		self.pos_dict.erase(p)
@@ -179,10 +183,10 @@ func set_start_pos(p :Vector2i)->void:
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
-	for p in capsule_pos_dict.pos_dict:
-		capsule_pos_dict.get_at(p).rotate_y(delta)
-	for p in donut_pos_dict.pos_dict:
-		donut_pos_dict.get_at(p).rotate_y(delta)
+	for n in capsule_pos_dict.values():
+		n.rotate_y(delta)
+	for n in donut_pos_dict.values():
+		n.rotate_y(delta)
 
 func view_floor_ceiling(f :bool,c :bool)->void:
 	$Floor.visible = f

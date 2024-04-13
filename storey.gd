@@ -3,6 +3,7 @@ extends Node3D
 class_name Storey
 
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
+var tree_scene = preload("res://bar_tree/bar_tree.tscn")
 
 # x90 == degree
 enum Dir {
@@ -70,60 +71,11 @@ class PosDict:
 		return false
 	func add_at(n :MeshInstance3D, p :Vector2i):
 		self.pos_dict[p]=n
+	func get_at(p :Vector2i)->MeshInstance3D:
+		return self.pos_dict.get(p)
 
-var capsule_pos_dic :Dictionary
-func is_capsule_pos(p :Vector2i)->bool:
-	return capsule_pos_dic.get(p)!=null
-func remove_capsule_at(p :Vector2i)->bool:
-	var c = capsule_pos_dic.get(p)
-	capsule_pos_dic.erase(p)
-	if c != null :
-		c.queue_free()
-		return true
-	return false
-func add_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_capsule(lane_w*0.3,lane_w*0.05,get_color_mat(co))
-	n.position = mazepos2storeypos(p, storey_h/4.0)
-	n.rotation.y = randf_range(0,2*PI)
-	add_child(n)
-	return n
-
-var donut_pos_dic :Dictionary
-func is_donut_pos(p :Vector2i)->bool:
-	return donut_pos_dic.get(p)!=null
-func remove_donut_at(p :Vector2i)->bool:
-	var c = donut_pos_dic.get(p)
-	donut_pos_dic.erase(p)
-	if c != null :
-		c.queue_free()
-		return true
-	return false
-func add_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_torus(lane_w*0.1,lane_w* 0.2, get_color_mat(co))
-	n.position = mazepos2storeypos(p, storey_h/4.0)
-	n.rotation.y = randf_range(0,2*PI)
-	add_child(n)
-	return n
-
-var tree_scene = preload("res://bar_tree/bar_tree.tscn")
-func new_tree_at(p :Vector2i)->BarTree:
-	var t = tree_scene.instantiate()
-	add_child(t)
-	t.position = mazepos2storeypos(p, storey_h*0.1)
-	t.rotation.y = randf_range(0,2*PI)
-	return t
-
-func random_color()->Color:
-	return Color(randf(),randf(),randf())
-
-func make_tree(p :Vector2i)->void:
-	var tr :BarTree = new_tree_at(p)
-	var w = randf_range(lane_w*0.5,lane_w*0.9)
-	var h = randf_range(storey_h*0.5,storey_h*0.9)
-	tr.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
-
-func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
-	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
+var capsule_pos_dict = PosDict.new()
+var donut_pos_dict = PosDict.new()
 
 func info_str()->String:
 	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
@@ -167,8 +119,8 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
 	make_wall_by_maze()
-	start_node = add_text_mark_at(start_pos, Color.YELLOW, "Start")
-	goal_node = add_text_mark_at(goal_pos, Color.YELLOW, "Goal")
+	start_node = new_text_mark_at(start_pos, Color.YELLOW, "Start")
+	goal_node = new_text_mark_at(goal_pos, Color.YELLOW, "Goal")
 	var colist = NamedColorList.color_list.duplicate()
 	for y in maze_size.y:
 		for x in maze_size.x:
@@ -178,20 +130,47 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
 				var co = colist.pick_random()[0]
 				if randi_range(0,1)==0:
-					var c = add_capsule_at(p, co)
-					capsule_pos_dic[p]=c
+					var c = new_capsule_at(p, co)
+					capsule_pos_dict.add_at(c, p)
 				else:
-					var c = add_donut_at(p, co)
-					donut_pos_dic[p]=c
+					var c = new_donut_at(p, co)
+					donut_pos_dict.add_at(c, p)
 			elif randi_range(0,maze_size.x *maze_size.y /4)==0:
-				make_tree(p)
+				new_tree_at(p)
 
-func add_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
+func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
+	var n = new_capsule(lane_w*0.3, lane_w*0.05, get_color_mat(co))
+	n.position = mazepos2storeypos(p, storey_h/4.0)
+	n.rotation.y = randf_range(0, 2*PI)
+	add_child(n)
+	return n
+
+func new_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
+	var n = new_torus(lane_w*0.1, lane_w*0.2, get_color_mat(co))
+	n.position = mazepos2storeypos(p, storey_h/4.0)
+	n.rotation.y = randf_range(0, 2*PI)
+	add_child(n)
+	return n
+
+func new_tree_at(p :Vector2i)->BarTree:
+	var t = tree_scene.instantiate()
+	var w = randf_range(lane_w*0.5, lane_w*0.9)
+	var h = randf_range(storey_h*0.5, storey_h*0.9)
+	t.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
+	t.position = mazepos2storeypos(p, storey_h*0.1)
+	t.rotation.y = randf_range(0, 2*PI)
+	add_child(t)
+	return t
+
+func new_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	var n = new_text(5.0,0.01,get_color_mat(co),text)
 	n.position = mazepos2storeypos(p, storey_h/2.0)
 	n.rotation.y = randf_range(0,2*PI)
 	add_child(n)
 	return n
+
+func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
+	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
 func set_start_pos(p :Vector2i)->void:
 	start_pos = p
@@ -200,10 +179,10 @@ func set_start_pos(p :Vector2i)->void:
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
-	for p in capsule_pos_dic:
-		capsule_pos_dic[p].rotate_y(delta)
-	for p in donut_pos_dic:
-		donut_pos_dic[p].rotate_y(delta)
+	for p in capsule_pos_dict.pos_dict:
+		capsule_pos_dict.get_at(p).rotate_y(delta)
+	for p in donut_pos_dict.pos_dict:
+		donut_pos_dict.get_at(p).rotate_y(delta)
 
 func view_floor_ceiling(f :bool,c :bool)->void:
 	$Floor.visible = f
@@ -342,3 +321,6 @@ func get_color_mat(co: Color)->Material:
 	#mat.metallic = 1
 	#mat.clearcoat = true
 	return mat
+
+func random_color()->Color:
+	return Color(randf(),randf(),randf())

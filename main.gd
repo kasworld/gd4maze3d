@@ -171,12 +171,12 @@ func move_character(cur_storey :Storey)->void:
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
-				if cur_storey.is_capsule_pos(pl.pos_src) : # capsule encounter
+				if cur_storey.capsule_pos_dict.is_pos(pl.pos_src) : # capsule encounter
 					pl.queue_act(Character.Act.RotateCameraRight)
-					cur_storey.remove_capsule_at(pl.pos_src)
-				if cur_storey.is_donut_pos(pl.pos_src) : # donut encounter
+					cur_storey.capsule_pos_dict.remove_at(pl.pos_src)
+				if cur_storey.donut_pos_dict.is_pos(pl.pos_src) : # donut encounter
 					pl.queue_act(Character.Act.RotateCameraLeft)
-					cur_storey.remove_donut_at(pl.pos_src)
+					cur_storey.donut_pos_dict.remove_at(pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 		pl.ai_act()

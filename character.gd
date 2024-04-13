@@ -157,7 +157,7 @@ func debug_str()->String:
 		act2str(act_current), queue_to_str(),
 		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
-		storey.open_dir_str(pos_src.x, pos_src.y),
+		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),
 		]
 
 func make_ai_action()->bool:

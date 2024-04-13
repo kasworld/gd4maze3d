@@ -103,3 +103,9 @@ func get_wall_dir_at(x :int, y :int)->Array:
 		if is_wall_dir_at(x,y,d):
 			rtn.append(d)
 	return rtn
+
+func open_dir_str(x :int , y :int)->String:
+	var rtn = ""
+	for d in get_open_dir_at(x,y):
+		rtn += "%s " %[Dir2Str[d]]
+	return rtn

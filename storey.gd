@@ -274,12 +274,6 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Storey.Dir2MazeDir[dir] )
 
-func open_dir_str(x :int , y :int)->String:
-	var rtn = ""
-	for d in maze_cells.get_open_dir_at(x,y):
-		rtn += "%s " %[Maze.Dir2Str[d]]
-	return rtn
-
 func new_text(fsize :float, d :float, mat :Material, text :String)->MeshInstance3D:
 	var mesh = TextMesh.new()
 	mesh.depth = d

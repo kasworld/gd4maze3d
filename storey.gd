@@ -4,6 +4,9 @@ class_name Storey
 
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 var tree_scene = preload("res://bar_tree/bar_tree.tscn")
+var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
+var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
+
 
 # x90 == degree
 enum Dir {
@@ -147,14 +150,16 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				new_tree_at(p)
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_capsule(lane_w*0.3, lane_w*0.05, get_color_mat(co))
+	var n = Global3d.new_capsule(lane_w*0.3, lane_w*0.05, Global3d.get_color_mat(co))
+	n.rotate_x(PI/2)
 	n.position = mazepos2storeypos(p, storey_h/4.0)
 	n.rotation.y = randf_range(0, 2*PI)
 	add_child(n)
 	return n
 
 func new_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = new_torus(lane_w*0.1, lane_w*0.2, get_color_mat(co))
+	var n = Global3d.new_torus(lane_w*0.1, lane_w*0.2, Global3d.get_color_mat(co))
+	n.rotate_x(PI/2)
 	n.position = mazepos2storeypos(p, storey_h/4.0)
 	n.rotation.y = randf_range(0, 2*PI)
 	add_child(n)
@@ -164,14 +169,14 @@ func new_tree_at(p :Vector2i)->BarTree:
 	var t = tree_scene.instantiate()
 	var w = randf_range(lane_w*0.5, lane_w*0.9)
 	var h = randf_range(storey_h*0.5, storey_h*0.9)
-	t.init_with_color(random_color(), random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
+	t.init_with_color(Global3d.random_color(), Global3d.random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
 	t.position = mazepos2storeypos(p, storey_h*0.1)
 	t.rotation.y = randf_range(0, 2*PI)
 	add_child(t)
 	return t
 
 func new_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
-	var n = new_text(5.0,0.01,get_color_mat(co),text)
+	var n = Global3d.new_text(5.0,0.01,Global3d.get_color_mat(co),text)
 	n.position = mazepos2storeypos(p, storey_h/2.0)
 	n.rotation.y = randf_range(0,2*PI)
 	add_child(n)
@@ -240,10 +245,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var w :MeshInstance3D
 	match dir:
 		Maze.Dir.West, Maze.Dir.East:
-			w = new_box(size_face_ew, mat)
+			w = Global3d.new_box(size_face_ew, mat)
 			w.position = pos_face_ew
 		Maze.Dir.North, Maze.Dir.South:
-			w = new_box(size_face_ns, mat)
+			w = Global3d.new_box(size_face_ns, mat)
 			w.position = pos_face_ns
 	$WallContainer.add_child(w)
 
@@ -276,51 +281,3 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Dir2MazeDir[dir] )
 
-func new_text(fsize :float, d :float, mat :Material, text :String)->MeshInstance3D:
-	var mesh = TextMesh.new()
-	mesh.depth = d
-	mesh.pixel_size = fsize / 64
-	mesh.font_size = fsize
-	mesh.text = text
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	return sp
-
-func new_torus(r1 :float, r2 :float, mat :Material)->MeshInstance3D:
-	var mesh = TorusMesh.new()
-	mesh.inner_radius = r1
-	mesh.outer_radius = r2
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.call_deferred("rotate_x",PI/2)
-	return sp
-
-func new_capsule(h :float,r:float, mat :Material)->MeshInstance3D:
-	var mesh = CapsuleMesh.new()
-	mesh.height = h
-	mesh.radius = r
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.call_deferred("rotate_x",PI/2)
-	return sp
-
-func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
-	var mesh = BoxMesh.new()
-	mesh.size = bsize
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	return sp
-
-func get_color_mat(co: Color)->Material:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = co
-	#mat.metallic = 1
-	#mat.clearcoat = true
-	return mat
-
-func random_color()->Color:
-	return Color(randf(),randf(),randf())

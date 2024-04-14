@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 NamedColorList="*res://global/named_color_list.gd"
 Texmat="*res://global/texmat.gd"
+Global3d="*res://global/global3d.gd"
 
 [display]
 

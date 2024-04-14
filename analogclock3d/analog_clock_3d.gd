@@ -1,5 +1,7 @@
 extends Node3D
 
+class_name AnalogClock3D
+
 var tz_shift :float
 
 var hour_hand_base :Node3D

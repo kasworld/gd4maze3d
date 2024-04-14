@@ -1,5 +1,7 @@
 extends Node3D
 
+class_name Calendar3D
+
 # 1+7x7 : year+month, weekdayname, 6 weeek
 var calendar_labels = []
 

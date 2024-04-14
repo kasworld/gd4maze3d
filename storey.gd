@@ -7,7 +7,6 @@ var tree_scene = preload("res://bar_tree/bar_tree.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
 
-
 # x90 == degree
 enum Dir {
 	North = 0,
@@ -83,11 +82,6 @@ class PosDict:
 
 var capsule_pos_dict = PosDict.new()
 var donut_pos_dict = PosDict.new()
-
-func info_str()->String:
-	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
-		storey_num, maze_size,storey_h, lane_w, wall_thick*lane_w,
-		main_wall_mat_name, sub_wall_tex_name ]
 
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
@@ -182,13 +176,6 @@ func new_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	add_child(n)
 	return n
 
-func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
-	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
-
-func set_start_pos(p :Vector2i)->void:
-	start_pos = p
-	start_node.position = mazepos2storeypos(p, storey_h/2.0)
-
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
 	goal_node.rotate_y(delta)
@@ -196,10 +183,6 @@ func _process(delta: float) -> void:
 		n.rotate_y(delta)
 	for n in donut_pos_dict.values():
 		n.rotate_y(delta)
-
-func view_floor_ceiling(f :bool,c :bool)->void:
-	$Floor.visible = f
-	$Ceiling.visible = c
 
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
@@ -281,3 +264,18 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
 func can_move(x :int , y :int, dir :Dir)->bool:
 	return maze_cells.is_open_dir_at(x,y, Dir2MazeDir[dir] )
 
+func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
+	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
+
+func set_start_pos(p :Vector2i)->void:
+	start_pos = p
+	start_node.position = mazepos2storeypos(p, storey_h/2.0)
+
+func view_floor_ceiling(f :bool,c :bool)->void:
+	$Floor.visible = f
+	$Ceiling.visible = c
+
+func info_str()->String:
+	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
+		storey_num, maze_size,storey_h, lane_w, wall_thick*lane_w,
+		main_wall_mat_name, sub_wall_tex_name ]

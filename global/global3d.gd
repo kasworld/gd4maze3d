@@ -1,5 +1,7 @@
 extends Node
 
+var font = preload("res://HakgyoansimBareondotumR.ttf")
+
 # for calendar ans date_label
 const weekdaystring = ["일","월","화","수","목","금","토"]
 
@@ -70,7 +72,6 @@ func new_cylinder(h :float, r1 :float, r2 :float, mat :Material)->MeshInstance3D
 	sp.mesh = mesh
 	return sp
 
-var font = preload("res://HakgyoansimBareondotumR.ttf")
 #func new_text(h :float, mat :Material, text :String)->MeshInstance3D:
 	#var mesh = TextMesh.new()
 	#mesh.font = font

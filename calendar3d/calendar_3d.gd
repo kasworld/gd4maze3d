@@ -21,7 +21,7 @@ func init(w :float, h:float, backplane:bool=true)->void:
 func init_calendar(w :float, h :float)->void:
 	# add year month
 	var fsize = h*10
-	var fdepth = h/10
+	var fdepth = h/20
 	var time_now_dict = Time.get_datetime_dict_from_system()
 	var mat = Global3d.get_color_mat(Global3d.colors.datelabel)
 	var lb = Global3d.new_text(fsize,fdepth, mat, "%4d년 %2d월" % [

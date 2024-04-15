@@ -73,7 +73,7 @@ func make_dial(r :float):
 		add_child(bar)
 
 func new_dial_num(r :float, p :Vector3, mat :Material, text :String)->MeshInstance3D:
-	var t = Global3d.new_text(r/4,r/20, mat, text)
+	var t = Global3d.new_text(r*2,r/100, mat, text)
 	t.rotation.x = deg_to_rad(-90)
 	#t.rotation.y = deg2rad(90)
 	t.rotation.z = deg_to_rad(-90)

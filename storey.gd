@@ -235,6 +235,29 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			w.position = pos_face_ns
 	$WallContainer.add_child(w)
 
+	# add clock or calendar
+	#if randi_range(0, 4) == 0:
+	if randi_range(0, maze_size.x*maze_size.y/4) == 0:
+		var n :Node3D
+		if randi_range(0,1) == 0:
+			n = calendar_scene.instantiate()
+			n.init(lane_w,storey_h,false)
+		else :
+			n = clock_scene.instantiate()
+			n.init(min(lane_w,storey_h)/2,9.0,false)
+		n.rotate_z(PI/2)
+		n.rotate_y((dir)*PI/2)
+		add_child(n)
+		match dir:
+			Maze.Dir.West:
+				n.position = pos_face_ew + Vector3(wall_thick,0,0)
+			Maze.Dir.East:
+				n.position = pos_face_ew - Vector3(wall_thick,0,0)
+			Maze.Dir.North:
+				n.position = pos_face_ns + Vector3(0,0,wall_thick)
+			Maze.Dir.South:
+				n.position = pos_face_ns - Vector3(0,0,wall_thick)
+
 func make_line2d_subvuewport(psz:Vector2i)->SubViewport:
 	var size_pixel = psz
 	#print_debug(size_pixel)

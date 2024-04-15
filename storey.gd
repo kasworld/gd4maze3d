@@ -236,8 +236,8 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	$WallContainer.add_child(w)
 
 	# add clock or calendar
-	if randi_range(0, 4) == 0:
-	#if randi_range(0, maze_size.x*maze_size.y/4) == 0:
+	#if randi_range(0, 4) == 0:
+	if randi_range(0, maze_size.x*maze_size.y/4) == 0:
 		var n :Node3D
 		if randi_range(0,1) == 0:
 			n = calendar_scene.instantiate()

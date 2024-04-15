@@ -8,7 +8,7 @@ var hour_hand_base :Node3D
 var minute_hand_base :Node3D
 var second_hand_base :Node3D
 
-func init(r :float, tzs :float = 9.0, backplane:bool=true) -> void:
+func init(r :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> void:
 	tz_shift = tzs
 
 	if backplane:
@@ -17,7 +17,7 @@ func init(r :float, tzs :float = 9.0, backplane:bool=true) -> void:
 		add_child(plane)
 
 	make_hands(r)
-	make_dial(r)
+	make_dial(r, fsize)
 
 	var cc = Global3d.new_cylinder(r/30,r/50,r/50, Global3d.get_color_mat(Global3d.colors.center_circle1))
 	cc.position.y = r/30/2
@@ -48,7 +48,7 @@ func make_hand(co :Color, hand_size: Vector3)->Node3D:
 	hand_base.add_child(hand)
 	return hand_base
 
-func make_dial(r :float):
+func make_dial(r :float, fsize :float):
 	var mat = Global3d.get_color_mat(Global3d.colors.dial_1)
 	var num_mat = Global3d.get_color_mat(Global3d.colors.dial_num)
 	var bar_height = r/180
@@ -58,9 +58,9 @@ func make_dial(r :float):
 		if i % 30 == 0 :
 			bar_size = Vector3(r/18,bar_height,r/180)
 			if i == 0 :
-				add_child(new_dial_num(r,bar_center, num_mat,"12"))
+				add_child(new_dial_num(fsize,fsize/200,bar_center, num_mat,"12"))
 			else:
-				add_child(new_dial_num(r,bar_center, num_mat, "%d" % [i/30] ))
+				add_child(new_dial_num(fsize,fsize/200,bar_center, num_mat, "%d" % [i/30] ))
 		elif i % 6 == 0 :
 			bar_size = Vector3(r/24,bar_height,r/480)
 		else :
@@ -72,8 +72,8 @@ func make_dial(r :float):
 		bar.position.y = bar_height/2
 		add_child(bar)
 
-func new_dial_num(r :float, p :Vector3, mat :Material, text :String)->MeshInstance3D:
-	var t = Global3d.new_text(r*2,r/100, mat, text)
+func new_dial_num(fsize :float, depth :float, p :Vector3, mat :Material, text :String)->MeshInstance3D:
+	var t = Global3d.new_text(fsize, depth, mat, text)
 	t.rotation.x = deg_to_rad(-90)
 	#t.rotation.y = deg2rad(90)
 	t.rotation.z = deg_to_rad(-90)

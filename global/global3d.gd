@@ -84,11 +84,11 @@ func new_cylinder(h :float, r1 :float, r2 :float, mat :Material)->MeshInstance3D
 	#sp.mesh = mesh
 	#return sp
 
-func new_text(fsize :float, d :float, mat :Material, text :String)->MeshInstance3D:
+func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshInstance3D:
 	var mesh = TextMesh.new()
 	mesh.font = font
-	mesh.depth = d
-	mesh.pixel_size = fsize / 64
+	mesh.depth = fdepth
+	mesh.pixel_size = fsize / 100
 	mesh.font_size = fsize
 	mesh.text = text
 	mesh.material = mat

@@ -68,7 +68,7 @@ func make_dial(r :float, d:float, fsize :float):
 		var bar_rot = deg_to_rad(-i)
 		var bar = Global3d.new_box(bar_size, mat)
 		bar.rotation.y = bar_rot
-		bar.position = bar_center - bar_center*(bar_size.length()/bar_center.length())/2
+		bar.position = bar_center*(1 - bar_size.x/r/2)
 		bar.position.y = bar_height/2
 		add_child(bar)
 

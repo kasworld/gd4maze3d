@@ -236,15 +236,16 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	$WallContainer.add_child(w)
 
 	# add clock or calendar
-	#if randi_range(0, 4) == 0:
+	#if randi_range(0, 2) == 0:
 	if randi_range(0, maze_size.x*maze_size.y/4) == 0:
 		var n :Node3D
+		var depth = 0.1
 		if randi_range(0,1) == 0:
 			n = calendar_scene.instantiate()
-			n.init(lane_w, storey_h, 5, false)
+			n.init(lane_w, storey_h,depth, 5, false)
 		else :
 			n = clock_scene.instantiate()
-			n.init(min(lane_w,storey_h)/2, 4, 9.0, false)
+			n.init(min(lane_w,storey_h)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(dir2rad(1+MazeDir2Dir[dir]))
 		add_child(n)

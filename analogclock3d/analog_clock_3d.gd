@@ -8,29 +8,29 @@ var hour_hand_base :Node3D
 var minute_hand_base :Node3D
 var second_hand_base :Node3D
 
-func init(r :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> void:
+func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> void:
 	tz_shift = tzs
 
 	if backplane:
-		var plane = Global3d.new_cylinder( r/60,  r,r, Global3d.get_color_mat(Global3d.colors.clockbg ) )
-		plane.position.y = -r/60
+		var plane = Global3d.new_cylinder(d*0.5, r,r, Global3d.get_color_mat(Global3d.colors.clockbg ) )
+		plane.position.y = -d*0.25
 		add_child(plane)
 
-	make_hands(r)
-	make_dial(r, fsize)
+	make_hands(r,d)
+	make_dial(r,d, fsize)
 
-	var cc = Global3d.new_cylinder(r/30,r/50,r/50, Global3d.get_color_mat(Global3d.colors.center_circle1))
-	cc.position.y = r/30/2
+	var cc = Global3d.new_cylinder(d*0.5,r/50,r/50, Global3d.get_color_mat(Global3d.colors.center_circle1))
+	cc.position.y = d*0.5/2
 	add_child(cc)
 	var cc2 = Global3d.new_torus(r/20, r/40, Global3d.get_color_mat(Global3d.colors.center_circle2))
-	#cc2.position.y = r/20/2
+	cc2.position.y = d*0.5/2
 	add_child( cc2 )
 
 func _process(_delta: float) -> void:
 	update_clock()
 
-func make_hands(r :float)->void:
-	var hand_height = r/180
+func make_hands(r :float, d:float)->void:
+	var hand_height = d*0.1
 	hour_hand_base = make_hand(Global3d.colors.hour ,Vector3(r*0.8,hand_height,r/36))
 	hour_hand_base.position.y = hand_height*1
 
@@ -48,19 +48,19 @@ func make_hand(co :Color, hand_size: Vector3)->Node3D:
 	hand_base.add_child(hand)
 	return hand_base
 
-func make_dial(r :float, fsize :float):
+func make_dial(r :float, d:float, fsize :float):
 	var mat = Global3d.get_color_mat(Global3d.colors.dial_1)
 	var num_mat = Global3d.get_color_mat(Global3d.colors.dial_num)
-	var bar_height = r/180
+	var bar_height = d*0.2
 	var bar_size :Vector3
 	for i in 360 :
 		var bar_center = Vector3(sin(deg_to_rad(-i+90))*r,bar_height/2, cos(deg_to_rad(-i+90))*r)
 		if i % 30 == 0 :
 			bar_size = Vector3(r/18,bar_height,r/180)
 			if i == 0 :
-				add_child(new_dial_num(fsize,fsize/200,bar_center, num_mat,"12"))
+				add_child(new_dial_num(fsize,bar_height,bar_center, num_mat,"12"))
 			else:
-				add_child(new_dial_num(fsize,fsize/200,bar_center, num_mat, "%d" % [i/30] ))
+				add_child(new_dial_num(fsize,bar_height,bar_center, num_mat, "%d" % [i/30] ))
 		elif i % 6 == 0 :
 			bar_size = Vector3(r/24,bar_height,r/480)
 		else :

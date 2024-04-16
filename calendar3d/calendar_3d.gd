@@ -5,22 +5,22 @@ class_name Calendar3D
 # 1+7x7 : year+month, weekdayname, 6 weeek
 var calendar_labels = []
 
-func init(w :float, h:float, fsize :float, backplane:bool=true)->void:
+func init(w :float, h:float,d:float, fsize :float, backplane:bool=true)->void:
 	calendar_labels = []
 	for o in $LabelConatiner.get_children():
 		o.queue_free()
 
 	if backplane:
-		var plane = Global3d.new_box(Vector3(w, w/60, h), Global3d.get_color_mat(Global3d.colors.calbg ) )
-		plane.position.y = -w/60
+		var plane = Global3d.new_box(Vector3(w, d*0.5, h), Global3d.get_color_mat(Global3d.colors.calbg ) )
+		plane.position.y = -d*0.25
 		$LabelConatiner.add_child(plane)
 
-	init_calendar(w/Global3d.weekdaystring.size(), h/8, fsize)
+	init_calendar(w/Global3d.weekdaystring.size(), h/8,d, fsize)
 	update_calendar()
 
-func init_calendar(w :float, h :float, fsize :float)->void:
+func init_calendar(w :float, h :float, d:float, fsize :float)->void:
 	# add year month
-	var fdepth = fsize/200
+	var fdepth = d * 0.2
 	var time_now_dict = Time.get_datetime_dict_from_system()
 	var mat = Global3d.get_color_mat(Global3d.colors.datelabel)
 	var lb = Global3d.new_text(fsize,fdepth, mat, "%4d년 %2d월" % [
@@ -28,7 +28,7 @@ func init_calendar(w :float, h :float, fsize :float)->void:
 			])
 	lb.rotation.x = deg_to_rad(-90)
 	lb.rotation.z = deg_to_rad(-90)
-	lb.position = Vector3(3.5*h, 0, 0)
+	lb.position = Vector3(3.5*h, fdepth/2, 0)
 	calendar_labels.append(lb)
 	$LabelConatiner.add_child(lb)
 
@@ -42,7 +42,7 @@ func init_calendar(w :float, h :float, fsize :float)->void:
 			lb.rotation.x = deg_to_rad(-90)
 			#t.rotation.y = deg2rad(90)
 			lb.rotation.z = deg_to_rad(-90)
-			lb.position = Vector3(3.5*h - i*h  , 0, wd*w - 3*w)
+			lb.position = Vector3(3.5*h - i*h , fdepth/2, wd*w - 3*w)
 			ln.append(lb)
 			$LabelConatiner.add_child(lb)
 		calendar_labels.append(ln)

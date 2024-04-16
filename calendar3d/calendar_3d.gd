@@ -23,9 +23,8 @@ func init_calendar(w :float, h :float, d:float, fsize :float)->void:
 	var fdepth = d * 0.2
 	var time_now_dict = Time.get_datetime_dict_from_system()
 	var mat = Global3d.get_color_mat(Global3d.colors.datelabel)
-	var lb = Global3d.new_text(fsize,fdepth, mat, "%4d년 %2d월" % [
-			time_now_dict["year"] , time_now_dict["month"]
-			])
+	var lb = Global3d.new_text(fsize, fdepth, mat,
+		"%4d년 %2d월" % [time_now_dict["year"] , time_now_dict["month"]])
 	lb.rotation.x = deg_to_rad(-90)
 	lb.rotation.z = deg_to_rad(-90)
 	lb.position = Vector3(3.5*h, fdepth/2, 0)
@@ -62,8 +61,11 @@ func update_calendar()->void:
 	for wd in Global3d.weekdaystring.size():
 		var curLabel = calendar_labels[1][wd]
 		var co = Global3d.colors.weekday[wd]
+		var lb_scale = Vector3(1,1,1)
 		if wd == today_dict["weekday"] :
 			co = Global3d.colors.today
+			lb_scale = Vector3(1.3,1.3,1)
+		curLabel.scale = lb_scale
 		set_mesh_color(curLabel, co)
 
 	for i in range(2,8): # skip week title , 6 week
@@ -72,10 +74,13 @@ func update_calendar()->void:
 			var curLabel = calendar_labels[i][wd]
 			set_mesh_text(curLabel, "%d" % day_index_dict["day"] )
 			var co = Global3d.colors.weekday[wd]
+			var lb_scale = Vector3(1,1,1)
 			if day_index_dict["month"] != today_dict["month"]:
 				co = co.darkened(0.5)
 			elif day_index_dict["day"] == today_dict["day"]:
 				co = Global3d.colors.today
+				lb_scale = Vector3(1.3,1.3,1)
+			curLabel.scale = lb_scale
 			set_mesh_color(curLabel, co)
 			day_index += 24*60*60
 

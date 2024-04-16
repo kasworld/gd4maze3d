@@ -17,7 +17,8 @@ func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=tru
 		add_child(plane)
 
 	make_hands(r,d)
-	make_dial(r,d, fsize)
+	make_dial_bar(r,d)
+	make_dial_num(r*0.85 ,d, fsize)
 
 	var cc = Global3d.new_cylinder(d*0.5,r/50,r/50, Global3d.get_color_mat(Global3d.colors.center_circle1))
 	cc.position.y = d*0.5/2
@@ -48,19 +49,15 @@ func make_hand(co :Color, hand_size: Vector3)->Node3D:
 	hand_base.add_child(hand)
 	return hand_base
 
-func make_dial(r :float, d:float, fsize :float):
+func make_dial_bar(r :float, d:float):
 	var mat = Global3d.get_color_mat(Global3d.colors.dial_1)
-	var num_mat = Global3d.get_color_mat(Global3d.colors.dial_num)
 	var bar_height = d*0.2
 	var bar_size :Vector3
 	for i in 360 :
-		var bar_center = Vector3(sin(deg_to_rad(-i+90))*r,bar_height/2, cos(deg_to_rad(-i+90))*r)
+		var rad = deg_to_rad(-i+90)
+		var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
 		if i % 30 == 0 :
 			bar_size = Vector3(r/18,bar_height,r/180)
-			if i == 0 :
-				add_child(new_dial_num(fsize,bar_height,bar_center, num_mat,"12"))
-			else:
-				add_child(new_dial_num(fsize,bar_height,bar_center, num_mat, "%d" % [i/30] ))
 		elif i % 6 == 0 :
 			bar_size = Vector3(r/24,bar_height,r/480)
 		else :
@@ -72,13 +69,16 @@ func make_dial(r :float, d:float, fsize :float):
 		bar.position.y = bar_height/2
 		add_child(bar)
 
-func new_dial_num(fsize :float, depth :float, p :Vector3, mat :Material, text :String)->MeshInstance3D:
-	var t = Global3d.new_text(fsize, depth, mat, text)
-	t.rotation.x = deg_to_rad(-90)
-	#t.rotation.y = deg2rad(90)
-	t.rotation.z = deg_to_rad(-90)
-	t.position = p *0.85
-	return t
+func make_dial_num(r :float, d:float, fsize :float)->void:
+	var mat = Global3d.get_color_mat(Global3d.colors.dial_num)
+	var bar_height = d*0.2
+	for i in range(1,13):
+		var rad = deg_to_rad( -i*(360.0/12.0) +90)
+		var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+		var t = Global3d.new_text(fsize, bar_height, mat, "%d" % [i])
+		t.rotation = Vector3(-PI/2,0,-PI/2)
+		t.position = bar_center
+		add_child(t)
 
 func update_clock():
 	var ms = Time.get_unix_time_from_system()

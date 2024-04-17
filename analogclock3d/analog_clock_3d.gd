@@ -2,8 +2,10 @@ extends Node3D
 
 class_name AnalogClock3D
 
-var tz_shift :float
+enum BarAlign {None, In,Mid,Out}
+enum NumberType {None, Hour,Minute,Degree}
 
+var tz_shift :float
 var hour_hand_base :Node3D
 var minute_hand_base :Node3D
 var second_hand_base :Node3D
@@ -16,9 +18,10 @@ func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=tru
 		plane.position.y = -d*0.25
 		add_child(plane)
 
-	make_hands(r,d)
-	make_dial_bar(r,d)
-	make_dial_num(r*0.85 ,d, fsize)
+	make_hands(r, d)
+	make_dial_bar(r*0.88, d, BarAlign.Mid)
+	make_dial_num(r*0.95, d, fsize*0.8, NumberType.Minute)
+	make_dial_num(r*0.8, d, fsize, NumberType.Hour)
 
 	var cc = Global3d.new_cylinder(d*0.5,r/50,r/50, Global3d.get_color_mat(Global3d.colors.center_circle1))
 	cc.position.y = d*0.5/2
@@ -32,24 +35,24 @@ func _process(_delta: float) -> void:
 
 func make_hands(r :float, d:float)->void:
 	var hand_height = d*0.1
-	hour_hand_base = make_hand(Global3d.colors.hour ,Vector3(r*0.8,hand_height,r/36))
+	hour_hand_base = make_hand(Global3d.colors.hour ,Vector3(r*0.75,hand_height,r/36))
 	hour_hand_base.position.y = hand_height*1
 
-	minute_hand_base = make_hand(Global3d.colors.minute, Vector3(r*1.0,hand_height,r/54))
+	minute_hand_base = make_hand(Global3d.colors.minute, Vector3(r*0.88,hand_height,r/54))
 	minute_hand_base.position.y = hand_height*2
 
-	second_hand_base = make_hand(Global3d.colors.second, Vector3(r*1.3,hand_height,r/72))
+	second_hand_base = make_hand(Global3d.colors.second, Vector3(r*1.0,hand_height,r/72))
 	second_hand_base.position.y = hand_height*3
 
 func make_hand(co :Color, hand_size: Vector3)->Node3D:
 	var hand_base = Node3D.new()
 	add_child(hand_base)
 	var hand = Global3d.new_box(hand_size, Global3d.get_color_mat(co))
-	hand.position.x = hand_size.x / 4
+	hand.position.x = hand_size.x / 2
 	hand_base.add_child(hand)
 	return hand_base
 
-func make_dial_bar(r :float, d:float):
+func make_dial_bar(r :float, d:float, align :BarAlign):
 	var mat = Global3d.get_color_mat(Global3d.colors.dial_1)
 	var bar_height = d*0.2
 	var bar_size :Vector3
@@ -65,20 +68,44 @@ func make_dial_bar(r :float, d:float):
 		var bar_rot = deg_to_rad(-i)
 		var bar = Global3d.new_box(bar_size, mat)
 		bar.rotation.y = bar_rot
-		bar.position = bar_center*(1 - bar_size.x/r/2)
+		match align:
+			BarAlign.In :
+				bar.position = bar_center*(1 - bar_size.x/r/2)
+			BarAlign.Mid :
+				bar.position = bar_center
+			BarAlign.Out :
+				bar.position = bar_center*(1 + bar_size.x/r/2)
 		bar.position.y = bar_height/2
 		add_child(bar)
 
-func make_dial_num(r :float, d:float, fsize :float)->void:
+func make_dial_num(r :float, d:float, fsize :float, nt :NumberType)->void:
 	var mat = Global3d.get_color_mat(Global3d.colors.dial_num)
 	var bar_height = d*0.2
-	for i in range(1,13):
-		var rad = deg_to_rad( -i*(360.0/12.0) +90)
-		var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
-		var t = Global3d.new_text(fsize, bar_height, mat, "%d" % [i])
-		t.rotation = Vector3(-PI/2,0,-PI/2)
-		t.position = bar_center
-		add_child(t)
+	match nt:
+		NumberType.Hour:
+			for i in range(1,13):
+				var rad = deg_to_rad( -i*(360.0/12.0) +90)
+				var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+				var t = Global3d.new_text(fsize, bar_height, mat, "%d" % [i])
+				t.rotation = Vector3(-PI/2,0,-PI/2)
+				t.position = bar_center
+				add_child(t)
+		NumberType.Minute:
+			for i in range(0,60,5):
+				var rad = deg_to_rad( -i*(360.0/60.0) +90)
+				var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+				var t = Global3d.new_text(fsize, bar_height, mat, "%d" % [i])
+				t.rotation = Vector3(-PI/2,0,-PI/2)
+				t.position = bar_center
+				add_child(t)
+		NumberType.Degree:
+			for i in range(0,360,30):
+				var rad = deg_to_rad( -i*(360.0/360.0) +90)
+				var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+				var t = Global3d.new_text(fsize, bar_height, mat, "%d" % [i])
+				t.rotation = Vector3(-PI/2,0,-PI/2)
+				t.position = bar_center
+				add_child(t)
 
 func update_clock():
 	var ms = Time.get_unix_time_from_system()

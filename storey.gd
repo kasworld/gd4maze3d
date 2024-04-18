@@ -201,6 +201,7 @@ func make_wall_by_maze()->void:
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
 var line2d_subviewport :SubViewport
+var clockcalendar_sel :int
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
@@ -236,11 +237,12 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	$WallContainer.add_child(w)
 
 	# add clock or calendar
-	#if randi_range(0, 2) == 0:
+	#if randi_range(0, 3) == 0:
 	if randi_range(0, maze_size.x*maze_size.y/4) == 0:
 		var n :Node3D
 		var depth = 0.1
-		if randi_range(0,1) == 0:
+		clockcalendar_sel +=1
+		if clockcalendar_sel % 2 == 0:
 			n = calendar_scene.instantiate()
 			n.init(lane_w, storey_h,depth, 5, false)
 		else :

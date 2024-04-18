@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://btkkwpk54jqc"]
+
+[ext_resource type="Script" path="res://bar_tree_2/bar_tree_2.gd" id="1_4edun"]
+
+[node name="BarTree2" type="Node3D"]
+script = ExtResource("1_4edun")

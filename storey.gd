@@ -3,7 +3,7 @@ extends Node3D
 class_name Storey
 
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
-var tree_scene = preload("res://bar_tree/bar_tree.tscn")
+var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
 
@@ -140,6 +140,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				else:
 					var c = new_donut_at(p, co)
 					donut_pos_dict.add_at(c, p)
+			#elif randi_range(0, 4)==0:
 			elif randi_range(0, maze_size.x*maze_size.y/4)==0:
 				new_tree_at(p)
 
@@ -159,11 +160,12 @@ func new_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
 	add_child(n)
 	return n
 
-func new_tree_at(p :Vector2i)->BarTree:
+func new_tree_at(p :Vector2i)->BarTree2:
 	var t = tree_scene.instantiate()
 	var w = randf_range(lane_w*0.5, lane_w*0.9)
 	var h = randf_range(storey_h*0.5, storey_h*0.9)
-	t.init_with_color(Global3d.random_color(), Global3d.random_color(), false,w,h, w/2, h*10, 1.0, 1.0/60.0)
+	var rot_vel = randf()/2
+	t.init_with_color(Global3d.random_color(), Global3d.random_color(), w,h, w/10, h*10, rot_vel, true)
 	t.position = mazepos2storeypos(p, storey_h*0.1)
 	t.rotation.y = randf_range(0, 2*PI)
 	add_child(t)

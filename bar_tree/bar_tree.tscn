@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://0tbwq0dq04w7"]
-
-[ext_resource type="Script" path="res://bar_tree/bar_tree.gd" id="1_vgbyj"]
-
-[node name="BarTree" type="Node3D"]
-script = ExtResource("1_vgbyj")

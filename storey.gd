@@ -132,9 +132,9 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
 				continue
-			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi_range(0,1)==0:
+			if maze_cells.get_open_dir_at(x,y).size() == 1 && randi()%2==0:
 				var co = colist.pick_random()[0]
-				if randi_range(0,1)==0:
+				if randi() % 2 ==0:
 					var c = new_capsule_at(p, co)
 					capsule_pos_dict.add_at(c, p)
 				else:
@@ -164,7 +164,7 @@ func new_tree_at(p :Vector2i)->BarTree2:
 	var t = tree_scene.instantiate()
 	var w = randf_range(lane_w*0.5, lane_w*0.9)
 	var h = randf_range(storey_h*0.5, storey_h*0.9)
-	var rot_vel = randf()/2
+	var rot_vel = randfn(0.0,0.3)
 	t.init_with_color(Global3d.random_color(), Global3d.random_color(), w,h, w/10, h*10, rot_vel, true)
 	t.position = mazepos2storeypos(p, storey_h*0.1)
 	t.rotation.y = randf_range(0, 2*PI)

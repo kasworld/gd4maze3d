@@ -19,7 +19,8 @@ func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=tru
 		add_child(plane)
 
 	make_hands(r, d)
-	make_dial_bar(r*0.88, d, BarAlign.Mid)
+	make_dial_bar_multi(r*0.88, d, BarAlign.Mid)
+	#make_dial_bar(r*0.88, d, BarAlign.Mid)
 	make_dial_num(r*0.95, d, fsize*0.8, NumberType.Minute)
 	make_dial_num(r*0.8, d, fsize, NumberType.Hour)
 
@@ -77,6 +78,57 @@ func make_dial_bar(r :float, d:float, align :BarAlign):
 				bar.position = bar_center*(1 + bar_size.x/r/2)
 		bar.position.y = bar_height/2
 		add_child(bar)
+
+var multi_bar :MultiMeshInstance3D
+func make_dial_bar_multi(r :float, d:float, align :BarAlign):
+	var mat = Global3d.get_color_mat(Global3d.colors.dial_1)
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(1,1,1)
+	mesh.material = mat
+
+	# Create the multimesh.
+	var multimesh = MultiMesh.new()
+	multimesh.mesh = mesh
+	# Set the format first.
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	# Then resize (otherwise, changing the format is not allowed).
+	multimesh.instance_count = 360
+	# Maybe not all of them should be visible at first.
+	multimesh.visible_instance_count = 360
+
+	# Set the transform of the instances.
+	var bar_height = d*0.2
+	var bar_size :Vector3
+	for i in multimesh.visible_instance_count:
+		var rad = deg_to_rad(-i+90)
+		var bar_center = Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+		var bar_rotation = Vector3(0,0,0)
+		var bar_position = Vector3(0,0,0)
+		if i % 30 == 0 :
+			bar_size = Vector3(r/18,bar_height,r/180)
+		elif i % 6 == 0 :
+			bar_size = Vector3(r/24,bar_height,r/480)
+		else :
+			bar_size = Vector3(r/72,bar_height,r/720)
+		var bar_rot = deg_to_rad(-i)
+		bar_rotation.y = bar_rot
+		match align:
+			BarAlign.In :
+				bar_position = bar_center*(1 - bar_size.x/r/2)
+			BarAlign.Mid :
+				bar_position = bar_center
+			BarAlign.Out :
+				bar_position = bar_center*(1 + bar_size.x/r/2)
+		bar_position.y = bar_height/2
+		# make transform from bar_rotation, bar_position, bar_size
+		var tr = Transform3D(Basis(), bar_position)
+		tr = tr.rotated_local(Vector3(0,1,0), bar_rot)
+		tr = tr.scaled_local( bar_size )
+		multimesh.set_instance_transform(i,tr )
+
+	multi_bar = MultiMeshInstance3D.new()
+	multi_bar.multimesh = multimesh
+	add_child(multi_bar)
 
 func make_dial_num(r :float, d:float, fsize :float, nt :NumberType)->void:
 	var mat = Global3d.get_color_mat(Global3d.colors.dial_num)

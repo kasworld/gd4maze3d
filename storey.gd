@@ -152,7 +152,9 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		bt.init(ba ,storey_h/20,  20, i )
 		add_child(bt)
 
-func make_cell_AABB(x:int,y:int)->AABB:
+func make_cell_AABB( p :Vector3)->AABB:
+	var x = int(p.x / lane_w)
+	var y = int(p.z / lane_w)
 	return AABB( Vector3(lane_w*x+ wall_thick/2,0,lane_w*y +wall_thick/2),
 		Vector3(lane_w -wall_thick, storey_h, lane_w -wall_thick) )
 
@@ -318,5 +320,5 @@ func view_floor_ceiling(f :bool,c :bool)->void:
 
 func info_str()->String:
 	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
-		storey_num, maze_size,storey_h, lane_w, wall_thick*lane_w,
+		storey_num, maze_size,storey_h, lane_w, wall_thick,
 		main_wall_mat_name, sub_wall_tex_name ]

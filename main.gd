@@ -65,8 +65,8 @@ func set_minimap_mode()->void:
 		minimap.view_known_map()
 
 func _ready() -> void:
-	var meshx = maze_size.x*lane_w +wall_thick*2
-	var meshy = maze_size.y*lane_w +wall_thick*2
+	var meshx = maze_size.x*lane_w +wall_thick
+	var meshy = maze_size.y*lane_w +wall_thick
 
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()

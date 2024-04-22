@@ -78,9 +78,9 @@ func make_walllines_known()->void:
 			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_known)
 
 
-func get_width()->int:
+func get_width()->float:
 	return storey.maze_size.x * map_scale
-func get_height()->int:
+func get_height()->float:
 	return storey.maze_size.y * map_scale
 
 func view_full_map()->void:

@@ -261,7 +261,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			n = clock_scene.instantiate()
 			n.init(min(lane_w,storey_h)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
-		n.rotate_y(dir2rad(1+MazeDir2Dir[dir]))
+		n.rotate_y(Storey.dir2rad(1+MazeDir2Dir[dir]))
 		add_child(n)
 		match dir:
 			Maze.Dir.West:

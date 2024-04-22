@@ -97,7 +97,7 @@ func make_mat_multi(mat :Material):
 	multi_bar.multimesh = multimesh
 	add_child(multi_bar)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if auto_rotate_bar:
 		bar_rotation_y()
 

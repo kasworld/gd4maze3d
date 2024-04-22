@@ -6,6 +6,7 @@ var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
+var ball_trail_scene = preload("res://ball_trail/ball_trail.tscn")
 
 # x90 == degree
 enum Dir {
@@ -143,6 +144,14 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 			#elif randi_range(0, 4)==0:
 			elif randi_range(0, maze_size.x*maze_size.y/4)==0:
 				new_tree_at(p)
+
+	var ba = AABB(
+		Vector3(wall_thick,0,wall_thick),
+		Vector3(maze_size.x*lane_w -wall_thick*2, storey_h, maze_size.y*lane_w -wall_thick*2) )
+	for i in 20:
+		var bt = ball_trail_scene.instantiate()
+		bt.init(ba , 10, i )
+		add_child(bt)
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = Global3d.new_capsule(lane_w*0.3, lane_w*0.05, Global3d.get_color_mat(co))

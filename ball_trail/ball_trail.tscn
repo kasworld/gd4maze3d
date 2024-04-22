@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cy34xu36jq84y"]
+
+[ext_resource type="Script" path="res://ball_trail/ball_trail.gd" id="1_wik6k"]
+
+[node name="BallTrail" type="Node3D"]
+script = ExtResource("1_wik6k")

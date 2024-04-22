@@ -6,7 +6,7 @@ var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
-var ball_trail_scene = preload("res://ball_trail/ball_trail.tscn")
+var ball_trail_scene = preload("res://ball_trail_2/ball_trail_2.tscn")
 
 # x90 == degree
 enum Dir {

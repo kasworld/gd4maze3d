@@ -150,7 +150,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		Vector3(maze_size.x*lane_w -wall_thick*2, storey_h, maze_size.y*lane_w -wall_thick*2) )
 	for i in 20:
 		var bt = ball_trail_scene.instantiate()
-		bt.init(ba , 10, i )
+		bt.init(ba ,storey_h/20,  20, i )
 		add_child(bt)
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:

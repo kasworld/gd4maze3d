@@ -14,8 +14,8 @@ var current_mat :Material
 var current_rot :Vector3
 var current_rot_accel :Vector3
 
-func init(ba :AABB, count :int, t:int)->void:
-	radius = ba.get_shortest_axis_size() / 20.0
+func init(ba :AABB, r :float, count :int, t:int)->void:
+	radius = r
 	bounce_area = ba
 	obj_count = count
 	speed_max = radius * 300
@@ -28,6 +28,9 @@ func init(ba :AABB, count :int, t:int)->void:
 		sp.mesh = new_mesh_by_type(t,radius,current_mat)
 		add_child(sp)
 		obj_list.append(sp)
+
+func set_aabb(ba :AABB)->void:
+	bounce_area = ba
 
 func _process(delta: float) -> void:
 	move(delta)

@@ -173,10 +173,10 @@ func move_character(cur_storey :Storey)->void:
 					return
 				if cur_storey.capsule_pos_dict.has(pl.pos_src) : # capsule encounter
 					pl.queue_act(Character.Act.RotateCameraRight)
-					cur_storey.capsule_pos_dict.remove_at(pl.pos_src)
+					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,pl.pos_src)
 				if cur_storey.donut_pos_dict.has(pl.pos_src) : # donut encounter
 					pl.queue_act(Character.Act.RotateCameraLeft)
-					cur_storey.donut_pos_dict.remove_at(pl.pos_src)
+					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 		pl.ai_act()

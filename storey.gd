@@ -61,28 +61,15 @@ func is_goal_pos(p :Vector2i)->bool:
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
-class PosDict:
-	var pos_dict :Dictionary
-	func has(p :Vector2i)->bool:
-		return self.pos_dict.has(p)
-	func keys()->Array:
-		return self.pos_dict.keys()
-	func values()->Array:
-		return self.pos_dict.values()
-	func remove_at(p :Vector2i)->bool:
-		var c = self.pos_dict.get(p)
-		self.pos_dict.erase(p)
-		if c != null :
-			c.queue_free()
-			return true
-		return false
-	func add_at(n :MeshInstance3D, p :Vector2i):
-		self.pos_dict[p]=n
-	func get_at(p :Vector2i)->MeshInstance3D:
-		return self.pos_dict.get(p)
-
-var capsule_pos_dict = PosDict.new()
-var donut_pos_dict = PosDict.new()
+var capsule_pos_dict = Dictionary()
+var donut_pos_dict = Dictionary()
+func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i)->bool:
+	var c = pos_dict.get(p)
+	pos_dict.erase(p)
+	if c != null :
+		c.queue_free()
+		return true
+	return false
 
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
@@ -137,10 +124,10 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				var co = colist.pick_random()[0]
 				if randi() % 2 ==0:
 					var c = new_capsule_at(p, co)
-					capsule_pos_dict.add_at(c, p)
+					capsule_pos_dict[p] = c
 				else:
 					var c = new_donut_at(p, co)
-					donut_pos_dict.add_at(c, p)
+					donut_pos_dict[p] = c
 			#elif randi_range(0, 4)==0:
 			elif randi_range(0, maze_size.x*maze_size.y/4)==0:
 				new_tree_at(p)
@@ -153,9 +140,8 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		add_child(bt)
 
 func make_cell_AABB( p :Vector3)->AABB:
-	var x = int(p.x / lane_w)
-	var y = int(p.z / lane_w)
-	return AABB( Vector3(lane_w*x+ wall_thick/2,0,lane_w*y +wall_thick/2),
+	var v3i :Vector3i = p / lane_w
+	return AABB( Vector3(lane_w*v3i.x + wall_thick/2,0,lane_w*v3i.z +wall_thick/2),
 		Vector3(lane_w -wall_thick, storey_h, lane_w -wall_thick) )
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:

@@ -17,8 +17,8 @@ var multimesh :MultiMesh
 func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3)->void:
 	radius = r
 	bounce_fn = bnfn
-	speed_max = radius * 200
-	speed_min = radius * 120
+	speed_max = radius * 120
+	speed_min = radius * 80
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
 	current_color = NamedColorList.color_list.pick_random()[0]
 	current_rot_accel = rand_rad()
@@ -98,6 +98,7 @@ func new_mesh_by_type(t :int, r :float)->Mesh:
 		0:
 			mesh = SphereMesh.new()
 			mesh.radius = r
+			mesh.height = r
 		1:
 			mesh = BoxMesh.new()
 			mesh.size = Vector3(r,r,r)*1.5
@@ -108,7 +109,7 @@ func new_mesh_by_type(t :int, r :float)->Mesh:
 			mesh = TextMesh.new()
 			mesh.depth = r/4
 			mesh.pixel_size = r / 10
-			mesh.font_size = r*50
+			mesh.font_size = r*200
 			mesh.text = "A"
 		4:
 			mesh = TorusMesh.new()
@@ -116,8 +117,8 @@ func new_mesh_by_type(t :int, r :float)->Mesh:
 			mesh.outer_radius = r
 		5:
 			mesh = CapsuleMesh.new()
-			mesh.height = r*3
-			mesh.radius = r*0.75
+			mesh.height = r*2
+			mesh.radius = r*0.5
 		6:
 			mesh = CylinderMesh.new()
 			mesh.height = r*2

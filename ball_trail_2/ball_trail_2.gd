@@ -14,7 +14,7 @@ var current_rot_accel :float
 var multi_ball :MultiMeshInstance3D
 var multimesh :MultiMesh
 
-func init(bnfn :Callable, r :float, count :int, t:int)->void:
+func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3)->void:
 	radius = r
 	bounce_fn = bnfn
 	speed_max = radius * 200
@@ -22,9 +22,9 @@ func init(bnfn :Callable, r :float, count :int, t:int)->void:
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
 	current_color = NamedColorList.color_list.pick_random()[0]
 	current_rot_accel = rand_rad()
-	make_mat_multi(new_mesh_by_type(t,radius), count)
+	make_mat_multi(new_mesh_by_type(t,radius), count, pos)
 
-func make_mat_multi(mesh :Mesh,count :int):
+func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
 	var mat = Global3d.get_color_mat(Color.WHITE)
 	mat.vertex_color_use_as_albedo = true
 	mesh.material = mat
@@ -41,7 +41,7 @@ func make_mat_multi(mesh :Mesh,count :int):
 
 	for i in multimesh.visible_instance_count:
 		multimesh.set_instance_color(i,current_color)
-		var ball_position = Vector3(0,0,0)
+		var ball_position = pos
 		var t = Transform3D(Basis(), ball_position)
 		multimesh.set_instance_transform(i,t)
 

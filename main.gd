@@ -57,10 +57,9 @@ var player_list :Array[Character]
 func get_main_char()->Character:
 	return player_list[0]
 
-var minimap_mode :int
-func set_minimap_mode()->void:
-	minimap_mode +=1
-	minimap_mode %= 3
+var minimap_mode :int = 1
+func set_minimap_mode(v :int)->void:
+	minimap_mode = v%3
 	match minimap_mode:
 		0:
 			minimap.show()
@@ -154,7 +153,7 @@ func enter_new_storey()->void:
 		player_list[i].enter_storey(cur_storey)
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
-	set_minimap_mode()
+	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
 var view_floor_ceiling :bool = true
@@ -204,7 +203,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_1:
 			help_on = !help_on
 		elif event.keycode == KEY_2:
-			set_minimap_mode()
+			set_minimap_mode(minimap_mode+1)
 		elif event.keycode == KEY_3:
 			view_floor_ceiling = !view_floor_ceiling
 			change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)

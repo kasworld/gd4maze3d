@@ -139,10 +139,38 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		bt.init(ba ,storey_h/20,  20, i )
 		add_child(bt)
 
-func make_cell_AABB( p :Vector3)->AABB:
+func make_cell_wallinfo( p :Vector3)->Array:
 	var v3i :Vector3i = p / lane_w
-	return AABB( Vector3(lane_w*v3i.x + wall_thick/2,0,lane_w*v3i.z +wall_thick/2),
+	var x = v3i.x
+	var y = v3i.z
+	var axis_wall = [
+		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.West), maze_cells.is_wall_dir_at(x,y, Maze.Dir.East)],
+		[true,true],
+		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.North), maze_cells.is_wall_dir_at(x,y, Maze.Dir.South)],
+	]
+	var aabb = AABB( Vector3(lane_w*x + wall_thick/2,0,lane_w*y +wall_thick/2),
 		Vector3(lane_w -wall_thick, storey_h, lane_w -wall_thick) )
+	return [aabb, axis_wall]
+
+# wallinfo [aabb , axis_wall [3][2]bool ]
+func bounce_cell(position :Vector3, velocity :Vector3, wallinfo :Array, radius :float)->Dictionary:
+	var aabb = wallinfo[0]
+	var axis_wall = wallinfo[1]
+	var bounced = Vector3i.ZERO
+	for i in 3:
+		if axis_wall[i][0] && position[i] < aabb.position[i] + radius :
+			position[i] = aabb.position[i] + radius
+			velocity[i] = abs(velocity[i])
+			bounced[i] = -1
+		elif axis_wall[i][1] && position[i] > aabb.end[i] - radius:
+			position[i] = aabb.end[i] - radius
+			velocity[i] = -abs(velocity[i])
+			bounced[i] = 1
+	return {
+		bounced = bounced,
+		position = position,
+		velocity = velocity,
+	}
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = Global3d.new_capsule(lane_w*0.3, lane_w*0.05, Global3d.get_color_mat(co))

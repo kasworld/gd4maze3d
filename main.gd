@@ -57,12 +57,19 @@ var player_list :Array[Character]
 func get_main_char()->Character:
 	return player_list[0]
 
-var full_minimap :bool
+var minimap_mode :int
 func set_minimap_mode()->void:
-	if full_minimap:
-		minimap.view_full_map()
-	else:
-		minimap.view_known_map()
+	minimap_mode +=1
+	minimap_mode %= 3
+	match minimap_mode:
+		0:
+			minimap.show()
+			minimap.view_full_map()
+		1:
+			minimap.show()
+			minimap.view_known_map()
+		2:
+			minimap.hide()
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick
@@ -197,7 +204,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_1:
 			help_on = !help_on
 		elif event.keycode == KEY_2:
-			full_minimap = !full_minimap
 			set_minimap_mode()
 		elif event.keycode == KEY_3:
 			view_floor_ceiling = !view_floor_ceiling
@@ -282,7 +288,7 @@ storey %s
 %s
 """ % [
 		cur_storey_index,storey_list.size(),
-		full_minimap, view_floor_ceiling,
+		minimap_mode, view_floor_ceiling,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),
 		]

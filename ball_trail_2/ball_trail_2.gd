@@ -3,7 +3,7 @@ extends Node3D
 class_name BallTrail
 
 var velocity :Vector3
-var bounce_area :AABB
+var bounce_fn :Callable
 var radius :float
 var speed_max :float
 var speed_min :float
@@ -14,10 +14,10 @@ var current_rot_accel :float
 var multi_ball :MultiMeshInstance3D
 var multimesh :MultiMesh
 
-func init(ba :AABB, r :float, count :int, t:int)->void:
+func init(bnfn :Callable, r :float, count :int, t:int)->void:
 	radius = r
-	bounce_area = ba
-	speed_max = radius * 300
+	bounce_fn = bnfn
+	speed_max = radius * 200
 	speed_min = radius * 120
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
 	current_color = NamedColorList.color_list.pick_random()[0]
@@ -58,9 +58,6 @@ func set_multi_pos(i :int, pos :Vector3)->void:
 func set_multi_color(i, co :Color)->void:
 	multimesh.set_instance_color(i,co)
 
-func set_aabb(ba :AABB)->void:
-	bounce_area = ba
-
 func _process(delta: float) -> void:
 	move(delta)
 
@@ -73,7 +70,7 @@ func move(delta :float)->void:
 func move_ball(delta: float, oldi :int, newi:int) -> void:
 	var pos = multimesh.get_instance_transform(oldi).origin
 	pos += velocity * delta
-	var bn = Bounce.bounce3d(pos,velocity,bounce_area,radius)
+	var bn = bounce_fn.call(pos,velocity,radius)
 	set_multi_pos(newi, pos)
 	velocity = bn.velocity
 	var bounced = false

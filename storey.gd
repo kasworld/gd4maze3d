@@ -115,8 +115,11 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	start_node = new_text_mark_at(start_pos, Color.YELLOW, "Start")
 	goal_node = new_text_mark_at(goal_pos, Color.YELLOW, "Goal")
 	var colist = NamedColorList.color_list.duplicate()
+	wall_info_all = []
 	for y in maze_size.y:
+		wall_info_all.append([])
 		for x in maze_size.x:
+			wall_info_all[y].append( make_cell_wallinfo(x,y) )
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
 				continue
@@ -136,13 +139,12 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		Vector3(maze_size.x*lane_w -wall_thick, storey_h, maze_size.y*lane_w -wall_thick) )
 	for i in 20:
 		var bt = ball_trail_scene.instantiate()
-		bt.init(ba ,storey_h/20,  20, i )
+		bt.init(bounce_cell ,storey_h/30, 20, i )
 		add_child(bt)
 
-func make_cell_wallinfo( p :Vector3)->Array:
-	var v3i :Vector3i = p / lane_w
-	var x = v3i.x
-	var y = v3i.z
+var wall_info_all :Array
+
+func make_cell_wallinfo( x:int, y:int)->Array:
 	var axis_wall = [
 		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.West), maze_cells.is_wall_dir_at(x,y, Maze.Dir.East)],
 		[true,true],
@@ -153,7 +155,10 @@ func make_cell_wallinfo( p :Vector3)->Array:
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
-func bounce_cell(position :Vector3, velocity :Vector3, wallinfo :Array, radius :float)->Dictionary:
+func bounce_cell(position :Vector3, velocity :Vector3, radius :float)->Dictionary:
+	var x = clampi(int(position.x/lane_w),0, maze_size.x-1)
+	var y = clampi(int(position.z/lane_w),0, maze_size.y-1)
+	var wallinfo = wall_info_all[y][x]
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
 	var bounced = Vector3i.ZERO

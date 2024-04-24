@@ -160,26 +160,23 @@ func make_cell_wallinfo( x:int, y:int)->Array:
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
-func bounce_cell(position :Vector3, velocity :Vector3, radius :float)->Dictionary:
-	var x = clampi(int(position.x/lane_w),0, maze_size.x-1)
-	var y = clampi(int(position.z/lane_w),0, maze_size.y-1)
+func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float)->Dictionary:
+	var x = clampi(int(oldpos.x/lane_w),0, maze_size.x-1)
+	var y = clampi(int(oldpos.z/lane_w),0, maze_size.y-1)
 	var wallinfo = wall_info_all[y][x]
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
 	var bounced = Vector3i.ZERO
 	for i in 3:
-		if axis_wall[i][0] && position[i] < aabb.position[i] + radius :
-			position[i] = aabb.position[i] + radius
-			velocity[i] = abs(velocity[i])
+		if axis_wall[i][0] && pos[i] < aabb.position[i] + radius :
+			pos[i] = aabb.position[i] + radius
 			bounced[i] = -1
-		elif axis_wall[i][1] && position[i] > aabb.end[i] - radius:
-			position[i] = aabb.end[i] - radius
-			velocity[i] = -abs(velocity[i])
+		elif axis_wall[i][1] && pos[i] > aabb.end[i] - radius:
+			pos[i] = aabb.end[i] - radius
 			bounced[i] = 1
 	return {
 		bounced = bounced,
-		position = position,
-		velocity = velocity,
+		pos = pos,
 	}
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:

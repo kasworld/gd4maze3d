@@ -68,11 +68,10 @@ func move(delta :float)->void:
 	move_ball(delta, old_cursor, obj_cursor)
 
 func move_ball(delta: float, oldi :int, newi:int) -> void:
-	var pos = multimesh.get_instance_transform(oldi).origin
-	pos += velocity * delta
-	var bn = bounce_fn.call(pos,velocity,radius)
-	set_multi_pos(newi, pos)
-	velocity = bn.velocity
+	var oldpos = multimesh.get_instance_transform(oldi).origin
+	var newpos = oldpos + velocity * delta
+	var bn = bounce_fn.call(oldpos,newpos,radius)
+	set_multi_pos(newi, bn.pos)
 	var bounced = false
 	for i in 3:
 		# change vel on bounce

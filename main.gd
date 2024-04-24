@@ -282,7 +282,7 @@ func update_info()->void:
 		]
 
 func info_str()->String:
-	return """storey %d/%d, fullminimap:%s, single storey view:%s
+	return """storey %d/%d, minimap mode:%s, single storey view:%s
 storey %s
 %s
 """ % [

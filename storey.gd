@@ -301,8 +301,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			Maze.Dir.South:
 				n.position = pos_face_ns - Vector3(0,0,wall_thick)
 
-func make_line2d_subvuewport(psz:Vector2i)->SubViewport:
-	var size_pixel = psz
+func make_line2d_subvuewport(size_pixel:Vector2i)->SubViewport:
 	#print_debug(size_pixel)
 	var l2d = line2d_scene.instantiate()
 	l2d.init(300,4,size_pixel)

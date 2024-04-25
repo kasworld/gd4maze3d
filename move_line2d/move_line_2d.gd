@@ -3,7 +3,7 @@ extends Node2D
 var draw_area_size :Vector2
 
 var line_cursor :int
-var line_width = 1
+var line_width = 2
 
 var point_count :int
 var color_list :PackedColorArray

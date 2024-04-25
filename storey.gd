@@ -304,7 +304,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 func make_line2d_subvuewport(size_pixel:Vector2i)->SubViewport:
 	#print_debug(size_pixel)
 	var l2d = line2d_scene.instantiate()
-	l2d.init(300,4,size_pixel)
+	l2d.init(300,4,1.5,size_pixel)
 	var sv = SubViewport.new()
 	sv.size = size_pixel
 	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS

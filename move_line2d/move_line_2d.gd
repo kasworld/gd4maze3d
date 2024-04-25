@@ -3,15 +3,16 @@ extends Node2D
 var draw_area_size :Vector2
 
 var line_cursor :int
-var line_width = 2
+var line_width :float
 
 var point_count :int
 var color_list :PackedColorArray
 var velocity_list :PackedVector2Array
 var auto_move :float
 
-func init(ln_count :int, pt_count :int, dsize :Vector2, amove :float = 1.0/60.0 ):
+func init(ln_count :int, pt_count :int, w:float, dsize :Vector2, amove :float = 1.0/60.0 ):
 	point_count = pt_count
+	line_width = w
 	draw_area_size = dsize
 	auto_move = amove
 
@@ -39,19 +40,16 @@ func move(delta :float)->void:
 
 func move_line(delta: float, ln :Line2D) -> void:
 	var bounced = false
+	var rt = Rect2(Vector2.ZERO, draw_area_size)
 	for i in velocity_list.size():
 		ln.points[i] += velocity_list[i] *delta
-		var bn = bounce(ln.points[i],velocity_list[i],draw_area_size,ln.width/2)
-		ln.points[i] = bn.position
-		velocity_list[i] = bn.velocity
-
+		var bn = bounce2d(rt,ln.points[i],ln.width/2)
+		ln.points[i] = bn.pos
 		# change vel on bounce
-		if bn.xbounce != 0 :
-			velocity_list[i].x = -random_positive(draw_area_size.x/2)*bn.xbounce
-			bounced = true
-		if bn.ybounce != 0 :
-			velocity_list[i].y = -random_positive(draw_area_size.y/2)*bn.ybounce
-			bounced = true
+		for j in 2:
+			if bn.bounced[j] != 0 :
+				velocity_list[i][j] = -random_positive(draw_area_size[j]/2)*bn.bounced[j]
+				bounced = true
 	if bounced :
 		color_list = make_color_list(point_count)
 
@@ -59,30 +57,18 @@ func move_line(delta: float, ln :Line2D) -> void:
 
 # util functions
 
-func bounce(pos :Vector2,vel :Vector2, bound :Vector2, radius :float)->Dictionary:
-	var xbounce = 0
-	var ybounce = 0
-	if pos.x <  radius :
-		pos.x =  radius
-		vel.x = abs(vel.x)
-		xbounce = -1
-	elif pos.x > bound.x - radius:
-		pos.x = bound.x - radius
-		vel.x = -abs(vel.x)
-		xbounce = 1
-	if pos.y < radius :
-		pos.y = radius
-		vel.y = abs(vel.y)
-		ybounce = -1
-	elif pos.y > bound.y - radius:
-		pos.y = bound.y - radius
-		vel.y = -abs(vel.y)
-		ybounce = 1
+func bounce2d(rt :Rect2, pos :Vector2, radius :float)->Dictionary:
+	var bounced = Vector3i.ZERO
+	for i in 2:
+		if pos[i] < rt.position[i] + radius :
+			pos[i] = rt.position[i] + radius
+			bounced[i] = -1
+		elif pos[i] > rt.end[i] - radius:
+			pos[i] = rt.end[i] - radius
+			bounced[i] = 1
 	return {
-		position = pos,
-		velocity = vel,
-		xbounce = xbounce,
-		ybounce = ybounce,
+		bounced = bounced,
+		pos = pos,
 	}
 
 func make_point_list(count :int, rt :Vector2)->PackedVector2Array:

@@ -183,14 +183,16 @@ func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = Global3d.new_capsule(lane_w*0.3, lane_w*0.05, Global3d.get_color_mat(co))
 	n.rotate_x(PI/2)
 	n.position = mazepos2storeypos(p, storey_h/4.0)
+	n.rotation.x = randf_range(0, PI)
 	n.rotation.y = randf_range(0, 2*PI)
 	add_child(n)
 	return n
 
 func new_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = Global3d.new_torus(lane_w*0.1, lane_w*0.2, Global3d.get_color_mat(co))
+	var n = Global3d.new_torus(lane_w*0.07, lane_w*0.15, Global3d.get_color_mat(co))
 	n.rotate_x(PI/2)
 	n.position = mazepos2storeypos(p, storey_h/4.0)
+	n.rotation.x = randf_range(0, PI)
 	n.rotation.y = randf_range(0, 2*PI)
 	add_child(n)
 	return n

@@ -176,8 +176,8 @@ func _process(_delta: float) -> void:
 func move_character(cur_storey :Storey)->void:
 	for i in PlayerCount:
 		var pl = player_list[i]
-		var ani_dur = pl.get_ani_dur()
-		if pl.act_end(ani_dur): # true on act end
+		var ani_dur = pl.get_animate_progress()
+		if pl.is_act_ended(ani_dur): # true on act end
 			if pl.is_player:
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()

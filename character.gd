@@ -77,33 +77,12 @@ func enter_storey(st :Storey)->void:
 	act_queue.resize(0)
 	act_queue.append(Act.EnterStorey)
 
-func light_on(b :bool)->void:
-	$SpotLight3D.visible = b
-	#$OmniLight3D.visible = b
-	$Camera3D.visible = b
-	$Camera3D.current = b
-
-func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = co
-	#mat.metallic = 1
-	#mat.clearcoat = true
-	var mesh = CylinderMesh.new()
-	mesh.height = h
-	mesh.bottom_radius = r
-	mesh.top_radius = 0
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.rotation.x = -PI/2
-	return sp
-
 # return 0 - 1
-func get_ani_dur()->float:
+func get_animate_progress()->float:
 	return (Time.get_unix_time_from_system() - act_start_time)/ani_act_dur
 
 # return true on act end
-func act_end(ani_dur :float)->bool:
+func is_act_ended(ani_dur :float)->bool:
 	if act_current != Act.None && ani_dur > 1.0: # action ended
 		dir_src = dir_dst
 		pos_src = pos_dst
@@ -144,21 +123,6 @@ func start_new_act()->bool:
 		storey_act_stats[act_current] += 1
 		return true
 	return false
-
-func info_str()->String:
-	return "automove:%s, view rotate:%s°, act %.1f /sec" % [
-		auto_move, view_dir*90, 1.0/ani_act_dur,
-		]
-
-func debug_str()->String:
-	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\nOpen: %s" % [
-		act_stats_str(total_act_stats),
-		act_stats_str(storey_act_stats),
-		act2str(act_current), queue_to_str(),
-		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
-		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
-		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),
-		]
 
 func make_ai_action()->bool:
 	# try right
@@ -205,3 +169,39 @@ func calc_animate_camera_rotate(dur :float)->float:
 
 func rotate_camera( rad :float)->void:
 	$Camera3D.rotation.z = rad
+
+func light_on(b :bool)->void:
+	$SpotLight3D.visible = b
+	#$OmniLight3D.visible = b
+	$Camera3D.visible = b
+	$Camera3D.current = b
+
+func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = co
+	#mat.metallic = 1
+	#mat.clearcoat = true
+	var mesh = CylinderMesh.new()
+	mesh.height = h
+	mesh.bottom_radius = r
+	mesh.top_radius = 0
+	mesh.material = mat
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.rotation.x = -PI/2
+	return sp
+
+func info_str()->String:
+	return "automove:%s, view rotate:%s°, act %.1f /sec" % [
+		auto_move, view_dir*90, 1.0/ani_act_dur,
+		]
+
+func debug_str()->String:
+	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\nOpen: %s" % [
+		act_stats_str(total_act_stats),
+		act_stats_str(storey_act_stats),
+		act2str(act_current), queue_to_str(),
+		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
+		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
+		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),
+		]

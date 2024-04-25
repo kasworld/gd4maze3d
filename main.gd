@@ -1,5 +1,10 @@
 extends Node3D
 
+@onready var helplabel = $LabelContainer/Help
+@onready var debuglabel = $LabelContainer/Debug
+@onready var performancelabel = $LabelContainer/Performance
+@onready var infolabel = $LabelContainer/Info
+
 # main params
 const PlayerCount = 10
 const VisibleStoreyUp :int = 3
@@ -201,7 +206,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_tree().quit()
 
 		elif event.keycode == KEY_1:
-			help_on = !help_on
+			helplabel.visible = !helplabel.visible
 		elif event.keycode == KEY_2:
 			set_minimap_mode(minimap_mode+1)
 		elif event.keycode == KEY_3:
@@ -210,11 +215,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_4:
 			get_main_char().auto_move = !get_main_char().auto_move
 		elif event.keycode == KEY_5:
-			debug_on = !debug_on
+			debuglabel.visible = !debuglabel.visible
 		elif event.keycode == KEY_6:
-			perfo_on = !perfo_on
+			performancelabel.visible = !performancelabel.visible
 		elif event.keycode == KEY_7:
-			info_on = !info_on
+			infolabel.visible = !infolabel.visible
 		#elif event.keycode == KEY_8:
 			#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
@@ -239,17 +244,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
-var help_on :bool = true
-func help_str()->String:
-	return """gd4maze3d 14.0.0
+func update_info()->void:
+	helplabel.text = """gd4maze3d 14.0.0
 Space:RotateCamera, Enter:Next storey,
 1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
 ArrowKey to move
 """
-var debug_on :bool
-var perfo_on :bool
-func performance_info()->String:
-	return 	"""%d FPS (%.2f mspf)
+	debuglabel.text = get_main_char().debug_str()
+	performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
 %d objects
 %dK primitive indices
@@ -261,28 +263,7 @@ Currently rendering: occlusion culling:%s
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 ]
-var info_on :bool
-func update_info()->void:
-	var helpstr = ""
-	if help_on:
-		helpstr = help_str()
-	var debugstr = ""
-	if debug_on:
-		debugstr = get_main_char().debug_str()
-	var perfo_str = ""
-	if perfo_on:
-		perfo_str = performance_info()
-	var info_s = ""
-	if info_on :
-		info_s = info_str()
-	$Label.text = "%s%s%s%s" % [
-		info_s,
-		helpstr, debugstr,
-		perfo_str,
-		]
-
-func info_str()->String:
-	return """storey %d/%d, minimap mode:%s, single storey view:%s
+	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
 storey %s
 %s
 """ % [

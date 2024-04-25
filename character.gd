@@ -81,6 +81,13 @@ func enter_storey(st :Storey)->void:
 func get_animate_progress()->float:
 	return (Time.get_unix_time_from_system() - act_start_time)/sec_per_animate_act
 
+# success when act ended
+func set_sec_per_animate_act(v :float)->bool:
+	if is_act_ended(get_animate_progress()):
+		sec_per_animate_act = v
+		return true
+	return false
+
 # return true on act end
 func is_act_ended(ani_dur :float)->bool:
 	if act_current != Act.None && ani_dur > 1.0: # action ended

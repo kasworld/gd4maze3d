@@ -58,13 +58,16 @@ layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
 [node name="Debug" type="Label" parent="LabelContainer"]
+visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
 [node name="Info" type="Label" parent="LabelContainer"]
+visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
 [node name="Performance" type="Label" parent="LabelContainer"]
+visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")

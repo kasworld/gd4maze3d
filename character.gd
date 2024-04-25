@@ -2,8 +2,6 @@ extends Node3D
 
 class_name Character
 
-var storey :Storey
-
 enum ViewDir {Up,Right,Down,Left}
 static func viewdir2str(vd :ViewDir)->String:
 	return ViewDir.keys()[vd]
@@ -16,7 +14,6 @@ static func viewdir_opposite(d:ViewDir)->ViewDir:
 static func viewdir2rad(d:ViewDir)->float:
 	return deg_to_rad(d*90.0)
 
-var ani_act_dur :float # sec
 enum Act {None, EnterStorey, Forward, TurnRight , TurnLeft, RotateCameraRight, RotateCameraLeft}
 func act2str(a :Act)->String:
 	return Act.keys()[a]
@@ -43,6 +40,9 @@ func queue_to_str()->String:
 		rtn += "%s " % [ act2str(a) ]
 	return rtn
 
+var storey :Storey
+var sec_per_animate_act :float # sec
+
 var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i
@@ -67,7 +67,7 @@ func init(lane_w:float, pl:bool, auto :bool)->void:
 	dir_src = Storey.Dir.North
 
 func enter_storey(st :Storey)->void:
-	ani_act_dur = randf_range(0.1,1.0)
+	sec_per_animate_act = randf_range(0.1,1.0)
 	storey = st
 	if is_player :
 		pos_dst = storey.start_pos
@@ -79,7 +79,7 @@ func enter_storey(st :Storey)->void:
 
 # return 0 - 1
 func get_animate_progress()->float:
-	return (Time.get_unix_time_from_system() - act_start_time)/ani_act_dur
+	return (Time.get_unix_time_from_system() - act_start_time)/sec_per_animate_act
 
 # return true on act end
 func is_act_ended(ani_dur :float)->bool:
@@ -160,7 +160,6 @@ func calc_animate_move_storey_by_dur(dur :float, stn :int)->Vector3:
 	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
 	return p1.lerp(p2,dur)
 
-
 func calc_animate_turn_by_dur(dur :float)->float:
 	return lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
 
@@ -193,7 +192,7 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 
 func info_str()->String:
 	return "automove:%s, view rotate:%s°, act %.1f /sec" % [
-		auto_move, view_dir*90, 1.0/ani_act_dur,
+		auto_move, view_dir*90, 1.0/sec_per_animate_act,
 		]
 
 func debug_str()->String:

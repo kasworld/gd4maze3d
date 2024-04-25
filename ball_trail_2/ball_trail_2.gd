@@ -72,14 +72,12 @@ func move_ball(delta: float, oldi :int, newi:int) -> void:
 	var newpos = oldpos + velocity * delta
 	var bn = bounce_fn.call(oldpos,newpos,radius)
 	set_multi_pos(newi, bn.pos)
-	var bounced = false
 	for i in 3:
 		# change vel on bounce
 		if bn.bounced[i] != 0 :
 			velocity[i] = -random_positive(speed_max/2)*bn.bounced[i]
-			bounced = true
 
-	if bounced :
+	if bn.bounced != Vector3i.ZERO:
 		current_color = NamedColorList.color_list.pick_random()[0]
 		current_rot_accel = rand_rad()
 	set_multi_color(newi, current_color)

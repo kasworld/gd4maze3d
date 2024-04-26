@@ -176,29 +176,29 @@ func _process(_delta: float) -> void:
 func move_character(cur_storey :Storey)->void:
 	for i in PlayerCount:
 		var pl = player_list[i]
-		var ani_dur = pl.get_animate_progress()
-		if pl.is_act_ended(ani_dur): # true on act end
+		var ani_dur = pl.get_animation_progress()
+		if pl.is_action_ended(ani_dur): # true on act end
 			if pl.is_player:
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
 				if cur_storey.capsule_pos_dict.has(pl.pos_src) : # capsule encounter
-					pl.queue_act(Character.Act.RotateCameraRight)
+					pl.enqueue_action(Character.Action.RotateCameraRight)
 					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,pl.pos_src)
 				if cur_storey.donut_pos_dict.has(pl.pos_src) : # donut encounter
-					pl.queue_act(Character.Act.RotateCameraLeft)
+					pl.enqueue_action(Character.Action.RotateCameraLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 				pl.rotation.y = snapped(pl.rotation.y, PI/2)
-		pl.ai_act()
-		if pl.start_new_act(): # new act start
+		pl.ai_action()
+		if pl.start_new_action(): # new act start
 			ani_dur = 0
-			if pl.is_player and pl.act_current != Character.Act.EnterStorey:
+			if pl.is_player and pl.action_current != Character.Action.EnterStorey:
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
 					minimap.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
-		if pl.act_current != Character.Act.None :
-			animate_act(pl, ani_dur)
+		if pl.action_current != Character.Action.None :
+			animate_action(pl, ani_dur)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -224,17 +224,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
 		elif event.keycode == KEY_UP:
-			get_main_char().queue_act(Character.Act.Forward)
+			get_main_char().enqueue_action(Character.Action.Forward)
 		elif event.keycode == KEY_DOWN:
-			get_main_char().queue_act(Character.Act.TurnLeft)
-			get_main_char().queue_act(Character.Act.TurnLeft)
+			get_main_char().enqueue_action(Character.Action.TurnLeft)
+			get_main_char().enqueue_action(Character.Action.TurnLeft)
 		elif event.keycode == KEY_LEFT:
-			get_main_char().queue_act(Character.Act.TurnLeft)
+			get_main_char().enqueue_action(Character.Action.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
-			get_main_char().queue_act(Character.Act.TurnRight)
+			get_main_char().enqueue_action(Character.Action.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			get_main_char().queue_act(Character.Act.RotateCameraRight)
+			get_main_char().enqueue_action(Character.Action.RotateCameraRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -273,28 +273,28 @@ storey %s
 		get_main_char().info_str(),
 		]
 
-func animate_act(pl :Character, dur :float)->void:
-	match pl.act_current:
-		Character.Act.Forward:
+func animate_action(pl :Character, dur :float)->void:
+	match pl.action_current:
+		Character.Action.Forward:
 			animate_move_by_dur(pl, dur)
-		Character.Act.TurnLeft, Character.Act.TurnRight:
+		Character.Action.TurnLeft, Character.Action.TurnRight:
 			animate_turn_by_dur(pl, dur)
-		Character.Act.RotateCameraRight,Character.Act.RotateCameraLeft:
+		Character.Action.RotateCameraRight,Character.Action.RotateCameraLeft:
 			animate_rotate_camera_by_dur(pl,dur)
-		Character.Act.EnterStorey:
+		Character.Action.EnterStorey:
 			animate_move_storey_by_dur(pl, dur)
 
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:
-	pl.position = pl.calc_animate_move_by_dur(dur)
+	pl.position = pl.calc_animation_move_by_dur(dur)
 
 func animate_move_storey_by_dur(pl :Character, dur :float)->void:
 	var from = cur_storey_index -1
-	pl.position = pl.calc_animate_move_storey_by_dur(dur, from)
+	pl.position = pl.calc_animation_move_storey_by_dur(dur, from)
 
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:
-	pl.rotation.y = pl.calc_animate_turn_by_dur(dur)
+	pl.rotation.y = pl.calc_animation_turn_by_dur(dur)
 
 func animate_rotate_camera_by_dur(pl :Character, dur :float)->void:
-	pl.rotate_camera(pl.calc_animate_camera_rotate(dur))
+	pl.rotate_camera(pl.calc_animation_camera_rotate(dur))

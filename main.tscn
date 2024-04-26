@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=9 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
+[ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 transparency = 2
@@ -72,13 +73,4 @@ visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
-[node name="MovingCameraLight" type="Node3D" parent="."]
-
-[node name="Camera3D" type="Camera3D" parent="MovingCameraLight"]
-current = true
-fov = 90.0
-
-[node name="SpotLight3D" type="SpotLight3D" parent="MovingCameraLight"]
-light_energy = 5.0
-spot_range = 50.0
-spot_angle = 60.0
+[node name="MovingCameraLight" parent="." instance=ExtResource("3_hdadt")]

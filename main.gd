@@ -10,8 +10,6 @@ var character_scene = preload("res://character.tscn")
 @onready var infolabel = $LabelContainer/Info
 
 @onready var cameralight = $MovingCameraLight
-@onready var camera = $MovingCameraLight/Camera3D
-@onready var light = $MovingCameraLight/SpotLight3D
 
 const CharacterCount = 10
 const VisibleStoreyUp :int = 3
@@ -122,7 +120,8 @@ func move_character(cur_storey :Storey)->void:
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
 			if i == player_number  : # player
-				snap_cameralight()
+				cameralight.snap_cameralight()
+				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
@@ -133,7 +132,6 @@ func move_character(cur_storey :Storey)->void:
 					pl.enqueue_action(Character.Action.RotateCameraLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
-				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
 			ani_dur = 0
@@ -247,16 +245,8 @@ func animate_turn_by_dur(pl :Character, dur :float)->void:
 		cameralight.rotation = pl.rotation
 
 func animate_rotate_camera_by_dur(pl :Character, dur :float)->void:
-	rotate_camera(pl.calc_animation_camera_rotate(dur))
+	$MovingCameraLight.rotate_camera(pl.calc_animation_camera_rotate(dur))
 
-func snap_cameralight()->void:
-	cameralight.rotation.z = snapped(cameralight.rotation.z, PI/2)
-
-func rotate_camera( rad :float)->void:
-	camera.rotation.z = rad
-
-func light_on(b :bool)->void:
-	cameralight.visible = b
 
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )

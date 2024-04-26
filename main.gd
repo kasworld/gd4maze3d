@@ -1,9 +1,17 @@
 extends Node3D
 
+var minimap_scene = preload("res://mini_map.tscn")
+var storey_scene = preload("res://storey.tscn")
+var character_scene = preload("res://character.tscn")
+
 @onready var helplabel = $LabelContainer/Help
 @onready var debuglabel = $LabelContainer/Debug
 @onready var performancelabel = $LabelContainer/Performance
 @onready var infolabel = $LabelContainer/Info
+
+@onready var cameralight = $MovingCameraLight
+@onready var camera = $MovingCameraLight/Camera3D
+@onready var light = $MovingCameraLight/SpotLight3D
 
 # main params
 const PlayerCount = 10
@@ -14,7 +22,6 @@ var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
 
-var storey_scene = preload("res://storey.tscn")
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 func get_cur_storey()->Storey:
@@ -54,10 +61,8 @@ func visible_down_index()->int:
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
-var minimap_scene = preload("res://mini_map.tscn")
 var minimap :MiniMap
 
-var character_scene = preload("res://character.tscn")
 var player_list :Array[Character]
 func get_main_char()->Character:
 	return player_list[0]
@@ -97,10 +102,7 @@ func _ready() -> void:
 		var pl = character_scene.instantiate()
 		player_list.append(pl)
 		add_child(pl)
-		if i == 0: # set is_player
-			pl.init(lane_w, true, true)
-		else :
-			pl.init(lane_w, false, true)
+		pl.init(i, lane_w, true)
 
 	var use_thread = false
 	if use_thread:
@@ -155,7 +157,7 @@ func enter_new_storey()->void:
 	minimap.init(cur_storey,map_scale)
 
 	for i in PlayerCount:
-		player_list[i].enter_storey(cur_storey)
+		player_list[i].enter_storey(cur_storey, i == 0)
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode(minimap_mode)
@@ -178,7 +180,8 @@ func move_character(cur_storey :Storey)->void:
 		var pl = player_list[i]
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
-			if pl.is_player:
+			if i ==0  : # player
+				snap_cameralight()
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
@@ -193,7 +196,7 @@ func move_character(cur_storey :Storey)->void:
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
 			ani_dur = 0
-			if pl.is_player and pl.action_current != Character.Action.EnterStorey:
+			if i == 0 and pl.action_current != Character.Action.EnterStorey: # player
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
 					minimap.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
@@ -287,14 +290,29 @@ func animate_action(pl :Character, dur :float)->void:
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:
 	pl.position = pl.calc_animation_move_by_dur(dur)
+	if pl.serial == 0:
+		cameralight.position = pl.position
 
 func animate_move_storey_by_dur(pl :Character, dur :float)->void:
 	var from = cur_storey_index -1
 	pl.position = pl.calc_animation_move_storey_by_dur(dur, from)
+	if pl.serial == 0:
+		cameralight.position = pl.position
 
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:
 	pl.rotation.y = pl.calc_animation_turn_by_dur(dur)
+	if pl.serial == 0:
+		cameralight.rotation = pl.rotation
 
 func animate_rotate_camera_by_dur(pl :Character, dur :float)->void:
-	pl.rotate_camera(pl.calc_animation_camera_rotate(dur))
+	rotate_camera(pl.calc_animation_camera_rotate(dur))
+
+func snap_cameralight()->void:
+	cameralight.rotation.z = snapped(cameralight.rotation.z, PI/2)
+
+func rotate_camera( rad :float)->void:
+	camera.rotation.z = rad
+
+func light_on(b :bool)->void:
+	cameralight.visible = b

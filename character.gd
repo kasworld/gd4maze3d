@@ -53,23 +53,21 @@ var view_dir_dst :ViewDir
 var action_start_time :float # unixtime sec
 var action_current : Action
 
-var is_player :bool
+var serial :int
 var auto_move :bool
 
-func init(lane_w:float, pl:bool, auto :bool)->void:
+func init(n :int, lane_w:float, auto :bool)->void:
 	var mi3d = new_cylinder(0.4*lane_w, 0.15*lane_w, NamedColorList.color_list.pick_random()[0])
 	add_child(mi3d)
-	is_player = pl
+	serial = n
 	auto_move = auto
-	if is_player:
-		light_on(true)
 	total_action_stats = Character.new_action_stats_dict()
 	dir_src = Storey.Dir.North
 
-func enter_storey(st :Storey)->void:
+func enter_storey(st :Storey, start_at:bool)->void:
 	sec_per_action = randf_range(0.1,1.0)
 	storey = st
-	if is_player :
+	if start_at :
 		pos_dst = storey.start_pos
 	else:
 		pos_dst = storey.rand_pos()
@@ -95,7 +93,6 @@ func is_action_ended(ani_dur :float)->bool:
 		pos_src = pos_dst
 		view_dir = view_dir_dst
 		action_current = Action.None
-		$Camera3D.rotation.z = snapped($Camera3D.rotation.z, PI/2)
 		return true
 	return false
 
@@ -172,15 +169,6 @@ func calc_animation_turn_by_dur(dur :float)->float:
 
 func calc_animation_camera_rotate(dur :float)->float:
 	return lerp_angle(Character.viewdir2rad(view_dir), Character.viewdir2rad(view_dir_dst), dur)
-
-func rotate_camera( rad :float)->void:
-	$Camera3D.rotation.z = rad
-
-func light_on(b :bool)->void:
-	$SpotLight3D.visible = b
-	#$OmniLight3D.visible = b
-	$Camera3D.visible = b
-	$Camera3D.current = b
 
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()

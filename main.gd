@@ -210,11 +210,13 @@ Currently rendering: occlusion culling:%s
 	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
 storey %s
 %s
+%s
 """ % [
 		cur_storey_index,storey_list.size(),
 		minimap_mode, view_floor_ceiling,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),
+		cameralight.info_str(),
 		]
 
 func animate_action(pl :Character, dur :float)->void:

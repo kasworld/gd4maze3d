@@ -87,23 +87,32 @@ func ai_action()->void:
 
 # return true on new act
 func start_new_action()->bool:
+	if is_ready_new_action():
+		start_character_action(action_current)
+		return true
+	return false
+
+func is_ready_new_action()->bool:
 	if action_current == Action.None && action_queue.size() > 0: # start new action
 		action_start_time = Time.get_unix_time_from_system()
 		action_current = action_queue.pop_front()
-		match action_current:
-			Action.Forward:
-				if can_move(dir_src):
-					pos_dst = pos_src + Storey.Dir2Vt[dir_src]
-				else :
-					action_current = Action.None
-			Action.TurnLeft:
-				dir_dst = Storey.dir_left(dir_src)
-			Action.TurnRight:
-				dir_dst = Storey.dir_right(dir_src)
 		total_action_stats[action_current] += 1
 		storey_action_stats[action_current] += 1
 		return true
 	return false
+
+func start_character_action(act :Action)->void:
+	match act:
+		Action.Forward:
+			if can_move(dir_src):
+				pos_dst = pos_src + Storey.Dir2Vt[dir_src]
+			else :
+				action_current = Action.None
+		Action.TurnLeft:
+			dir_dst = Storey.dir_left(dir_src)
+		Action.TurnRight:
+			dir_dst = Storey.dir_right(dir_src)
+
 
 func make_ai_action()->bool:
 	# try right

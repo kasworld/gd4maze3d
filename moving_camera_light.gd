@@ -14,7 +14,6 @@ static func viewdir_opposite(d:ViewDir)->ViewDir:
 static func viewdir2rad(d:ViewDir)->float:
 	return deg_to_rad(d*90.0)
 
-
 @onready var camera = $Camera3D
 @onready var light = $SpotLight3D
 
@@ -43,10 +42,7 @@ func snap_cameralight()->void:
 func rotate_camera( rad :float)->void:
 	rotation.z = rad
 
-func light_on(b :bool)->void:
-	visible = b
-
 func info_str()->String:
-	return "view rotate:%s°" % [
-		view_dir*90,
+	return "view rotate:%s°, rotate:%s" % [
+		view_dir*90, rotation,
 		]

@@ -134,6 +134,8 @@ func move_character(cur_storey :Storey)->void:
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
+			if pl.serial == player_number:
+				cameralight.start_camera_action( pl.action_current)
 			ani_dur = 0
 			if i == player_number and pl.action_current != Character.Action.EnterStorey: # player
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
@@ -222,7 +224,7 @@ func animate_action(pl :Character, dur :float)->void:
 		Character.Action.TurnLeft, Character.Action.TurnRight:
 			animate_turn_by_dur(pl, dur)
 		Character.Action.RotateCameraRight,Character.Action.RotateCameraLeft:
-			animate_rotate_camera_by_dur(pl,dur)
+			cameralight.animate_rotate_camera_by_dur(dur)
 		Character.Action.EnterStorey:
 			animate_move_storey_by_dur(pl, dur)
 
@@ -243,10 +245,6 @@ func animate_turn_by_dur(pl :Character, dur :float)->void:
 	pl.rotation.y = pl.calc_animation_turn_by_dur(dur)
 	if pl.serial == player_number:
 		cameralight.rotation = pl.rotation
-
-func animate_rotate_camera_by_dur(pl :Character, dur :float)->void:
-	$MovingCameraLight.rotate_camera(pl.calc_animation_camera_rotate(dur))
-
 
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )

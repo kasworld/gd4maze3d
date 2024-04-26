@@ -2,18 +2,6 @@ extends Node3D
 
 class_name Character
 
-enum ViewDir {Up,Right,Down,Left}
-static func viewdir2str(vd :ViewDir)->String:
-	return ViewDir.keys()[vd]
-static func viewdir_left(d:ViewDir)->ViewDir:
-	return (d+1)%4 as ViewDir
-static func viewdir_right(d:ViewDir)->ViewDir:
-	return (d-1+4)%4 as ViewDir
-static func viewdir_opposite(d:ViewDir)->ViewDir:
-	return (d+2)%4 as ViewDir
-static func viewdir2rad(d:ViewDir)->float:
-	return deg_to_rad(d*90.0)
-
 enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RotateCameraRight, RotateCameraLeft}
 static func action2str(a :Action)->String:
 	return Action.keys()[a]
@@ -47,8 +35,6 @@ var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
-var view_dir :ViewDir
-var view_dir_dst :ViewDir
 
 var action_start_time :float # unixtime sec
 var action_current : Action
@@ -91,7 +77,6 @@ func is_action_ended(ani_dur :float)->bool:
 	if action_current != Action.None && ani_dur > 1.0: # action ended
 		dir_src = dir_dst
 		pos_src = pos_dst
-		view_dir = view_dir_dst
 		action_current = Action.None
 		return true
 	return false
@@ -106,8 +91,6 @@ func start_new_action()->bool:
 		action_start_time = Time.get_unix_time_from_system()
 		action_current = action_queue.pop_front()
 		match action_current:
-			Action.None:
-				pass
 			Action.Forward:
 				if can_move(dir_src):
 					pos_dst = pos_src + Storey.Dir2Vt[dir_src]
@@ -117,12 +100,6 @@ func start_new_action()->bool:
 				dir_dst = Storey.dir_left(dir_src)
 			Action.TurnRight:
 				dir_dst = Storey.dir_right(dir_src)
-			Action.RotateCameraRight:
-				view_dir_dst = Character.viewdir_right(view_dir)
-			Action.RotateCameraLeft:
-				view_dir_dst = Character.viewdir_left(view_dir)
-			Action.EnterStorey:
-				pass
 		total_action_stats[action_current] += 1
 		storey_action_stats[action_current] += 1
 		return true
@@ -167,9 +144,6 @@ func calc_animation_move_storey_by_dur(dur :float, stn :int)->Vector3:
 func calc_animation_turn_by_dur(dur :float)->float:
 	return lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
 
-func calc_animation_camera_rotate(dur :float)->float:
-	return lerp_angle(Character.viewdir2rad(view_dir), Character.viewdir2rad(view_dir_dst), dur)
-
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = co
@@ -186,8 +160,8 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	return sp
 
 func info_str()->String:
-	return "automove:%s, view rotate:%s°, act %.1f /sec" % [
-		auto_move, view_dir*90, 1.0/sec_per_action,
+	return "automove:%s, act %.1f /sec" % [
+		auto_move, 1.0/sec_per_action,
 		]
 
 func debug_str()->String:

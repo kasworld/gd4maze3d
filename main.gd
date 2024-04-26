@@ -13,72 +13,21 @@ var character_scene = preload("res://character.tscn")
 @onready var camera = $MovingCameraLight/Camera3D
 @onready var light = $MovingCameraLight/SpotLight3D
 
-# main params
-const PlayerCount = 10
+const CharacterCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
 var maze_size = Vector2i(16*1,9*1)
 var storey_h :float = 3.0
 var lane_w :float = 4.0
 var wall_thick :float = lane_w *0.05
-
+var minimap :MiniMap
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
-func get_cur_storey()->Storey:
-	return storey_list[cur_storey_index]
-
-# thread unsafe
-func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
-	var st = new_storey(stnum,msize,h,lw,wt)
-	if stnum > 0 :
-		st.set_start_pos(storey_list[-1].goal_pos)
-	st.position.y = storey_h * stnum
-	storey_list.append(st)
-	add_child(st)
-
-# thread safe
-func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->Storey:
-	var gp = rand_pos()
-	var stp = rand_pos()
-	var st = storey_scene.instantiate()
-	st.init(stnum, msize, h, lw, wt, stp, gp)
-	return st
-
-#func del_old_storey()->void:
-	#var st = storey_list.pop_front()
-	#remove_child(st)
-	#st.queue_free()
-
-func hide_old_storey()->void:
-	if visible_down_index()-1 >=0 :
-		storey_list[visible_down_index()-1].visible = false
-func visible_down_index()->int:
-	var rtn = cur_storey_index - VisibleStoreyDown
-	if rtn < 0:
-		return 0
-	return rtn
-
-func rand_pos()->Vector2i:
-	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
-
-var minimap :MiniMap
-
 var player_list :Array[Character]
-func get_main_char()->Character:
-	return player_list[0]
-
+var player_number = 0
 var minimap_mode :int = 1
-func set_minimap_mode(v :int)->void:
-	minimap_mode = v%3
-	match minimap_mode:
-		0:
-			minimap.show()
-			minimap.view_full_map()
-		1:
-			minimap.show()
-			minimap.view_known_map()
-		2:
-			minimap.hide()
+var vp_size :Vector2
+var view_floor_ceiling :bool = true
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick
@@ -98,7 +47,7 @@ func _ready() -> void:
 	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[1]].duplicate()
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
-	for i in PlayerCount:
+	for i in CharacterCount:
 		var pl = character_scene.instantiate()
 		player_list.append(pl)
 		add_child(pl)
@@ -128,7 +77,6 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	enter_new_storey()
 
-var vp_size :Vector2
 func _on_vpsize_changed()->void:
 	vp_size = get_viewport().get_visible_rect().size
 
@@ -156,19 +104,12 @@ func enter_new_storey()->void:
 	add_child(minimap)
 	minimap.init(cur_storey,map_scale)
 
-	for i in PlayerCount:
-		player_list[i].enter_storey(cur_storey, i == 0)
+	for i in CharacterCount:
+		player_list[i].enter_storey(cur_storey, i == player_number)
 		animate_move_by_dur(player_list[i], 0)
 		animate_turn_by_dur(player_list[i], 0)
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
-
-var view_floor_ceiling :bool = true
-func change_floor_ceiling_visible(f :bool,c :bool)->void:
-	for i in storey_list.size():
-		storey_list[i].view_floor_ceiling(f,c)
-	storey_list[0].view_floor_ceiling(false,c)
-	storey_list[-1].view_floor_ceiling(f,false)
 
 func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
@@ -176,11 +117,11 @@ func _process(_delta: float) -> void:
 	update_info()
 
 func move_character(cur_storey :Storey)->void:
-	for i in PlayerCount:
+	for i in CharacterCount:
 		var pl = player_list[i]
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
-			if i ==0  : # player
+			if i == player_number  : # player
 				snap_cameralight()
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
@@ -196,7 +137,7 @@ func move_character(cur_storey :Storey)->void:
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
 			ani_dur = 0
-			if i == 0 and pl.action_current != Character.Action.EnterStorey: # player
+			if i == player_number and pl.action_current != Character.Action.EnterStorey: # player
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
 				for d in walldir:
 					minimap.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
@@ -290,19 +231,19 @@ func animate_action(pl :Character, dur :float)->void:
 # dur : 0 - 1 :second
 func animate_move_by_dur(pl :Character, dur :float)->void:
 	pl.position = pl.calc_animation_move_by_dur(dur)
-	if pl.serial == 0:
+	if pl.serial == player_number:
 		cameralight.position = pl.position
 
 func animate_move_storey_by_dur(pl :Character, dur :float)->void:
 	var from = cur_storey_index -1
 	pl.position = pl.calc_animation_move_storey_by_dur(dur, from)
-	if pl.serial == 0:
+	if pl.serial == player_number:
 		cameralight.position = pl.position
 
 # dur : 0 - 1 :second
 func animate_turn_by_dur(pl :Character, dur :float)->void:
 	pl.rotation.y = pl.calc_animation_turn_by_dur(dur)
-	if pl.serial == 0:
+	if pl.serial == player_number:
 		cameralight.rotation = pl.rotation
 
 func animate_rotate_camera_by_dur(pl :Character, dur :float)->void:
@@ -316,3 +257,60 @@ func rotate_camera( rad :float)->void:
 
 func light_on(b :bool)->void:
 	cameralight.visible = b
+
+func rand_pos()->Vector2i:
+	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
+
+func get_cur_storey()->Storey:
+	return storey_list[cur_storey_index]
+
+# thread unsafe
+func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
+	var st = new_storey(stnum,msize,h,lw,wt)
+	if stnum > 0 :
+		st.set_start_pos(storey_list[-1].goal_pos)
+	st.position.y = storey_h * stnum
+	storey_list.append(st)
+	add_child(st)
+
+# thread safe
+func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->Storey:
+	var gp = rand_pos()
+	var stp = rand_pos()
+	var st = storey_scene.instantiate()
+	st.init(stnum, msize, h, lw, wt, stp, gp)
+	return st
+
+#func del_old_storey()->void:
+	#var st = storey_list.pop_front()
+	#remove_child(st)
+	#st.queue_free()
+
+func hide_old_storey()->void:
+	if visible_down_index()-1 >=0 :
+		storey_list[visible_down_index()-1].visible = false
+func visible_down_index()->int:
+	var rtn = cur_storey_index - VisibleStoreyDown
+	if rtn < 0:
+		return 0
+	return rtn
+
+func get_main_char()->Character:
+	return player_list[0]
+func set_minimap_mode(v :int)->void:
+	minimap_mode = v%3
+	match minimap_mode:
+		0:
+			minimap.show()
+			minimap.view_full_map()
+		1:
+			minimap.show()
+			minimap.view_known_map()
+		2:
+			minimap.hide()
+
+func change_floor_ceiling_visible(f :bool,c :bool)->void:
+	for i in storey_list.size():
+		storey_list[i].view_floor_ceiling(f,c)
+	storey_list[0].view_floor_ceiling(false,c)
+	storey_list[-1].view_floor_ceiling(f,false)

@@ -131,6 +131,11 @@ func add_wall_at(x:int,y :int, dir :Storey.Dir)->void:
 	add_wall_at_raw(x,y,dir,walllines_known)
 	queue_redraw()
 
+func update_walls_by_pos(x:int,y :int)->void:
+	var walldir = storey.maze_cells.get_wall_dir_at(x,y)
+	for d in walldir:
+		add_wall_at(x,y,Storey.MazeDir2Dir[d])
+
 # between wall
 func add_point_at(x:int,y :int, co:Color)->Line2D:
 	var ln = new_line(map_scale-wall_thick*2 , Color(co,0.5), [Vector2(0.1,0.5)*map_scale,Vector2(0.9,0.5)*map_scale] )

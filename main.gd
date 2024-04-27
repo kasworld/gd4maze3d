@@ -132,9 +132,7 @@ func move_character(cur_storey :Storey)->void:
 		if pl.start_new_action(): # new act start
 			ani_dur = 0
 			if i == player_number and pl.action_current != Character.Action.EnterStorey: # player
-				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
-				for d in walldir:
-					minimap.add_wall_at(pl.pos_src.x,pl.pos_src.y,Storey.MazeDir2Dir[d])
+				minimap.update_walls_by_pos(pl.pos_src.x,pl.pos_src.y)
 		if pl.action_current != Character.Action.None :
 			animate_action(pl, ani_dur)
 

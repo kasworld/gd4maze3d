@@ -8,7 +8,6 @@ var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
 var ball_trail_scene = preload("res://ball_trail_2/ball_trail_2.tscn")
 
-# x90 == degree
 enum Dir {
 	North = 0,
 	West = 1,
@@ -52,29 +51,19 @@ var lane_w :float
 var wall_thick :float
 var start_pos :Vector2i
 var goal_pos :Vector2i
-
 var maze_cells :Maze
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
-func is_goal_pos(p :Vector2i)->bool:
-	return goal_pos == p
-func rand_pos()->Vector2i:
-	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
-
+var wall_info_all :Array
 var capsule_pos_dict = Dictionary()
 var donut_pos_dict = Dictionary()
-func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i)->bool:
-	var c = pos_dict.get(p)
-	pos_dict.erase(p)
-	if c != null :
-		c.queue_free()
-		return true
-	return false
-
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
 var sub_wall_mat :StandardMaterial3D
 var sub_wall_tex_name :String
+var line2d_subviewport :SubViewport
+var clockcalendar_sel :int
+
 func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
 	storey_num = stn
 	maze_size = msize
@@ -147,7 +136,13 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		bt.init(bounce_cell ,storey_h/30, 20, i , pos)
 		add_child(bt)
 
-var wall_info_all :Array
+func _process(delta: float) -> void:
+	start_node.rotate_y(delta)
+	goal_node.rotate_y(delta)
+	for n in capsule_pos_dict.values():
+		n.rotate_y(delta)
+	for n in donut_pos_dict.values():
+		n.rotate_y(delta)
 
 func make_cell_wallinfo( x:int, y:int)->Array:
 	var axis_wall = [
@@ -216,14 +211,6 @@ func new_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
 	add_child(n)
 	return n
 
-func _process(delta: float) -> void:
-	start_node.rotate_y(delta)
-	goal_node.rotate_y(delta)
-	for n in capsule_pos_dict.values():
-		n.rotate_y(delta)
-	for n in donut_pos_dict.values():
-		n.rotate_y(delta)
-
 func make_wall_by_maze()->void:
 	for y in maze_size.y:
 		for x in maze_size.x :
@@ -240,8 +227,6 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
-var line2d_subviewport :SubViewport
-var clockcalendar_sel :int
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
@@ -344,3 +329,16 @@ func info_str()->String:
 	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
 		storey_num, maze_size,storey_h, lane_w, wall_thick,
 		main_wall_mat_name, sub_wall_tex_name ]
+
+func is_goal_pos(p :Vector2i)->bool:
+	return goal_pos == p
+func rand_pos()->Vector2i:
+	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
+
+func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i)->bool:
+	var c = pos_dict.get(p)
+	pos_dict.erase(p)
+	if c != null :
+		c.queue_free()
+		return true
+	return false

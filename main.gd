@@ -206,22 +206,16 @@ func rand_pos()->Vector2i:
 func get_cur_storey()->Storey:
 	return storey_list[cur_storey_index]
 
-# thread unsafe
 func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
-	var st = new_storey(stnum,msize,h,lw,wt)
+	var gp = rand_pos()
+	var stp = rand_pos()
 	if stnum > 0 :
-		st.set_start_pos(storey_list[-1].goal_pos)
+		stp = storey_list[-1].goal_pos
+	var st = storey_scene.instantiate()
+	st.init(stnum, msize, h, lw, wt, stp, gp)
 	st.position.y = storey_h * stnum
 	storey_list.append(st)
 	add_child(st)
-
-# thread safe
-func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->Storey:
-	var gp = rand_pos()
-	var stp = rand_pos()
-	var st = storey_scene.instantiate()
-	st.init(stnum, msize, h, lw, wt, stp, gp)
-	return st
 
 func del_old_storey()->void:
 	if visible_down_index()-1 >=0 :

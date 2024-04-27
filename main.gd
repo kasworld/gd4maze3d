@@ -246,7 +246,7 @@ func animate_move_storey_by_dur(pl :Character, dur :float)->void:
 func animate_turn_by_dur(pl :Character, dur :float)->void:
 	pl.rotation.y = pl.calc_animation_turn_by_dur(dur)
 	if pl.serial == player_number:
-		cameralight.rotation = pl.rotation
+		cameralight.rotation.y = pl.rotation.y
 
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )

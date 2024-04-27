@@ -83,8 +83,8 @@ func enter_new_storey()->void:
 	add_child(minimap)
 	minimap.init(cur_storey,map_scale)
 
-	for i in CharacterCount:
-		character_list[i].enter_storey(cur_storey, i == player_number)
+	for pl in character_list:
+		pl.enter_storey(cur_storey, pl.serial == player_number)
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
@@ -94,12 +94,11 @@ func _process(_delta: float) -> void:
 	update_info()
 
 func move_character(cur_storey :Storey)->void:
-	for i in CharacterCount:
-		var pl = character_list[i]
+	for pl in character_list:
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
 			pl.end_action()
-			if i == player_number  : # player
+			if pl.serial == player_number  : # player
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
@@ -113,12 +112,13 @@ func move_character(cur_storey :Storey)->void:
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
 			ani_dur = 0
-			if i == player_number and pl.action_current != Character.Action.EnterStorey: # player
+			if pl.serial == player_number and pl.action_current != Character.Action.EnterStorey: # player
 				minimap.update_walls_by_pos(pl.pos_src.x,pl.pos_src.y)
 		if pl.action_current != Character.Action.None :
 			animate_action(pl, ani_dur)
 
 func _unhandled_input(event: InputEvent) -> void:
+	var player = character_list[player_number]
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_ESCAPE:
 			get_tree().quit()
@@ -131,7 +131,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			view_floor_ceiling = !view_floor_ceiling
 			change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 		elif event.keycode == KEY_4:
-			get_main_char().auto_move = !get_main_char().auto_move
+			player.auto_move = !player.auto_move
 		elif event.keycode == KEY_5:
 			debuglabel.visible = !debuglabel.visible
 		elif event.keycode == KEY_6:
@@ -142,17 +142,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 
 		elif event.keycode == KEY_UP:
-			get_main_char().enqueue_action(Character.Action.Forward)
+			player.enqueue_action(Character.Action.Forward)
 		elif event.keycode == KEY_DOWN:
-			get_main_char().enqueue_action(Character.Action.TurnLeft)
-			get_main_char().enqueue_action(Character.Action.TurnLeft)
+			player.enqueue_action(Character.Action.TurnLeft)
+			player.enqueue_action(Character.Action.TurnLeft)
 		elif event.keycode == KEY_LEFT:
-			get_main_char().enqueue_action(Character.Action.TurnLeft)
+			player.enqueue_action(Character.Action.TurnLeft)
 		elif event.keycode == KEY_RIGHT:
-			get_main_char().enqueue_action(Character.Action.TurnRight)
+			player.enqueue_action(Character.Action.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			get_main_char().enqueue_action(Character.Action.RollRight)
+			player.enqueue_action(Character.Action.RollRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -163,12 +163,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info()->void:
+	var player = character_list[player_number]
 	helplabel.text = """gd4maze3d 14.0.0
 Space:RollCamera, Enter:Next storey,
 1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
 ArrowKey to move
 """
-	debuglabel.text = get_main_char().debug_str()
+	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
 %d objects
@@ -188,7 +189,7 @@ storey %s
 		cur_storey_index,storey_list.size(),
 		minimap_mode, view_floor_ceiling,
 		get_cur_storey().info_str(),
-		get_main_char().info_str(),
+		player.info_str(),
 		]
 
 func animate_action(pl :Character, dur :float)->void:
@@ -240,8 +241,6 @@ func visible_down_index()->int:
 		return 0
 	return rtn
 
-func get_main_char()->Character:
-	return character_list[0]
 func set_minimap_mode(v :int)->void:
 	minimap_mode = v%3
 	match minimap_mode:

@@ -136,7 +136,7 @@ func move_character(cur_storey :Storey)->void:
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
 			if pl.serial == player_number:
-				cameralight.start_camera_action( pl.action_current)
+				cameralight.start_action( pl.action_current)
 			ani_dur = 0
 			if i == player_number and pl.action_current != Character.Action.EnterStorey: # player
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
@@ -227,7 +227,7 @@ func animate_action(pl :Character, dur :float)->void:
 		Character.Action.TurnLeft, Character.Action.TurnRight:
 			animate_turn_by_dur(pl, dur)
 		Character.Action.RollCameraRight,Character.Action.RollCameraLeft:
-			cameralight.animate_roll_camera_by_dur(dur)
+			cameralight.animate_roll_by_dur(dur)
 		Character.Action.EnterStorey:
 			animate_move_storey_by_dur(pl, dur)
 

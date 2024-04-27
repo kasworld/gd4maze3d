@@ -22,25 +22,26 @@ var roll_dir_dst :RollDir
 
 func end_action()->void:
 	roll_dir = roll_dir_dst
-	snap_cameralight()
+	snap_90()
 
-func start_camera_action(act :Character.Action)->void:
+func start_action(act :Character.Action)->void:
 	match act:
 		Character.Action.RollCameraRight:
 			roll_dir_dst = rolldir_right(roll_dir)
 		Character.Action.RollCameraLeft:
 			roll_dir_dst = rolldir_left(roll_dir)
 
-func animate_roll_camera_by_dur(dur :float)->void:
-	roll_camera(calc_animation_camera_roll(dur))
+func animate_roll_by_dur(dur :float)->void:
+	roll(calc_animation_roll(dur))
 
-func calc_animation_camera_roll(dur :float)->float:
+func calc_animation_roll(dur :float)->float:
 	return lerp_angle(rolldir2rad(roll_dir), rolldir2rad(roll_dir_dst), dur)
 
-func snap_cameralight()->void:
-	rotation.z = snapped(rotation.z, PI/2)
+func snap_90()->void:
+	for i in 3:
+		rotation[i] = snapped(rotation[i], PI/2)
 
-func roll_camera( rad :float)->void:
+func roll( rad :float)->void:
 	rotation.z = rad
 
 func info_str()->String:

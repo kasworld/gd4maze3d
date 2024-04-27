@@ -93,7 +93,7 @@ func ai_action()->void:
 # return true on new act
 func start_new_action()->bool:
 	if is_ready_new_action():
-		start_character_action(action_current)
+		start_action(action_current)
 		return true
 	return false
 
@@ -106,7 +106,7 @@ func is_ready_new_action()->bool:
 		return true
 	return false
 
-func start_character_action(act :Action)->void:
+func start_action(act :Action)->void:
 	match act:
 		Action.Forward:
 			if can_move(dir_src):

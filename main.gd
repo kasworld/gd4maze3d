@@ -50,26 +50,8 @@ func _ready() -> void:
 		add_child(pl)
 		pl.init(i, lane_w, true)
 
-	var use_thread = false
-	if use_thread:
-		var thread_list = []
-		for i in VisibleStoreyUp:
-			var th = Thread.new()
-			thread_list.append(th)
-			th.start(new_storey.bind(i,maze_size,storey_h,lane_w,wall_thick))
-		storey_list.resize(VisibleStoreyUp)
-		for th in thread_list:
-			var st = th.wait_to_finish()
-			storey_list[st.storey_num]=st
-			add_child(st)
-		thread_list.resize(0)
-		for st in storey_list:
-			if st.storey_num > 0 :
-				st.set_start_pos(storey_list[st.storey_num-1].goal_pos)
-			st.position.y = storey_h * st.storey_num
-	else :
-		for i in VisibleStoreyUp:
-			add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
+	for i in VisibleStoreyUp:
+		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	enter_new_storey()

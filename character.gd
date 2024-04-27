@@ -75,8 +75,8 @@ func enter_storey(st :Storey, start_at:bool)->void:
 	storey_action_stats = Character.new_action_stats_dict()
 	action_queue.resize(0)
 	action_queue.append(Action.EnterStorey)
-	animate_move_by_dur(0)
-	animate_turn_by_dur(0)
+	#animate_move_by_dur(0)
+	#animate_turn_by_dur(0)
 
 # return 0 - 1
 func get_animation_progress()->float:
@@ -136,9 +136,9 @@ func start_action(act :Action)->void:
 		Action.TurnRight:
 			dir_dst = Storey.dir_right(dir_src)
 		Action.RollRight:
-			roll_dir_dst = rolldir_right(roll_dir)
+			roll_dir_dst = Character.rolldir_right(roll_dir)
 		Action.RollLeft:
-			roll_dir_dst = rolldir_left(roll_dir)
+			roll_dir_dst = Character.rolldir_left(roll_dir)
 
 func make_ai_action()->bool:
 	# try right
@@ -180,7 +180,7 @@ func animate_turn_by_dur(dur :float)->void:
 	rotation.y = lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
 
 func animate_roll_by_dur(dur :float)->void:
-	rotation.z = lerp_angle(rolldir2rad(roll_dir), rolldir2rad(roll_dir_dst), dur)
+	rotation.z = lerp_angle(Character.rolldir2rad(roll_dir), Character.rolldir2rad(roll_dir_dst), dur)
 
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()

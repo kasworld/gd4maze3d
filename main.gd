@@ -87,7 +87,8 @@ func _on_vpsize_changed()->void:
 
 func enter_new_storey()->void:
 	cur_storey_index +=1
-	hide_old_storey()
+	#hide_old_storey()
+	del_old_storey()
 	add_new_storey(storey_list.size(), maze_size,storey_h,lane_w,wall_thick)
 	$Floor.position.y = visible_down_index()*storey_h
 	$Ceiling.position.y = storey_list.size()*storey_h
@@ -271,14 +272,18 @@ func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->St
 	st.init(stnum, msize, h, lw, wt, stp, gp)
 	return st
 
-#func del_old_storey()->void:
-	#var st = storey_list.pop_front()
-	#remove_child(st)
-	#st.queue_free()
-
-func hide_old_storey()->void:
+func del_old_storey()->void:
 	if visible_down_index()-1 >=0 :
-		storey_list[visible_down_index()-1].visible = false
+		#var st = storey_list.pop_front()
+		var todel = storey_list[visible_down_index()-1]
+		storey_list[visible_down_index()-1] = null
+		remove_child(todel)
+		todel.queue_free()
+
+#func hide_old_storey()->void:
+	#if visible_down_index()-1 >=0 :
+		#storey_list[visible_down_index()-1].visible = false
+
 func visible_down_index()->int:
 	var rtn = cur_storey_index - VisibleStoreyDown
 	if rtn < 0:
@@ -300,7 +305,8 @@ func set_minimap_mode(v :int)->void:
 			minimap.hide()
 
 func change_floor_ceiling_visible(f :bool,c :bool)->void:
-	for i in storey_list.size():
+	var st = visible_down_index()
+	for i in range(st,storey_list.size()):
 		storey_list[i].view_floor_ceiling(f,c)
-	storey_list[0].view_floor_ceiling(false,c)
+	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)

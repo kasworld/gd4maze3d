@@ -75,6 +75,8 @@ func enter_storey(st :Storey, start_at:bool)->void:
 	storey_action_stats = Character.new_action_stats_dict()
 	action_queue.resize(0)
 	action_queue.append(Action.EnterStorey)
+	animate_move_by_dur(0)
+	animate_turn_by_dur(0)
 
 # return 0 - 1
 func get_animation_progress()->float:

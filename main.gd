@@ -87,7 +87,6 @@ func _on_vpsize_changed()->void:
 
 func enter_new_storey()->void:
 	cur_storey_index +=1
-	#hide_old_storey()
 	del_old_storey()
 	add_new_storey(storey_list.size(), maze_size,storey_h,lane_w,wall_thick)
 	$Floor.position.y = visible_down_index()*storey_h
@@ -105,8 +104,6 @@ func enter_new_storey()->void:
 
 	for i in CharacterCount:
 		player_list[i].enter_storey(cur_storey, i == player_number)
-		player_list[i].animate_move_by_dur(0)
-		player_list[i].animate_turn_by_dur(0)
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
@@ -253,7 +250,6 @@ func new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->St
 
 func del_old_storey()->void:
 	if visible_down_index()-1 >=0 :
-		#var st = storey_list.pop_front()
 		var todel = storey_list[visible_down_index()-1]
 		storey_list[visible_down_index()-1] = null
 		remove_child(todel)

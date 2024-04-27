@@ -9,6 +9,7 @@ var character_scene = preload("res://character.tscn")
 @onready var performancelabel = $LabelContainer/Performance
 @onready var infolabel = $LabelContainer/Info
 @onready var cameralight = $MovingCameraLight
+@onready var char_container = $CharacterContainer
 
 const CharacterCount = 10
 const VisibleStoreyUp :int = 3
@@ -20,7 +21,6 @@ var wall_thick :float = lane_w *0.05
 var minimap :MiniMap
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
-var character_list :Array[Character]
 var player_number = 0
 var minimap_mode :int = 1
 var vp_size :Vector2
@@ -46,8 +46,7 @@ func _ready() -> void:
 
 	for i in CharacterCount:
 		var pl = character_scene.instantiate()
-		character_list.append(pl)
-		add_child(pl)
+		char_container.add_child(pl)
 		pl.init(i, lane_w, true)
 
 	for i in VisibleStoreyUp:
@@ -83,7 +82,7 @@ func enter_new_storey()->void:
 	add_child(minimap)
 	minimap.init(cur_storey,map_scale)
 
-	for pl in character_list:
+	for pl in char_container.get_children():
 		pl.enter_storey(cur_storey, pl.serial == player_number)
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
@@ -94,7 +93,7 @@ func _process(_delta: float) -> void:
 	update_info()
 
 func move_character(cur_storey :Storey)->void:
-	for pl in character_list:
+	for pl in char_container.get_children():
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
 			pl.end_action()
@@ -118,7 +117,7 @@ func move_character(cur_storey :Storey)->void:
 			animate_action(pl, ani_dur)
 
 func _unhandled_input(event: InputEvent) -> void:
-	var player = character_list[player_number]
+	var player = char_container.get_child(player_number)
 	if event is InputEventKey and event.pressed:
 		match event.keycode:
 			KEY_ESCAPE:
@@ -149,7 +148,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				player.enqueue_action(Character.Action.TurnLeft)
 			KEY_RIGHT:
 				player.enqueue_action(Character.Action.TurnRight)
-
 			KEY_SPACE:
 				player.enqueue_action(Character.Action.RollRight)
 			KEY_ENTER:
@@ -158,7 +156,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		pass
 
 func update_info()->void:
-	var player = character_list[player_number]
+	var player = char_container.get_child(player_number)
 	helplabel.text = """gd4maze3d 14.0.0
 Space:RollCamera, Enter:Next storey,
 1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info

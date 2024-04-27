@@ -74,3 +74,5 @@ layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
 [node name="MovingCameraLight" parent="." instance=ExtResource("3_hdadt")]
+
+[node name="CharacterContainer" type="Node3D" parent="."]

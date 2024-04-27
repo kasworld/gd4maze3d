@@ -2,7 +2,7 @@ extends Node3D
 
 class_name Character
 
-enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RotateCameraRight, RotateCameraLeft}
+enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollCameraRight, RollCameraLeft}
 static func action2str(a :Action)->String:
 	return Action.keys()[a]
 
@@ -74,12 +74,12 @@ func set_sec_per_action(v :float)->bool:
 
 # return true on act end
 func is_action_ended(ani_dur :float)->bool:
-	if action_current != Action.None && ani_dur > 1.0: # action ended
-		dir_src = dir_dst
-		pos_src = pos_dst
-		action_current = Action.None
-		return true
-	return false
+	return action_current != Action.None && ani_dur > 1.0
+
+func end_action()->void:
+	dir_src = dir_dst
+	pos_src = pos_dst
+	action_current = Action.None
 
 func ai_action()->void:
 	if auto_move && action_current == Action.None && action_queue.size() == 0: # add new ai action
@@ -112,7 +112,6 @@ func start_character_action(act :Action)->void:
 			dir_dst = Storey.dir_left(dir_src)
 		Action.TurnRight:
 			dir_dst = Storey.dir_right(dir_src)
-
 
 func make_ai_action()->bool:
 	# try right

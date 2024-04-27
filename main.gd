@@ -119,17 +119,18 @@ func move_character(cur_storey :Storey)->void:
 		var pl = player_list[i]
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
+			pl.end_action()
 			if i == player_number  : # player
-				cameralight.snap_cameralight()
 				pl.rotation.y = snapped(pl.rotation.y, PI/2)
+				cameralight.end_action()
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
 				if cur_storey.capsule_pos_dict.has(pl.pos_src) : # capsule encounter
-					pl.enqueue_action(Character.Action.RotateCameraRight)
+					pl.enqueue_action(Character.Action.RollCameraRight)
 					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,pl.pos_src)
 				if cur_storey.donut_pos_dict.has(pl.pos_src) : # donut encounter
-					pl.enqueue_action(Character.Action.RotateCameraLeft)
+					pl.enqueue_action(Character.Action.RollCameraLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 		pl.ai_action()
@@ -178,7 +179,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_main_char().enqueue_action(Character.Action.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			get_main_char().enqueue_action(Character.Action.RotateCameraRight)
+			get_main_char().enqueue_action(Character.Action.RollCameraRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -190,7 +191,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func update_info()->void:
 	helplabel.text = """gd4maze3d 14.0.0
-Space:RotateCamera, Enter:Next storey,
+Space:RollCamera, Enter:Next storey,
 1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
 ArrowKey to move
 """
@@ -225,8 +226,8 @@ func animate_action(pl :Character, dur :float)->void:
 			animate_move_by_dur(pl, dur)
 		Character.Action.TurnLeft, Character.Action.TurnRight:
 			animate_turn_by_dur(pl, dur)
-		Character.Action.RotateCameraRight,Character.Action.RotateCameraLeft:
-			cameralight.animate_rotate_camera_by_dur(dur)
+		Character.Action.RollCameraRight,Character.Action.RollCameraLeft:
+			cameralight.animate_roll_camera_by_dur(dur)
 		Character.Action.EnterStorey:
 			animate_move_storey_by_dur(pl, dur)
 

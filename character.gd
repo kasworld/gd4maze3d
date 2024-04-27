@@ -80,6 +80,11 @@ func end_action()->void:
 	dir_src = dir_dst
 	pos_src = pos_dst
 	action_current = Action.None
+	snap_90()
+
+func snap_90()->void:
+	for i in 3:
+		rotation[i] = snapped(rotation[i], PI/2)
 
 func ai_action()->void:
 	if auto_move && action_current == Action.None && action_queue.size() == 0: # add new ai action

@@ -121,7 +121,6 @@ func move_character(cur_storey :Storey)->void:
 		if pl.is_action_ended(ani_dur): # true on act end
 			pl.end_action()
 			if i == player_number  : # player
-				pl.rotation.y = snapped(pl.rotation.y, PI/2)
 				cameralight.end_action()
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()

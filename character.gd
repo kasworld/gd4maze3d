@@ -2,7 +2,22 @@ extends Node3D
 
 class_name Character
 
-enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollCameraRight, RollCameraLeft}
+enum RollDir {Up,Right,Down,Left}
+static func rolldir2str(vd :RollDir)->String:
+	return RollDir.keys()[vd]
+static func rolldir_left(d:RollDir)->RollDir:
+	return (d+1)%4 as RollDir
+static func rolldir_right(d:RollDir)->RollDir:
+	return (d-1+4)%4 as RollDir
+static func rolldir_opposite(d:RollDir)->RollDir:
+	return (d+2)%4 as RollDir
+static func rolldir2rad(d:RollDir)->float:
+	return deg_to_rad(d*90.0)
+
+var roll_dir :RollDir
+var roll_dir_dst :RollDir
+
+enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action)->String:
 	return Action.keys()[a]
 
@@ -80,6 +95,7 @@ func end_action()->void:
 	dir_src = dir_dst
 	pos_src = pos_dst
 	action_current = Action.None
+	roll_dir = roll_dir_dst
 	snap_90()
 
 func snap_90()->void:
@@ -117,6 +133,10 @@ func start_action(act :Action)->void:
 			dir_dst = Storey.dir_left(dir_src)
 		Action.TurnRight:
 			dir_dst = Storey.dir_right(dir_src)
+		Action.RollRight:
+			roll_dir_dst = rolldir_right(roll_dir)
+		Action.RollLeft:
+			roll_dir_dst = rolldir_left(roll_dir)
 
 func make_ai_action()->bool:
 	# try right
@@ -144,18 +164,21 @@ func make_ai_action()->bool:
 func can_move(dir :Storey.Dir)->bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 
-func calc_animation_move_by_dur(dur :float)->Vector3:
+func animate_move_by_dur( dur :float)->void:
 	var p1 = storey.mazepos2storeypos(pos_src,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
 	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
-	return p1.lerp(p2,dur)
+	position = p1.lerp(p2,dur)
 
-func calc_animation_move_storey_by_dur(dur :float, stn :int)->Vector3:
-	var p1 = storey.mazepos2storeypos(pos_src,stn*storey.storey_h+ storey.storey_h/2.0)
+func animate_move_storey_by_dur(dur :float, from :int)->void:
+	var p1 = storey.mazepos2storeypos(pos_src,from*storey.storey_h+ storey.storey_h/2.0)
 	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
-	return p1.lerp(p2,dur)
+	position = p1.lerp(p2,dur)
 
-func calc_animation_turn_by_dur(dur :float)->float:
-	return lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
+func animate_turn_by_dur(dur :float)->void:
+	rotation.y = lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
+
+func animate_roll_by_dur(dur :float)->void:
+	rotation.z = lerp_angle(rolldir2rad(roll_dir), rolldir2rad(roll_dir_dst), dur)
 
 func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	var mat = StandardMaterial3D.new()
@@ -173,8 +196,8 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	return sp
 
 func info_str()->String:
-	return "automove:%s, act %.1f /sec" % [
-		auto_move, 1.0/sec_per_action,
+	return "automove:%s, act %.1f /sec\nview roll:%s°, roll:%s" % [
+		auto_move, 1.0/sec_per_action,roll_dir*90, rotation,
 		]
 
 func debug_str()->String:

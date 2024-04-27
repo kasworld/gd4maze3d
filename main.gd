@@ -105,8 +105,8 @@ func enter_new_storey()->void:
 
 	for i in CharacterCount:
 		player_list[i].enter_storey(cur_storey, i == player_number)
-		animate_move_by_dur(player_list[i], 0)
-		animate_turn_by_dur(player_list[i], 0)
+		player_list[i].animate_move_by_dur(0)
+		player_list[i].animate_turn_by_dur(0)
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
@@ -122,21 +122,18 @@ func move_character(cur_storey :Storey)->void:
 		if pl.is_action_ended(ani_dur): # true on act end
 			pl.end_action()
 			if i == player_number  : # player
-				cameralight.end_action()
 				if cur_storey.is_goal_pos(pl.pos_src):
 					enter_new_storey()
 					return
 				if cur_storey.capsule_pos_dict.has(pl.pos_src) : # capsule encounter
-					pl.enqueue_action(Character.Action.RollCameraRight)
+					pl.enqueue_action(Character.Action.RollRight)
 					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,pl.pos_src)
 				if cur_storey.donut_pos_dict.has(pl.pos_src) : # donut encounter
-					pl.enqueue_action(Character.Action.RollCameraLeft)
+					pl.enqueue_action(Character.Action.RollLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,pl.pos_src)
 				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
-			if pl.serial == player_number:
-				cameralight.start_action( pl.action_current)
 			ani_dur = 0
 			if i == player_number and pl.action_current != Character.Action.EnterStorey: # player
 				var walldir = cur_storey.maze_cells.get_wall_dir_at(pl.pos_src.x,pl.pos_src.y)
@@ -179,7 +176,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_main_char().enqueue_action(Character.Action.TurnRight)
 
 		elif event.keycode == KEY_SPACE:
-			get_main_char().enqueue_action(Character.Action.RollCameraRight)
+			get_main_char().enqueue_action(Character.Action.RollRight)
 		elif event.keycode == KEY_ENTER:
 			enter_new_storey()
 
@@ -211,43 +208,25 @@ Currently rendering: occlusion culling:%s
 	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
 storey %s
 %s
-%s
 """ % [
 		cur_storey_index,storey_list.size(),
 		minimap_mode, view_floor_ceiling,
 		get_cur_storey().info_str(),
 		get_main_char().info_str(),
-		cameralight.info_str(),
 		]
 
 func animate_action(pl :Character, dur :float)->void:
 	match pl.action_current:
 		Character.Action.Forward:
-			animate_move_by_dur(pl, dur)
+			pl.animate_move_by_dur(dur)
 		Character.Action.TurnLeft, Character.Action.TurnRight:
-			animate_turn_by_dur(pl, dur)
-		Character.Action.RollCameraRight,Character.Action.RollCameraLeft:
-			cameralight.animate_roll_by_dur(dur)
+			pl.animate_turn_by_dur(dur)
+		Character.Action.RollRight,Character.Action.RollLeft:
+			pl.animate_roll_by_dur(dur)
 		Character.Action.EnterStorey:
-			animate_move_storey_by_dur(pl, dur)
-
-# dur : 0 - 1 :second
-func animate_move_by_dur(pl :Character, dur :float)->void:
-	pl.position = pl.calc_animation_move_by_dur(dur)
+			pl.animate_move_storey_by_dur(dur, cur_storey_index -1)
 	if pl.serial == player_number:
-		cameralight.position = pl.position
-
-func animate_move_storey_by_dur(pl :Character, dur :float)->void:
-	var from = cur_storey_index -1
-	pl.position = pl.calc_animation_move_storey_by_dur(dur, from)
-	if pl.serial == player_number:
-		cameralight.position = pl.position
-
-# dur : 0 - 1 :second
-func animate_turn_by_dur(pl :Character, dur :float)->void:
-	pl.rotation.y = pl.calc_animation_turn_by_dur(dur)
-	if pl.serial == player_number:
-		cameralight.rotation.y = pl.rotation.y
+		cameralight.copy_position_rotation(pl)
 
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
@@ -279,10 +258,6 @@ func del_old_storey()->void:
 		storey_list[visible_down_index()-1] = null
 		remove_child(todel)
 		todel.queue_free()
-
-#func hide_old_storey()->void:
-	#if visible_down_index()-1 >=0 :
-		#storey_list[visible_down_index()-1].visible = false
 
 func visible_down_index()->int:
 	var rtn = cur_storey_index - VisibleStoreyDown

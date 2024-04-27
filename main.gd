@@ -8,7 +8,6 @@ var character_scene = preload("res://character.tscn")
 @onready var debuglabel = $LabelContainer/Debug
 @onready var performancelabel = $LabelContainer/Performance
 @onready var infolabel = $LabelContainer/Info
-
 @onready var cameralight = $MovingCameraLight
 
 const CharacterCount = 10
@@ -21,7 +20,7 @@ var wall_thick :float = lane_w *0.05
 var minimap :MiniMap
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
-var player_list :Array[Character]
+var character_list :Array[Character]
 var player_number = 0
 var minimap_mode :int = 1
 var vp_size :Vector2
@@ -47,7 +46,7 @@ func _ready() -> void:
 
 	for i in CharacterCount:
 		var pl = character_scene.instantiate()
-		player_list.append(pl)
+		character_list.append(pl)
 		add_child(pl)
 		pl.init(i, lane_w, true)
 
@@ -103,7 +102,7 @@ func enter_new_storey()->void:
 	minimap.init(cur_storey,map_scale)
 
 	for i in CharacterCount:
-		player_list[i].enter_storey(cur_storey, i == player_number)
+		character_list[i].enter_storey(cur_storey, i == player_number)
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
@@ -114,7 +113,7 @@ func _process(_delta: float) -> void:
 
 func move_character(cur_storey :Storey)->void:
 	for i in CharacterCount:
-		var pl = player_list[i]
+		var pl = character_list[i]
 		var ani_dur = pl.get_animation_progress()
 		if pl.is_action_ended(ani_dur): # true on act end
 			pl.end_action()
@@ -262,7 +261,7 @@ func visible_down_index()->int:
 	return rtn
 
 func get_main_char()->Character:
-	return player_list[0]
+	return character_list[0]
 func set_minimap_mode(v :int)->void:
 	minimap_mode = v%3
 	match minimap_mode:

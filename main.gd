@@ -120,45 +120,40 @@ func move_character(cur_storey :Storey)->void:
 func _unhandled_input(event: InputEvent) -> void:
 	var player = character_list[player_number]
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_ESCAPE:
-			get_tree().quit()
+		match event.keycode:
+			KEY_ESCAPE:
+				get_tree().quit()
+			KEY_1:
+				helplabel.visible = !helplabel.visible
+			KEY_2:
+				set_minimap_mode(minimap_mode+1)
+			KEY_3:
+				view_floor_ceiling = !view_floor_ceiling
+				change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+			KEY_4:
+				player.auto_move = !player.auto_move
+			KEY_5:
+				debuglabel.visible = !debuglabel.visible
+			KEY_6:
+				performancelabel.visible = !performancelabel.visible
+			KEY_7:
+				infolabel.visible = !infolabel.visible
+			#KEY_8:
+				#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
+			KEY_UP:
+				player.enqueue_action(Character.Action.Forward)
+			KEY_DOWN:
+				player.enqueue_action(Character.Action.TurnLeft)
+				player.enqueue_action(Character.Action.TurnLeft)
+			KEY_LEFT:
+				player.enqueue_action(Character.Action.TurnLeft)
+			KEY_RIGHT:
+				player.enqueue_action(Character.Action.TurnRight)
 
-		elif event.keycode == KEY_1:
-			helplabel.visible = !helplabel.visible
-		elif event.keycode == KEY_2:
-			set_minimap_mode(minimap_mode+1)
-		elif event.keycode == KEY_3:
-			view_floor_ceiling = !view_floor_ceiling
-			change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
-		elif event.keycode == KEY_4:
-			player.auto_move = !player.auto_move
-		elif event.keycode == KEY_5:
-			debuglabel.visible = !debuglabel.visible
-		elif event.keycode == KEY_6:
-			performancelabel.visible = !performancelabel.visible
-		elif event.keycode == KEY_7:
-			infolabel.visible = !infolabel.visible
-		#elif event.keycode == KEY_8:
-			#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
-
-		elif event.keycode == KEY_UP:
-			player.enqueue_action(Character.Action.Forward)
-		elif event.keycode == KEY_DOWN:
-			player.enqueue_action(Character.Action.TurnLeft)
-			player.enqueue_action(Character.Action.TurnLeft)
-		elif event.keycode == KEY_LEFT:
-			player.enqueue_action(Character.Action.TurnLeft)
-		elif event.keycode == KEY_RIGHT:
-			player.enqueue_action(Character.Action.TurnRight)
-
-		elif event.keycode == KEY_SPACE:
-			player.enqueue_action(Character.Action.RollRight)
-		elif event.keycode == KEY_ENTER:
-			enter_new_storey()
-
-		else:
-			pass
-
+			KEY_SPACE:
+				player.enqueue_action(Character.Action.RollRight)
+			KEY_ENTER:
+				enter_new_storey()
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 

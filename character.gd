@@ -58,7 +58,7 @@ var serial :int
 var auto_move :bool
 
 func init(n :int, lane_w:float, auto :bool)->void:
-	var mi3d = new_cylinder(0.4*lane_w, 0.15*lane_w, NamedColorList.color_list.pick_random()[0])
+	var mi3d = new_cylinder(0.2*lane_w, 0.07*lane_w, NamedColorList.color_list.pick_random()[0])
 	add_child(mi3d)
 	serial = n
 	auto_move = auto
@@ -191,6 +191,7 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	mesh.height = h
 	mesh.bottom_radius = r
 	mesh.top_radius = 0
+	mesh.radial_segments = 5
 	mesh.material = mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh

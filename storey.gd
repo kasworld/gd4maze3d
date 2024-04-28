@@ -139,7 +139,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 func rand_make_donutcapsule()->bool:
 	return randi()%2 == 0
 func rand_make_tree()->bool:
-	return randi()%20 == 0
+	return randi()%40 == 0
 
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
@@ -233,11 +233,11 @@ func make_wall_by_maze()->void:
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
 func rand_make_line2d()->bool:
-	return randi()%20 == 0
+	return randi()%40 == 0
 func rand_make_subwall()->bool:
-	return randi()%10 == 0
-func rand_make_clockcalendar()->bool:
 	return randi()%20 == 0
+func rand_make_clockcalendar()->bool:
+	return randi()%70 == 0
 
 func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)

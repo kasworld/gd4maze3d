@@ -71,7 +71,7 @@ func enter_storey(st :Storey, start_at:bool)->void:
 	if start_at :
 		pos_dst = storey.start_pos
 	else:
-		pos_dst = storey.rand_pos()
+		pos_dst = storey.rand_pos_2i()
 	storey_action_stats = Character.new_action_stats_dict()
 	action_queue.resize(0)
 	action_queue.append(Action.EnterStorey)

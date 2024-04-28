@@ -120,8 +120,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				else:
 					var c = new_donut_at(p, co)
 					donut_pos_dict[p] = c
-			#elif randi_range(0, 4)==0:
-			elif randi_range(0, maze_size.x*maze_size.y/4)==0:
+			elif randi()%20==0:
 				new_tree_at(p)
 
 	var ba = AABB( Vector3(wall_thick/2,0,wall_thick/2),
@@ -144,7 +143,7 @@ func _process(delta: float) -> void:
 	for n in donut_pos_dict.values():
 		n.rotate_y(delta)
 
-func make_cell_wallinfo( x:int, y:int)->Array:
+func make_cell_wallinfo(x:int, y:int)->Array:
 	var axis_wall = [
 		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.West), maze_cells.is_wall_dir_at(x,y, Maze.Dir.East)],
 		[true,true],
@@ -233,7 +232,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	var size_face_ew = Vector3(wall_thick,storey_h*0.999,lane_w)
 	var size_face_ns = Vector3(lane_w,storey_h*0.999,wall_thick)
 
-	if randi_range(0, maze_size.x*maze_size.y/2) == 0:
+	if randi()%20 == 0:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
@@ -246,11 +245,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 		return
 
 	var mat :StandardMaterial3D
-	match randi_range(0,10):
-		0:
-			mat = sub_wall_mat
-		_:
-			mat = main_wall_mat
+	if randi()%10 == 0:
+		mat = sub_wall_mat
+	else:
+		mat = main_wall_mat
 	var w :MeshInstance3D
 	match dir:
 		Maze.Dir.West, Maze.Dir.East:
@@ -262,8 +260,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 	$WallContainer.add_child(w)
 
 	# add clock or calendar
-	#if randi_range(0, 3) == 0:
-	if randi_range(0, maze_size.x*maze_size.y/4) == 0:
+	if randi()%20 == 0:
 		var n :Node3D
 		var depth = 0.1
 		clockcalendar_sel +=1
@@ -317,10 +314,6 @@ func can_move(x :int , y :int, dir :Dir)->bool:
 func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
-func set_start_pos(p :Vector2i)->void:
-	start_pos = p
-	start_node.position = mazepos2storeypos(p, storey_h/2.0)
-
 func view_floor_ceiling(f :bool,c :bool)->void:
 	$Floor.visible = f
 	$Ceiling.visible = c
@@ -332,7 +325,8 @@ func info_str()->String:
 
 func is_goal_pos(p :Vector2i)->bool:
 	return goal_pos == p
-func rand_pos()->Vector2i:
+
+func rand_pos_2i()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
 func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i)->bool:

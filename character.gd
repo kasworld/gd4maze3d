@@ -14,15 +14,10 @@ static func rolldir_opposite(d:RollDir)->RollDir:
 static func rolldir2rad(d:RollDir)->float:
 	return deg_to_rad(d*90.0)
 
-var roll_dir :RollDir
-var roll_dir_dst :RollDir
-
 enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action)->String:
 	return Action.keys()[a]
 
-var total_action_stats :Dictionary
-var storey_action_stats :Dictionary
 static func new_action_stats_dict()->Dictionary:
 	var rtn = {}
 	for k in Action.values():
@@ -34,7 +29,6 @@ static func act_stats_str(d:Dictionary)->String:
 		rtn += " %s:%d" % [action2str(i), d[i]]
 	return rtn
 
-var action_queue :Array
 func enqueue_action(a :Action)->void:
 	action_queue.push_back([a,action_per_second])
 func queue_to_str()->String:
@@ -43,17 +37,19 @@ func queue_to_str()->String:
 		rtn += "%s(%.1f) " % [ Character.action2str(a[0]), a[1] ]
 	return rtn
 
+var roll_dir :RollDir
+var roll_dir_dst :RollDir
+var total_action_stats :Dictionary
+var storey_action_stats :Dictionary
+var action_queue :Array
 var storey :Storey
 var action_per_second :float # sec
-
 var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
-
 var action_start_time :float # unixtime sec
 var action_current : Array # [Action, action_per_second]
-
 var serial :int
 var auto_move :bool
 
@@ -94,14 +90,6 @@ func end_action()->void:
 	roll_dir = roll_dir_dst
 	snap_90()
 
-func snap_90()->void:
-	for i in 3:
-		rotation[i] = snapped(rotation[i], PI/2)
-
-func ai_action()->void:
-	if auto_move && action_current[0] == Action.None && action_queue.size() == 0: # add new ai action
-		make_ai_action()
-
 # return true on new act
 func start_new_action()->bool:
 	if is_ready_new_action():
@@ -133,6 +121,10 @@ func start_action(act_info :Array)->void:
 			roll_dir_dst = Character.rolldir_right(roll_dir)
 		Action.RollLeft:
 			roll_dir_dst = Character.rolldir_left(roll_dir)
+
+func ai_action()->void:
+	if auto_move && action_current[0] == Action.None && action_queue.size() == 0: # add new ai action
+		make_ai_action()
 
 func make_ai_action()->bool:
 	# try right
@@ -191,6 +183,10 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 	sp.mesh = mesh
 	sp.rotation.x = -PI/2
 	return sp
+
+func snap_90()->void:
+	for i in 3:
+		rotation[i] = snapped(rotation[i], PI/2)
 
 func info_str()->String:
 	return "automove:%s, act %.1f /sec\nview roll:%s°, roll:%s" % [

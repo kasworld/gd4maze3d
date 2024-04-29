@@ -44,7 +44,7 @@ func queue_to_str()->String:
 	return rtn
 
 var storey :Storey
-var sec_per_action :float # sec
+var action_per_second :float # sec
 
 var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
@@ -66,7 +66,7 @@ func init(n :int, lane_w:float, auto :bool)->void:
 	dir_src = Storey.Dir.North
 
 func enter_storey(st :Storey, start_at:bool)->void:
-	sec_per_action = randf_range(0.1,1.0)
+	action_per_second = randf_range(1.0,10.0)
 	storey = st
 	if start_at :
 		pos_dst = storey.start_pos
@@ -75,17 +75,17 @@ func enter_storey(st :Storey, start_at:bool)->void:
 	storey_action_stats = Character.new_action_stats_dict()
 	action_queue.resize(0)
 	action_queue.append(Action.EnterStorey)
-	#animate_move_by_dur(0)
-	#animate_turn_by_dur(0)
+	animate_move_by_dur(0)
+	animate_turn_by_dur(0)
 
 # return 0 - 1
 func get_animation_progress()->float:
-	return (Time.get_unix_time_from_system() - action_start_time)/sec_per_action
+	return (Time.get_unix_time_from_system() - action_start_time)*action_per_second
 
 # success when act ended
-func set_sec_per_action(v :float)->bool:
+func set_action_per_second(v :float)->bool:
 	if is_action_ended(get_animation_progress()):
-		sec_per_action = v
+		action_per_second = v
 		return true
 	return false
 
@@ -200,7 +200,7 @@ func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
 
 func info_str()->String:
 	return "automove:%s, act %.1f /sec\nview roll:%s°, roll:%s" % [
-		auto_move, 1.0/sec_per_action,roll_dir*90, rotation,
+		auto_move, action_per_second, roll_dir*90, rotation,
 		]
 
 func debug_str()->String:

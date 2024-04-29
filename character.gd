@@ -34,13 +34,13 @@ static func act_stats_str(d:Dictionary)->String:
 		rtn += " %s:%d" % [action2str(i), d[i]]
 	return rtn
 
-var action_queue :Array[Action]
+var action_queue :Array
 func enqueue_action(a :Action)->void:
-	action_queue.push_back(a)
+	action_queue.push_back([a,action_per_second])
 func queue_to_str()->String:
 	var rtn = ""
 	for a in action_queue:
-		rtn += "%s " % [ Character.action2str(a) ]
+		rtn += "%s(%.1f) " % [ Character.action2str(a[0]), a[1] ]
 	return rtn
 
 var storey :Storey
@@ -52,7 +52,7 @@ var pos_src :Vector2i
 var pos_dst :Vector2i
 
 var action_start_time :float # unixtime sec
-var action_current : Action
+var action_current : Array # [Action, action_per_second]
 
 var serial :int
 var auto_move :bool
@@ -64,6 +64,7 @@ func init(n :int, lane_w:float, auto :bool)->void:
 	auto_move = auto
 	total_action_stats = Character.new_action_stats_dict()
 	dir_src = Storey.Dir.North
+	action_current = [Action.None, 0]
 
 func enter_storey(st :Storey, start_at:bool)->void:
 	action_per_second = randf_range(1.0,10.0)
@@ -74,29 +75,22 @@ func enter_storey(st :Storey, start_at:bool)->void:
 		pos_dst = storey.rand_pos_2i()
 	storey_action_stats = Character.new_action_stats_dict()
 	action_queue.resize(0)
-	action_queue.append(Action.EnterStorey)
+	enqueue_action(Action.EnterStorey)
 	animate_move_by_dur(0)
 	animate_turn_by_dur(0)
 
 # return 0 - 1
 func get_animation_progress()->float:
-	return (Time.get_unix_time_from_system() - action_start_time)*action_per_second
-
-# success when act ended
-func set_action_per_second(v :float)->bool:
-	if is_action_ended(get_animation_progress()):
-		action_per_second = v
-		return true
-	return false
+	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
 
 # return true on act end
 func is_action_ended(ani_dur :float)->bool:
-	return action_current != Action.None && ani_dur > 1.0
+	return action_current[0] != Action.None && ani_dur > 1.0
 
 func end_action()->void:
 	dir_src = dir_dst
 	pos_src = pos_dst
-	action_current = Action.None
+	action_current = [Action.None, 0]
 	roll_dir = roll_dir_dst
 	snap_90()
 
@@ -105,7 +99,7 @@ func snap_90()->void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func ai_action()->void:
-	if auto_move && action_current == Action.None && action_queue.size() == 0: # add new ai action
+	if auto_move && action_current[0] == Action.None && action_queue.size() == 0: # add new ai action
 		make_ai_action()
 
 # return true on new act
@@ -116,21 +110,21 @@ func start_new_action()->bool:
 	return false
 
 func is_ready_new_action()->bool:
-	if action_current == Action.None && action_queue.size() > 0: # start new action
+	if action_current[0] == Action.None && action_queue.size() > 0: # start new action
 		action_start_time = Time.get_unix_time_from_system()
 		action_current = action_queue.pop_front()
-		total_action_stats[action_current] += 1
-		storey_action_stats[action_current] += 1
+		total_action_stats[action_current[0]] += 1
+		storey_action_stats[action_current[0]] += 1
 		return true
 	return false
 
-func start_action(act :Action)->void:
-	match act:
+func start_action(act_info :Array)->void:
+	match act_info[0]:
 		Action.Forward:
 			if can_move(dir_src):
 				pos_dst = pos_src + Storey.Dir2Vt[dir_src]
 			else :
-				action_current = Action.None
+				action_current = [Action.None, 0]
 		Action.TurnLeft:
 			dir_dst = Storey.dir_left(dir_src)
 		Action.TurnRight:
@@ -207,7 +201,7 @@ func debug_str()->String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d)->(%d, %d)\nOpen: %s" % [
 		Character.act_stats_str(total_action_stats),
 		Character.act_stats_str(storey_action_stats),
-		Character.action2str(action_current), queue_to_str(),
+		Character.action2str(action_current[0]), queue_to_str(),
 		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),

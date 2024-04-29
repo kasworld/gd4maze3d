@@ -111,9 +111,9 @@ func move_character(cur_storey :Storey)->void:
 		pl.ai_action()
 		if pl.start_new_action(): # new act start
 			ani_dur = 0
-			if pl.serial == player_number and pl.action_current != Character.Action.EnterStorey: # player
+			if pl.serial == player_number and pl.action_current[0] != Character.Action.EnterStorey: # player
 				minimap.update_walls_by_pos(pl.pos_src.x,pl.pos_src.y)
-		if pl.action_current != Character.Action.None :
+		if pl.action_current[0] != Character.Action.None :
 			animate_action(pl, ani_dur)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -186,7 +186,7 @@ storey %s
 		]
 
 func animate_action(pl :Character, dur :float)->void:
-	match pl.action_current:
+	match pl.action_current[0]:
 		Character.Action.Forward:
 			pl.animate_move_by_dur(dur)
 		Character.Action.TurnLeft, Character.Action.TurnRight:

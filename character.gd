@@ -71,7 +71,7 @@ func init(n :int, lane_w:float, auto :bool)->void:
 	action_current = [Action.None, 0]
 
 func enter_storey(st :Storey, start_at:bool)->void:
-	action_per_second = randf_range(1.0,10.0)
+	set_action_per_second(get_rand_action_speed())
 	storey = st
 	if start_at :
 		pos_dst = storey.start_pos
@@ -90,6 +90,12 @@ func get_animation_progress()->float:
 # return true on act end
 func is_action_ended(ani_dur :float)->bool:
 	return action_current[0] != Action.None && ani_dur > 1.0
+
+func set_action_per_second(v :float):
+	action_per_second = v
+
+func get_rand_action_speed()->float:
+	return clampf(randfn(1.5,0.5), 0.5, 4.5)
 
 func end_action()->void:
 	dir_src = dir_dst

@@ -150,6 +150,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				player.enqueue_action_with_speed(Character.Action.TurnRight, 10)
 			KEY_SPACE:
 				player.enqueue_action_with_speed(Character.Action.RollRight, 10)
+			KEY_TAB:
+				player.set_action_per_second(player.get_rand_action_speed())
 			KEY_ENTER:
 				enter_new_storey()
 	elif event is InputEventMouseButton and event.is_pressed():

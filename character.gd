@@ -31,6 +31,13 @@ static func act_stats_str(d:Dictionary)->String:
 
 func enqueue_action(a :Action)->void:
 	action_queue.push_back([a,action_per_second])
+	crop_action_queue()
+func enqueue_action_with_speed(a :Action,s :float)->void:
+	action_queue.push_back([a,s])
+	crop_action_queue()
+func crop_action_queue()->void:
+	if action_queue.size() > QueueLimit:
+		action_queue = action_queue.slice(action_queue.size()-QueueLimit)
 func queue_to_str()->String:
 	var rtn = ""
 	for a in action_queue:
@@ -41,6 +48,7 @@ var roll_dir :RollDir
 var roll_dir_dst :RollDir
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
+const QueueLimit = 10
 var action_queue :Array
 var storey :Storey
 var action_per_second :float # sec

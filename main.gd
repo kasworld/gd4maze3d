@@ -140,16 +140,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			#KEY_8:
 				#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
 			KEY_UP:
-				player.enqueue_action(Character.Action.Forward)
+				player.enqueue_action_with_speed(Character.Action.Forward, 10)
 			KEY_DOWN:
-				player.enqueue_action(Character.Action.TurnLeft)
-				player.enqueue_action(Character.Action.TurnLeft)
+				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
+				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
 			KEY_LEFT:
-				player.enqueue_action(Character.Action.TurnLeft)
+				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
 			KEY_RIGHT:
-				player.enqueue_action(Character.Action.TurnRight)
+				player.enqueue_action_with_speed(Character.Action.TurnRight, 10)
 			KEY_SPACE:
-				player.enqueue_action(Character.Action.RollRight)
+				player.enqueue_action_with_speed(Character.Action.RollRight, 10)
 			KEY_ENTER:
 				enter_new_storey()
 	elif event is InputEventMouseButton and event.is_pressed():

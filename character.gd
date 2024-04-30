@@ -106,22 +106,13 @@ func end_action()->void:
 
 # return true on new act
 func start_new_action()->bool:
-	if is_ready_new_action():
-		start_action(action_current)
-		return true
-	return false
-
-func is_ready_new_action()->bool:
-	if action_current[0] == Action.None && action_queue.size() > 0: # start new action
-		action_start_time = Time.get_unix_time_from_system()
-		action_current = action_queue.pop_front()
-		total_action_stats[action_current[0]] += 1
-		storey_action_stats[action_current[0]] += 1
-		return true
-	return false
-
-func start_action(act_info :Array)->void:
-	match act_info[0]:
+	if action_current[0] != Action.None || action_queue.size() == 0:
+		return false
+	action_start_time = Time.get_unix_time_from_system()
+	action_current = action_queue.pop_front()
+	total_action_stats[action_current[0]] += 1
+	storey_action_stats[action_current[0]] += 1
+	match action_current[0]:
 		Action.Forward:
 			if can_move(dir_src):
 				pos_dst = pos_src + Storey.Dir2Vt[dir_src]
@@ -135,6 +126,7 @@ func start_action(act_info :Array)->void:
 			roll_dir_dst = Character.rolldir_right(roll_dir)
 		Action.RollLeft:
 			roll_dir_dst = Character.rolldir_left(roll_dir)
+	return true
 
 func ai_action()->void:
 	if auto_move && action_current[0] == Action.None && action_queue.size() == 0: # add new ai action

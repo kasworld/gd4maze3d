@@ -159,33 +159,29 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func update_info()->void:
 	var player = char_container.get_child(player_number)
-	helplabel.text = """gd4maze3d 14.0.0
-Space:RollCamera, Enter:Next storey,
+	helplabel.text = """gd4maze3d 14.1.0
 1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
-ArrowKey to move
-"""
+Space:RollCamera, Enter:Next storey, Tab:change speed, ArrowKey to move"""
 	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
 %d objects
 %dK primitive indices
-%d draw calls
-""" % [
+%d draw calls""" % [
 	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
 	get_tree().root.use_occlusion_culling,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
-]
+	]
 	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
 storey %s
-%s
-""" % [
-		cur_storey_index,storey_list.size(),
-		minimap_mode, view_floor_ceiling,
-		get_cur_storey().info_str(),
-		player.info_str(),
-		]
+%s""" % [
+	cur_storey_index,storey_list.size(),
+	minimap_mode, view_floor_ceiling,
+	get_cur_storey().info_str(),
+	player.info_str(),
+	]
 
 func animate_action(pl :Character, dur :float)->void:
 	match pl.action_current[0]:

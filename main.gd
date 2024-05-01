@@ -148,10 +148,18 @@ func _unhandled_input(event: InputEvent) -> void:
 				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
 			KEY_RIGHT:
 				player.enqueue_action_with_speed(Character.Action.TurnRight, 10)
-			KEY_SPACE:
+			KEY_A:
+				player.enqueue_action_with_speed(Character.Action.RollLeft, 10)
+			KEY_D:
 				player.enqueue_action_with_speed(Character.Action.RollRight, 10)
-			KEY_TAB:
-				player.set_action_per_second(player.get_rand_action_speed())
+			KEY_PAGEUP:
+				player.speed_up()
+			KEY_PAGEDOWN:
+				player.speed_down()
+			KEY_HOME:
+				player.speed_max()
+			KEY_END:
+				player.speed_min()
 			KEY_ENTER:
 				enter_new_storey()
 	elif event is InputEventMouseButton and event.is_pressed():
@@ -159,9 +167,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func update_info()->void:
 	var player = char_container.get_child(player_number)
-	helplabel.text = """gd4maze3d 14.1.0
-1:Toggle help, 2:Minimap, 3:ViewFloorCeiling, 4:Toggle automove, 5:Toggle debug info, 6:Toggle Perfomance info, 7:info
-Space:RollCamera, Enter:Next storey, Tab:change speed, ArrowKey to move"""
+	helplabel.text = """gd4maze3d 14.2.0
+1:toggle help, 2:minimap, 3:view floor ceiling, 4:toggle automove, 5:toggle debug info, 6:toggle perfomance info, 7:toggle info
+Home:speed max, End:speed min, PageUp:speed up PageDown:dpeed down
+A:roll camera left, D:roll camera right,
+Enter:Next storey, ArrowKey to move"""
 	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s

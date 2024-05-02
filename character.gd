@@ -62,7 +62,11 @@ var serial :int
 var auto_move :bool
 
 func init(n :int, lane_w:float, auto :bool)->void:
-	var mi3d = new_cylinder(0.2*lane_w, 0.07*lane_w, NamedColorList.color_list.pick_random()[0])
+	var mi3d = Global3d.new_cylinder2( 0.2*lane_w,0, 0.07*lane_w, 5,
+		Global3d.get_color_mat(NamedColorList.color_list.pick_random()[0]),
+		)
+	mi3d.rotation.x = -PI/2
+
 	add_child(mi3d)
 	serial = n
 	auto_move = auto
@@ -186,21 +190,6 @@ func animate_turn_by_dur(dur :float)->void:
 func animate_roll_by_dur(dur :float)->void:
 	rotation.z = lerp_angle(Character.rolldir2rad(roll_dir), Character.rolldir2rad(roll_dir_dst), dur)
 
-func new_cylinder(h :float, r :float, co :Color)->MeshInstance3D:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = co
-	#mat.metallic = 1
-	#mat.clearcoat = true
-	var mesh = CylinderMesh.new()
-	mesh.height = h
-	mesh.bottom_radius = r
-	mesh.top_radius = 0
-	mesh.radial_segments = 5
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.rotation.x = -PI/2
-	return sp
 
 func snap_90()->void:
 	for i in 3:

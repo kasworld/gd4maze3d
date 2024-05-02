@@ -201,7 +201,7 @@ func animate_action(pl :Character, dur :float)->void:
 		Character.Action.RollRight,Character.Action.RollLeft:
 			pl.animate_roll_by_dur(dur)
 		Character.Action.EnterStorey:
-			pl.animate_move_storey_by_dur(dur, cur_storey_index -1)
+			pl.animate_move_storey_by_dur(dur, cur_storey_index -1, cur_storey_index)
 	if pl.serial == player_number:
 		cameralight.copy_position_rotation(pl)
 

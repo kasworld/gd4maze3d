@@ -62,10 +62,11 @@ var serial :int
 var auto_move :bool
 
 func init(n :int, lane_w:float, auto :bool)->void:
-	var mi3d = Global3d.new_cylinder2( 0.2*lane_w,0, 0.07*lane_w, 5,
+	var mi3d = Global3d.new_cylinder2( 0.2*lane_w, 0.01*lane_w, 0.07*lane_w, 5,
 		Global3d.get_color_mat(NamedColorList.color_list.pick_random()[0]),
 		)
 	mi3d.rotation.x = -PI/2
+	mi3d.scale.x = 0.5
 
 	add_child(mi3d)
 	serial = n
@@ -175,13 +176,14 @@ func can_move(dir :Storey.Dir)->bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 
 func animate_move_by_dur( dur :float)->void:
-	var p1 = storey.mazepos2storeypos(pos_src,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
-	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
+	var y = storey.storey_num*storey.storey_h+ storey.storey_h/2.0
+	var p1 = storey.mazepos2storeypos(pos_src,y)
+	var p2 = storey.mazepos2storeypos(pos_dst,y)
 	position = p1.lerp(p2,dur)
 
-func animate_move_storey_by_dur(dur :float, from :int)->void:
+func animate_move_storey_by_dur(dur :float, from :int, to :int)->void:
 	var p1 = storey.mazepos2storeypos(pos_src,from*storey.storey_h+ storey.storey_h/2.0)
-	var p2 = storey.mazepos2storeypos(pos_dst,storey.storey_num*storey.storey_h+ storey.storey_h/2.0)
+	var p2 = storey.mazepos2storeypos(pos_dst,to*storey.storey_h+ storey.storey_h/2.0)
 	position = p1.lerp(p2,dur)
 
 func animate_turn_by_dur(dur :float)->void:

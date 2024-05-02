@@ -11,7 +11,6 @@ var character_scene = preload("res://character.tscn")
 @onready var cameralight = $MovingCameraLight
 @onready var char_container = $CharacterContainer
 
-const CharacterCount = 10
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
 var maze_size = Vector2i(16*1,9*1)
@@ -44,7 +43,7 @@ func _ready() -> void:
 	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[1]].duplicate()
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
-	for i in CharacterCount:
+	for i in maze_size.x*maze_size.y/10:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
 		pl.init(i, lane_w, true)

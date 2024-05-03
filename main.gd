@@ -82,7 +82,9 @@ func enter_new_storey()->void:
 	minimap.init(cur_storey,map_scale)
 
 	for pl in char_container.get_children():
-		pl.enter_storey(cur_storey, pl.serial == player_number)
+		pl.action_queue.resize(0)
+		pl.enqueue_action(Character.Action.EnterStorey, [cur_storey, pl.serial == player_number])
+
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 

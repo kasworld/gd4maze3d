@@ -74,52 +74,7 @@ func init(n :int, lane_w:float, auto :bool)->void:
 	total_action_stats = Character.new_action_stats_dict()
 	dir_src = Storey.Dir.North
 	action_current = [Action.None, 0,[]]
-
-func enter_storey(st :Storey, start_at:bool)->void:
 	set_rand_action_speed()
-	storey = st
-	if start_at :
-		pos_dst = storey.start_pos
-	else:
-		pos_dst = storey.rand_pos_2i()
-	storey_action_stats = Character.new_action_stats_dict()
-	action_queue.resize(0)
-	enqueue_action(Action.EnterStorey)
-	animate_move_by_dur(0)
-	animate_turn_by_dur(0)
-
-# return 0 - 1
-func get_animation_progress()->float:
-	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
-
-# return true on act end
-func is_action_ended(ani_dur :float)->bool:
-	return action_current[0] != Action.None && ani_dur > 1.0
-
-func set_action_per_second(v :float):
-	action_per_second = v
-
-func speed_up()->void:
-	action_per_second = clampf(action_per_second *1.1, 0.5, 4.5)
-
-func speed_max()->void:
-	action_per_second = 4.5
-
-func speed_down()->void:
-	action_per_second = clampf(action_per_second *0.9, 0.5, 4.5)
-
-func speed_min()->void:
-	action_per_second = 0.5
-
-func set_rand_action_speed()->void:
-	action_per_second = clampf(randfn(1.5,0.5), 0.5, 4.5)
-
-func end_action()->void:
-	dir_src = dir_dst
-	pos_src = pos_dst
-	action_current = [Action.None, 0,[]]
-	roll_dir = roll_dir_dst
-	snap_90()
 
 # return true on new act
 func start_new_action()->bool:
@@ -127,8 +82,6 @@ func start_new_action()->bool:
 		return false
 	action_start_time = Time.get_unix_time_from_system()
 	action_current = action_queue.pop_front()
-	total_action_stats[action_current[0]] += 1
-	storey_action_stats[action_current[0]] += 1
 	match action_current[0]:
 		Action.Forward:
 			if can_move(dir_src):
@@ -143,7 +96,31 @@ func start_new_action()->bool:
 			roll_dir_dst = Character.rolldir_right(roll_dir)
 		Action.RollLeft:
 			roll_dir_dst = Character.rolldir_left(roll_dir)
+		Action.EnterStorey:
+			var args = action_current[2]
+			storey = args[0]
+			if args[1] :
+				pos_dst = storey.start_pos
+			else:
+				pos_dst = storey.rand_pos_2i()
+			storey_action_stats = Character.new_action_stats_dict()
+			set_rand_action_speed()
+			animate_move_by_dur(0)
+			animate_turn_by_dur(0)
+	total_action_stats[action_current[0]] += 1
+	storey_action_stats[action_current[0]] += 1
 	return true
+
+# return true on act end
+func is_action_ended(ani_dur :float)->bool:
+	return action_current[0] != Action.None && ani_dur > 1.0
+
+func end_action()->void:
+	dir_src = dir_dst
+	pos_src = pos_dst
+	action_current = [Action.None, 0,[]]
+	roll_dir = roll_dir_dst
+	snap_90()
 
 func ai_action()->void:
 	if auto_move && action_current[0] == Action.None && action_queue.size() == 0: # add new ai action
@@ -175,6 +152,10 @@ func make_ai_action()->bool:
 func can_move(dir :Storey.Dir)->bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 
+# return 0 - 1
+func get_animation_progress()->float:
+	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
+
 func animate_move_by_dur( dur :float)->void:
 	var y = storey.storey_num*storey.storey_h+ storey.storey_h/2.0
 	var p1 = storey.mazepos2storeypos(pos_src,y)
@@ -192,6 +173,23 @@ func animate_turn_by_dur(dur :float)->void:
 func animate_roll_by_dur(dur :float)->void:
 	rotation.z = lerp_angle(Character.rolldir2rad(roll_dir), Character.rolldir2rad(roll_dir_dst), dur)
 
+func set_action_per_second(v :float):
+	action_per_second = v
+
+func speed_up()->void:
+	action_per_second = clampf(action_per_second *1.1, 0.5, 4.5)
+
+func speed_max()->void:
+	action_per_second = 4.5
+
+func speed_down()->void:
+	action_per_second = clampf(action_per_second *0.9, 0.5, 4.5)
+
+func speed_min()->void:
+	action_per_second = 0.5
+
+func set_rand_action_speed()->void:
+	action_per_second = clampf(randfn(1.5,0.5), 0.5, 4.5)
 
 func snap_90()->void:
 	for i in 3:

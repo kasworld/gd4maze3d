@@ -29,11 +29,11 @@ static func act_stats_str(d:Dictionary)->String:
 		rtn += " %s:%d" % [action2str(i), d[i]]
 	return rtn
 
-func enqueue_action(a :Action)->void:
-	action_queue.push_back([a,action_per_second])
+func enqueue_action(a :Action, args :=[])->void:
+	action_queue.push_back([a,action_per_second, args])
 	crop_action_queue()
-func enqueue_action_with_speed(a :Action,s :float)->void:
-	action_queue.push_back([a,s])
+func enqueue_action_with_speed(a :Action,s :float, args :=[])->void:
+	action_queue.push_back([a,s, args])
 	crop_action_queue()
 func crop_action_queue()->void:
 	if action_queue.size() > QueueLimit:
@@ -41,7 +41,7 @@ func crop_action_queue()->void:
 func queue_to_str()->String:
 	var rtn = ""
 	for a in action_queue:
-		rtn += "%s(%.1f) " % [ Character.action2str(a[0]), a[1] ]
+		rtn += "%s(%.1f)%s " % [ Character.action2str(a[0]), a[1], a[2] ]
 	return rtn
 
 var roll_dir :RollDir
@@ -73,7 +73,7 @@ func init(n :int, lane_w:float, auto :bool)->void:
 	auto_move = auto
 	total_action_stats = Character.new_action_stats_dict()
 	dir_src = Storey.Dir.North
-	action_current = [Action.None, 0]
+	action_current = [Action.None, 0,[]]
 
 func enter_storey(st :Storey, start_at:bool)->void:
 	set_rand_action_speed()
@@ -117,7 +117,7 @@ func set_rand_action_speed()->void:
 func end_action()->void:
 	dir_src = dir_dst
 	pos_src = pos_dst
-	action_current = [Action.None, 0]
+	action_current = [Action.None, 0,[]]
 	roll_dir = roll_dir_dst
 	snap_90()
 
@@ -134,7 +134,7 @@ func start_new_action()->bool:
 			if can_move(dir_src):
 				pos_dst = pos_src + Storey.Dir2Vt[dir_src]
 			else :
-				action_current = [Action.None, 0]
+				action_current = [Action.None, 0,[]]
 		Action.TurnLeft:
 			dir_dst = Storey.dir_left(dir_src)
 		Action.TurnRight:

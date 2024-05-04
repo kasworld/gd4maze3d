@@ -30,7 +30,7 @@ static func act_stats_str(d:Dictionary)->String:
 	return rtn
 
 func enqueue_action(a :Action, args :=[])->void:
-	action_queue.push_back([a,action_per_second, args])
+	action_queue.push_back([a,action_per_second.get_value(), args])
 	crop_action_queue()
 func enqueue_action_with_speed(a :Action,s :float, args :=[])->void:
 	action_queue.push_back([a,s, args])
@@ -51,13 +51,13 @@ var storey_action_stats :Dictionary
 const QueueLimit = 10
 var action_queue :Array
 var storey :Storey
-var action_per_second :float # sec
+var action_per_second := Clamped.Float.new(2,0.5,4.5) # sec
 var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
 var action_start_time :float # unixtime sec
-var action_current : Array # [Action, action_per_second]
+var action_current : Array # [Action, action_per_second.value]
 var serial :int
 var auto_move :bool
 
@@ -74,7 +74,7 @@ func init(n :int, lane_w:float, auto :bool)->void:
 	total_action_stats = Character.new_action_stats_dict()
 	dir_src = Storey.Dir.North
 	action_current = [Action.None, 0,[]]
-	set_rand_action_speed()
+	action_per_second.set_randfn()
 
 # return true on new act
 func start_new_action()->bool:
@@ -104,7 +104,7 @@ func start_new_action()->bool:
 			else:
 				pos_dst = storey.rand_pos_2i()
 			storey_action_stats = Character.new_action_stats_dict()
-			set_rand_action_speed()
+			action_per_second.set_randfn()
 			animate_move_by_dur(0)
 			animate_turn_by_dur(0)
 	total_action_stats[action_current[0]] += 1
@@ -172,24 +172,6 @@ func animate_turn_by_dur(dur :float)->void:
 
 func animate_roll_by_dur(dur :float)->void:
 	rotation.z = lerp_angle(Character.rolldir2rad(roll_dir), Character.rolldir2rad(roll_dir_dst), dur)
-
-func set_action_per_second(v :float):
-	action_per_second = v
-
-func speed_up()->void:
-	action_per_second = clampf(action_per_second *1.1, 0.5, 4.5)
-
-func speed_max()->void:
-	action_per_second = 4.5
-
-func speed_down()->void:
-	action_per_second = clampf(action_per_second *0.9, 0.5, 4.5)
-
-func speed_min()->void:
-	action_per_second = 0.5
-
-func set_rand_action_speed()->void:
-	action_per_second = clampf(randfn(1.5,0.5), 0.5, 4.5)
 
 func snap_90()->void:
 	for i in 3:

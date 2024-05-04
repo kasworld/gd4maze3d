@@ -154,13 +154,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_D:
 				player.enqueue_action_with_speed(Character.Action.RollRight, 10)
 			KEY_PAGEUP:
-				player.speed_up()
+				player.action_per_second.set_up()
 			KEY_PAGEDOWN:
-				player.speed_down()
+				player.action_per_second.set_down()
 			KEY_HOME:
-				player.speed_max()
+				player.action_per_second.set_max()
 			KEY_END:
-				player.speed_min()
+				player.action_per_second.set_min()
 			KEY_ENTER:
 				enter_new_storey()
 	elif event is InputEventMouseButton and event.is_pressed():

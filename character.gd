@@ -178,7 +178,7 @@ func snap_90()->void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func info_str()->String:
-	return "automove:%s, act %.1f /sec\nview roll:%s°, roll:%s" % [
+	return "automove:%s, act %s /sec\nview roll:%s°, roll:%s" % [
 		auto_move, action_per_second, roll_dir*90, rotation,
 		]
 

@@ -24,4 +24,4 @@ class Float:
 	func set_randfn()->void:
 		_value = clampf(randfn((_vmin+_vmax)/2,(_vmax-_vmin)/4) , _vmin, _vmax)
 	func _to_string() -> String:
-		return "%.1f(%f-%f)"
+		return "%.2f(%.2f-%.2f)" % [_value, _vmin, _vmax]

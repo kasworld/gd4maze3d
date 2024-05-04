@@ -51,7 +51,7 @@ var storey_action_stats :Dictionary
 const QueueLimit = 10
 var action_queue :Array
 var storey :Storey
-var action_per_second := Clamped.Float.new(2,0.5,4.5) # sec
+var action_per_second := ClampedFloat.new(2,0.5,4.5) # sec
 var dir_src : Storey.Dir
 var dir_dst : Storey.Dir
 var pos_src :Vector2i

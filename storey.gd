@@ -166,18 +166,7 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float)->Dictionary:
 	var wallinfo = wall_info_all[y][x]
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
-	var bounced = Vector3i.ZERO
-	for i in 3:
-		if axis_wall[i][0] && pos[i] < aabb.position[i] + radius :
-			pos[i] = aabb.position[i] + radius
-			bounced[i] = -1
-		elif axis_wall[i][1] && pos[i] > aabb.end[i] - radius:
-			pos[i] = aabb.end[i] - radius
-			bounced[i] = 1
-	return {
-		bounced = bounced,
-		pos = pos,
-	}
+	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
 func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
 	var n = Global3d.new_capsule(lane_w*0.3, lane_w*0.05, Global3d.get_color_mat(co))

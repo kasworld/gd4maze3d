@@ -33,22 +33,17 @@ func change_scale(sc :float)->void:
 	make_points()
 
 func make_points()->void:
-	$LabelGoal.position = pos2mapscale(storey.goal_pos)
-	$LabelStart.position = pos2mapscale(storey.start_pos)
-	$LabelPlayer.position = pos2mapscale(storey.start_pos)
+	set_label_setting($LabelGoal,storey.goal_pos)
+	set_label_setting($LabelStart,storey.start_pos)
+	set_label_setting($LabelPlayer,storey.start_pos)
 
-	$LabelGoal.label_settings.font_size = map_scale/4
-	$LabelStart.label_settings.font_size = map_scale/4
-	$LabelPlayer.label_settings.font_size = map_scale/4
-
-	#for o in get_children():
-		#o.queue_free()
-	#add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
-	#add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
-	#player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)
+func set_label_setting(nd :Label, pos :Vector2)->void:
+	nd.position = pos2mapscale(pos)
+	nd.size = Vector2(map_scale-wall_thick*2, map_scale-wall_thick*2)
+	nd.label_settings.font_size = map_scale/4
 
 func pos2mapscale(pos :Vector2)->Vector2:
-	return pos * map_scale + Vector2(0.5,1)*map_scale/4
+	return pos * map_scale + Vector2(wall_thick,wall_thick)
 
 # make wallline by maze
 func make_walllines_all()->void:
@@ -147,17 +142,3 @@ func update_walls_by_pos(x:int,y :int)->void:
 	var walldir = storey.maze_cells.get_wall_dir_at(x,y)
 	for d in walldir:
 		add_wall_at(x,y,Storey.MazeDir2Dir[d])
-
-# between wall
-#func add_point_at(x:int,y :int, co:Color)->Line2D:
-	#var ln = new_line(map_scale-wall_thick*2 , Color(co,0.5), [Vector2(0.1,0.5)*map_scale,Vector2(0.9,0.5)*map_scale] )
-	#add_child(ln)
-	#ln.position = Vector2(x,y)*map_scale
-	#return ln
-#
-#func new_line(w :float, co:Color, pos_list :PackedVector2Array)->Line2D:
-	#var ln = Line2D.new()
-	#ln.points = pos_list
-	#ln.default_color = co
-	#ln.width = w
-	#return ln

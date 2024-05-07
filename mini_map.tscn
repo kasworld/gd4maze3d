@@ -1,6 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://dauu5e87kykn"]
+[gd_scene load_steps=5 format=3 uid="uid://dauu5e87kykn"]
 
 [ext_resource type="Script" path="res://mini_map.gd" id="1_60ldh"]
 
-[node name="MiniMap2Draw" type="Node2D"]
+[sub_resource type="LabelSettings" id="LabelSettings_5gl0l"]
+font_color = Color(1, 1, 0, 0.501961)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hv2sb"]
+font_color = Color(1, 0, 0, 0.501961)
+
+[sub_resource type="LabelSettings" id="LabelSettings_kk2xu"]
+font_color = Color(0, 1, 0, 0.501961)
+
+[node name="MiniMap" type="Node2D"]
 script = ExtResource("1_60ldh")
+
+[node name="LabelStart" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Start"
+label_settings = SubResource("LabelSettings_5gl0l")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LabelGoal" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Goal"
+label_settings = SubResource("LabelSettings_hv2sb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LabelPlayer" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Player"
+label_settings = SubResource("LabelSettings_kk2xu")
+horizontal_alignment = 1
+vertical_alignment = 1

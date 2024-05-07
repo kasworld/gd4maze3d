@@ -8,7 +8,7 @@ var storey :Storey
 var walllines_all :PackedVector2Array =[]
 var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
-var player :Line2D
+#var player :Line2D
 var map_mode_full :bool
 
 func init(st :Storey, sc :float)->void:
@@ -33,11 +33,22 @@ func change_scale(sc :float)->void:
 	make_points()
 
 func make_points()->void:
-	for o in get_children():
-		o.queue_free()
-	add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
-	add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
-	player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)
+	$LabelGoal.position = pos2mapscale(storey.goal_pos)
+	$LabelStart.position = pos2mapscale(storey.start_pos)
+	$LabelPlayer.position = pos2mapscale(storey.start_pos)
+
+	$LabelGoal.label_settings.font_size = map_scale/4
+	$LabelStart.label_settings.font_size = map_scale/4
+	$LabelPlayer.label_settings.font_size = map_scale/4
+
+	#for o in get_children():
+		#o.queue_free()
+	#add_point_at(storey.goal_pos.x,storey.goal_pos.y, Color.RED)
+	#add_point_at(storey.start_pos.x,storey.start_pos.y, Color.YELLOW)
+	#player = add_point_at(storey.start_pos.x,storey.start_pos.y, Color.GREEN)
+
+func pos2mapscale(pos :Vector2)->Vector2:
+	return pos * map_scale + Vector2(0.5,1)*map_scale/4
 
 # make wallline by maze
 func make_walllines_all()->void:
@@ -103,7 +114,8 @@ func set_wall_at(x :int, y:int, dir :Storey.Dir):
 	walls_known[wpos.y][wpos.x] = 1
 
 func move_player(x:int, y:int)->void:
-	player.position = Vector2(x,y)*map_scale
+	#player.position = Vector2(x,y)*map_scale
+	$LabelPlayer.position = pos2mapscale( Vector2(x,y) )
 
 func _draw() -> void:
 	if map_mode_full:
@@ -137,15 +149,15 @@ func update_walls_by_pos(x:int,y :int)->void:
 		add_wall_at(x,y,Storey.MazeDir2Dir[d])
 
 # between wall
-func add_point_at(x:int,y :int, co:Color)->Line2D:
-	var ln = new_line(map_scale-wall_thick*2 , Color(co,0.5), [Vector2(0.1,0.5)*map_scale,Vector2(0.9,0.5)*map_scale] )
-	add_child(ln)
-	ln.position = Vector2(x,y)*map_scale
-	return ln
-
-func new_line(w :float, co:Color, pos_list :PackedVector2Array)->Line2D:
-	var ln = Line2D.new()
-	ln.points = pos_list
-	ln.default_color = co
-	ln.width = w
-	return ln
+#func add_point_at(x:int,y :int, co:Color)->Line2D:
+	#var ln = new_line(map_scale-wall_thick*2 , Color(co,0.5), [Vector2(0.1,0.5)*map_scale,Vector2(0.9,0.5)*map_scale] )
+	#add_child(ln)
+	#ln.position = Vector2(x,y)*map_scale
+	#return ln
+#
+#func new_line(w :float, co:Color, pos_list :PackedVector2Array)->Line2D:
+	#var ln = Line2D.new()
+	#ln.points = pos_list
+	#ln.default_color = co
+	#ln.width = w
+	#return ln

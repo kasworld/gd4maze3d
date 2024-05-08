@@ -19,8 +19,26 @@ func init(st :Storey, sc :float)->void:
 	walls_known.resize(storey.maze_size.y*2+1)
 	for cl in walls_known:
 		cl.resize(storey.maze_size.x*2+1)
-
+	init_label($LabelGoal, Color.RED, "Goal")
+	init_label($LabelStart, Color.YELLOW, "Start")
+	init_label($LabelPlayer, Color.GREEN, "Player")
 	change_scale(sc)
+
+func init_label(lb :Label, co:Color, text :String)->void:
+	lb.label_settings = LabelSettings.new()
+	lb.label_settings.font_color = Color(Color.BLACK, 0.5)
+	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lb.text = text
+	var stb = StyleBoxFlat.new()
+	stb.bg_color = Color(co, 0.5)
+	#stb.border_color = Color(Color.WHITE,0.5)
+	#stb.border_blend = true
+	#stb.border_width_bottom = 1
+	#stb.border_width_left = 1
+	#stb.border_width_right = 1
+	#stb.border_width_top = 1
+	lb.add_theme_stylebox_override("normal", stb)
 
 # call scale changed
 func change_scale(sc :float)->void:

@@ -161,6 +161,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				player.action_per_second.set_max()
 			KEY_END:
 				player.action_per_second.set_min()
+			KEY_INSERT:
+				$MovingCameraLight.fov_inc()
+			KEY_DELETE:
+				$MovingCameraLight.fov_dec()
 			KEY_ENTER:
 				enter_new_storey()
 	elif event is InputEventMouseButton and event.is_pressed():
@@ -187,11 +191,13 @@ Currently rendering: occlusion culling:%s
 	]
 	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
 storey %s
+%s
 %s""" % [
 	cur_storey_index,storey_list.size(),
 	minimap_mode, view_floor_ceiling,
 	get_cur_storey().info_str(),
 	player.info_str(),
+	$MovingCameraLight.info_str(),
 	]
 
 func animate_action(pl :Character, dur :float)->void:

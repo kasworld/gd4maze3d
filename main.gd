@@ -51,6 +51,8 @@ func _ready() -> void:
 	for i in VisibleStoreyUp:
 		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
 
+	$MovingCameraLight.init()
+
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	enter_new_storey()
 

@@ -10,10 +10,10 @@ func info_str()->String:
 	return "FOV:%.1f" % [ $Camera3D.fov ]
 
 func fov_inc()->void:
-	$Camera3D.fov *= 1.1
+	$Camera3D.fov = clampf($Camera3D.fov *1.1 , 1, 179)
 
 func fov_dec()->void:
-	$Camera3D.fov /= 1.1
+	$Camera3D.fov = clampf($Camera3D.fov /1.1 , 1, 179)
 
 func fov_reset()->void:
 	$Camera3D.fov = 75

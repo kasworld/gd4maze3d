@@ -172,10 +172,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func update_info()->void:
 	var player = char_container.get_child(player_number)
-	helplabel.text = """gd4maze3d 14.2.0
+	helplabel.text = """gd4maze3d 14.3.0
 1:toggle help, 2:minimap, 3:view floor ceiling, 4:toggle automove, 5:toggle debug info, 6:toggle perfomance info, 7:toggle info
 Home:speed max, End:speed min, PageUp:speed up PageDown:dpeed down
-A:roll camera left, D:roll camera right,
+A:roll camera left, D:roll camera right, Ins:FOV inc, Del:FOV dec
 Enter:Next storey, ArrowKey to move"""
 	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)

@@ -12,7 +12,7 @@ func copy_position_rotation(n :Node3D)->void:
 	rotation = n.rotation
 
 func info_str()->String:
-	return "FOV:%.1f" % [ $Camera3D.fov ]
+	return "FOV:%s" % [ fov ]
 
 func fov_inc()->void:
 	$Camera3D.fov = fov.set_up()

@@ -31,16 +31,16 @@ func _ready() -> void:
 
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
+	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Floor.position = Vector3(meshx/2, 0, meshy/2)
-	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
 	$Floor.mesh.material.uv1_scale = Vector3(maze_size.x,(maze_size.x+maze_size.y)/2.0,maze_size.y)
 
 	mat_keys = Texmat.ceiling_mat_dict.keys()
 	mat_keys.shuffle()
-	$Ceiling.mesh.size = Vector2(meshx, meshy)
-	$Ceiling.position = Vector3(meshx/2, storey_h, meshy/2)
-	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[1]].duplicate()
+	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[0]].duplicate()
+	$Ceiling.mesh.size = $Floor.mesh.size
+	$Ceiling.position = $Floor.position
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
 	for i in maze_size.x*maze_size.y/10:

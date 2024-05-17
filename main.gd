@@ -4,7 +4,6 @@ var minimap_scene = preload("res://mini_map.tscn")
 var storey_scene = preload("res://storey.tscn")
 var character_scene = preload("res://character.tscn")
 
-@onready var helplabel = $LabelContainer/Help
 @onready var debuglabel = $LabelContainer/Debug
 @onready var performancelabel = $LabelContainer/Performance
 @onready var infolabel = $LabelContainer/Info
@@ -247,13 +246,11 @@ func change_floor_ceiling_visible(f :bool,c :bool)->void:
 	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
 
-
-
 func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
 func _on_button_help_pressed() -> void:
-	helplabel.visible = !helplabel.visible
+	$ButtonContainer.visible = !$ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
 	set_minimap_mode(minimap_mode+1)

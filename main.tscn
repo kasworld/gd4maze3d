@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=14 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
+[ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 transparency = 2
@@ -34,6 +35,12 @@ default_font_size = 32
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7bjrx"]
 
+[sub_resource type="SystemFont" id="SystemFont_bejao"]
+
+[sub_resource type="Theme" id="Theme_u7t45"]
+resource_local_to_scene = true
+default_font = SubResource("SystemFont_bejao")
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
 
@@ -58,10 +65,6 @@ z_index = 1
 custom_minimum_size = Vector2(1920, 1080)
 offset_right = 1920.0
 offset_bottom = 1080.0
-
-[node name="Help" type="Label" parent="LabelContainer"]
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
 
 [node name="Debug" type="Label" parent="LabelContainer"]
 visible = false
@@ -189,6 +192,10 @@ text = "End:APSMin"
 [node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
 layout_mode = 2
 text = "PgDn:APSDown"
+
+[node name="TimedMessage" parent="." instance=ExtResource("4_fd2hu")]
+modulate = Color(1, 1, 1, 0.498039)
+theme = SubResource("Theme_u7t45")
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

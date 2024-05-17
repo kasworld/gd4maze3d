@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=11 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
@@ -28,6 +28,11 @@ size = Vector2(100, 100)
 
 [sub_resource type="LabelSettings" id="LabelSettings_1637f"]
 font_size = 32
+
+[sub_resource type="Theme" id="Theme_sfr3e"]
+default_font_size = 32
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7bjrx"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
@@ -76,3 +81,133 @@ label_settings = SubResource("LabelSettings_1637f")
 [node name="MovingCameraLight" parent="." instance=ExtResource("3_hdadt")]
 
 [node name="CharacterContainer" type="Node3D" parent="."]
+
+[node name="ButtonContainer" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_sfr3e")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ButtonContainer"]
+layout_mode = 2
+
+[node name="ButtonESC" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "ESC:Quit"
+
+[node name="ButtonHelp" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "1:Help"
+
+[node name="ButtonMinimap" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "2:Minimap"
+
+[node name="ButtonFloorCeiling" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "3:FloorCeiling"
+
+[node name="ButtonAutoMove" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "4:Automove"
+
+[node name="ButtonDebug" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "4:Debug"
+
+[node name="ButtonPerformance" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "6:Performance"
+
+[node name="ButtonInfo" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "7:Info"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ButtonContainer"]
+layout_mode = 2
+
+[node name="ButtonMove" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
+layout_mode = 2
+columns = 3
+
+[node name="ButtonRollLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+layout_mode = 2
+text = "A:RollLeft"
+
+[node name="ButtonForward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+layout_mode = 2
+text = "↑:Forward"
+
+[node name="ButtonRollRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+layout_mode = 2
+text = "D:RollRight"
+
+[node name="ButtonLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+layout_mode = 2
+text = "←:Left"
+
+[node name="ButtonBackward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+layout_mode = 2
+text = "↓:Backward"
+
+[node name="ButtonRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+layout_mode = 2
+text = "→:Right"
+
+[node name="VSeparator" type="VSeparator" parent="ButtonContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_7bjrx")
+
+[node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer2"]
+layout_mode = 2
+text = "StoreyUp"
+
+[node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
+layout_mode = 2
+columns = 3
+
+[node name="ButtonFovUP" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+layout_mode = 2
+text = "Ins:FovUp"
+
+[node name="ButtonAPSMax" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+layout_mode = 2
+text = "Home:APSMax"
+
+[node name="ButtonAPSUp" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+layout_mode = 2
+text = "PgUp:APSUp"
+
+[node name="ButtonFovDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+layout_mode = 2
+text = "Del:FOVDown"
+
+[node name="ButtonAPSMin" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+layout_mode = 2
+text = "End:APSMin"
+
+[node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+layout_mode = 2
+text = "PgDn:APSDown"
+
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonFloorCeiling" to="." method="_on_button_floor_ceiling_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonAutoMove" to="." method="_on_button_auto_move_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonDebug" to="." method="_on_button_debug_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonPerformance" to="." method="_on_button_performance_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonInfo" to="." method="_on_button_info_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRollLeft" to="." method="_on_button_roll_left_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonForward" to="." method="_on_button_forward_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRollRight" to="." method="_on_button_roll_right_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonLeft" to="." method="_on_button_left_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonBackward" to="." method="_on_button_backward_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRight" to="." method="_on_button_right_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]

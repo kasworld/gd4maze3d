@@ -66,6 +66,9 @@ func _on_vpsize_changed()->void:
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
 
+	#var bc_size = $ButtonContainer.size
+	$ButtonContainer.position = vp_size  - $ButtonContainer.size
+
 func enter_new_storey()->void:
 	cur_storey_index +=1
 	del_old_storey()
@@ -119,66 +122,43 @@ func move_character(cur_storey :Storey)->void:
 		if pl.action_current[0] != Character.Action.None :
 			animate_action(pl, ani_dur)
 
+var key2fn = {
+	KEY_ESCAPE:_on_button_esc_pressed,
+	KEY_1:_on_button_help_pressed,
+	KEY_2:_on_button_minimap_pressed,
+	KEY_3:_on_button_floor_ceiling_pressed,
+	KEY_4:_on_button_auto_move_pressed,
+	KEY_5:_on_button_debug_pressed,
+	KEY_6:_on_button_performance_pressed,
+	KEY_7:_on_button_info_pressed,
+	KEY_UP:_on_button_forward_pressed,
+	KEY_DOWN:_on_button_backward_pressed,
+	KEY_LEFT:_on_button_left_pressed,
+	KEY_RIGHT:_on_button_right_pressed,
+	KEY_A:_on_button_roll_left_pressed,
+	KEY_D:_on_button_roll_right_pressed,
+	KEY_PAGEUP:_on_button_aps_up_pressed,
+	KEY_PAGEDOWN:_on_button_aps_down_pressed,
+	KEY_HOME:_on_button_aps_max_pressed,
+	KEY_END:_on_button_aps_min_pressed,
+	KEY_INSERT:_on_button_fov_up_pressed,
+	KEY_DELETE:_on_button_fov_down_pressed,
+	KEY_ENTER:_on_button_storey_up_pressed,
+}
+
 func _unhandled_input(event: InputEvent) -> void:
 	var player = char_container.get_child(player_number)
 	if event is InputEventKey and event.pressed:
-		match event.keycode:
-			KEY_ESCAPE:
-				get_tree().quit()
-			KEY_1:
-				helplabel.visible = !helplabel.visible
-			KEY_2:
-				set_minimap_mode(minimap_mode+1)
-			KEY_3:
-				view_floor_ceiling = !view_floor_ceiling
-				change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
-			KEY_4:
-				player.auto_move = !player.auto_move
-			KEY_5:
-				debuglabel.visible = !debuglabel.visible
-			KEY_6:
-				performancelabel.visible = !performancelabel.visible
-			KEY_7:
-				infolabel.visible = !infolabel.visible
-			#KEY_8:
-				#get_tree().root.use_occlusion_culling = not get_tree().root.use_occlusion_culling
-			KEY_UP:
-				player.enqueue_action_with_speed(Character.Action.Forward, 10)
-			KEY_DOWN:
-				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
-				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
-			KEY_LEFT:
-				player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
-			KEY_RIGHT:
-				player.enqueue_action_with_speed(Character.Action.TurnRight, 10)
-			KEY_A:
-				player.enqueue_action_with_speed(Character.Action.RollLeft, 10)
-			KEY_D:
-				player.enqueue_action_with_speed(Character.Action.RollRight, 10)
-			KEY_PAGEUP:
-				player.action_per_second.set_up()
-			KEY_PAGEDOWN:
-				player.action_per_second.set_down()
-			KEY_HOME:
-				player.action_per_second.set_max()
-			KEY_END:
-				player.action_per_second.set_min()
-			KEY_INSERT:
-				$MovingCameraLight.fov_inc()
-			KEY_DELETE:
-				$MovingCameraLight.fov_dec()
-			KEY_ENTER:
-				enter_new_storey()
+		var fn = key2fn.get(event.keycode)
+		if fn != null:
+			fn.call()
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
+#←↑→↓
 
 func update_info()->void:
 	var player = char_container.get_child(player_number)
-	helplabel.text = """gd4maze3d 14.3.0
-1:toggle help, 2:minimap, 3:view floor ceiling, 4:toggle automove, 5:toggle debug info, 6:toggle perfomance info, 7:toggle info
-Home:speed max, End:speed min, PageUp:speed up PageDown:dpeed down
-A:roll camera left, D:roll camera right, Ins:FOV inc, Del:FOV dec
-Enter:Next storey, ArrowKey to move"""
+	helplabel.text = """gd4maze3d 14.3.0"""
 	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
@@ -263,3 +243,81 @@ func change_floor_ceiling_visible(f :bool,c :bool)->void:
 		storey_list[i].view_floor_ceiling(f,c)
 	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
+
+
+
+func _on_button_esc_pressed() -> void:
+	get_tree().quit()
+
+func _on_button_help_pressed() -> void:
+	helplabel.visible = !helplabel.visible
+
+func _on_button_minimap_pressed() -> void:
+	set_minimap_mode(minimap_mode+1)
+
+func _on_button_floor_ceiling_pressed() -> void:
+	view_floor_ceiling = !view_floor_ceiling
+	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+
+func _on_button_auto_move_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.auto_move = !player.auto_move
+
+func _on_button_debug_pressed() -> void:
+	debuglabel.visible = !debuglabel.visible
+
+func _on_button_performance_pressed() -> void:
+	performancelabel.visible = !performancelabel.visible
+
+func _on_button_info_pressed() -> void:
+	infolabel.visible = !infolabel.visible
+
+func _on_button_forward_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.enqueue_action_with_speed(Character.Action.Forward, 10)
+
+func _on_button_left_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
+
+func _on_button_backward_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
+
+func _on_button_right_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.enqueue_action_with_speed(Character.Action.TurnRight, 10)
+
+func _on_button_roll_right_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.enqueue_action_with_speed(Character.Action.RollRight, 10)
+
+func _on_button_roll_left_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.enqueue_action_with_speed(Character.Action.RollLeft, 10)
+
+func _on_button_fov_up_pressed() -> void:
+	$MovingCameraLight.fov_inc()
+
+func _on_button_fov_down_pressed() -> void:
+	$MovingCameraLight.fov_dec()
+
+func _on_button_aps_max_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.action_per_second.set_max()
+
+func _on_button_aps_up_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.action_per_second.set_up()
+
+func _on_button_aps_min_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.action_per_second.set_min()
+
+func _on_button_aps_down_pressed() -> void:
+	var player = char_container.get_child(player_number)
+	player.action_per_second.set_down()
+
+func _on_button_storey_up_pressed() -> void:
+	enter_new_storey()

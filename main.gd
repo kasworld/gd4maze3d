@@ -12,17 +12,18 @@ var character_scene = preload("res://character.tscn")
 
 const VisibleStoreyUp :int = 3
 const VisibleStoreyDown :int = 3
-var maze_size = Vector2i(16*1,9*1)
-var storey_h :float = 3.0
-var lane_w :float = 4.0
-var wall_thick :float = lane_w *0.05
+const maze_size = Vector2i(16*1,9*1)
+const storey_h :float = 3.0
+const lane_w :float = 4.0
+const wall_thick :float = lane_w *0.05
+
 var minimap :MiniMap
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 var player_number = 0
-var minimap_mode :int = 1
 var vp_size :Vector2
-var view_floor_ceiling :bool = true
+var minimap_mode :int = 2
+var view_floor_ceiling :bool = false
 
 func _ready() -> void:
 	var meshx = maze_size.x*lane_w +wall_thick

@@ -90,9 +90,9 @@ func enter_new_storey()->void:
 	add_child(minimap)
 	minimap.init(cur_storey,map_scale)
 
-	for pl in char_container.get_children():
-		pl.action_queue.resize(0)
-		pl.enqueue_action(Character.Action.EnterStorey, [cur_storey, pl.serial == player_number])
+	for ch in char_container.get_children():
+		ch.action_queue.resize(0)
+		ch.enqueue_action(Character.Action.EnterStorey, [cur_storey, ch.serial == player_number])
 
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
@@ -103,28 +103,29 @@ func _process(_delta: float) -> void:
 	update_info()
 
 func move_character(cur_storey :Storey)->void:
-	for pl in char_container.get_children():
-		var ani_dur = pl.get_animation_progress()
-		if pl.is_action_ended(ani_dur): # true on act end
-			pl.end_action()
-			if pl.serial == player_number  : # player
-				if cur_storey.is_goal_pos(pl.pos_src):
+	for ch in char_container.get_children():
+		var ani_dur = ch.get_animation_progress()
+		if ch.is_action_ended(ani_dur): # true on act end
+			ch.end_action()
+			if ch.serial == player_number  : # player
+				$MovingCameraLight.snap_90()
+				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_new_storey()
 					return
-				if cur_storey.capsule_pos_dict.has(pl.pos_src) : # capsule encounter
-					pl.enqueue_action(Character.Action.RollRight)
-					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,pl.pos_src)
-				if cur_storey.donut_pos_dict.has(pl.pos_src) : # donut encounter
-					pl.enqueue_action(Character.Action.RollLeft)
-					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,pl.pos_src)
-				minimap.move_player(pl.pos_src.x, pl.pos_src.y)
-		pl.ai_action()
-		if pl.start_new_action(): # new act start
+				if cur_storey.capsule_pos_dict.has(ch.pos_src) : # capsule encounter
+					ch.enqueue_action(Character.Action.RollRight)
+					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,ch.pos_src)
+				if cur_storey.donut_pos_dict.has(ch.pos_src) : # donut encounter
+					ch.enqueue_action(Character.Action.RollLeft)
+					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,ch.pos_src)
+				minimap.move_player(ch.pos_src.x, ch.pos_src.y)
+		ch.ai_action()
+		if ch.start_new_action(): # new act start
 			ani_dur = 0
-			if pl.serial == player_number and pl.action_current[0] != Character.Action.EnterStorey: # player
-				minimap.update_walls_by_pos(pl.pos_src.x,pl.pos_src.y)
-		if pl.action_current[0] != Character.Action.None :
-			animate_action(pl, ani_dur)
+			if ch.serial == player_number and ch.action_current[0] != Character.Action.EnterStorey: # player
+				minimap.update_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
+		if ch.action_current[0] != Character.Action.None :
+			animate_action(ch, ani_dur)
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,
@@ -151,14 +152,12 @@ var key2fn = {
 }
 
 func _unhandled_input(event: InputEvent) -> void:
-	var player = char_container.get_child(player_number)
 	if event is InputEventKey and event.pressed:
 		var fn = key2fn.get(event.keycode)
 		if fn != null:
 			fn.call()
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
-#←↑→↓
 
 func update_info()->void:
 	var player = char_container.get_child(player_number)
@@ -185,18 +184,18 @@ storey %s
 	$MovingCameraLight.info_str(),
 	]
 
-func animate_action(pl :Character, dur :float)->void:
-	match pl.action_current[0]:
+func animate_action(ch :Character, dur :float)->void:
+	match ch.action_current[0]:
 		Character.Action.Forward:
-			pl.animate_move_by_dur(dur)
+			ch.animate_move_by_dur(dur)
 		Character.Action.TurnLeft, Character.Action.TurnRight:
-			pl.animate_turn_by_dur(dur)
+			ch.animate_turn_by_dur(dur)
 		Character.Action.RollRight,Character.Action.RollLeft:
-			pl.animate_roll_by_dur(dur)
+			ch.animate_roll_by_dur(dur)
 		Character.Action.EnterStorey:
-			pl.animate_move_storey_by_dur(dur, cur_storey_index -1, cur_storey_index)
-	if pl.serial == player_number:
-		cameralight.copy_position_rotation(pl)
+			ch.animate_move_storey_by_dur(dur, cur_storey_index -1, cur_storey_index)
+	if ch.serial == player_number:
+		cameralight.copy_position_rotation(ch)
 
 func rand_pos()->Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )

@@ -26,14 +26,13 @@ var minimap_mode :int = 0
 var view_floor_ceiling :bool = false
 
 func _ready() -> void:
-	var meshx = maze_size.x*lane_w +wall_thick
-	var meshy = maze_size.y*lane_w +wall_thick
+	var msh = maze_size*lane_w +Vector2(wall_thick, wall_thick)
 
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
 	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
-	$Floor.mesh.size = Vector2(meshx, meshy)
-	$Floor.position = Vector3(meshx/2, 0, meshy/2)
+	$Floor.mesh.size = msh
+	$Floor.position = Vector3(msh.x/2, 0, msh.y/2)
 	$Floor.mesh.material.uv1_scale = Vector3(maze_size.x,(maze_size.x+maze_size.y)/2.0,maze_size.y)
 
 	mat_keys = Texmat.ceiling_mat_dict.keys()

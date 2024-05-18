@@ -35,6 +35,25 @@ var wall_mat_dict = {
 	wool = preload("res://test_materials/wool.tres"),
 }
 
-var floor_mat_dict = wall_mat_dict
-var ceiling_mat_dict = wall_mat_dict
+var floor_mat_dict = {
+	#aluminium = preload("res://test_materials/aluminium.tres"),
+	#blue = preload("res://test_materials/blue.tres"),
+	brick = preload("res://test_materials/brick.tres"),
+	cheese = preload("res://test_materials/cheese.tres"),
+	darkwood = preload("res://test_materials/dark_wood.tres"),
+	#gray = preload("res://test_materials/gray.tres"),
+	#ice = preload("res://test_materials/ice.tres"),
+	marble = preload("res://test_materials/marble.tres"),
+	#mirror = preload("res://test_materials/mirror.tres"),
+	rock = preload("res://test_materials/rock.tres"),
+	stones = preload("res://test_materials/stones.tres"),
+	#toon = preload("res://test_materials/toon.tres"),
+	wetsand = preload("res://test_materials/wet_sand.tres"),
+	#white = preload("res://test_materials/white.tres"),
+	#whiteplastic = preload("res://test_materials/white_plastic.tres"),
+	wool = preload("res://test_materials/wool.tres"),
+}
+
+var ceiling_mat_dict = floor_mat_dict
+
 var interfloor_mat = preload("res://image/net.png")

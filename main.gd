@@ -22,7 +22,7 @@ var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 var player_number = 0
 var vp_size :Vector2
-var minimap_mode :int = 2
+var minimap_mode :int = 0
 var view_floor_ceiling :bool = false
 
 func _ready() -> void:
@@ -231,13 +231,13 @@ func set_minimap_mode(v :int)->void:
 	minimap_mode = v%3
 	match minimap_mode:
 		0:
-			minimap.show()
-			minimap.view_full_map()
+			minimap.hide()
 		1:
 			minimap.show()
 			minimap.view_known_map()
 		2:
-			minimap.hide()
+			minimap.show()
+			minimap.view_full_map()
 
 func change_floor_ceiling_visible(f :bool,c :bool)->void:
 	var st = visible_down_index()

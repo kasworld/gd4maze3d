@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://huxiv0a21wm"]
+
+[ext_resource type="Script" path="res://maze_crawl/maze_crawl.gd" id="1_omgnc"]
+
+[node name="Character" type="Node3D"]
+script = ExtResource("1_omgnc")

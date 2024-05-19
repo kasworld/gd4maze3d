@@ -45,7 +45,7 @@ func _ready() -> void:
 	for i in maze_size.x*maze_size.y/10:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init(i, lane_w, true)
+		pl.init_char(true, i, lane_w, NamedColorList.color_list.pick_random()[0])
 
 	for i in VisibleStoreyUp:
 		add_new_storey(i,maze_size,storey_h,lane_w,wall_thick)
@@ -90,7 +90,7 @@ func enter_new_storey()->void:
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
-		ch.enqueue_action(Character.Action.EnterStorey, [cur_storey, ch.serial == player_number])
+		ch.enqueue_action(MazeCrawl.Action.EnterStorey, [cur_storey, ch.serial == player_number])
 
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
@@ -111,18 +111,18 @@ func move_character(cur_storey :Storey)->void:
 					enter_new_storey()
 					return
 				if cur_storey.capsule_pos_dict.has(ch.pos_src) : # capsule encounter
-					ch.enqueue_action(Character.Action.RollRight)
+					ch.enqueue_action(MazeCrawl.Action.RollRight)
 					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,ch.pos_src)
 				if cur_storey.donut_pos_dict.has(ch.pos_src) : # donut encounter
-					ch.enqueue_action(Character.Action.RollLeft)
+					ch.enqueue_action(MazeCrawl.Action.RollLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,ch.pos_src)
 				minimap.move_character(player_number, ch.pos_src)
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
-			if ch.serial == player_number and ch.action_current[0] != Character.Action.EnterStorey: # player
+			if ch.serial == player_number and ch.action_current[0] != MazeCrawl.Action.EnterStorey: # player
 				minimap.update_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
-		if ch.action_current[0] != Character.Action.None :
+		if ch.action_current[0] != MazeCrawl.Action.None :
 			animate_action(ch, ani_dur)
 
 var key2fn = {
@@ -182,15 +182,15 @@ storey %s
 	$MovingCameraLight.info_str(),
 	]
 
-func animate_action(ch :Character, dur :float)->void:
+func animate_action(ch :MazeCrawl, dur :float)->void:
 	match ch.action_current[0]:
-		Character.Action.Forward:
+		MazeCrawl.Action.Forward:
 			ch.animate_move_by_dur(dur)
-		Character.Action.TurnLeft, Character.Action.TurnRight:
+		MazeCrawl.Action.TurnLeft, MazeCrawl.Action.TurnRight:
 			ch.animate_turn_by_dur(dur)
-		Character.Action.RollRight,Character.Action.RollLeft:
+		MazeCrawl.Action.RollRight,MazeCrawl.Action.RollLeft:
 			ch.animate_roll_by_dur(dur)
-		Character.Action.EnterStorey:
+		MazeCrawl.Action.EnterStorey:
 			ch.animate_move_storey_by_dur(dur, cur_storey_index -1, cur_storey_index)
 	if ch.serial == player_number:
 		cameralight.copy_position_rotation(ch)
@@ -272,28 +272,28 @@ func _on_button_info_pressed() -> void:
 
 func _on_button_forward_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(Character.Action.Forward, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
-	player.enqueue_action_with_speed(Character.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(Character.Action.TurnRight, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(Character.Action.RollRight, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(Character.Action.RollLeft, 10)
+	player.enqueue_action_with_speed(MazeCrawl.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	$MovingCameraLight.fov_inc()

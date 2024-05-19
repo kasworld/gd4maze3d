@@ -25,9 +25,15 @@ func init(st :Storey, sc :float)->void:
 	start = new_label(Color.YELLOW, "Start")
 	add_child(start)
 
-	var ch = new_label(Color.GREEN, "Player")
-	$CharacterContainer.add_child(ch)
 	change_scale(sc)
+
+func add_character(char :Character, pos :Vector2)->void:
+	var ch = new_label(char.color, "Char%d" %[char.serial])
+	$CharacterContainer.add_child(ch)
+	update_label_pos_size(ch,pos)
+
+func move_character(n :int, pos :Vector2)->void:
+	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
 
 func new_label(co:Color, text :String)->Label:
 	var lb = Label.new()
@@ -111,17 +117,21 @@ func make_walllines_known()->void:
 		if is_wall_at(maze_size.x-1,y,Storey.Dir.East):
 			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_known)
 
-
 func get_width()->float:
 	return storey.maze_size.x * map_scale
 func get_height()->float:
 	return storey.maze_size.y * map_scale
 
 func view_full_map()->void:
+	for ch in $CharacterContainer.get_children():
+		ch.visible = true
 	map_mode_full = true
 	queue_redraw()
 
-func view_known_map()->void:
+func view_known_map(playernum :int)->void:
+	for ch in $CharacterContainer.get_children():
+		ch.visible = false
+	$CharacterContainer.get_child(playernum).visible = true
 	map_mode_full = false
 	queue_redraw()
 
@@ -136,8 +146,6 @@ func set_wall_at(x :int, y:int, dir :Storey.Dir):
 	var wpos = calc_wall_pos(x,y,dir)
 	walls_known[wpos.y][wpos.x] = 1
 
-func move_character(n :int, pos :Vector2)->void:
-	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
 
 func _draw() -> void:
 	if map_mode_full:

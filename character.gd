@@ -1,6 +1,9 @@
 extends MazeCrawl
 
+class_name Character
+
 var serial :int
+var color :Color
 
 func init_char(auto :bool, n :int, lane_w:float,co :Color)->void:
 	super.init(auto)
@@ -11,3 +14,4 @@ func init_char(auto :bool, n :int, lane_w:float,co :Color)->void:
 	mi3d.scale.x = 0.5
 	add_child(mi3d)
 	serial = n
+	color = co

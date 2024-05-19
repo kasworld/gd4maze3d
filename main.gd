@@ -93,6 +93,7 @@ func enter_new_storey()->void:
 		var stpos = cur_storey.rand_pos_2i()
 		if ch.serial == player_number:
 			stpos = cur_storey.start_pos
+		minimap.add_character(ch,stpos)
 		ch.enqueue_action(MazeCrawl.Action.EnterStorey, [cur_storey, stpos])
 
 	set_minimap_mode(minimap_mode)
@@ -119,7 +120,7 @@ func move_character(cur_storey :Storey)->void:
 				if cur_storey.donut_pos_dict.has(ch.pos_src) : # donut encounter
 					ch.enqueue_action(MazeCrawl.Action.RollLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,ch.pos_src)
-				minimap.move_character(player_number, ch.pos_src)
+			minimap.move_character(ch.serial, ch.pos_src)
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
@@ -235,7 +236,7 @@ func set_minimap_mode(v :int)->void:
 			minimap.hide()
 		1:
 			minimap.show()
-			minimap.view_known_map()
+			minimap.view_known_map(player_number)
 		2:
 			minimap.show()
 			minimap.view_full_map()

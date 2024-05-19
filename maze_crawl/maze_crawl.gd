@@ -90,10 +90,7 @@ func start_new_action()->bool:
 		Action.EnterStorey:
 			var args = action_current[2]
 			storey = args[0]
-			if args[1] :
-				pos_dst = storey.start_pos
-			else:
-				pos_dst = storey.rand_pos_2i()
+			pos_dst = args[1]
 			storey_action_stats = MazeCrawl.new_action_stats_dict()
 			action_per_second.set_randfn()
 			animate_move_by_dur(0)

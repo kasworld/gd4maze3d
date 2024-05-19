@@ -90,7 +90,10 @@ func enter_new_storey()->void:
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
-		ch.enqueue_action(MazeCrawl.Action.EnterStorey, [cur_storey, ch.serial == player_number])
+		var stpos = cur_storey.rand_pos_2i()
+		if ch.serial == player_number:
+			stpos = cur_storey.start_pos
+		ch.enqueue_action(MazeCrawl.Action.EnterStorey, [cur_storey, stpos])
 
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()

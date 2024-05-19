@@ -12,7 +12,6 @@ var map_mode_full :bool
 
 var goal :Label
 var start :Label
-var player :Label
 func init(st :Storey, sc :float)->void:
 	map_mode_full = false
 	storey = st
@@ -25,8 +24,9 @@ func init(st :Storey, sc :float)->void:
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start")
 	add_child(start)
-	player = new_label(Color.GREEN, "Player")
-	add_child(player)
+
+	var ch = new_label(Color.GREEN, "Player")
+	$CharacterContainer.add_child(ch)
 	change_scale(sc)
 
 func new_label(co:Color, text :String)->Label:
@@ -57,14 +57,15 @@ func change_scale(sc :float)->void:
 		wall_thick = 1
 	make_walllines_all()
 	make_walllines_known()
-	make_points()
+	update_labels()
 
-func make_points()->void:
-	set_label_setting(goal,storey.goal_pos)
-	set_label_setting(start,storey.start_pos)
-	set_label_setting(player,storey.start_pos)
+func update_labels()->void:
+	update_label_pos_size(goal,storey.goal_pos)
+	update_label_pos_size(start,storey.start_pos)
+	for ch in $CharacterContainer.get_children():
+		update_label_pos_size(ch,storey.start_pos)
 
-func set_label_setting(nd :Label, pos :Vector2)->void:
+func update_label_pos_size(nd :Label, pos :Vector2)->void:
 	nd.position = pos2mapscale(pos)
 	nd.size = Vector2(map_scale-wall_thick*2, map_scale-wall_thick*2)
 	nd.label_settings.font_size = map_scale/4
@@ -135,9 +136,8 @@ func set_wall_at(x :int, y:int, dir :Storey.Dir):
 	var wpos = calc_wall_pos(x,y,dir)
 	walls_known[wpos.y][wpos.x] = 1
 
-func move_player(x:int, y:int)->void:
-	#player.position = Vector2(x,y)*map_scale
-	player.position = pos2mapscale( Vector2(x,y) )
+func move_character(n :int, pos :Vector2)->void:
+	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
 
 func _draw() -> void:
 	if map_mode_full:

@@ -116,7 +116,7 @@ func move_character(cur_storey :Storey)->void:
 				if cur_storey.donut_pos_dict.has(ch.pos_src) : # donut encounter
 					ch.enqueue_action(Character.Action.RollLeft)
 					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,ch.pos_src)
-				minimap.move_player(ch.pos_src.x, ch.pos_src.y)
+				minimap.move_character(player_number, ch.pos_src)
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0

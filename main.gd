@@ -69,7 +69,6 @@ func _on_vpsize_changed()->void:
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
 
-	#var bc_size = $ButtonContainer.size
 	$ButtonContainer.position = vp_size  - $ButtonContainer.size
 
 func enter_new_storey()->void:

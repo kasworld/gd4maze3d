@@ -5,19 +5,4 @@
 [node name="MiniMap" type="Node2D"]
 script = ExtResource("1_60ldh")
 
-[node name="LabelStart" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Start"
-
-[node name="LabelGoal" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Goal"
-
-[node name="LabelPlayer" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Player"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="CharacterContainer" type="Node2D" parent="."]

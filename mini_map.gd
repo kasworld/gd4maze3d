@@ -8,9 +8,11 @@ var storey :Storey
 var walllines_all :PackedVector2Array =[]
 var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
-#var player :Line2D
 var map_mode_full :bool
 
+var goal :Label
+var start :Label
+var player :Label
 func init(st :Storey, sc :float)->void:
 	map_mode_full = false
 	storey = st
@@ -19,12 +21,18 @@ func init(st :Storey, sc :float)->void:
 	walls_known.resize(storey.maze_size.y*2+1)
 	for cl in walls_known:
 		cl.resize(storey.maze_size.x*2+1)
-	init_label($LabelGoal, Color.RED, "Goal")
-	init_label($LabelStart, Color.YELLOW, "Start")
-	init_label($LabelPlayer, Color.GREEN, "Player")
+	goal = new_label(Color.RED, "Goal")
+	add_child(goal)
+	start = new_label(Color.YELLOW, "Start")
+	add_child(start)
+	player = new_label(Color.GREEN, "Player")
+	add_child(player)
 	change_scale(sc)
 
-func init_label(lb :Label, co:Color, text :String)->void:
+func new_label(co:Color, text :String)->Label:
+	var lb = Label.new()
+	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lb.label_settings = LabelSettings.new()
 	lb.label_settings.font_color = Color(Color.BLACK, 0.5)
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -39,6 +47,7 @@ func init_label(lb :Label, co:Color, text :String)->void:
 	#stb.border_width_right = 1
 	#stb.border_width_top = 1
 	lb.add_theme_stylebox_override("normal", stb)
+	return lb
 
 # call scale changed
 func change_scale(sc :float)->void:
@@ -51,9 +60,9 @@ func change_scale(sc :float)->void:
 	make_points()
 
 func make_points()->void:
-	set_label_setting($LabelGoal,storey.goal_pos)
-	set_label_setting($LabelStart,storey.start_pos)
-	set_label_setting($LabelPlayer,storey.start_pos)
+	set_label_setting(goal,storey.goal_pos)
+	set_label_setting(start,storey.start_pos)
+	set_label_setting(player,storey.start_pos)
 
 func set_label_setting(nd :Label, pos :Vector2)->void:
 	nd.position = pos2mapscale(pos)
@@ -128,7 +137,7 @@ func set_wall_at(x :int, y:int, dir :Storey.Dir):
 
 func move_player(x:int, y:int)->void:
 	#player.position = Vector2(x,y)*map_scale
-	$LabelPlayer.position = pos2mapscale( Vector2(x,y) )
+	player.position = pos2mapscale( Vector2(x,y) )
 
 func _draw() -> void:
 	if map_mode_full:

@@ -67,9 +67,9 @@ func init(n :int, lane_w:float, auto :bool)->void:
 		)
 	mi3d.rotation.x = -PI/2
 	mi3d.scale.x = 0.5
-
 	add_child(mi3d)
 	serial = n
+
 	auto_move = auto
 	total_action_stats = Character.new_action_stats_dict()
 	dir_src = Storey.Dir.North

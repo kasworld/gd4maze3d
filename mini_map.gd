@@ -20,22 +20,22 @@ func init(st :Storey, sc :float)->void:
 	walls_known.resize(storey.maze_size.y*2+1)
 	for cl in walls_known:
 		cl.resize(storey.maze_size.x*2+1)
-	goal = new_label(Color.RED, "Goal")
+	goal = new_label(Color.RED, "Goal", 8)
 	add_child(goal)
-	start = new_label(Color.YELLOW, "Start")
+	start = new_label(Color.YELLOW, "Start", 8)
 	add_child(start)
 
 	change_scale(sc)
 
-func add_character(char :Character, pos :Vector2)->void:
-	var ch = new_label(char.color, "Char%d" %[char.serial])
+func add_character(char :Character, pos :Vector2, outline :int)->void:
+	var ch = new_label(char.color, "Char%d" %[char.serial] , outline)
 	$CharacterContainer.add_child(ch)
 	update_label_pos_size(ch,pos)
 
 func move_character(n :int, pos :Vector2)->void:
 	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
 
-func new_label(co:Color, text :String)->Label:
+func new_label(co:Color, text :String, outline :int)->Label:
 	var lb = Label.new()
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -46,12 +46,13 @@ func new_label(co:Color, text :String)->Label:
 	lb.text = text
 	var stb = StyleBoxFlat.new()
 	stb.bg_color = Color(co, 0.5)
-	#stb.border_color = Color(Color.WHITE,0.5)
-	#stb.border_blend = true
-	#stb.border_width_bottom = 1
-	#stb.border_width_left = 1
-	#stb.border_width_right = 1
-	#stb.border_width_top = 1
+	if outline != 0:
+		stb.border_color = Color(co.inverted(),0.5)
+		#stb.border_blend = true
+		stb.border_width_bottom = outline
+		stb.border_width_left = outline
+		stb.border_width_right = outline
+		stb.border_width_top = outline
 	lb.add_theme_stylebox_override("normal", stb)
 	return lb
 
@@ -74,7 +75,7 @@ func update_labels()->void:
 func update_label_pos_size(nd :Label, pos :Vector2)->void:
 	nd.position = pos2mapscale(pos)
 	nd.size = Vector2(map_scale-wall_thick*2, map_scale-wall_thick*2)
-	nd.label_settings.font_size = map_scale/4
+	nd.label_settings.font_size = map_scale/5
 
 func pos2mapscale(pos :Vector2)->Vector2:
 	return pos * map_scale + Vector2(wall_thick,wall_thick)

@@ -28,7 +28,7 @@ func init(st :Storey, sc :float)->void:
 	change_scale(sc)
 
 func add_character(char :Character, pos :Vector2, outline :int)->void:
-	var ch = new_label(char.color, "Char%d" %[char.serial] , outline)
+	var ch = new_label(char.color, "Char\n%d" %[char.serial] , outline)
 	$CharacterContainer.add_child(ch)
 	update_label_pos_size(ch,pos)
 
@@ -36,18 +36,27 @@ func move_character(n :int, pos :Vector2)->void:
 	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
 
 func new_label(co:Color, text :String, outline :int)->Label:
+	var co_txt :Color
+	var co_bdr :Color
+	var lum = co.get_luminance()
+	if lum > 0.5:
+		co_txt = co.inverted().darkened(0.5)
+	else:
+		co_txt = co.inverted().lightened(0.5)
+	co_bdr = co_txt
+
 	var lb = Label.new()
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lb.label_settings = LabelSettings.new()
-	lb.label_settings.font_color = Color(Color.BLACK, 0.5)
+	lb.label_settings.font_color = Color(co_txt, 0.5)
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lb.text = text
 	var stb = StyleBoxFlat.new()
 	stb.bg_color = Color(co, 0.5)
 	if outline != 0:
-		stb.border_color = Color(co.inverted(),0.5)
+		stb.border_color = Color(co_bdr,0.5)
 		#stb.border_blend = true
 		stb.border_width_bottom = outline
 		stb.border_width_left = outline

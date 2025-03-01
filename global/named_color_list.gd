@@ -1,5 +1,7 @@
 extends Node
 
+#class_name NamedColorList
+
 func get_color(i :int)->Color:
 	return color_list[i%color_list.size()][0]
 
@@ -11,6 +13,20 @@ func get_colorname_by_color(c :Color)->String:
 		if v[0] == c:
 			return v[1]
 	return c.to_html()
+
+func make_light_color_list(l :float= 0.5) -> Array:
+	var rtn := []
+	for i in color_list:
+		if i[0].get_luminance() > l:
+			rtn.append(i)
+	return rtn
+
+func make_dark_color_list(l :float= 0.5) -> Array:
+	var rtn := []
+	for i in color_list:
+		if i[0].get_luminance() < l:
+			rtn.append(i)
+	return rtn
 
 const color_list = [
 [Color.ALICE_BLUE, "ALICE_BLUE"],
@@ -160,4 +176,3 @@ const color_list = [
 [Color.YELLOW, "YELLOW"],
 [Color.YELLOW_GREEN, "YELLOW_GREEN"],
 ]
-

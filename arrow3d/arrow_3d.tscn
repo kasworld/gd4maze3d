@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8npqlgeyy3xa"]
+
+[ext_resource type="Script" path="res://arrow3d/arrow_3d.gd" id="1_5keum"]
+
+[node name="Arrow3D" type="Node3D"]
+script = ExtResource("1_5keum")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+
+[node name="Head" type="MeshInstance3D" parent="."]

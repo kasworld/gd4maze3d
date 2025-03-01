@@ -121,4 +121,3 @@ func get_color_mat(co: Color)->Material:
 	mat.metallic = 1
 	mat.clearcoat = true
 	return mat
-

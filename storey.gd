@@ -122,7 +122,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(p)
-				if rand_make_donutcapsule():
+				if randf() < Settings.make_donut_capsult_rate:
 					var co = colist.pick_random()[0]
 					if randi()%2 ==0:
 						var c = new_capsule_at(p, co)
@@ -130,7 +130,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 					else:
 						var c = new_donut_at(p, co)
 						donut_pos_dict[p] = c
-			elif rand_make_tree():
+			elif randf() < Settings.make_tree_rate:
 				new_tree_at(p)
 
 	var ba = AABB( Vector3(wall_thick/2,0,wall_thick/2),
@@ -144,14 +144,6 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		var bt = ball_trail_scene.instantiate()
 		bt.init(bounce_cell ,storey_h/30, 20, i , pos)
 		add_child(bt)
-
-func add_donut_or_capsule() -> void:
-	pass
-
-func rand_make_donutcapsule() -> bool:
-	return randi()%2 == 0
-func rand_make_tree() -> bool:
-	return randi()%40 == 0
 
 func _process(delta: float) -> void:
 	start_node.rotate_y(delta)
@@ -230,20 +222,13 @@ func make_wall_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
-func rand_make_line2d() -> bool:
-	return randi()%40 == 0
-func rand_make_subwall() -> bool:
-	return randi()%20 == 0
-func rand_make_clockcalendar() -> bool:
-	return randi()%70 == 0
-
 func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	var size_face_ew = Vector3(wall_thick,storey_h*0.999,lane_w)
 	var size_face_ns = Vector3(lane_w,storey_h*0.999,wall_thick)
 
-	if rand_make_line2d():
+	if randf() < Settings.make_line2d_wall_rate:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
@@ -256,7 +241,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 		return
 
 	var mat :StandardMaterial3D
-	if rand_make_subwall():
+	if randf() < Settings.make_sub_wall_rate:
 		mat = sub_wall_mat
 	else:
 		mat = main_wall_mat
@@ -271,7 +256,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 	$WallContainer.add_child(w)
 
 	# add clock or calendar
-	if rand_make_clockcalendar():
+	if randf() < Settings.make_clockcal_wall_rate:
 		var n :Node3D
 		var depth = 0.1
 		clockcalendar_sel +=1

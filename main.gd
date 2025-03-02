@@ -59,7 +59,7 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	enter_new_storey()
 
-func _on_vpsize_changed()->void:
+func _on_vpsize_changed() -> void:
 	vp_size = get_viewport().get_visible_rect().size
 
 	var cur_storey = get_cur_storey()
@@ -71,7 +71,7 @@ func _on_vpsize_changed()->void:
 
 	$ButtonContainer.position = vp_size  - $ButtonContainer.size
 
-func enter_new_storey()->void:
+func enter_new_storey() -> void:
 	cur_storey_index +=1
 	del_old_storey()
 	add_new_storey(storey_list.size(), maze_size,storey_h,lane_w,wall_thick)
@@ -106,7 +106,7 @@ func _process(_delta: float) -> void:
 	move_character(cur_storey)
 	update_info()
 
-func move_character(cur_storey :Storey)->void:
+func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():
 		var ani_dur = ch.get_animation_progress()
 		if ch.is_action_ended(ani_dur): # true on act end
@@ -163,7 +163,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
-func update_info()->void:
+func update_info() -> void:
 	var player = char_container.get_child(player_number)
 	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)
@@ -188,7 +188,7 @@ storey %s
 	$MovingCameraLight.info_str(),
 	]
 
-func animate_action(ch :MazeCrawl, dur :float)->void:
+func animate_action(ch :MazeCrawl, dur :float) -> void:
 	match ch.action_current[0]:
 		MazeCrawl.Action.Forward:
 			ch.animate_move_by_dur(dur)
@@ -201,13 +201,13 @@ func animate_action(ch :MazeCrawl, dur :float)->void:
 	if ch.serial == player_number:
 		cameralight.copy_position_rotation(ch)
 
-func rand_pos()->Vector2i:
+func rand_pos() -> Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
-func get_cur_storey()->Storey:
+func get_cur_storey() -> Storey:
 	return storey_list[cur_storey_index]
 
-func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)->void:
+func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float) -> void:
 	var gp = rand_pos()
 	var stp = rand_pos()
 	if stnum > 0 :
@@ -218,20 +218,20 @@ func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float)
 	storey_list.append(st)
 	add_child(st)
 
-func del_old_storey()->void:
+func del_old_storey() -> void:
 	if visible_down_index()-1 >=0 :
 		var todel = storey_list[visible_down_index()-1]
 		storey_list[visible_down_index()-1] = null
 		remove_child(todel)
 		todel.queue_free()
 
-func visible_down_index()->int:
+func visible_down_index() -> int:
 	var rtn = cur_storey_index - VisibleStoreyDown
 	if rtn < 0:
 		return 0
 	return rtn
 
-func set_minimap_mode(v :int)->void:
+func set_minimap_mode(v :int) -> void:
 	minimap_mode = v%3
 	match minimap_mode:
 		0:
@@ -243,7 +243,7 @@ func set_minimap_mode(v :int)->void:
 			minimap.show()
 			minimap.view_full_map()
 
-func change_floor_ceiling_visible(f :bool,c :bool)->void:
+func change_floor_ceiling_visible(f :bool,c :bool) -> void:
 	var st = visible_down_index()
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_floor_ceiling(f,c)

@@ -9,6 +9,7 @@ var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
 var ball_trail_scene = preload("res://ball_trail_2/ball_trail_2.tscn")
 var donut_scene = preload("res://donut.tscn")
 var capsule_scene = preload("res://capsule.tscn")
+var text_mark_scene = preload("res://text_mark.tscn")
 
 enum Dir {
 	North = 0,
@@ -35,15 +36,15 @@ const Dir2MazeDir = {
 	Dir.East : Maze.Dir.East,
 }
 
-static func dir2str(d :Dir)->String:
+static func dir2str(d :Dir) -> String:
 	return Dir.keys()[d]
-static func dir_left(d:Dir)->Dir:
+static func dir_left(d:Dir) -> Dir:
 	return (d+1)%4 as Dir
-static func dir_right(d:Dir)->Dir:
+static func dir_right(d:Dir) -> Dir:
 	return (d-1+4)%4 as Dir
-static func dir_opposite(d:Dir)->Dir:
+static func dir_opposite(d:Dir) -> Dir:
 	return (d+2)%4 as Dir
-static func dir2rad(d:Dir)->float:
+static func dir2rad(d:Dir) -> float:
 	return deg_to_rad(d*90.0)
 
 var storey_num :int
@@ -52,8 +53,6 @@ var storey_h :float
 var lane_w :float
 var wall_thick :float
 var maze_cells :Maze
-var start_node : MeshInstance3D
-var goal_node : MeshInstance3D
 var wall_info_all :Array
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
@@ -63,6 +62,8 @@ var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 
 var maze_objects :Array # [y][x]Node
+var start_node : TextMark
+var goal_node : TextMark
 var start_pos :Vector2i
 var goal_pos :Vector2i
 var capsule_pos_dict = Dictionary()
@@ -71,7 +72,7 @@ var donut_pos_dict = Dictionary()
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 var 놓인것들 := {} # 배치된 capsule, donut tree start goal 들
 
-func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
+func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i) -> void:
 	storey_num = stn
 	maze_size = msize
 	storey_h = h
@@ -147,9 +148,9 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 func add_donut_or_capsule() -> void:
 	pass
 
-func rand_make_donutcapsule()->bool:
+func rand_make_donutcapsule() -> bool:
 	return randi()%2 == 0
-func rand_make_tree()->bool:
+func rand_make_tree() -> bool:
 	return randi()%40 == 0
 
 func _process(delta: float) -> void:
@@ -160,7 +161,7 @@ func _process(delta: float) -> void:
 	for n in donut_pos_dict.values():
 		n.rotate_y(delta)
 
-func make_cell_wallinfo(x:int, y:int)->Array:
+func make_cell_wallinfo(x:int, y:int) -> Array:
 	var axis_wall = [
 		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.West), maze_cells.is_wall_dir_at(x,y, Maze.Dir.East)],
 		[true,true],
@@ -171,7 +172,7 @@ func make_cell_wallinfo(x:int, y:int)->Array:
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
-func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float)->Dictionary:
+func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var x = clampi(int(oldpos.x/lane_w),0, maze_size.x-1)
 	var y = clampi(int(oldpos.z/lane_w),0, maze_size.y-1)
 	var wallinfo = wall_info_all[y][x]
@@ -191,7 +192,7 @@ func new_donut_at(p :Vector2i, co:Color) -> Donut:
 	add_child(n)
 	return n
 
-func new_tree_at(p :Vector2i)->BarTree2:
+func new_tree_at(p :Vector2i) -> BarTree2:
 	var t = tree_scene.instantiate().init_with_color(
 		Global3d.random_color(),
 		Global3d.random_color(),
@@ -206,14 +207,14 @@ func new_tree_at(p :Vector2i)->BarTree2:
 	add_child(t)
 	return t
 
-func new_text_mark_at(p :Vector2i, co:Color, text :String) -> MeshInstance3D:
-	var n = Global3d.new_text(5.0,0.01,Global3d.get_color_mat(co),text)
+func new_text_mark_at(p :Vector2i, co:Color, text :String) -> TextMark:
+	var n = text_mark_scene.instantiate().init(5.0, 0.01, co, text)
 	n.position = mazepos2storeypos(p, storey_h/2.0)
 	n.rotation.y = randf_range(0,2*PI)
 	add_child(n)
 	return n
 
-func make_wall_by_maze()->void:
+func make_wall_by_maze() -> void:
 	for y in maze_size.y:
 		for x in maze_size.x :
 			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
@@ -229,14 +230,14 @@ func make_wall_by_maze()->void:
 		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
 			add_wall_at( maze_size.x , y , Maze.Dir.East)
 
-func rand_make_line2d()->bool:
+func rand_make_line2d() -> bool:
 	return randi()%40 == 0
-func rand_make_subwall()->bool:
+func rand_make_subwall() -> bool:
 	return randi()%20 == 0
-func rand_make_clockcalendar()->bool:
+func rand_make_clockcalendar() -> bool:
 	return randi()%70 == 0
 
-func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
+func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	var size_face_ew = Vector3(wall_thick,storey_h*0.999,lane_w)
@@ -293,7 +294,7 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir)->void:
 			Maze.Dir.South:
 				n.position = pos_face_ns - Vector3(0,0,wall_thick)
 
-func make_line2d_subvuewport(size_pixel:Vector2i)->SubViewport:
+func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#print_debug(size_pixel)
 	var l2d = line2d_scene.instantiate()
 	l2d.init(300,4,1.5,size_pixel)
@@ -318,28 +319,28 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
 	add_child(sp)
 	return sp
 
-func can_move(x :int , y :int, dir :Dir)->bool:
+func can_move(x :int , y :int, dir :Dir) -> bool:
 	return maze_cells.is_open_dir_at(x,y, Dir2MazeDir[dir] )
 
-func mazepos2storeypos( mp :Vector2i, y :float)->Vector3:
+func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
 
-func view_floor_ceiling(f :bool,c :bool)->void:
+func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Floor.visible = f
 	$Ceiling.visible = c
 
-func info_str()->String:
+func info_str() -> String:
 	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
 		storey_num, maze_size,storey_h, lane_w, wall_thick,
 		main_wall_mat_name, sub_wall_tex_name ]
 
-func is_goal_pos(p :Vector2i)->bool:
+func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p
 
-func rand_pos_2i()->Vector2i:
+func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
 
-func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i)->bool:
+func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
 	var c = pos_dict.get(p)
 	pos_dict.erase(p)
 	if c != null :

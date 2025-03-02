@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://csug2xt4alhvo"]
+
+[ext_resource type="Script" path="res://donut.gd" id="1_l7w5s"]
+
+[node name="Donut" type="Node3D"]
+script = ExtResource("1_l7w5s")

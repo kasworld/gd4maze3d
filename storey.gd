@@ -7,6 +7,8 @@ var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
 var ball_trail_scene = preload("res://ball_trail_2/ball_trail_2.tscn")
+var donut_scene = preload("res://donut.tscn")
+var capsule_scene = preload("res://capsule.tscn")
 
 enum Dir {
 	North = 0,
@@ -49,14 +51,10 @@ var maze_size : Vector2i
 var storey_h :float
 var lane_w :float
 var wall_thick :float
-var start_pos :Vector2i
-var goal_pos :Vector2i
 var maze_cells :Maze
 var start_node : MeshInstance3D
 var goal_node : MeshInstance3D
 var wall_info_all :Array
-var capsule_pos_dict = Dictionary()
-var donut_pos_dict = Dictionary()
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
 var sub_wall_mat :StandardMaterial3D
@@ -64,6 +62,14 @@ var sub_wall_tex_name :String
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 
+var maze_objects :Array # [y][x]Node
+var start_pos :Vector2i
+var goal_pos :Vector2i
+var capsule_pos_dict = Dictionary()
+var donut_pos_dict = Dictionary()
+
+var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
+var 놓인것들 := {} # 배치된 capsule, donut tree start goal 들
 
 func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i)->void:
 	storey_num = stn
@@ -113,14 +119,16 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
 				continue
-			if maze_cells.get_open_dir_at(x,y).size() == 1 && rand_make_donutcapsule():
-				var co = colist.pick_random()[0]
-				if randi()%2 ==0:
-					var c = new_capsule_at(p, co)
-					capsule_pos_dict[p] = c
-				else:
-					var c = new_donut_at(p, co)
-					donut_pos_dict[p] = c
+			if maze_cells.get_open_dir_at(x,y).size() == 1:
+				구석자리목록.append(p)
+				if rand_make_donutcapsule():
+					var co = colist.pick_random()[0]
+					if randi()%2 ==0:
+						var c = new_capsule_at(p, co)
+						capsule_pos_dict[p] = c
+					else:
+						var c = new_donut_at(p, co)
+						donut_pos_dict[p] = c
 			elif rand_make_tree():
 				new_tree_at(p)
 
@@ -135,6 +143,9 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		var bt = ball_trail_scene.instantiate()
 		bt.init(bounce_cell ,storey_h/30, 20, i , pos)
 		add_child(bt)
+
+func add_donut_or_capsule() -> void:
+	pass
 
 func rand_make_donutcapsule()->bool:
 	return randi()%2 == 0
@@ -168,21 +179,15 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float)->Dictionary:
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
-func new_capsule_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = Global3d.new_capsule(lane_w*0.3, lane_w*0.05, Global3d.get_color_mat(co))
-	n.rotate_x(PI/2)
+func new_capsule_at(p :Vector2i, co:Color) -> Capsule:
+	var n = capsule_scene.instantiate().init(lane_w*0.3, lane_w*0.05, co)
 	n.position = mazepos2storeypos(p, storey_h/4.0)
-	n.rotation.x = randf_range(0, PI)
-	n.rotation.y = randf_range(0, 2*PI)
 	add_child(n)
 	return n
 
-func new_donut_at(p :Vector2i, co:Color)->MeshInstance3D:
-	var n = Global3d.new_torus(lane_w*0.07, lane_w*0.15, Global3d.get_color_mat(co))
-	n.rotate_x(PI/2)
+func new_donut_at(p :Vector2i, co:Color) -> Donut:
+	var n = donut_scene.instantiate().init(lane_w*0.07, lane_w*0.15,co)
 	n.position = mazepos2storeypos(p, storey_h/4.0)
-	n.rotation.x = randf_range(0, PI)
-	n.rotation.y = randf_range(0, 2*PI)
 	add_child(n)
 	return n
 
@@ -198,7 +203,7 @@ func new_tree_at(p :Vector2i)->BarTree2:
 	add_child(t)
 	return t
 
-func new_text_mark_at(p :Vector2i, co:Color, text :String)->MeshInstance3D:
+func new_text_mark_at(p :Vector2i, co:Color, text :String) -> MeshInstance3D:
 	var n = Global3d.new_text(5.0,0.01,Global3d.get_color_mat(co),text)
 	n.position = mazepos2storeypos(p, storey_h/2.0)
 	n.rotation.y = randf_range(0,2*PI)
@@ -298,7 +303,7 @@ func make_line2d_subvuewport(size_pixel:Vector2i)->SubViewport:
 	add_child(sv)
 	return sv
 
-func make_box_from_subviewport(sv :SubViewport, sz :Vector3)->MeshInstance3D:
+func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
 	var mesh = BoxMesh.new()
 	mesh.size = sz
 	var sp = MeshInstance3D.new()

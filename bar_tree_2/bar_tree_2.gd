@@ -12,7 +12,7 @@ var multi_bar :MultiMeshInstance3D
 var multimesh :MultiMesh
 
 func init_with_color(co1 :Color, co2:Color,
-		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot:bool)->void:
+		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot:bool) -> BarTree2:
 	tree_height = h
 	tree_width = w
 	bar_width = bar_w
@@ -20,9 +20,10 @@ func init_with_color(co1 :Color, co2:Color,
 	bar_rotation = rot_vel
 	auto_rotate_bar = autorot
 	make_color_multi(co1,co2)
+	return self
 
 func init_with_material(mat :Material,
-		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot:bool)->void:
+		w: float, h :float, bar_w :float, b_count:int, rot_vel :float, autorot:bool) -> BarTree2:
 	tree_height = h
 	tree_width = w
 	bar_width = bar_w
@@ -30,6 +31,7 @@ func init_with_material(mat :Material,
 	bar_rotation = rot_vel
 	auto_rotate_bar = autorot
 	make_mat_multi(mat)
+	return self
 
 func make_color_multi(co1 :Color, co2:Color):
 	var mat = get_color_mat(Color.WHITE)
@@ -101,13 +103,13 @@ func _process(_delta: float) -> void:
 	if auto_rotate_bar:
 		bar_rotation_y()
 
-func reset_bar_rotation()->void:
+func reset_bar_rotation() -> void:
 	for i in multimesh.visible_instance_count:
 		var t = multimesh.get_instance_transform(i)
 		t = t.rotated_local(Vector3(0,1,0), 0)
 		multimesh.set_instance_transform(i,t )
 
-func bar_rotation_y()->void:
+func bar_rotation_y() -> void:
 	for i in multimesh.visible_instance_count:
 		var t = multimesh.get_instance_transform(i)
 		var rate = float(i)/bar_count

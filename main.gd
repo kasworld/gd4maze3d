@@ -19,14 +19,14 @@ var minimap_mode :int = 0
 var view_floor_ceiling :bool = false
 
 func _ready() -> void:
-	var msh = Settings.maze_size*Settings.lane_w +Vector2(Settings.wall_thick, Settings.wall_thick)
+	var msh = Settings.MazeSize*Settings.LaneW +Vector2(Settings.WallThick, Settings.WallThick)
 
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
 	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
 	$Floor.mesh.size = msh
 	$Floor.position = Vector3(msh.x/2, 0, msh.y/2)
-	$Floor.mesh.material.uv1_scale = Vector3(Settings.maze_size.x,(Settings.maze_size.x+Settings.maze_size.y)/2.0,Settings.maze_size.y)
+	$Floor.mesh.material.uv1_scale = Vector3(Settings.MazeSize.x,(Settings.MazeSize.x+Settings.MazeSize.y)/2.0,Settings.MazeSize.y)
 
 	mat_keys = Texmat.ceiling_mat_dict.keys()
 	mat_keys.shuffle()
@@ -35,13 +35,13 @@ func _ready() -> void:
 	$Ceiling.position = $Floor.position
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
-	for i in Settings.maze_size.x*Settings.maze_size.y/10:
+	for i in Settings.MazeSize.x*Settings.MazeSize.y/10:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init_char(true, i, Settings.lane_w, NamedColorList.color_list.pick_random()[0])
+		pl.init_char(true, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
 
 	for i in Settings.VisibleStoreyUp:
-		add_new_storey(i,Settings.maze_size,Settings.storey_h,Settings.lane_w,Settings.wall_thick)
+		add_new_storey(i)
 
 	$MovingCameraLight.init()
 	vp_size = get_viewport().get_visible_rect().size
@@ -56,7 +56,7 @@ func _on_vpsize_changed() -> void:
 	vp_size = get_viewport().get_visible_rect().size
 
 	var cur_storey = get_cur_storey()
-	var map_scale = min( vp_size.x / cur_storey.maze_size.x , vp_size.y / cur_storey.maze_size.y )
+	var map_scale = min( vp_size.x / Settings.MazeSize.x , vp_size.y / Settings.MazeSize.y )
 	minimap.change_scale(map_scale)
 
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
@@ -67,14 +67,14 @@ func _on_vpsize_changed() -> void:
 func enter_new_storey() -> void:
 	cur_storey_index +=1
 	del_old_storey()
-	add_new_storey(storey_list.size(), Settings.maze_size,Settings.storey_h,Settings.lane_w,Settings.wall_thick)
-	$Floor.position.y = visible_down_index()*Settings.storey_h
-	$Ceiling.position.y = storey_list.size()*Settings.storey_h
+	add_new_storey(storey_list.size())
+	$Floor.position.y = visible_down_index()*Settings.StoryH
+	$Ceiling.position.y = storey_list.size()*Settings.StoryH
 	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 	vp_size = get_viewport().get_visible_rect().size
 	var cur_storey = get_cur_storey()
-	var map_scale = min( vp_size.x / cur_storey.maze_size.x , vp_size.y / cur_storey.maze_size.y )
+	var map_scale = min( vp_size.x / Settings.MazeSize.x , vp_size.y / Settings.MazeSize.y )
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
@@ -195,19 +195,19 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 		cameralight.copy_position_rotation(ch)
 
 func rand_pos() -> Vector2i:
-	return Vector2i(randi_range(0,Settings.maze_size.x-1),randi_range(0,Settings.maze_size.y-1) )
+	return Vector2i(randi_range(0,Settings.MazeSize.x-1),randi_range(0,Settings.MazeSize.y-1) )
 
 func get_cur_storey() -> Storey:
 	return storey_list[cur_storey_index]
 
-func add_new_storey(stnum :int, msize :Vector2i, h :float, lw :float, wt :float) -> void:
+func add_new_storey(stnum :int) -> void:
 	var gp = rand_pos()
 	var stp = rand_pos()
 	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate()
-	st.init(stnum, msize, h, lw, wt, stp, gp)
-	st.position.y = Settings.storey_h * stnum
+	st.init(stnum, stp, gp)
+	st.position.y = Settings.StoryH * stnum
 	storey_list.append(st)
 	add_child(st)
 

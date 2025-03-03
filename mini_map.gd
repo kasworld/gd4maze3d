@@ -3,7 +3,7 @@ extends Node2D
 class_name MiniMap
 
 var map_scale :float = 20
-var wall_thick :float = 2
+var WallThick :float = 2
 var storey :Storey
 var walllines_all :PackedVector2Array =[]
 var walllines_known :PackedVector2Array =[]
@@ -17,9 +17,9 @@ func init(st :Storey, sc :float)->void:
 	storey = st
 
 	walls_known = []
-	walls_known.resize(storey.maze_size.y*2+1)
+	walls_known.resize(Settings.MazeSize.y*2+1)
 	for cl in walls_known:
-		cl.resize(storey.maze_size.x*2+1)
+		cl.resize(Settings.MazeSize.x*2+1)
 	goal = new_label(Color.RED, "Goal", 8)
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
@@ -68,9 +68,9 @@ func new_label(co:Color, text :String, outline :int)->Label:
 # call scale changed
 func change_scale(sc :float)->void:
 	map_scale = sc
-	wall_thick = map_scale*0.1
-	if wall_thick < 1 :
-		wall_thick = 1
+	WallThick = map_scale*0.1
+	if WallThick < 1 :
+		WallThick = 1
 	make_walllines_all()
 	make_walllines_known()
 	update_labels()
@@ -83,54 +83,54 @@ func update_labels()->void:
 
 func update_label_pos_size(nd :Label, pos :Vector2)->void:
 	nd.position = pos2mapscale(pos)
-	nd.size = Vector2(map_scale-wall_thick*2, map_scale-wall_thick*2)
+	nd.size = Vector2(map_scale-WallThick*2, map_scale-WallThick*2)
 	nd.label_settings.font_size = map_scale/5
 
 func pos2mapscale(pos :Vector2)->Vector2:
-	return pos * map_scale + Vector2(wall_thick,wall_thick)
+	return pos * map_scale + Vector2(WallThick,WallThick)
 
 # make wallline by maze
 func make_walllines_all()->void:
 	walllines_all = []
-	var maze_size = storey.maze_size
-	for y in maze_size.y:
-		for x in maze_size.x :
+	var MazeSize = Settings.MazeSize
+	for y in MazeSize.y:
+		for x in MazeSize.x :
 			if not storey.maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
 				add_wall_at_raw( x , y , DirLib.Dir.North, walllines_all)
 			if not storey.maze_cells.is_open_dir_at(x,y,DirLib.Flag.West):
 				add_wall_at_raw( x , y , DirLib.Dir.West, walllines_all)
 
-	for x in maze_size.x :
-		if not storey.maze_cells.is_open_dir_at(x,maze_size.y-1,DirLib.Flag.South):
-			add_wall_at_raw( x , maze_size.y-1 , DirLib.Dir.South, walllines_all)
+	for x in MazeSize.x :
+		if not storey.maze_cells.is_open_dir_at(x,MazeSize.y-1,DirLib.Flag.South):
+			add_wall_at_raw( x , MazeSize.y-1 , DirLib.Dir.South, walllines_all)
 
-	for y in maze_size.y:
-		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,DirLib.Flag.East):
-			add_wall_at_raw( maze_size.x-1 , y , DirLib.Dir.East, walllines_all)
+	for y in MazeSize.y:
+		if not storey.maze_cells.is_open_dir_at(MazeSize.x-1,y,DirLib.Flag.East):
+			add_wall_at_raw( MazeSize.x-1 , y , DirLib.Dir.East, walllines_all)
 
 # make wallline by walls_known
 func make_walllines_known()->void:
 	walllines_known = []
-	var maze_size = storey.maze_size
-	for y in maze_size.y:
-		for x in maze_size.x :
+	var MazeSize = Settings.MazeSize
+	for y in MazeSize.y:
+		for x in MazeSize.x :
 			if is_wall_at(x,y,DirLib.Dir.North):
 				add_wall_at_raw( x , y , DirLib.Dir.North, walllines_known)
 			if is_wall_at(x,y,DirLib.Dir.West):
 				add_wall_at_raw( x , y , DirLib.Dir.West, walllines_known)
 
-	for x in maze_size.x :
-		if is_wall_at(x,maze_size.y-1,DirLib.Dir.South):
-			add_wall_at_raw( x , maze_size.y-1 , DirLib.Dir.South, walllines_known)
+	for x in MazeSize.x :
+		if is_wall_at(x,MazeSize.y-1,DirLib.Dir.South):
+			add_wall_at_raw( x , MazeSize.y-1 , DirLib.Dir.South, walllines_known)
 
-	for y in maze_size.y:
-		if is_wall_at(maze_size.x-1,y,DirLib.Dir.East):
-			add_wall_at_raw( maze_size.x-1 , y , DirLib.Dir.East, walllines_known)
+	for y in MazeSize.y:
+		if is_wall_at(MazeSize.x-1,y,DirLib.Dir.East):
+			add_wall_at_raw( MazeSize.x-1 , y , DirLib.Dir.East, walllines_known)
 
 func get_width()->float:
-	return storey.maze_size.x * map_scale
+	return Settings.MazeSize.x * map_scale
 func get_height()->float:
-	return storey.maze_size.y * map_scale
+	return Settings.MazeSize.y * map_scale
 
 func view_full_map()->void:
 	for ch in $CharacterContainer.get_children():
@@ -159,11 +159,11 @@ func set_wall_at(x :int, y:int, dir :DirLib.Dir):
 
 func _draw() -> void:
 	if map_mode_full:
-		draw_multiline(walllines_all,Color(Color.WHITE,0.5), wall_thick)
+		draw_multiline(walllines_all,Color(Color.WHITE,0.5), WallThick)
 	else:
 		if walllines_known.size() == 0 :
 			return
-		draw_multiline(walllines_known,Color(Color.WHITE,0.5), wall_thick)
+		draw_multiline(walllines_known,Color(Color.WHITE,0.5), WallThick)
 
 func add_wall_at_raw(x:int,y :int, dir :DirLib.Dir,wl :PackedVector2Array )->void:
 	match dir:

@@ -12,10 +12,6 @@ var capsule_scene = preload("res://capsule.tscn")
 var text_mark_scene = preload("res://text_mark.tscn")
 
 var storey_num :int
-var maze_size : Vector2i
-var storey_h :float
-var lane_w :float
-var wall_thick :float
 var maze_cells :Maze
 var wall_info_all :Array
 var main_wall_mat :StandardMaterial3D
@@ -39,12 +35,8 @@ func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
 		return true
 	return false
 
-func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i) -> void:
+func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 	storey_num = stn
-	maze_size = msize
-	storey_h = h
-	lane_w = lw
-	wall_thick = wt
 	start_pos = stp
 	goal_pos = gp
 
@@ -62,35 +54,35 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	main_wall_mat = Texmat.wall_mat_dict[main_wall_mat_name]
 	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
 
-	var meshx = maze_size.x*lane_w +wall_thick
-	var meshy = maze_size.y*lane_w +wall_thick
+	var meshx = Settings.MazeSize.x*Settings.LaneW +Settings.WallThick
+	var meshy = Settings.MazeSize.y*Settings.LaneW +Settings.WallThick
 	$Floor.mesh.size = Vector2(meshx, meshy)
 	$Ceiling.mesh.size = $Floor.mesh.size
 	$Floor.position = Vector3(meshx/2, 0 , meshy/2)
-	$Ceiling.position = Vector3(meshx/2, storey_h , meshy/2)
+	$Ceiling.position = Vector3(meshx/2, Settings.StoryH , meshy/2)
 	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 	$Ceiling.mesh.material.transparency = $Floor.mesh.material.transparency
 
-	maze_cells = Maze.new(maze_size)
+	maze_cells = Maze.new(Settings.MazeSize)
 	make_wall_by_maze()
 
-	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, storey_h/2.0)
-	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, storey_h/2.0)
+	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, Settings.StoryH/2.0)
+	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, Settings.StoryH/2.0)
 
 	var colist = NamedColorList.color_list.duplicate()
 	wall_info_all = []
-	for y in maze_size.y:
+	for y in Settings.MazeSize.y:
 		wall_info_all.append([])
-		for x in maze_size.x:
+		for x in Settings.MazeSize.x:
 			wall_info_all[y].append( make_cell_wallinfo(x,y) )
 			var p = Vector2i(x,y)
 			if p == goal_pos || p == start_pos :
 				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(p)
-				if randf() < Settings.make_donut_capsult_rate:
+				if randf() < Settings.MakeDonutCapsuleRate:
 					var co = colist.pick_random()[0]
 					if randi()%2 ==0:
 						var c = new_capsule_at(p, co)
@@ -98,11 +90,11 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 					else:
 						var c = new_donut_at(p, co)
 						donut_pos_dict[p] = c
-			elif randf() < Settings.make_tree_rate:
+			elif randf() < Settings.MakeTreeRate:
 				new_tree_at(p)
 
-	var ba = AABB( Vector3(wall_thick/2,0,wall_thick/2),
-		Vector3(maze_size.x*lane_w -wall_thick, storey_h, maze_size.y*lane_w -wall_thick) )
+	var ba = AABB( Vector3(Settings.WallThick/2,0,Settings.WallThick/2),
+		Vector3(Settings.MazeSize.x*Settings.LaneW -Settings.WallThick, Settings.StoryH, Settings.MazeSize.y*Settings.LaneW -Settings.WallThick) )
 	for i in Settings.BallTrailCount:
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
@@ -110,7 +102,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 			randf_range(ba.position.z, ba.end.z),
 		)
 		var bt = ball_trail_scene.instantiate()
-		bt.init(bounce_cell ,storey_h/30, 20, i , pos)
+		bt.init(bounce_cell ,Settings.StoryH/30, 20, i , pos)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
@@ -119,28 +111,28 @@ func make_cell_wallinfo(x:int, y:int) -> Array:
 		[true,true],
 		[maze_cells.is_wall_dir_at(x,y, DirLib.Flag.North), maze_cells.is_wall_dir_at(x,y, DirLib.Flag.South)],
 	]
-	var aabb = AABB( Vector3(lane_w*x +wall_thick/2, 0, lane_w*y +wall_thick/2),
-		Vector3(lane_w -wall_thick, storey_h, lane_w -wall_thick) )
+	var aabb = AABB( Vector3(Settings.LaneW*x +Settings.WallThick/2, 0, Settings.LaneW*y +Settings.WallThick/2),
+		Vector3(Settings.LaneW -Settings.WallThick, Settings.StoryH, Settings.LaneW -Settings.WallThick) )
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
-	var x = clampi(int(oldpos.x/lane_w),0, maze_size.x-1)
-	var y = clampi(int(oldpos.z/lane_w),0, maze_size.y-1)
+	var x = clampi(int(oldpos.x/Settings.LaneW),0, Settings.MazeSize.x-1)
+	var y = clampi(int(oldpos.z/Settings.LaneW),0, Settings.MazeSize.y-1)
 	var wallinfo = wall_info_all[y][x]
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
 func new_capsule_at(p :Vector2i, co:Color) -> Capsule:
-	var n = capsule_scene.instantiate().init(lane_w*0.3, lane_w*0.05, co)
-	n.position = mazepos2storeypos(p, storey_h/4.0)
+	var n = capsule_scene.instantiate().init(Settings.LaneW*0.3, Settings.LaneW*0.05, co)
+	n.position = mazepos2storeypos(p, Settings.StoryH/4.0)
 	add_child(n)
 	return n
 
 func new_donut_at(p :Vector2i, co:Color) -> Donut:
-	var n = donut_scene.instantiate().init(lane_w*0.07, lane_w*0.15,co)
-	n.position = mazepos2storeypos(p, storey_h/4.0)
+	var n = donut_scene.instantiate().init(Settings.LaneW*0.07, Settings.LaneW*0.15,co)
+	n.position = mazepos2storeypos(p, Settings.StoryH/4.0)
 	add_child(n)
 	return n
 
@@ -148,40 +140,40 @@ func new_tree_at(p :Vector2i) -> BarTree2:
 	var t = tree_scene.instantiate().init_with_color(
 		Global3d.random_color(),
 		Global3d.random_color(),
-		randf_range(lane_w*0.5, lane_w*0.9),
-		randf_range(storey_h*0.5, storey_h*0.9),
-		randf_range(lane_w*0.5, lane_w*0.9)/10,
+		randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9),
+		randf_range(Settings.StoryH*0.5, Settings.StoryH*0.9),
+		randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9)/10,
 		randi_range(10,100),
 		randfn(0.0,0.3),
 		true)
-	t.position = mazepos2storeypos(p, storey_h*0.1)
+	t.position = mazepos2storeypos(p, Settings.StoryH*0.1)
 	t.rotation.y = randf_range(0, 2*PI)
 	add_child(t)
 	return t
 
 func make_wall_by_maze() -> void:
-	for y in maze_size.y:
-		for x in maze_size.x :
+	for y in Settings.MazeSize.y:
+		for x in Settings.MazeSize.x :
 			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
 				add_wall_at( x , y , DirLib.Flag.North)
 			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.West):
 				add_wall_at( x , y , DirLib.Flag.West)
 
-	for x in maze_size.x :
-		if not maze_cells.is_open_dir_at(x,maze_size.y-1,DirLib.Flag.South):
-			add_wall_at( x , maze_size.y , DirLib.Flag.South)
+	for x in Settings.MazeSize.x :
+		if not maze_cells.is_open_dir_at(x,Settings.MazeSize.y-1,DirLib.Flag.South):
+			add_wall_at( x , Settings.MazeSize.y , DirLib.Flag.South)
 
-	for y in maze_size.y:
-		if not maze_cells.is_open_dir_at(maze_size.x-1,y,DirLib.Flag.East):
-			add_wall_at( maze_size.x , y , DirLib.Flag.East)
+	for y in Settings.MazeSize.y:
+		if not maze_cells.is_open_dir_at(Settings.MazeSize.x-1,y,DirLib.Flag.East):
+			add_wall_at( Settings.MazeSize.x , y , DirLib.Flag.East)
 
 func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
-	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
-	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
-	var size_face_ew = Vector3(wall_thick,storey_h*0.999,lane_w)
-	var size_face_ns = Vector3(lane_w,storey_h*0.999,wall_thick)
+	var pos_face_ew = Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW +Settings.LaneW/2)
+	var pos_face_ns = Vector3( x *Settings.LaneW +Settings.LaneW/2, Settings.StoryH/2.0, y *Settings.LaneW)
+	var size_face_ew = Vector3(Settings.WallThick,Settings.StoryH*0.999,Settings.LaneW)
+	var size_face_ns = Vector3(Settings.LaneW,Settings.StoryH*0.999,Settings.WallThick)
 
-	if randf() < Settings.make_line2d_wall_rate:
+	if randf() < Settings.MakeLine2DWallRate:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
@@ -194,7 +186,7 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 		return
 
 	var mat :StandardMaterial3D
-	if randf() < Settings.make_sub_wall_rate:
+	if randf() < Settings.MakeSubWallRate:
 		mat = sub_wall_mat
 	else:
 		mat = main_wall_mat
@@ -209,28 +201,28 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	$WallContainer.add_child(w)
 
 	# add clock or calendar
-	if randf() < Settings.make_clockcal_wall_rate:
+	if randf() < Settings.MakeClockCalWallRate:
 		var n :Node3D
 		var depth = 0.1
 		clockcalendar_sel +=1
 		if clockcalendar_sel % 2 == 0:
 			n = calendar_scene.instantiate()
-			n.init(lane_w, storey_h,depth, 5, false)
+			n.init(Settings.LaneW, Settings.StoryH,depth, 5, false)
 		else :
 			n = clock_scene.instantiate()
-			n.init(min(lane_w,storey_h)/2,depth, 4, 9.0, false)
+			n.init(min(Settings.LaneW,Settings.StoryH)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(DirLib.dir2rad(1+DirLib.Flag2Dir[dir]))
 		add_child(n)
 		match dir:
 			DirLib.Flag.West:
-				n.position = pos_face_ew + Vector3(wall_thick,0,0)
+				n.position = pos_face_ew + Vector3(Settings.WallThick,0,0)
 			DirLib.Flag.East:
-				n.position = pos_face_ew - Vector3(wall_thick,0,0)
+				n.position = pos_face_ew - Vector3(Settings.WallThick,0,0)
 			DirLib.Flag.North:
-				n.position = pos_face_ns + Vector3(0,0,wall_thick)
+				n.position = pos_face_ns + Vector3(0,0,Settings.WallThick)
 			DirLib.Flag.South:
-				n.position = pos_face_ns - Vector3(0,0,wall_thick)
+				n.position = pos_face_ns - Vector3(0,0,Settings.WallThick)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#print_debug(size_pixel)
@@ -261,19 +253,19 @@ func can_move(x :int , y :int, dir :DirLib.Dir) -> bool:
 	return maze_cells.is_open_dir_at(x,y, DirLib.Dir2Flag[dir] )
 
 func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
-	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
+	return Vector3(Settings.LaneW/2+ mp.x*Settings.LaneW, y, Settings.LaneW/2+ mp.y*Settings.LaneW)
 
 func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Floor.visible = f
 	$Ceiling.visible = c
 
 func info_str() -> String:
-	return "num:%d, size:%s, height:%.1f, lane_w:%.1f, wall_thick:%.1f mainwall:%s subwall:%s" % [
-		storey_num, maze_size,storey_h, lane_w, wall_thick,
+	return "num:%d, size:%s, height:%.1f, Settings.LaneW:%.1f, Settings.WallThick:%.1f mainwall:%s subwall:%s" % [
+		storey_num, Settings.MazeSize,Settings.StoryH, Settings.LaneW, Settings.WallThick,
 		main_wall_mat_name, sub_wall_tex_name ]
 
 func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p
 
 func rand_pos_2i() -> Vector2i:
-	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
+	return Vector2i(randi_range(0,Settings.MazeSize.x-1),randi_range(0,Settings.MazeSize.y-1) )

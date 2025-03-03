@@ -95,18 +95,18 @@ func make_walllines_all()->void:
 	var maze_size = storey.maze_size
 	for y in maze_size.y:
 		for x in maze_size.x :
-			if not storey.maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
-				add_wall_at_raw( x , y , Storey.Dir.North, walllines_all)
-			if not storey.maze_cells.is_open_dir_at(x,y,Maze.Dir.West):
-				add_wall_at_raw( x , y , Storey.Dir.West, walllines_all)
+			if not storey.maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
+				add_wall_at_raw( x , y , DirLib.Dir.North, walllines_all)
+			if not storey.maze_cells.is_open_dir_at(x,y,DirLib.Flag.West):
+				add_wall_at_raw( x , y , DirLib.Dir.West, walllines_all)
 
 	for x in maze_size.x :
-		if not storey.maze_cells.is_open_dir_at(x,maze_size.y-1,Maze.Dir.South):
-			add_wall_at_raw( x , maze_size.y-1 , Storey.Dir.South, walllines_all)
+		if not storey.maze_cells.is_open_dir_at(x,maze_size.y-1,DirLib.Flag.South):
+			add_wall_at_raw( x , maze_size.y-1 , DirLib.Dir.South, walllines_all)
 
 	for y in maze_size.y:
-		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
-			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_all)
+		if not storey.maze_cells.is_open_dir_at(maze_size.x-1,y,DirLib.Flag.East):
+			add_wall_at_raw( maze_size.x-1 , y , DirLib.Dir.East, walllines_all)
 
 # make wallline by walls_known
 func make_walllines_known()->void:
@@ -114,18 +114,18 @@ func make_walllines_known()->void:
 	var maze_size = storey.maze_size
 	for y in maze_size.y:
 		for x in maze_size.x :
-			if is_wall_at(x,y,Storey.Dir.North):
-				add_wall_at_raw( x , y , Storey.Dir.North, walllines_known)
-			if is_wall_at(x,y,Storey.Dir.West):
-				add_wall_at_raw( x , y , Storey.Dir.West, walllines_known)
+			if is_wall_at(x,y,DirLib.Dir.North):
+				add_wall_at_raw( x , y , DirLib.Dir.North, walllines_known)
+			if is_wall_at(x,y,DirLib.Dir.West):
+				add_wall_at_raw( x , y , DirLib.Dir.West, walllines_known)
 
 	for x in maze_size.x :
-		if is_wall_at(x,maze_size.y-1,Storey.Dir.South):
-			add_wall_at_raw( x , maze_size.y-1 , Storey.Dir.South, walllines_known)
+		if is_wall_at(x,maze_size.y-1,DirLib.Dir.South):
+			add_wall_at_raw( x , maze_size.y-1 , DirLib.Dir.South, walllines_known)
 
 	for y in maze_size.y:
-		if is_wall_at(maze_size.x-1,y,Storey.Dir.East):
-			add_wall_at_raw( maze_size.x-1 , y , Storey.Dir.East, walllines_known)
+		if is_wall_at(maze_size.x-1,y,DirLib.Dir.East):
+			add_wall_at_raw( maze_size.x-1 , y , DirLib.Dir.East, walllines_known)
 
 func get_width()->float:
 	return storey.maze_size.x * map_scale
@@ -147,12 +147,12 @@ func view_known_map(playernum :int)->void:
 
 # cell wall[y*2+1][x*2+1]
 # wall wall[y*2][x*2]
-func calc_wall_pos(x :int, y:int, dir :Storey.Dir)->Vector2i:
-	return Vector2i(x*2+1,y*2+1) + Storey.Dir2Vt[dir]
-func is_wall_at(x :int, y:int, dir :Storey.Dir)->bool:
+func calc_wall_pos(x :int, y:int, dir :DirLib.Dir)->Vector2i:
+	return Vector2i(x*2+1,y*2+1) + DirLib.Dir2Vt[dir]
+func is_wall_at(x :int, y:int, dir :DirLib.Dir)->bool:
 	var wpos = calc_wall_pos(x,y,dir)
 	return walls_known[wpos.y][wpos.x] != 0
-func set_wall_at(x :int, y:int, dir :Storey.Dir):
+func set_wall_at(x :int, y:int, dir :DirLib.Dir):
 	var wpos = calc_wall_pos(x,y,dir)
 	walls_known[wpos.y][wpos.x] = 1
 
@@ -165,18 +165,18 @@ func _draw() -> void:
 			return
 		draw_multiline(walllines_known,Color(Color.WHITE,0.5), wall_thick)
 
-func add_wall_at_raw(x:int,y :int, dir :Storey.Dir,wl :PackedVector2Array )->void:
+func add_wall_at_raw(x:int,y :int, dir :DirLib.Dir,wl :PackedVector2Array )->void:
 	match dir:
-		Storey.Dir.North:
+		DirLib.Dir.North:
 			wl.append_array([Vector2(x,y)*map_scale,Vector2(x+1,y)*map_scale])
-		Storey.Dir.West:
+		DirLib.Dir.West:
 			wl.append_array([Vector2(x,y)*map_scale,Vector2(x,y+1)*map_scale])
-		Storey.Dir.South:
+		DirLib.Dir.South:
 			wl.append_array([Vector2(x,y+1)*map_scale,Vector2(x+1,y+1)*map_scale])
-		Storey.Dir.East:
+		DirLib.Dir.East:
 			wl.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
 
-func add_wall_at(x:int,y :int, dir :Storey.Dir)->void:
+func add_wall_at(x:int,y :int, dir :DirLib.Dir)->void:
 	if is_wall_at(x,y,dir):
 		return
 	set_wall_at(x,y,dir)
@@ -186,4 +186,4 @@ func add_wall_at(x:int,y :int, dir :Storey.Dir)->void:
 func update_walls_by_pos(x:int,y :int)->void:
 	var walldir = storey.maze_cells.get_wall_dir_at(x,y)
 	for d in walldir:
-		add_wall_at(x,y,Storey.MazeDir2Dir[d])
+		add_wall_at(x,y,DirLib.Flag2Dir[d])

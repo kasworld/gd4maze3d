@@ -11,42 +11,6 @@ var donut_scene = preload("res://donut.tscn")
 var capsule_scene = preload("res://capsule.tscn")
 var text_mark_scene = preload("res://text_mark.tscn")
 
-enum Dir {
-	North = 0,
-	West = 1,
-	South = 2,
-	East = 3,
-}
-const Dir2Vt = {
-	Dir.North : Vector2i(0,-1),
-	Dir.West : Vector2i(-1,0),
-	Dir.South : Vector2i(0, 1),
-	Dir.East : Vector2i(1,0),
-}
-const MazeDir2Dir = {
-	Maze.Dir.North : Dir.North,
-	Maze.Dir.West : Dir.West,
-	Maze.Dir.South : Dir.South,
-	Maze.Dir.East : Dir.East,
-}
-const Dir2MazeDir = {
-	Dir.North : Maze.Dir.North,
-	Dir.West : Maze.Dir.West,
-	Dir.South : Maze.Dir.South,
-	Dir.East : Maze.Dir.East,
-}
-
-static func dir2str(d :Dir) -> String:
-	return Dir.keys()[d]
-static func dir_left(d:Dir) -> Dir:
-	return (d+1)%4 as Dir
-static func dir_right(d:Dir) -> Dir:
-	return (d-1+4)%4 as Dir
-static func dir_opposite(d:Dir) -> Dir:
-	return (d+2)%4 as Dir
-static func dir2rad(d:Dir) -> float:
-	return deg_to_rad(d*90.0)
-
 var storey_num :int
 var maze_size : Vector2i
 var storey_h :float
@@ -71,6 +35,13 @@ var donut_pos_dict = Dictionary()
 
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 var 놓인것들 := {} # 배치된 capsule, donut tree start goal 들
+func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
+	var c = pos_dict.get(p)
+	pos_dict.erase(p)
+	if c != null :
+		c.queue_free()
+		return true
+	return false
 
 func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector2i, gp :Vector2i) -> void:
 	storey_num = stn
@@ -155,9 +126,9 @@ func _process(delta: float) -> void:
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
 	var axis_wall = [
-		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.West), maze_cells.is_wall_dir_at(x,y, Maze.Dir.East)],
+		[maze_cells.is_wall_dir_at(x,y, DirLib.Flag.West), maze_cells.is_wall_dir_at(x,y, DirLib.Flag.East)],
 		[true,true],
-		[maze_cells.is_wall_dir_at(x,y, Maze.Dir.North), maze_cells.is_wall_dir_at(x,y, Maze.Dir.South)],
+		[maze_cells.is_wall_dir_at(x,y, DirLib.Flag.North), maze_cells.is_wall_dir_at(x,y, DirLib.Flag.South)],
 	]
 	var aabb = AABB( Vector3(lane_w*x +wall_thick/2, 0, lane_w*y +wall_thick/2),
 		Vector3(lane_w -wall_thick, storey_h, lane_w -wall_thick) )
@@ -209,20 +180,20 @@ func new_text_mark_at(p :Vector2i, co:Color, text :String) -> TextMark:
 func make_wall_by_maze() -> void:
 	for y in maze_size.y:
 		for x in maze_size.x :
-			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.North):
-				add_wall_at( x , y , Maze.Dir.North)
-			if not maze_cells.is_open_dir_at(x,y,Maze.Dir.West):
-				add_wall_at( x , y , Maze.Dir.West)
+			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
+				add_wall_at( x , y , DirLib.Flag.North)
+			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.West):
+				add_wall_at( x , y , DirLib.Flag.West)
 
 	for x in maze_size.x :
-		if not maze_cells.is_open_dir_at(x,maze_size.y-1,Maze.Dir.South):
-			add_wall_at( x , maze_size.y , Maze.Dir.South)
+		if not maze_cells.is_open_dir_at(x,maze_size.y-1,DirLib.Flag.South):
+			add_wall_at( x , maze_size.y , DirLib.Flag.South)
 
 	for y in maze_size.y:
-		if not maze_cells.is_open_dir_at(maze_size.x-1,y,Maze.Dir.East):
-			add_wall_at( maze_size.x , y , Maze.Dir.East)
+		if not maze_cells.is_open_dir_at(maze_size.x-1,y,DirLib.Flag.East):
+			add_wall_at( maze_size.x , y , DirLib.Flag.East)
 
-func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
+func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	var pos_face_ew = Vector3( x *lane_w, storey_h/2.0, y *lane_w +lane_w/2)
 	var pos_face_ns = Vector3( x *lane_w +lane_w/2, storey_h/2.0, y *lane_w)
 	var size_face_ew = Vector3(wall_thick,storey_h*0.999,lane_w)
@@ -232,10 +203,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
-			Maze.Dir.West, Maze.Dir.East:
+			DirLib.Flag.West, DirLib.Flag.East:
 				var b = make_box_from_subviewport(line2d_subviewport, size_face_ew)
 				b.position = pos_face_ew
-			Maze.Dir.North, Maze.Dir.South:
+			DirLib.Flag.North, DirLib.Flag.South:
 				var b = make_box_from_subviewport(line2d_subviewport, size_face_ns)
 				b.position = pos_face_ns
 		return
@@ -247,10 +218,10 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 		mat = main_wall_mat
 	var w :MeshInstance3D
 	match dir:
-		Maze.Dir.West, Maze.Dir.East:
+		DirLib.Flag.West, DirLib.Flag.East:
 			w = Global3d.new_box(size_face_ew, mat)
 			w.position = pos_face_ew
-		Maze.Dir.North, Maze.Dir.South:
+		DirLib.Flag.North, DirLib.Flag.South:
 			w = Global3d.new_box(size_face_ns, mat)
 			w.position = pos_face_ns
 	$WallContainer.add_child(w)
@@ -267,16 +238,16 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir) -> void:
 			n = clock_scene.instantiate()
 			n.init(min(lane_w,storey_h)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
-		n.rotate_y(Storey.dir2rad(1+MazeDir2Dir[dir]))
+		n.rotate_y(DirLib.dir2rad(1+DirLib.Flag2Dir[dir]))
 		add_child(n)
 		match dir:
-			Maze.Dir.West:
+			DirLib.Flag.West:
 				n.position = pos_face_ew + Vector3(wall_thick,0,0)
-			Maze.Dir.East:
+			DirLib.Flag.East:
 				n.position = pos_face_ew - Vector3(wall_thick,0,0)
-			Maze.Dir.North:
+			DirLib.Flag.North:
 				n.position = pos_face_ns + Vector3(0,0,wall_thick)
-			Maze.Dir.South:
+			DirLib.Flag.South:
 				n.position = pos_face_ns - Vector3(0,0,wall_thick)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
@@ -304,8 +275,8 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
 	add_child(sp)
 	return sp
 
-func can_move(x :int , y :int, dir :Dir) -> bool:
-	return maze_cells.is_open_dir_at(x,y, Dir2MazeDir[dir] )
+func can_move(x :int , y :int, dir :DirLib.Dir) -> bool:
+	return maze_cells.is_open_dir_at(x,y, DirLib.Dir2Flag[dir] )
 
 func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 	return Vector3(lane_w/2+ mp.x*lane_w, y, lane_w/2+ mp.y*lane_w)
@@ -324,11 +295,3 @@ func is_goal_pos(p :Vector2i) -> bool:
 
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,maze_size.x-1),randi_range(0,maze_size.y-1) )
-
-func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
-	var c = pos_dict.get(p)
-	pos_dict.erase(p)
-	if c != null :
-		c.queue_free()
-		return true
-	return false

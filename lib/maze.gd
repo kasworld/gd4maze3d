@@ -1,43 +1,5 @@
 class_name Maze
 
-enum Dir {
-	North = 1,
-	West = 2,
-	South = 4,
-	East = 8,
-}
-const DirList = [Dir.North,Dir.West,Dir.South,Dir.East]
-const Dir2Str = {
-	Dir.North : "North",
-	Dir.West : "West",
-	Dir.South : "South",
-	Dir.East : "East",
-}
-const Opppsite = {
-	Dir.North : Dir.South,
-	Dir.West : Dir.East,
-	Dir.South : Dir.North,
-	Dir.East : Dir.West,
-}
-const TurnLeft = {
-	Dir.North : Dir.West,
-	Dir.West : Dir.South,
-	Dir.South : Dir.East,
-	Dir.East : Dir.North,
-}
-const TurnRight = {
-	Dir.North : Dir.East,
-	Dir.East : Dir.South,
-	Dir.South : Dir.West,
-	Dir.West : Dir.North,
-}
-const Dir2Vt = {
-	Dir.North : Vector2i(0,-1),
-	Dir.West : Vector2i(-1,0),
-	Dir.South : Vector2i(0, 1),
-	Dir.East : Vector2i(1,0),
-}
-
 # opened dir NOT wall
 var _cells : Array[PackedInt32Array]
 var _maze_size : Vector2i
@@ -62,13 +24,13 @@ func make_maze()->void:
 		var posidx = select_visited()
 		pos = visted_pos[posidx]
 		var delpos = true
-		var rnddir = [Dir.North,Dir.South,Dir.East,Dir.West]
+		var rnddir = [DirLib.Flag.North,DirLib.Flag.South,DirLib.Flag.East,DirLib.Flag.West]
 		rnddir.shuffle()
 		for dir in rnddir:
-			var npos = pos + Dir2Vt[dir]
+			var npos = pos + DirLib.Flag2Vt[dir]
 			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
 				open_dir_at(pos.x,pos.y, dir)
-				open_dir_at(npos.x,npos.y, Opppsite[dir])
+				open_dir_at(npos.x,npos.y, DirLib.FlagOpppsite[dir])
 				visted_pos.append(npos)
 				delpos = false
 				break
@@ -84,22 +46,22 @@ func get_cell(x :int, y:int)->int:
 func open_dir_at(x:int,y:int, d :int)->void:
 	_cells[y][x] |= d
 
-func is_open_dir_at(x :int, y :int, dir :Dir)->bool:
+func is_open_dir_at(x :int, y :int, dir :DirLib.Flag)->bool:
 	return (_cells[y][x] & dir) != 0
 
 func get_open_dir_at(x :int, y :int)->Array:
 	var rtn = []
-	for d in DirList:
+	for d in DirLib.FlagList:
 		if is_open_dir_at(x,y,d):
 			rtn.append(d)
 	return rtn
 
-func is_wall_dir_at(x :int, y :int, dir :Dir)->bool:
+func is_wall_dir_at(x :int, y :int, dir :DirLib.Flag)->bool:
 	return (_cells[y][x] & dir) == 0
 
 func get_wall_dir_at(x :int, y :int)->Array:
 	var rtn = []
-	for d in DirList:
+	for d in DirLib.FlagList:
 		if is_wall_dir_at(x,y,d):
 			rtn.append(d)
 	return rtn
@@ -107,5 +69,5 @@ func get_wall_dir_at(x :int, y :int)->Array:
 func open_dir_str(x :int , y :int)->String:
 	var rtn = ""
 	for d in get_open_dir_at(x,y):
-		rtn += "%s " %[Dir2Str[d]]
+		rtn += "%s " %[DirLib.Flag2Str[d]]
 	return rtn

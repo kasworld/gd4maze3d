@@ -52,8 +52,8 @@ const QueueLimit = 10
 var action_queue :Array
 var storey :Storey
 var action_per_second := ClampedFloat.new(2,0.5,4.5) # sec
-var dir_src : Storey.Dir
-var dir_dst : Storey.Dir
+var dir_src : DirLib.Dir
+var dir_dst : DirLib.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
 var action_start_time :float # unixtime sec
@@ -63,7 +63,7 @@ var auto_move :bool
 func init(auto :bool)->void:
 	auto_move = auto
 	total_action_stats = MazeCrawl.new_action_stats_dict()
-	dir_src = Storey.Dir.North
+	dir_src = DirLib.Dir.North
 	action_current = [Action.None, 0,[]]
 	action_per_second.set_randfn()
 
@@ -76,13 +76,13 @@ func start_new_action()->bool:
 	match action_current[0]:
 		Action.Forward:
 			if can_move(dir_src):
-				pos_dst = pos_src + Storey.Dir2Vt[dir_src]
+				pos_dst = pos_src + DirLib.Dir2Vt[dir_src]
 			else :
 				action_current = [Action.None, 0,[]]
 		Action.TurnLeft:
-			dir_dst = Storey.dir_left(dir_src)
+			dir_dst = DirLib.DirTurnLeft[dir_src]
 		Action.TurnRight:
-			dir_dst = Storey.dir_right(dir_src)
+			dir_dst = DirLib.DirTurnRight[dir_src]
 		Action.RollRight:
 			roll_dir_dst = MazeCrawl.rolldir_right(roll_dir)
 		Action.RollLeft:
@@ -116,7 +116,7 @@ func ai_action()->void:
 
 func make_ai_action()->bool:
 	# try right
-	if can_move(Storey.dir_right(dir_src)):
+	if can_move(DirLib.DirTurnRight[dir_src]):
 		enqueue_action(Action.TurnRight)
 		enqueue_action(Action.Forward)
 		return true
@@ -125,19 +125,19 @@ func make_ai_action()->bool:
 		enqueue_action(Action.Forward)
 		return true
 	# try left
-	if can_move(Storey.dir_left(dir_src)):
+	if can_move(DirLib.DirTurnLeft[dir_src]):
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.Forward)
 		return true
 	# try backward
-	if can_move(Storey.dir_opposite(dir_src)):
+	if can_move(DirLib.DirOpppsite[dir_src]):
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.Forward)
 		return true
 	return false
 
-func can_move(dir :Storey.Dir)->bool:
+func can_move(dir :DirLib.Dir)->bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 
 # return 0 - 1
@@ -156,7 +156,7 @@ func animate_move_storey_by_dur(dur :float, from :int, to :int)->void:
 	position = p1.lerp(p2,dur)
 
 func animate_turn_by_dur(dur :float)->void:
-	rotation.y = lerp_angle(Storey.dir2rad(dir_src), Storey.dir2rad(dir_dst), dur)
+	rotation.y = lerp_angle(DirLib.dir2rad(dir_src), DirLib.dir2rad(dir_dst), dur)
 
 func animate_roll_by_dur(dur :float)->void:
 	rotation.z = lerp_angle(MazeCrawl.rolldir2rad(roll_dir), MazeCrawl.rolldir2rad(roll_dir_dst), dur)
@@ -175,7 +175,7 @@ func debug_str()->String:
 		MazeCrawl.act_stats_str(total_action_stats),
 		MazeCrawl.act_stats_str(storey_action_stats),
 		MazeCrawl.action2str(action_current[0]), queue_to_str(),
-		Storey.dir2str(dir_src), Storey.dir2str(dir_dst),
+		DirLib.DirToStr[dir_src], DirLib.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),
 		]

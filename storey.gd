@@ -25,15 +25,14 @@ var sub_wall_tex_name :String
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 
-var maze_objects :Array # [y][x]Node
-var start_node : TextMark
-var goal_node : TextMark
 var start_pos :Vector2i
 var goal_pos :Vector2i
-var capsule_pos_dict = Dictionary()
-var donut_pos_dict = Dictionary()
 
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
+var start_node : TextMark
+var goal_node : TextMark
+var capsule_pos_dict = Dictionary()
+var donut_pos_dict = Dictionary()
 var 놓인것들 := {} # 배치된 capsule, donut tree start goal 들
 func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
 	var c = pos_dict.get(p)
@@ -115,14 +114,6 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 		var bt = ball_trail_scene.instantiate()
 		bt.init(bounce_cell ,storey_h/30, 20, i , pos)
 		add_child(bt)
-
-func _process(delta: float) -> void:
-	start_node.rotate_y(delta)
-	goal_node.rotate_y(delta)
-	for n in capsule_pos_dict.values():
-		n.rotate_y(delta)
-	for n in donut_pos_dict.values():
-		n.rotate_y(delta)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
 	var axis_wall = [

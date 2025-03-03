@@ -22,3 +22,8 @@ func init(fsize :float, fdepth :float, co:Color, atext :String) -> TextMark:
 
 func get_text() -> String:
 	return text
+
+var auto_rotate :bool = true
+func _process(delta: float) -> void:
+	if auto_rotate:
+		rotate_y(delta)

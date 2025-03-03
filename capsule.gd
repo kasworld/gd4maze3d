@@ -15,3 +15,8 @@ func init(h :float, r :float, co:Color) -> Capsule:
 	sp.rotation.y = randf_range(0, 2*PI)
 	add_child(sp)
 	return self
+
+var auto_rotate :bool = true
+func _process(delta: float) -> void:
+	if auto_rotate:
+		rotate_y(delta)

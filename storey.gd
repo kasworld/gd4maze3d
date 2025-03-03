@@ -23,10 +23,8 @@ var clockcalendar_sel :int
 var start_pos :Vector2i
 var goal_pos :Vector2i
 
-var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 var capsule_pos_dict = Dictionary()
 var donut_pos_dict = Dictionary()
-var 놓인것들 := {} # 배치된 capsule, donut tree start goal 들
 func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
 	var c = pos_dict.get(p)
 	pos_dict.erase(p)
@@ -35,11 +33,14 @@ func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
 		return true
 	return false
 
+var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
+var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
+
 func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 	storey_num = stn
 	start_pos = stp
 	goal_pos = gp
-
+	놓인것들 = PlacedThings.new(Settings.MazeSize)
 	var tex_keys = Texmat.wall_tex_dict.keys()
 	tex_keys.shuffle()
 	sub_wall_tex_name = tex_keys[0]
@@ -86,12 +87,15 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 					if randi()%2 ==0:
 						var c = new_capsule_at(p, co)
 						capsule_pos_dict[p] = c
+						놓인것들.set_at(p,c)
 					else:
 						var c = new_donut_at(p, co)
 						donut_pos_dict[p] = c
-			elif randf() < Settings.MakeTreeRate:
-				new_tree_at(p)
+						놓인것들.set_at(p,c)
 
+			elif randf() < Settings.MakeTreeRate:
+				var c = new_tree_at(p)
+				놓인것들.set_at(p,c)
 	var ba = AABB( Vector3(Settings.WallThick/2,0,Settings.WallThick/2),
 		Vector3(Settings.MazeSize.x*Settings.LaneW -Settings.WallThick, Settings.StoryH, Settings.MazeSize.y*Settings.LaneW -Settings.WallThick) )
 	for i in Settings.BallTrailCount:

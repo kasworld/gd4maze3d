@@ -13,3 +13,4 @@ const StoryH :float = 3.0
 const LaneW :float = 4.0
 const WallThick :float = LaneW *0.05
 const BallTrailCount = 14
+const CharacterCount = MazeSize.x*MazeSize.y/10

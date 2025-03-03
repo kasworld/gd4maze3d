@@ -35,7 +35,7 @@ func _ready() -> void:
 	$Ceiling.position = $Floor.position
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
-	for i in Settings.MazeSize.x*Settings.MazeSize.y/10:
+	for i in Settings.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
 		pl.init_char(true, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])

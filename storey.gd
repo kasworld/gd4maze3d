@@ -74,7 +74,6 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	$Ceiling.mesh.material.transparency = $Floor.mesh.material.transparency
 
 	maze_cells = Maze.new(maze_size)
-	maze_cells.make_maze()
 	make_wall_by_maze()
 
 	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, storey_h/2.0)

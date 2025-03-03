@@ -71,7 +71,6 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, Settings.StoryH/2.0)
 	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, Settings.StoryH/2.0)
 
-	var colist = NamedColorList.color_list.duplicate()
 	wall_info_all = []
 	for y in Settings.MazeSize.y:
 		wall_info_all.append([])
@@ -83,7 +82,7 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 			if maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(p)
 				if randf() < Settings.MakeDonutCapsuleRate:
-					var co = colist.pick_random()[0]
+					var co = NamedColorList.color_list.pick_random()[0]
 					if randi()%2 ==0:
 						var c = new_capsule_at(p, co)
 						capsule_pos_dict[p] = c
@@ -138,8 +137,8 @@ func new_donut_at(p :Vector2i, co:Color) -> Donut:
 
 func new_tree_at(p :Vector2i) -> BarTree2:
 	var t = tree_scene.instantiate().init_with_color(
-		Global3d.random_color(),
-		Global3d.random_color(),
+		NamedColorList.color_list.pick_random()[0],
+		NamedColorList.color_list.pick_random()[0],
 		randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9),
 		randf_range(Settings.StoryH*0.5, Settings.StoryH*0.9),
 		randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9)/10,

@@ -23,16 +23,6 @@ var clockcalendar_sel :int
 var start_pos :Vector2i
 var goal_pos :Vector2i
 
-var capsule_pos_dict = Dictionary()
-var donut_pos_dict = Dictionary()
-func pos_dict_remove_at(pos_dict :Dictionary, p :Vector2i) -> bool:
-	var c = pos_dict.get(p)
-	pos_dict.erase(p)
-	if c != null :
-		c.queue_free()
-		return true
-	return false
-
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
@@ -86,11 +76,9 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 					var co = NamedColorList.color_list.pick_random()[0]
 					if randi()%2 ==0:
 						var c = new_capsule_at(p, co)
-						capsule_pos_dict[p] = c
 						놓인것들.set_at(p,c)
 					else:
 						var c = new_donut_at(p, co)
-						donut_pos_dict[p] = c
 						놓인것들.set_at(p,c)
 
 			elif randf() < Settings.MakeTreeRate:

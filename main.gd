@@ -109,12 +109,15 @@ func move_character(cur_storey :Storey) -> void:
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_new_storey()
 					return
-				if cur_storey.capsule_pos_dict.has(ch.pos_src) : # capsule encounter
-					ch.enqueue_action(MazeCrawl.Action.RollRight)
-					cur_storey.pos_dict_remove_at(cur_storey.capsule_pos_dict,ch.pos_src)
-				if cur_storey.donut_pos_dict.has(ch.pos_src) : # donut encounter
+				var ft = cur_storey.놓인것들.get_at(ch.pos_src)
+				if ft is Donut:
 					ch.enqueue_action(MazeCrawl.Action.RollLeft)
-					cur_storey.pos_dict_remove_at(cur_storey.donut_pos_dict,ch.pos_src)
+					cur_storey.놓인것들.del_at(ch.pos_src)
+					ft.queue_free()
+				elif ft is Capsule:
+					ch.enqueue_action(MazeCrawl.Action.RollRight)
+					cur_storey.놓인것들.del_at(ch.pos_src)
+					ft.queue_free()
 			minimap.move_character(ch.serial, ch.pos_src)
 		ch.ai_action()
 		if ch.start_new_action(): # new act start

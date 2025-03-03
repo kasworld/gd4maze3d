@@ -103,7 +103,7 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 
 	var ba = AABB( Vector3(wall_thick/2,0,wall_thick/2),
 		Vector3(maze_size.x*lane_w -wall_thick, storey_h, maze_size.y*lane_w -wall_thick) )
-	for i in 14:
+	for i in Settings.BallTrailCount:
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
 			randf_range(ba.position.y, ba.end.y),

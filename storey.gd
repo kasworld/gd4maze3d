@@ -24,13 +24,10 @@ var sub_wall_mat :StandardMaterial3D
 var sub_wall_tex_name :String
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
-
 var start_pos :Vector2i
 var goal_pos :Vector2i
 
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
-var start_node : TextMark
-var goal_node : TextMark
 var capsule_pos_dict = Dictionary()
 var donut_pos_dict = Dictionary()
 var 놓인것들 := {} # 배치된 capsule, donut tree start goal 들
@@ -79,8 +76,10 @@ func init(stn :int, msize :Vector2i, h :float, lw :float, wt :float, stp :Vector
 	maze_cells = Maze.new(maze_size)
 	maze_cells.make_maze()
 	make_wall_by_maze()
-	start_node = new_text_mark_at(start_pos, Color.YELLOW, "Start")
-	goal_node = new_text_mark_at(goal_pos, Color.YELLOW, "Goal")
+
+	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, storey_h/2.0)
+	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, storey_h/2.0)
+
 	var colist = NamedColorList.color_list.duplicate()
 	wall_info_all = []
 	for y in maze_size.y:
@@ -160,13 +159,6 @@ func new_tree_at(p :Vector2i) -> BarTree2:
 	t.rotation.y = randf_range(0, 2*PI)
 	add_child(t)
 	return t
-
-func new_text_mark_at(p :Vector2i, co:Color, text :String) -> TextMark:
-	var n = text_mark_scene.instantiate().init(5.0, 0.01, co, text)
-	n.position = mazepos2storeypos(p, storey_h/2.0)
-	n.rotation.y = randf_range(0,2*PI)
-	add_child(n)
-	return n
 
 func make_wall_by_maze() -> void:
 	for y in maze_size.y:

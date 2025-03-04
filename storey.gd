@@ -78,25 +78,37 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 
 func add_donut_capsule(n :int) -> void:
 	for i in n:
-		#var p = rand_pos_2i()
 		var p = 구석자리목록.pick_random()
 		if 놓인것들.get_at(p) != null:
 			continue
 		var co = NamedColorList.color_list.pick_random()[0]
+		var pobj
 		if randi()%2 ==0:
-			var c = new_capsule_at(p, co)
-			놓인것들.set_at(p,c)
+			pobj = capsule_scene.instantiate().init(Settings.LaneW*0.3, Settings.LaneW*0.05, co)
 		else:
-			var c = new_donut_at(p, co)
-			놓인것들.set_at(p,c)
+			pobj = donut_scene.instantiate().init(Settings.LaneW*0.07, Settings.LaneW*0.15,co)
+		pobj.position = mazepos2storeypos(p, Settings.StoryH/4.0)
+		add_child(pobj)
+		놓인것들.set_at(p,pobj)
 
 func add_trees(n :int) ->void:
 	for i in n:
 		var p = rand_pos_2i()
 		if 놓인것들.get_at(p) != null:
 			continue
-		var c = new_tree_at(p)
-		놓인것들.set_at(p,c)
+		var t = tree_scene.instantiate().init_with_color(
+			NamedColorList.color_list.pick_random()[0],
+			NamedColorList.color_list.pick_random()[0],
+			randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9),
+			randf_range(Settings.StoryH*0.5, Settings.StoryH*0.9),
+			randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9)/10,
+			randi_range(10,100),
+			randfn(0.0,0.3),
+			true)
+		t.position = mazepos2storeypos(p, Settings.StoryH*0.1)
+		t.rotation.y = randf_range(0, 2*PI)
+		add_child(t)
+		놓인것들.set_at(p,t)
 
 func add_ball_trails(n :int) ->void:
 	var ba = AABB( Vector3(Settings.WallThick/2,0, Settings.WallThick/2),
@@ -129,32 +141,6 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
-func new_capsule_at(p :Vector2i, co:Color) -> Capsule:
-	var n = capsule_scene.instantiate().init(Settings.LaneW*0.3, Settings.LaneW*0.05, co)
-	n.position = mazepos2storeypos(p, Settings.StoryH/4.0)
-	add_child(n)
-	return n
-
-func new_donut_at(p :Vector2i, co:Color) -> Donut:
-	var n = donut_scene.instantiate().init(Settings.LaneW*0.07, Settings.LaneW*0.15,co)
-	n.position = mazepos2storeypos(p, Settings.StoryH/4.0)
-	add_child(n)
-	return n
-
-func new_tree_at(p :Vector2i) -> BarTree2:
-	var t = tree_scene.instantiate().init_with_color(
-		NamedColorList.color_list.pick_random()[0],
-		NamedColorList.color_list.pick_random()[0],
-		randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9),
-		randf_range(Settings.StoryH*0.5, Settings.StoryH*0.9),
-		randf_range(Settings.LaneW*0.5, Settings.LaneW*0.9)/10,
-		randi_range(10,100),
-		randfn(0.0,0.3),
-		true)
-	t.position = mazepos2storeypos(p, Settings.StoryH*0.1)
-	t.rotation.y = randf_range(0, 2*PI)
-	add_child(t)
-	return t
 
 func make_wall_by_maze() -> void:
 	for y in Settings.MazeSize.y:

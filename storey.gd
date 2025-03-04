@@ -145,7 +145,6 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
-
 func make_wall_by_maze() -> void:
 	for y in Settings.MazeSize.y:
 		for x in Settings.MazeSize.x :

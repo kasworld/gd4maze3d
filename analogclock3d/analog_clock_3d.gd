@@ -178,4 +178,3 @@ func minute2rad(m :float) -> float:
 
 func hour2rad(hour :float) -> float:
 	return 2.0*PI/12.0*hour
-

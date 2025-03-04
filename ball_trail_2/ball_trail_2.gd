@@ -14,7 +14,7 @@ var current_rot_accel :float
 var multi_ball :MultiMeshInstance3D
 var multimesh :MultiMesh
 
-func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3)->void:
+func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3) -> BallTrail:
 	radius = r
 	bounce_fn = bnfn
 	speed_max = radius * 120
@@ -23,6 +23,7 @@ func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3)->void:
 	current_color = NamedColorList.color_list.pick_random()[0]
 	current_rot_accel = rand_rad()
 	make_mat_multi(new_mesh_by_type(t,radius), count, pos)
+	return self
 
 func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
 	var mat = Global3d.get_color_mat(Color.WHITE)
@@ -45,23 +46,23 @@ func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
 		var t = Transform3D(Basis(), ball_position)
 		multimesh.set_instance_transform(i,t)
 
-func set_multi_rotation(i :int,axis :Vector3, rot :float)->void:
+func set_multi_rotation(i :int,axis :Vector3, rot :float) -> void:
 	var t = multimesh.get_instance_transform(i)
 	t = t.rotated_local(axis, rot)
 	multimesh.set_instance_transform(i,t )
 
-func set_multi_pos(i :int, pos :Vector3)->void:
+func set_multi_pos(i :int, pos :Vector3) -> void:
 	var t = multimesh.get_instance_transform(i)
 	t.origin = pos
 	multimesh.set_instance_transform(i,t )
 
-func set_multi_color(i, co :Color)->void:
+func set_multi_color(i, co :Color) -> void:
 	multimesh.set_instance_color(i,co)
 
 func _process(delta: float) -> void:
 	move(delta)
 
-func move(delta :float)->void:
+func move(delta :float) -> void:
 	var old_cursor = obj_cursor
 	obj_cursor +=1
 	obj_cursor %= multimesh.instance_count
@@ -89,7 +90,7 @@ func move_ball(delta: float, oldi :int, newi:int) -> void:
 	if velocity.length() < speed_min:
 		velocity = velocity.normalized() * speed_min
 
-func new_mesh_by_type(t :int, r :float)->Mesh:
+func new_mesh_by_type(t :int, r :float) -> Mesh:
 	var mesh:Mesh
 	match t%7:
 		0:
@@ -123,8 +124,8 @@ func new_mesh_by_type(t :int, r :float)->Mesh:
 			mesh.top_radius = 0
 	return mesh
 
-func rand_rad()->float:
+func rand_rad() -> float:
 	return randf_range(-PI,PI)/100
 
-func random_positive(w :float)->float:
+func random_positive(w :float) -> float:
 	return randf_range(w/10,w)

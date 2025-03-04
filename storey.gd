@@ -48,12 +48,12 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 	var meshx = Settings.MazeSize.x*Settings.LaneW +Settings.WallThick
 	var meshy = Settings.MazeSize.y*Settings.LaneW +Settings.WallThick
 	$Floor.mesh.size = Vector2(meshx, meshy)
-	$Ceiling.mesh.size = $Floor.mesh.size
 	$Floor.position = Vector3(meshx/2, 0 , meshy/2)
-	$Ceiling.position = Vector3(meshx/2, Settings.StoryH , meshy/2)
 	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
-	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
+	$Ceiling.mesh.size = $Floor.mesh.size
+	$Ceiling.position = Vector3(meshx/2, Settings.StoryH , meshy/2)
+	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Ceiling.mesh.material.transparency = $Floor.mesh.material.transparency
 
 	maze_cells = Maze.new(Settings.MazeSize)
@@ -61,39 +61,53 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 
 	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, Settings.StoryH/2.0)
 	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, Settings.StoryH/2.0)
+	놓인것들.set_at(start_pos,$StartMark)
+	놓인것들.set_at(goal_pos,$EndMark)
 
 	wall_info_all = []
 	for y in Settings.MazeSize.y:
 		wall_info_all.append([])
 		for x in Settings.MazeSize.x:
 			wall_info_all[y].append( make_cell_wallinfo(x,y) )
-			var p = Vector2i(x,y)
-			if p == goal_pos || p == start_pos :
-				continue
 			if maze_cells.get_open_dir_at(x,y).size() == 1:
-				구석자리목록.append(p)
-				if randf() < Settings.MakeDonutCapsuleRate:
-					var co = NamedColorList.color_list.pick_random()[0]
-					if randi()%2 ==0:
-						var c = new_capsule_at(p, co)
-						놓인것들.set_at(p,c)
-					else:
-						var c = new_donut_at(p, co)
-						놓인것들.set_at(p,c)
+				구석자리목록.append(Vector2i(x,y))
 
-			elif randf() < Settings.MakeTreeRate:
-				var c = new_tree_at(p)
-				놓인것들.set_at(p,c)
-	var ba = AABB( Vector3(Settings.WallThick/2,0,Settings.WallThick/2),
+	add_donut_capsule(Settings.DonutCapsuleCount)
+	add_trees(Settings.TreeCount)
+	add_ball_trails(Settings.BallTrailCount)
+
+func add_donut_capsule(n :int) -> void:
+	for i in n:
+		#var p = rand_pos_2i()
+		var p = 구석자리목록.pick_random()
+		if 놓인것들.get_at(p) != null:
+			continue
+		var co = NamedColorList.color_list.pick_random()[0]
+		if randi()%2 ==0:
+			var c = new_capsule_at(p, co)
+			놓인것들.set_at(p,c)
+		else:
+			var c = new_donut_at(p, co)
+			놓인것들.set_at(p,c)
+
+func add_trees(n :int) ->void:
+	for i in n:
+		var p = rand_pos_2i()
+		if 놓인것들.get_at(p) != null:
+			continue
+		var c = new_tree_at(p)
+		놓인것들.set_at(p,c)
+
+func add_ball_trails(n :int) ->void:
+	var ba = AABB( Vector3(Settings.WallThick/2,0, Settings.WallThick/2),
 		Vector3(Settings.MazeSize.x*Settings.LaneW -Settings.WallThick, Settings.StoryH, Settings.MazeSize.y*Settings.LaneW -Settings.WallThick) )
-	for i in Settings.BallTrailCount:
+	for i in n:
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
 			randf_range(ba.position.y, ba.end.y),
 			randf_range(ba.position.z, ba.end.z),
 		)
-		var bt = ball_trail_scene.instantiate()
-		bt.init(bounce_cell ,Settings.StoryH/30, 20, i , pos)
+		var bt = ball_trail_scene.instantiate().init(bounce_cell ,Settings.StoryH/30, 20, i , pos)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

@@ -15,8 +15,8 @@ func snap_90()->void:
 	for i in 3:
 		rotation[i] = snapped(rotation[i], PI/2)
 
-func info_str()->String:
-	return "FOV:%s, rotation:%s" % [ fov, rotation_degrees ]
+func _to_string() -> String:
+	return "MovingCameraLight[FOV:%s, rotation:%s]" % [ fov, rotation_degrees ]
 
 func fov_inc()->void:
 	$Camera3D.fov = fov.set_up()

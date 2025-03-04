@@ -174,16 +174,16 @@ Currently rendering: occlusion culling:%s
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 	]
 	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
-storey %s
 size:%s, height:%.1f, lane width:%.1f, wall thick:%.1f
+%s
 %s
 %s""" % [
 	cur_storey_index,storey_list.size(),
 	minimap_mode, view_floor_ceiling,
-	get_cur_storey().info_str(),
 	Settings.MazeSize,Settings.StoryH, Settings.LaneW, Settings.WallThick,
-	player.info_str(),
-	$MovingCameraLight.info_str(),
+	get_cur_storey(),
+	player,
+	$MovingCameraLight,
 	]
 
 func animate_action(ch :MazeCrawl, dur :float) -> void:

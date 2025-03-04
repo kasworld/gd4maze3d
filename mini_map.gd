@@ -27,8 +27,8 @@ func init(st :Storey, sc :float)->void:
 
 	change_scale(sc)
 
-func add_character(char :Character, pos :Vector2, outline :int)->void:
-	var ch = new_label(char.color, "Char\n%d" %[char.serial] , outline)
+func add_character(achar :Character, pos :Vector2, outline :int)->void:
+	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
 	update_label_pos_size(ch,pos)
 

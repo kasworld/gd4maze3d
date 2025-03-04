@@ -54,14 +54,10 @@ func _ready() -> void:
 
 func _on_vpsize_changed() -> void:
 	vp_size = get_viewport().get_visible_rect().size
-
-	var cur_storey = get_cur_storey()
 	var map_scale = min( vp_size.x / Settings.MazeSize.x , vp_size.y / Settings.MazeSize.y )
 	minimap.change_scale(map_scale)
-
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
-
 	$ButtonContainer.position = vp_size  - $ButtonContainer.size
 
 func enter_new_storey() -> void:

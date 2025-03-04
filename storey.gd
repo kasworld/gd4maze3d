@@ -26,6 +26,10 @@ var goal_pos :Vector2i
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
+func info_str() -> String:
+	return "num:%d, mainwall:%s subwall:%s" % [
+		storey_num, main_wall_mat_name, sub_wall_tex_name ]
+
 func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 	storey_num = stn
 	start_pos = stp
@@ -250,10 +254,6 @@ func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Floor.visible = f
 	$Ceiling.visible = c
 
-func info_str() -> String:
-	return "num:%d, size:%s, height:%.1f, Settings.LaneW:%.1f, Settings.WallThick:%.1f mainwall:%s subwall:%s" % [
-		storey_num, Settings.MazeSize,Settings.StoryH, Settings.LaneW, Settings.WallThick,
-		main_wall_mat_name, sub_wall_tex_name ]
 
 func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p

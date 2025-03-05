@@ -319,3 +319,6 @@ func _on_button_aps_down_pressed() -> void:
 
 func _on_button_storey_up_pressed() -> void:
 	enter_new_storey()
+
+func _on_button_fire_pressed() -> void:
+	pass # Replace with function body.

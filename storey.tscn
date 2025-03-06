@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://c76t0bgq0j8ux"]
 
-[ext_resource type="Script" path="res://storey.gd" id="1_vfl4n"]
+[ext_resource type="Script" uid="uid://dp0yfx2i1wsf4" path="res://storey.gd" id="1_vfl4n"]
 [ext_resource type="PackedScene" uid="uid://bg7pvk7ens3l8" path="res://text_mark.tscn" id="2_wtqod"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycwsu"]

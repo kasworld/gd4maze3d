@@ -7,12 +7,23 @@ var color :Color
 
 func init_char(auto :bool, n :int, LaneW:float,co :Color) -> Character:
 	super.init(auto)
-	var mi3d = Global3d.new_cylinder2( 0.2*LaneW, 0.01*LaneW, 0.07*LaneW, 5,
-		Global3d.get_color_mat(co),
-		)
+	serial = n
+	color = co
+
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = co
+
+	var mesh = CylinderMesh.new()
+	mesh.height = 0.2*LaneW
+	mesh.top_radius = 0.01*LaneW
+	mesh.bottom_radius = 0.07*LaneW
+	mesh.radial_segments = 5
+	mesh.material = mat
+
+	var mi3d = MeshInstance3D.new()
+	mi3d.mesh = mesh
 	mi3d.rotation.x = -PI/2
 	mi3d.scale.x = 0.5
 	add_child(mi3d)
-	serial = n
-	color = co
+
 	return self

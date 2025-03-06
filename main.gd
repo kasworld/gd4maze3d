@@ -79,7 +79,7 @@ func enter_new_storey() -> void:
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
-		var stpos = cur_storey.rand_pos_2i()
+		var stpos = Settings.rand_pos_2i()
 		if ch.serial == player_number:
 			stpos = cur_storey.start_pos
 			minimap.add_character(ch,stpos, 8)
@@ -145,6 +145,7 @@ var key2fn = {
 	KEY_INSERT:_on_button_fov_up_pressed,
 	KEY_DELETE:_on_button_fov_down_pressed,
 	KEY_ENTER:_on_button_storey_up_pressed,
+	KEY_SPACE:_on_button_fire_pressed,
 }
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -195,15 +196,12 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 	if ch.serial == player_number:
 		cameralight.copy_position_rotation(ch)
 
-func rand_pos() -> Vector2i:
-	return Vector2i(randi_range(0,Settings.MazeSize.x-1),randi_range(0,Settings.MazeSize.y-1) )
-
 func get_cur_storey() -> Storey:
 	return storey_list[cur_storey_index]
 
 func add_new_storey(stnum :int) -> void:
-	var gp = rand_pos()
-	var stp = rand_pos()
+	var gp = Settings.rand_pos_2i()
+	var stp = Settings.rand_pos_2i()
 	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate()

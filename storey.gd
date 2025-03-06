@@ -97,7 +97,7 @@ func add_donut_capsule(n :int) -> void:
 
 func add_trees(n :int) ->void:
 	for i in n:
-		var p = rand_pos_2i()
+		var p = Settings.rand_pos_2i()
 		if 놓인것들.get_at(p) != null:
 			continue
 		var t = tree_scene.instantiate().init_with_color(
@@ -255,6 +255,3 @@ func view_floor_ceiling(f :bool,c :bool) -> void:
 
 func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p
-
-func rand_pos_2i() -> Vector2i:
-	return Vector2i(randi_range(0,Settings.MazeSize.x-1),randi_range(0,Settings.MazeSize.y-1) )

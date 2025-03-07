@@ -2,18 +2,6 @@ extends Node3D
 
 class_name MazeCrawl
 
-enum RollDir {Up,Right,Down,Left}
-static func rolldir2str(vd :RollDir) -> String:
-	return RollDir.keys()[vd]
-static func rolldir_left(d:RollDir) -> RollDir:
-	return (d+1)%4 as RollDir
-static func rolldir_right(d:RollDir) -> RollDir:
-	return (d-1+4)%4 as RollDir
-static func rolldir_opposite(d:RollDir) -> RollDir:
-	return (d+2)%4 as RollDir
-static func rolldir2rad(d:RollDir) -> float:
-	return deg_to_rad(d*90.0)
-
 enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action) -> String:
 	return Action.keys()[a]
@@ -44,8 +32,8 @@ func queue_to_str() -> String:
 		rtn += "%s(%.1f)%s " % [ MazeCrawl.action2str(a[0]), a[1], a[2] ]
 	return rtn
 
-var roll_dir :RollDir
-var roll_dir_dst :RollDir
+var roll_dir :RollLib.Dir
+var roll_dir_dst :RollLib.Dir
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
 const QueueLimit = 10
@@ -85,9 +73,9 @@ func start_new_action() -> bool:
 		Action.TurnRight:
 			dir_dst = DirLib.DirTurnRight[dir_src]
 		Action.RollRight:
-			roll_dir_dst = MazeCrawl.rolldir_right(roll_dir)
+			roll_dir_dst = RollLib.roll_right(roll_dir)
 		Action.RollLeft:
-			roll_dir_dst = MazeCrawl.rolldir_left(roll_dir)
+			roll_dir_dst = RollLib.roll_left(roll_dir)
 		Action.EnterStorey:
 			var args = action_current[2]
 			storey = args[0]
@@ -160,7 +148,7 @@ func animate_turn_by_dur(dur :float) -> void:
 	rotation.y = lerp_angle(DirLib.dir2rad(dir_src), DirLib.dir2rad(dir_dst), dur)
 
 func animate_roll_by_dur(dur :float) -> void:
-	rotation.z = lerp_angle(MazeCrawl.rolldir2rad(roll_dir), MazeCrawl.rolldir2rad(roll_dir_dst), dur)
+	rotation.z = lerp_angle(RollLib.dir2rad(roll_dir), RollLib.dir2rad(roll_dir_dst), dur)
 
 func snap_90() -> void:
 	for i in 3:

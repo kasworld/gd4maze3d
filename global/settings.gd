@@ -17,3 +17,5 @@ const TreeCount :int = max(1, MazeSize.x*MazeSize.y/30.0)
 
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
+
+const ActionQueueLimit = 10

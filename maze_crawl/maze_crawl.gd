@@ -24,8 +24,8 @@ func enqueue_action_with_speed(a :Action,s :float, args :=[]) -> void:
 	action_queue.push_back([a,s, args])
 	crop_action_queue()
 func crop_action_queue() -> void:
-	if action_queue.size() > QueueLimit:
-		action_queue = action_queue.slice(action_queue.size()-QueueLimit)
+	if action_queue.size() > Settings.ActionQueueLimit:
+		action_queue = action_queue.slice(action_queue.size()-Settings.ActionQueueLimit)
 func queue_to_str() -> String:
 	var rtn = ""
 	for a in action_queue:
@@ -36,7 +36,6 @@ var roll_dir :RollLib.Dir
 var roll_dir_dst :RollLib.Dir
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
-const QueueLimit = 10
 var action_queue :Array
 var storey :Storey
 var action_per_second := ClampedFloat.new(2,0.5,4.5) # sec

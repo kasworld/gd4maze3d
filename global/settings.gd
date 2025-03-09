@@ -14,8 +14,18 @@ const BallTrailCount :int = 14
 const CharacterCount :int = max(1, MazeSize.x*MazeSize.y/10.0)
 const DonutCapsuleCount :int = max(1, MazeSize.x*MazeSize.y/20.0)
 const TreeCount :int = max(1, MazeSize.x*MazeSize.y/30.0)
+const ActionQueueLimit = 10
 
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
 
-const ActionQueueLimit = 10
+func _to_string() -> String:
+	return "Storey upper:%d lower:%d
+	Maze size:%s height:%.1f lane width:%.1f wall thick:%.1f
+	Count ball trail:%d donnut capsule:%d tree:%d
+	Character count:%d action queue size:%d" % [
+		VisibleStoreyUp, VisibleStoreyDown,
+		MazeSize, StoryH, LaneW, WallThick,
+		BallTrailCount, DonutCapsuleCount, TreeCount,
+		CharacterCount, ActionQueueLimit,
+	]

@@ -30,7 +30,7 @@ func _to_string() -> String:
 	return "Storey[%d mainwall:%s subwall:%s]" % [
 		storey_num, main_wall_mat_name, sub_wall_tex_name ]
 
-func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
+func init(stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	storey_num = stn
 	start_pos = stp
 	goal_pos = gp
@@ -79,6 +79,7 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> void:
 	add_donut_capsule(Settings.DonutCapsuleCount)
 	add_trees(Settings.TreeCount)
 	add_ball_trails(Settings.BallTrailCount)
+	return self
 
 func add_donut_capsule(n :int) -> void:
 	for i in n:

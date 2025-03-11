@@ -204,8 +204,7 @@ func add_new_storey(stnum :int) -> void:
 	var stp = Settings.rand_pos_2i()
 	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
-	var st = storey_scene.instantiate()
-	st.init(stnum, stp, gp)
+	var st = storey_scene.instantiate().init(stnum, stp, gp)
 	st.position.y = Settings.StoryH * stnum
 	storey_list.append(st)
 	add_child(st)

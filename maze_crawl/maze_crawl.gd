@@ -1,6 +1,10 @@
 extends Node3D
 class_name MazeCrawl
 
+enum AIWalk {RightFirst, LeftFirst}
+static func aiwalk2str(a :AIWalk) -> String:
+	return AIWalk.keys()[a]
+
 func enqueue_action(a :ActLib.Action, args :=[]) -> void:
 	action_queue.push_back([a,action_per_second.get_value(), args])
 	crop_action_queue()
@@ -30,6 +34,7 @@ var pos_dst :Vector2i
 var action_start_time :float # unixtime sec
 var action_current : Array # [Action, action_per_second.value]
 var auto_move :bool
+var ai_walk_type := AIWalk.RightFirst
 
 func init(auto :bool) -> MazeCrawl:
 	auto_move = auto
@@ -84,9 +89,16 @@ func end_action() -> void:
 
 func ai_action() -> void:
 	if auto_move && action_current[0] == ActLib.Action.None && action_queue.size() == 0: # add new ai action
-		make_ai_action()
+		match ai_walk_type:
+			AIWalk.RightFirst:
+				walk_right_first()
+			AIWalk.LeftFirst:
+				walk_left_first()
 
-func make_ai_action() -> bool:
+func set_ai_walk_type(t :AIWalk) -> void:
+	ai_walk_type = t
+
+func walk_right_first() -> bool:
 	# try right
 	if can_move(DirLib.DirTurnRight[dir_src]):
 		enqueue_action(ActLib.Action.TurnRight)
@@ -99,6 +111,29 @@ func make_ai_action() -> bool:
 	# try left
 	if can_move(DirLib.DirTurnLeft[dir_src]):
 		enqueue_action(ActLib.Action.TurnLeft)
+		enqueue_action(ActLib.Action.Forward)
+		return true
+	# try backward
+	if can_move(DirLib.DirOpppsite[dir_src]):
+		enqueue_action(ActLib.Action.TurnLeft)
+		enqueue_action(ActLib.Action.TurnLeft)
+		enqueue_action(ActLib.Action.Forward)
+		return true
+	return false
+
+func walk_left_first() -> bool:
+	# try left
+	if can_move(DirLib.DirTurnLeft[dir_src]):
+		enqueue_action(ActLib.Action.TurnLeft)
+		enqueue_action(ActLib.Action.Forward)
+		return true
+	# try forward
+	if can_move(dir_src):
+		enqueue_action(ActLib.Action.Forward)
+		return true
+	# try right
+	if can_move(DirLib.DirTurnRight[dir_src]):
+		enqueue_action(ActLib.Action.TurnRight)
 		enqueue_action(ActLib.Action.Forward)
 		return true
 	# try backward
@@ -138,8 +173,8 @@ func snap_90() -> void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func _to_string() -> String:
-	return "MazeCrawl[automove:%s act %s /sec view roll:%s° roll:%s]" % [
-		auto_move, action_per_second, roll_dir*90, rotation_degrees,
+	return "MazeCrawl[automove:%s aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
+		auto_move, aiwalk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:

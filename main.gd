@@ -38,8 +38,10 @@ func _ready() -> void:
 	for i in Settings.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init_char(true, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
-
+		if i % 2 == 0:
+			pl.init_char(AILib.Walk.RightFirst, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
+		else:
+			pl.init_char(AILib.Walk.LeftFirst, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
 	for i in Settings.VisibleStoreyUp:
 		add_new_storey(i)
 
@@ -50,6 +52,7 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
+	update_button_text()
 	enter_new_storey()
 
 func _on_vpsize_changed() -> void:
@@ -256,7 +259,12 @@ func _on_button_floor_ceiling_pressed() -> void:
 
 func _on_button_auto_move_pressed() -> void:
 	var player = char_container.get_child(player_number)
-	player.auto_move = !player.auto_move
+	player.ai_walk_type = AILib.next(player.ai_walk_type)
+	update_button_text()
+
+func update_button_text() -> void:
+	var player = char_container.get_child(player_number)
+	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "4:Automove %s" % AILib.walk2str(player.ai_walk_type)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible

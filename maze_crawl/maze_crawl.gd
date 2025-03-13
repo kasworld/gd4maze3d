@@ -1,10 +1,6 @@
 extends Node3D
 class_name MazeCrawl
 
-enum AIWalk {RightFirst, LeftFirst}
-static func aiwalk2str(a :AIWalk) -> String:
-	return AIWalk.keys()[a]
-
 func enqueue_action(a :ActLib.Action, args :=[]) -> void:
 	action_queue.push_back([a,action_per_second.get_value(), args])
 	crop_action_queue()
@@ -33,11 +29,10 @@ var pos_src :Vector2i
 var pos_dst :Vector2i
 var action_start_time :float # unixtime sec
 var action_current : Array # [Action, action_per_second.value]
-var auto_move :bool
-var ai_walk_type := AIWalk.RightFirst
+var ai_walk_type := AILib.Walk.RightFirst
 
-func init(auto :bool) -> MazeCrawl:
-	auto_move = auto
+func init(walk_type :AILib.Walk) -> MazeCrawl:
+	ai_walk_type = walk_type
 	total_action_stats = ActLib.new_stats()
 	dir_src = DirLib.Dir.North
 	action_current = [ActLib.Action.None, 0,[]]
@@ -88,14 +83,16 @@ func end_action() -> void:
 	snap_90()
 
 func ai_action() -> void:
-	if auto_move && action_current[0] == ActLib.Action.None && action_queue.size() == 0: # add new ai action
+	if action_current[0] == ActLib.Action.None && action_queue.size() == 0: # add new ai action
 		match ai_walk_type:
-			AIWalk.RightFirst:
+			AILib.Walk.RightFirst:
 				walk_right_first()
-			AIWalk.LeftFirst:
+			AILib.Walk.LeftFirst:
 				walk_left_first()
+			AILib.Walk.Off:
+				pass
 
-func set_ai_walk_type(t :AIWalk) -> void:
+func set_ai_walk_type(t :AILib.Walk) -> void:
 	ai_walk_type = t
 
 func walk_right_first() -> bool:
@@ -173,8 +170,8 @@ func snap_90() -> void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func _to_string() -> String:
-	return "MazeCrawl[automove:%s aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		auto_move, aiwalk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
+	return "MazeCrawl[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
+		AILib.walk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:

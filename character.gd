@@ -5,8 +5,8 @@ class_name Character
 var serial :int
 var color :Color
 
-func init_char(auto :bool, n :int, LaneW:float,co :Color) -> Character:
-	super.init(auto)
+func init_char(walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> Character:
+	super.init(walk_type)
 	serial = n
 	color = co
 

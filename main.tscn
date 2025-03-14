@@ -114,21 +114,25 @@ text = "2:Minimap"
 layout_mode = 2
 text = "3:FloorCeiling"
 
+[node name="ButtonWalls" type="Button" parent="ButtonContainer/HBoxContainer"]
+layout_mode = 2
+text = "4:Walls"
+
 [node name="ButtonAutoMove" type="Button" parent="ButtonContainer/HBoxContainer"]
 layout_mode = 2
-text = "4:Automove"
+text = "5:Automove"
 
 [node name="ButtonDebug" type="Button" parent="ButtonContainer/HBoxContainer"]
 layout_mode = 2
-text = "5:Debug"
+text = "6:Debug"
 
 [node name="ButtonPerformance" type="Button" parent="ButtonContainer/HBoxContainer"]
 layout_mode = 2
-text = "6:Performance"
+text = "7:Performance"
 
 [node name="ButtonInfo" type="Button" parent="ButtonContainer/HBoxContainer"]
 layout_mode = 2
-text = "7:Info"
+text = "8:Info"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ButtonContainer"]
 layout_mode = 2
@@ -216,6 +220,7 @@ theme = SubResource("Theme_u7t45")
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonFloorCeiling" to="." method="_on_button_floor_ceiling_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonWalls" to="." method="_on_button_walls_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonAutoMove" to="." method="_on_button_auto_move_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonDebug" to="." method="_on_button_debug_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonPerformance" to="." method="_on_button_performance_pressed"]

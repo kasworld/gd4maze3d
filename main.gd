@@ -17,6 +17,7 @@ var player_number = 0
 var vp_size :Vector2
 var minimap_mode :int = 0
 var view_floor_ceiling :bool = false
+var view_walls :bool = true
 
 func _ready() -> void:
 	var msh = Settings.MazeSize*Settings.LaneW +Vector2(Settings.WallThick, Settings.WallThick)
@@ -48,7 +49,7 @@ func _ready() -> void:
 	$MovingCameraLight.init()
 	vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 15.2.0"))
+	$TimedMessage.init(80, msgrect, tr("gd4maze3d 15.3.0"))
 	$TimedMessage.show_message("",3)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
@@ -131,10 +132,11 @@ var key2fn = {
 	KEY_1:_on_button_help_pressed,
 	KEY_2:_on_button_minimap_pressed,
 	KEY_3:_on_button_floor_ceiling_pressed,
-	KEY_4:_on_button_auto_move_pressed,
-	KEY_5:_on_button_debug_pressed,
-	KEY_6:_on_button_performance_pressed,
-	KEY_7:_on_button_info_pressed,
+	KEY_4:_on_button_walls_pressed,
+	KEY_5:_on_button_auto_move_pressed,
+	KEY_6:_on_button_debug_pressed,
+	KEY_7:_on_button_performance_pressed,
+	KEY_8:_on_button_info_pressed,
 	KEY_UP:_on_button_forward_pressed,
 	KEY_DOWN:_on_button_backward_pressed,
 	KEY_LEFT:_on_button_left_pressed,
@@ -244,18 +246,27 @@ func change_floor_ceiling_visible(f :bool,c :bool) -> void:
 	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
 
+func change_walls_visible(w :bool) -> void:
+	var st = visible_down_index()
+	for i in range(st,storey_list.size()):
+		storey_list[i].view_walls(w)
+
 func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
 func _on_button_help_pressed() -> void:
-	$ButtonContainer.visible = !$ButtonContainer.visible
+	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
 	set_minimap_mode(minimap_mode+1)
 
 func _on_button_floor_ceiling_pressed() -> void:
-	view_floor_ceiling = !view_floor_ceiling
+	view_floor_ceiling = not view_floor_ceiling
 	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+
+func _on_button_walls_pressed() -> void:
+	view_walls = not view_walls
+	change_walls_visible(view_walls)
 
 func _on_button_auto_move_pressed() -> void:
 	var player = char_container.get_child(player_number)
@@ -264,7 +275,7 @@ func _on_button_auto_move_pressed() -> void:
 
 func update_button_text() -> void:
 	var player = char_container.get_child(player_number)
-	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "4:Automove %s" % AILib.walk2str(player.ai_walk_type)
+	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "5:Automove %s" % AILib.walk2str(player.ai_walk_type)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible

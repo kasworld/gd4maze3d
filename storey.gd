@@ -254,5 +254,8 @@ func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Floor.visible = f
 	$Ceiling.visible = c
 
+func view_walls(w :bool) -> void:
+	$WallContainer.visible = w
+
 func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p

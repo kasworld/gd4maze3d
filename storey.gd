@@ -148,10 +148,11 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
 func make_pillas() -> void:
+	var co = NamedColorList.color_list.pick_random()[0]
 	for y in Settings.MazeSize.y+1:
 		for x in Settings.MazeSize.x+1:
 			var pos := Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW)
-			var pla = new_pilla(Settings.StoryH, Settings.WallThick / 2, 8, Color.WHITE)
+			var pla = new_pilla(Settings.StoryH, Settings.WallThick / 2, 8, co)
 			pla.position = pos
 			$PillarContainer.add_child(pla)
 

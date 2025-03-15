@@ -6,6 +6,12 @@ static func wallview2str(vd :WallView) -> String:
 static func wallview_next(a :WallView) -> WallView:
 	return (a +1) % WallView.keys().size() as WallView
 
+enum MiniMapView {Off, Known, Full}
+static func minimapview2str(vd :MiniMapView) -> String:
+	return MiniMapView.keys()[vd]
+static func minimapview_next(a :MiniMapView) -> MiniMapView:
+	return (a +1) % MiniMapView.keys().size() as MiniMapView
+
 var minimap_scene = preload("res://mini_map.tscn")
 var storey_scene = preload("res://storey.tscn")
 var character_scene = preload("res://character.tscn")
@@ -21,7 +27,7 @@ var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 var player_number = 0
 var vp_size :Vector2
-var minimap_mode :int = 0
+var minimap_mode :MiniMapView = MiniMapView.Off
 var view_floor_ceiling :bool = false
 var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
@@ -61,8 +67,8 @@ func _ready() -> void:
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	update_button_text()
-	change_walls_visible(view_walls)
-	change_pillars_visible(view_pillars)
+	set_wallview_mode(view_walls)
+	set_pillars_visible(view_pillars)
 	enter_new_storey()
 
 func _on_vpsize_changed() -> void:
@@ -79,7 +85,7 @@ func enter_new_storey() -> void:
 	add_new_storey(storey_list.size())
 	$Floor.position.y = visible_down_index()*Settings.StoryH
 	$Ceiling.position.y = storey_list.size()*Settings.StoryH
-	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 	vp_size = get_viewport().get_visible_rect().size
 	var cur_storey = get_cur_storey()
@@ -237,26 +243,25 @@ func visible_down_index() -> int:
 		return 0
 	return rtn
 
-func set_minimap_mode(v :int) -> void:
-	minimap_mode = v%3
+func set_minimap_mode(v :MiniMapView) -> void:
 	match minimap_mode:
-		0:
+		MiniMapView.Off:
 			minimap.hide()
-		1:
+		MiniMapView.Known:
 			minimap.show()
 			minimap.view_known_map(player_number)
-		2:
+		MiniMapView.Full:
 			minimap.show()
 			minimap.view_full_map()
 
-func change_floor_ceiling_visible(f :bool,c :bool) -> void:
+func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	var st = visible_down_index()
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_floor_ceiling(f,c)
 	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
 
-func change_walls_visible(w :WallView) -> void:
+func set_wallview_mode(w :WallView) -> void:
 	match w:
 		WallView.Full:
 			var st = visible_down_index()
@@ -273,7 +278,7 @@ func change_walls_visible(w :WallView) -> void:
 			for i in range(st,storey_list.size()):
 				storey_list[i].view_walls(false)
 
-func change_pillars_visible(w :bool) -> void:
+func set_pillars_visible(w :bool) -> void:
 	var st = visible_down_index()
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_pillars(w)
@@ -285,20 +290,22 @@ func _on_button_help_pressed() -> void:
 	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
-	set_minimap_mode(minimap_mode+1)
+	minimap_mode = minimapview_next(minimap_mode)
+	set_minimap_mode(minimap_mode)
+	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
 	view_floor_ceiling = not view_floor_ceiling
-	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 func _on_button_walls_pressed() -> void:
 	view_walls = wallview_next(view_walls)
-	change_walls_visible(view_walls)
+	set_wallview_mode(view_walls)
 	update_button_text()
 
 func _on_button_pillars_pressed() -> void:
 	view_pillars = not view_pillars
-	change_pillars_visible(view_pillars)
+	set_pillars_visible(view_pillars)
 
 func _on_button_auto_move_pressed() -> void:
 	var player = char_container.get_child(player_number)
@@ -306,6 +313,7 @@ func _on_button_auto_move_pressed() -> void:
 	update_button_text()
 
 func update_button_text() -> void:
+	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:Minimap %s" % minimapview2str(minimap_mode)
 	var player = char_container.get_child(player_number)
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
 	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % wallview2str(view_walls)

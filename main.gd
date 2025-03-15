@@ -1,5 +1,11 @@
 extends Node3D
 
+enum WallView {Reduced, Full, Off}
+static func wallview2str(vd :WallView) -> String:
+	return WallView.keys()[vd]
+static func wallview_next(a :WallView) -> WallView:
+	return (a +1) % WallView.keys().size() as WallView
+
 var minimap_scene = preload("res://mini_map.tscn")
 var storey_scene = preload("res://storey.tscn")
 var character_scene = preload("res://character.tscn")
@@ -17,7 +23,7 @@ var player_number = 0
 var vp_size :Vector2
 var minimap_mode :int = 0
 var view_floor_ceiling :bool = false
-var view_walls :bool = true
+var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
 
 func _ready() -> void:
@@ -250,10 +256,22 @@ func change_floor_ceiling_visible(f :bool,c :bool) -> void:
 	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
 
-func change_walls_visible(w :bool) -> void:
-	var st = visible_down_index()
-	for i in range(st,storey_list.size()):
-		storey_list[i].view_walls(w)
+func change_walls_visible(w :WallView) -> void:
+	match w:
+		WallView.Full:
+			var st = visible_down_index()
+			for i in range(st,storey_list.size()):
+				storey_list[i].view_walls(true)
+				storey_list[i].set_wall_size(true)
+		WallView.Reduced:
+			var st = visible_down_index()
+			for i in range(st,storey_list.size()):
+				storey_list[i].view_walls(true)
+				storey_list[i].set_wall_size(false)
+		WallView.Off:
+			var st = visible_down_index()
+			for i in range(st,storey_list.size()):
+				storey_list[i].view_walls(false)
 
 func change_pillars_visible(w :bool) -> void:
 	var st = visible_down_index()
@@ -274,8 +292,9 @@ func _on_button_floor_ceiling_pressed() -> void:
 	change_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 func _on_button_walls_pressed() -> void:
-	view_walls = not view_walls
+	view_walls = wallview_next(view_walls)
 	change_walls_visible(view_walls)
+	update_button_text()
 
 func _on_button_pillars_pressed() -> void:
 	view_pillars = not view_pillars
@@ -289,6 +308,7 @@ func _on_button_auto_move_pressed() -> void:
 func update_button_text() -> void:
 	var player = char_container.get_child(player_number)
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
+	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % wallview2str(view_walls)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible

@@ -33,3 +33,5 @@ mesh = SubResource("PlaneMesh_me8ve")
 [node name="EndMark" parent="." instance=ExtResource("2_wtqod")]
 
 [node name="StartMark" parent="." instance=ExtResource("2_wtqod")]
+
+[node name="PillarContainer" type="Node3D" parent="."]

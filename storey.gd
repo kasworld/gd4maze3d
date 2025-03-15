@@ -62,6 +62,7 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 
 	maze_cells = Maze.new(Settings.MazeSize)
 	make_wall_by_maze()
+	make_pillas()
 
 	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, Settings.StoryH/2.0)
 	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, Settings.StoryH/2.0)
@@ -146,9 +147,30 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
+func make_pillas() -> void:
+	for y in Settings.MazeSize.y+1:
+		for x in Settings.MazeSize.x+1:
+			var pos := Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW)
+			var pla = new_pilla(Settings.StoryH, Settings.WallThick / 2, 8, Color.WHITE)
+			pla.position = pos
+			$PillarContainer.add_child(pla)
+
+func new_pilla(h :float, r :float, rs:int, co :Color)->MeshInstance3D:
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = co
+	var mesh = CylinderMesh.new()
+	mesh.height = h
+	mesh.top_radius = r
+	mesh.bottom_radius = r
+	mesh.radial_segments = rs
+	mesh.material = mat
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	return sp
+
 func make_wall_by_maze() -> void:
 	for y in Settings.MazeSize.y:
-		for x in Settings.MazeSize.x :
+		for x in Settings.MazeSize.x:
 			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
 				add_wall_at( x , y , DirLib.Flag.North)
 			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.West):

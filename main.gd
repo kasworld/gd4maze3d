@@ -18,6 +18,7 @@ var vp_size :Vector2
 var minimap_mode :int = 0
 var view_floor_ceiling :bool = false
 var view_walls :bool = true
+var view_pillars :bool = true
 
 func _ready() -> void:
 	var msh = Settings.MazeSize*Settings.LaneW +Vector2(Settings.WallThick, Settings.WallThick)
@@ -54,6 +55,8 @@ func _ready() -> void:
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	update_button_text()
+	change_walls_visible(view_walls)
+	change_pillars_visible(view_pillars)
 	enter_new_storey()
 
 func _on_vpsize_changed() -> void:
@@ -133,10 +136,11 @@ var key2fn = {
 	KEY_2:_on_button_minimap_pressed,
 	KEY_3:_on_button_floor_ceiling_pressed,
 	KEY_4:_on_button_walls_pressed,
-	KEY_5:_on_button_auto_move_pressed,
-	KEY_6:_on_button_debug_pressed,
-	KEY_7:_on_button_performance_pressed,
-	KEY_8:_on_button_info_pressed,
+	KEY_5:_on_button_pillars_pressed,
+	KEY_6:_on_button_auto_move_pressed,
+	KEY_7:_on_button_debug_pressed,
+	KEY_8:_on_button_performance_pressed,
+	KEY_9:_on_button_info_pressed,
 	KEY_UP:_on_button_forward_pressed,
 	KEY_DOWN:_on_button_backward_pressed,
 	KEY_LEFT:_on_button_left_pressed,
@@ -251,6 +255,11 @@ func change_walls_visible(w :bool) -> void:
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_walls(w)
 
+func change_pillars_visible(w :bool) -> void:
+	var st = visible_down_index()
+	for i in range(st,storey_list.size()):
+		storey_list[i].view_pillars(w)
+
 func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
@@ -268,6 +277,10 @@ func _on_button_walls_pressed() -> void:
 	view_walls = not view_walls
 	change_walls_visible(view_walls)
 
+func _on_button_pillars_pressed() -> void:
+	view_pillars = not view_pillars
+	change_pillars_visible(view_pillars)
+
 func _on_button_auto_move_pressed() -> void:
 	var player = char_container.get_child(player_number)
 	player.ai_walk_type = AILib.next(player.ai_walk_type)
@@ -275,7 +288,7 @@ func _on_button_auto_move_pressed() -> void:
 
 func update_button_text() -> void:
 	var player = char_container.get_child(player_number)
-	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "5:Automove %s" % AILib.walk2str(player.ai_walk_type)
+	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible

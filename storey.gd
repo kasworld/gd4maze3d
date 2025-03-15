@@ -188,8 +188,10 @@ func make_wall_by_maze() -> void:
 func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	var pos_face_ew = Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW +Settings.LaneW/2)
 	var pos_face_ns = Vector3( x *Settings.LaneW +Settings.LaneW/2, Settings.StoryH/2.0, y *Settings.LaneW)
-	var size_face_ew = Vector3(Settings.WallThick,Settings.StoryH*0.999,Settings.LaneW)
-	var size_face_ns = Vector3(Settings.LaneW,Settings.StoryH*0.999,Settings.WallThick)
+	var size_face_ew = Vector3(Settings.WallThick/2,Settings.StoryH,Settings.LaneW-Settings.WallThick)
+	var size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick/2)
+	#var size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW)
+	#var size_face_ns = Vector3(Settings.LaneW,Settings.StoryH,Settings.WallThick)
 
 	if randf() < Settings.MakeLine2DWallRate:
 		if line2d_subviewport == null:
@@ -279,6 +281,9 @@ func view_floor_ceiling(f :bool,c :bool) -> void:
 
 func view_walls(w :bool) -> void:
 	$WallContainer.visible = w
+
+func view_pillars(w :bool) -> void:
+	$PillarContainer.visible = w
 
 func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p

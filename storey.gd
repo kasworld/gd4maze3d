@@ -185,6 +185,20 @@ func make_wall_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(Settings.MazeSize.x-1,y,DirLib.Flag.East):
 			add_wall_at( Settings.MazeSize.x , y , DirLib.Flag.East)
 
+func set_wall_size(full :bool) -> void:
+	var size_face_ns :Vector3
+	var size_face_ew :Vector3
+	if full:
+		size_face_ns = Vector3(Settings.LaneW,Settings.StoryH,Settings.WallThick)
+		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW)
+	else:
+		size_face_ew = Vector3(Settings.WallThick/2,Settings.StoryH,Settings.LaneW-Settings.WallThick)
+		size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick/2)
+	for w in get_tree().get_nodes_in_group("wall_ns"):
+		w.mesh.size = size_face_ns
+	for w in get_tree().get_nodes_in_group("wall_ew"):
+		w.mesh.size = size_face_ew
+
 func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	var pos_face_ew = Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW +Settings.LaneW/2)
 	var pos_face_ns = Vector3( x *Settings.LaneW +Settings.LaneW/2, Settings.StoryH/2.0, y *Settings.LaneW)
@@ -215,9 +229,11 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 		DirLib.Flag.West, DirLib.Flag.East:
 			w = Global3d.new_box(size_face_ew, mat)
 			w.position = pos_face_ew
+			w.add_to_group("wall_ew")
 		DirLib.Flag.North, DirLib.Flag.South:
 			w = Global3d.new_box(size_face_ns, mat)
 			w.position = pos_face_ns
+			w.add_to_group("wall_ns")
 	$WallContainer.add_child(w)
 
 	# add clock or calendar

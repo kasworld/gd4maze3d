@@ -86,6 +86,8 @@ func enter_new_storey() -> void:
 	$Floor.position.y = Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.InterStoreyH/2 # visible_down_index()*Settings.StoryH
 	$Ceiling.position.y = Settings.calc_storey_base_y_pos(storey_list.size()) + Settings.InterStoreyH/2 #storey_list.size()*Settings.StoryH
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+	set_wallview_mode(view_walls)
+	set_pillars_visible(view_pillars)
 
 	vp_size = get_viewport().get_visible_rect().size
 	var cur_storey = get_cur_storey()

@@ -83,8 +83,8 @@ func enter_new_storey() -> void:
 	cur_storey_index +=1
 	del_old_storey()
 	add_new_storey(storey_list.size())
-	$Floor.position.y = visible_down_index()*Settings.StoryH
-	$Ceiling.position.y = storey_list.size()*Settings.StoryH
+	$Floor.position.y = Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.InterStoreyH/2 # visible_down_index()*Settings.StoryH
+	$Ceiling.position.y = Settings.calc_storey_base_y_pos(storey_list.size()) + Settings.InterStoreyH/2 #storey_list.size()*Settings.StoryH
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 	vp_size = get_viewport().get_visible_rect().size
@@ -226,7 +226,7 @@ func add_new_storey(stnum :int) -> void:
 	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate().init(stnum, stp, gp)
-	st.position.y = Settings.StoryH * stnum
+	st.position.y = Settings.calc_storey_base_y_pos(stnum)
 	storey_list.append(st)
 	add_child(st)
 

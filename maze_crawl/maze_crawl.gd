@@ -149,14 +149,14 @@ func get_animation_progress() -> float:
 	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
 
 func animate_move_by_dur( dur :float) -> void:
-	var y = storey.storey_num*Settings.StoryH+ Settings.StoryH/2.0
+	var y =  Settings.calc_storey_mid_y_pos(storey.storey_num)
 	var p1 = storey.mazepos2storeypos(pos_src,y)
 	var p2 = storey.mazepos2storeypos(pos_dst,y)
 	position = p1.lerp(p2,dur)
 
 func animate_move_storey_by_dur(dur :float, from :int, to :int) -> void:
-	var p1 = storey.mazepos2storeypos(pos_src,from*Settings.StoryH+ Settings.StoryH/2.0)
-	var p2 = storey.mazepos2storeypos(pos_dst,to*Settings.StoryH+ Settings.StoryH/2.0)
+	var p1 = storey.mazepos2storeypos(pos_src, Settings.calc_storey_mid_y_pos(from) )
+	var p2 = storey.mazepos2storeypos(pos_dst, Settings.calc_storey_mid_y_pos(to) )
 	position = p1.lerp(p2,dur)
 
 func animate_turn_by_dur(dur :float) -> void:

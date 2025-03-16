@@ -10,6 +10,14 @@ const MazeSize := Vector2i(16*1,9*1)
 const StoryH :float = 3.0
 const LaneW :float = 4.0
 const WallThick :float = LaneW *0.05
+const InterStoreyH :float = StoryH / 100
+
+func calc_storey_base_y_pos(storey_num :int) -> float:
+	return storey_num * (StoryH + InterStoreyH)
+
+func calc_storey_mid_y_pos(storey_num :int) -> float:
+	return storey_num * (StoryH + InterStoreyH) + StoryH /2
+
 const BallTrailCount :int = 14
 const CharacterCount :int = max(1, MazeSize.x*MazeSize.y/10.0)
 const DonutCapsuleCount :int = max(1, MazeSize.x*MazeSize.y/20.0)

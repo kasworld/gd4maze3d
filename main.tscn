@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=13 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
@@ -27,13 +27,11 @@ material = SubResource("StandardMaterial3D_dhpxw")
 flip_faces = true
 size = Vector2(100, 100)
 
-[sub_resource type="LabelSettings" id="LabelSettings_1637f"]
-font_size = 32
-
 [sub_resource type="Theme" id="Theme_sfr3e"]
 default_font_size = 32
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7bjrx"]
+[sub_resource type="LabelSettings" id="LabelSettings_1637f"]
+font_size = 32
 
 [sub_resource type="SystemFont" id="SystemFont_bejao"]
 
@@ -60,27 +58,6 @@ skeleton = NodePath("../..")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("2_styvs")
 
-[node name="LabelContainer" type="VBoxContainer" parent="."]
-z_index = 1
-custom_minimum_size = Vector2(1920, 1080)
-offset_right = 1920.0
-offset_bottom = 1080.0
-
-[node name="Debug" type="Label" parent="LabelContainer"]
-visible = false
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
-
-[node name="Info" type="Label" parent="LabelContainer"]
-visible = false
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
-
-[node name="Performance" type="Label" parent="LabelContainer"]
-visible = false
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
-
 [node name="MovingCameraLight" parent="." instance=ExtResource("3_hdadt")]
 
 [node name="CharacterContainer" type="Node3D" parent="."]
@@ -92,11 +69,6 @@ theme = SubResource("Theme_sfr3e")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ButtonContainer"]
 layout_mode = 2
-
-[node name="VSeparator" type="VSeparator" parent="ButtonContainer/HBoxContainer"]
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="ButtonESC" type="Button" parent="ButtonContainer/HBoxContainer"]
 layout_mode = 2
@@ -169,11 +141,6 @@ text = "↓:Backward"
 layout_mode = 2
 text = "→:Right"
 
-[node name="VSeparator" type="VSeparator" parent="ButtonContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_7bjrx")
-
 [node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Enter:
@@ -183,10 +150,6 @@ StoreyUp"
 layout_mode = 2
 text = "Space:
 Fire Bullet"
-
-[node name="VSeparator2" type="VSeparator" parent="ButtonContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
 layout_mode = 2
@@ -215,6 +178,26 @@ text = "End:APSMin"
 [node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
 layout_mode = 2
 text = "PgDn:APSDown"
+
+[node name="LabelContainer" type="VBoxContainer" parent="ButtonContainer"]
+z_index = 1
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 2
+
+[node name="Debug" type="Label" parent="ButtonContainer/LabelContainer"]
+visible = false
+layout_mode = 2
+label_settings = SubResource("LabelSettings_1637f")
+
+[node name="Info" type="Label" parent="ButtonContainer/LabelContainer"]
+visible = false
+layout_mode = 2
+label_settings = SubResource("LabelSettings_1637f")
+
+[node name="Performance" type="Label" parent="ButtonContainer/LabelContainer"]
+visible = false
+layout_mode = 2
+label_settings = SubResource("LabelSettings_1637f")
 
 [node name="TimedMessage" parent="." instance=ExtResource("4_fd2hu")]
 modulate = Color(1, 1, 1, 0.498039)

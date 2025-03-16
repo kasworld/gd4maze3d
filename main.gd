@@ -16,9 +16,9 @@ var minimap_scene = preload("res://mini_map.tscn")
 var storey_scene = preload("res://storey.tscn")
 var character_scene = preload("res://character.tscn")
 
-@onready var debuglabel = $LabelContainer/Debug
-@onready var performancelabel = $LabelContainer/Performance
-@onready var infolabel = $LabelContainer/Info
+@onready var debuglabel = $ButtonContainer/LabelContainer/Debug
+@onready var performancelabel = $ButtonContainer/LabelContainer/Performance
+@onready var infolabel = $ButtonContainer/LabelContainer/Info
 @onready var cameralight = $MovingCameraLight
 @onready var char_container = $CharacterContainer
 
@@ -77,7 +77,7 @@ func _on_vpsize_changed() -> void:
 	minimap.change_scale(map_scale)
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
-	$ButtonContainer.position = vp_size  - $ButtonContainer.size
+	#$ButtonContainer.position = vp_size  - $ButtonContainer.size
 
 func enter_new_storey() -> void:
 	cur_storey_index +=1

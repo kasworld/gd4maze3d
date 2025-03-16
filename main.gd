@@ -117,11 +117,10 @@ func _process(_delta: float) -> void:
 	move_character(cur_storey)
 	update_info()
 	if camera_move:
-		var t = Time.get_unix_time_from_system() /-3.0
-		var rt = Settings.MazeSize*Settings.LaneW *1.5
-		var r = sqrt(rt.x*rt.y)/2
-		var 길이 = $Ceiling.position.y
-		$MovingCameraLight.position = Vector3( sin(t)*r, sin(t)*길이 , cos(t)*r )
+		var t = Time.get_unix_time_from_system() /2.0
+		var rt = Settings.MazeSize*Settings.LaneW
+		var r = sqrt(rt.x*rt.x+ rt.y*rt.y)/2
+		$MovingCameraLight.position = Vector3( sin(t)*r, sin(t)*Settings.TotalH*2, cos(t)*r ) + Vector3(rt.x/2,$Floor.position.y,rt.y/2)
 		$MovingCameraLight.look_at($Floor.position)
 
 func move_character(cur_storey :Storey) -> void:

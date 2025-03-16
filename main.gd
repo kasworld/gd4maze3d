@@ -25,12 +25,13 @@ var character_scene = preload("res://character.tscn")
 var minimap :MiniMap
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
-var player_number = 0
+var player_number := 0
 var vp_size :Vector2
 var minimap_mode :MiniMapView = MiniMapView.Off
 var view_floor_ceiling :bool = false
 var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
+var camera_move := false
 
 func _ready() -> void:
 	var msh = Settings.MazeSize*Settings.LaneW +Vector2(Settings.WallThick, Settings.WallThick)
@@ -115,6 +116,13 @@ func _process(_delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	move_character(cur_storey)
 	update_info()
+	if camera_move:
+		var t = Time.get_unix_time_from_system() /-3.0
+		var rt = Settings.MazeSize*Settings.LaneW *1.5
+		var r = sqrt(rt.x*rt.y)/2
+		var 길이 = $Ceiling.position.y
+		$MovingCameraLight.position = Vector3( sin(t)*r, sin(t)*길이 , cos(t)*r )
+		$MovingCameraLight.look_at($Floor.position)
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():
@@ -169,6 +177,7 @@ var key2fn = {
 	KEY_DELETE:_on_button_fov_down_pressed,
 	KEY_ENTER:_on_button_storey_up_pressed,
 	KEY_SPACE:_on_button_fire_pressed,
+	KEY_C: _on_button_camera_pressed,
 }
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -217,7 +226,8 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 		ActLib.Action.EnterStorey:
 			ch.animate_move_storey_by_dur(dur, cur_storey_index -1, cur_storey_index)
 	if ch.serial == player_number:
-		cameralight.copy_position_rotation(ch)
+		if not camera_move:
+			cameralight.copy_position_rotation(ch)
 
 func get_cur_storey() -> Storey:
 	return storey_list[cur_storey_index]
@@ -381,3 +391,8 @@ func _on_button_storey_up_pressed() -> void:
 
 func _on_button_fire_pressed() -> void:
 	pass # Replace with function body.
+
+func _on_button_camera_pressed() -> void:
+	camera_move = !camera_move
+	if camera_move == false:
+		$MovingCameraLight.snap_90()

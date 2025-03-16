@@ -151,6 +151,11 @@ layout_mode = 2
 text = "Space:
 Fire Bullet"
 
+[node name="ButtonCamera" type="Button" parent="ButtonContainer/HBoxContainer2"]
+layout_mode = 2
+text = "C:
+Camera"
+
 [node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
 layout_mode = 2
 columns = 3
@@ -221,6 +226,7 @@ theme = SubResource("Theme_u7t45")
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRight" to="." method="_on_button_right_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonFire" to="." method="_on_button_fire_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonCamera" to="." method="_on_button_camera_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]

@@ -18,6 +18,7 @@ var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
 var sub_wall_mat :StandardMaterial3D
 var sub_wall_tex_name :String
+var pillar_mat :StandardMaterial3D
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 var start_pos :Vector2i
@@ -47,7 +48,10 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	mat_keys.shuffle()
 	main_wall_mat_name = mat_keys[0]
 	main_wall_mat = Texmat.wall_mat_dict[main_wall_mat_name]
-	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
+	main_wall_mat.uv1_scale = Vector3(4, 2, 1)
+	pillar_mat = main_wall_mat.duplicate()
+	pillar_mat.uv1_scale = Vector3(0.2, 2, 1)
+	#pillar_mat.uv1_triplanar = true
 
 	var meshx = Settings.MazeSize.x*Settings.LaneW +Settings.WallThick
 	var meshy = Settings.MazeSize.y*Settings.LaneW +Settings.WallThick
@@ -152,19 +156,14 @@ func make_pillas() -> void:
 	for y in Settings.MazeSize.y+1:
 		for x in Settings.MazeSize.x+1:
 			var pos := Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW)
-			var pla = new_pilla(Settings.StoryH, Settings.WallThick / 2, 8, co)
+			var pla = new_pilla()
 			pla.position = pos
 			$PillarContainer.add_child(pla)
 
-func new_pilla(h :float, r :float, rs:int, co :Color)->MeshInstance3D:
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = co
-	var mesh = CylinderMesh.new()
-	mesh.height = h
-	mesh.top_radius = r
-	mesh.bottom_radius = r
-	mesh.radial_segments = rs
-	mesh.material = mat
+func new_pilla()->MeshInstance3D:
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(Settings.WallThick,Settings.StoryH,Settings.WallThick)
+	mesh.material = pillar_mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
 	return sp
@@ -192,8 +191,8 @@ func set_wall_size(full :bool) -> void:
 		size_face_ns = Vector3(Settings.LaneW,Settings.StoryH,Settings.WallThick)
 		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW)
 	else:
-		size_face_ew = Vector3(Settings.WallThick/2,Settings.StoryH,Settings.LaneW-Settings.WallThick)
-		size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick/2)
+		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW-Settings.WallThick)
+		size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick)
 	for w in get_tree().get_nodes_in_group("wall_ns"):
 		w.mesh.size = size_face_ns
 	for w in get_tree().get_nodes_in_group("wall_ew"):
@@ -202,10 +201,8 @@ func set_wall_size(full :bool) -> void:
 func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	var pos_face_ew = Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW +Settings.LaneW/2)
 	var pos_face_ns = Vector3( x *Settings.LaneW +Settings.LaneW/2, Settings.StoryH/2.0, y *Settings.LaneW)
-	var size_face_ew = Vector3(Settings.WallThick/2,Settings.StoryH,Settings.LaneW-Settings.WallThick)
-	var size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick/2)
-	#var size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW)
-	#var size_face_ns = Vector3(Settings.LaneW,Settings.StoryH,Settings.WallThick)
+	var size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW-Settings.WallThick)
+	var size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick)
 
 	if randf() < Settings.MakeLine2DWallRate:
 		if line2d_subviewport == null:

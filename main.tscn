@@ -65,16 +65,6 @@ _data = {
 &"new_animation": SubResource("Animation_1bvp3")
 }
 
-[sub_resource type="Animation" id="Animation_7mycd"]
-resource_name = "new_animation"
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AddStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 50, 0, 1, 1, 0, 0, 0)
-
 [sub_resource type="Animation" id="Animation_272bh"]
 length = 0.001
 tracks/0/type = "position_3d"
@@ -84,6 +74,16 @@ tracks/0/path = NodePath("AddStoreyContainer")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_7mycd"]
+resource_name = "new_animation"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AddStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 50, 0, 1, 1, 0, 0, 0)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5vw27"]
 _data = {

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=16 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
@@ -38,6 +38,32 @@ font_size = 32
 [sub_resource type="Theme" id="Theme_u7t45"]
 resource_local_to_scene = true
 default_font = SubResource("SystemFont_bejao")
+
+[sub_resource type="Animation" id="Animation_1bvp3"]
+resource_name = "new_animation"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DelStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
+
+[sub_resource type="Animation" id="Animation_lquwl"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DelStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7mycd"]
+_data = {
+&"RESET": SubResource("Animation_lquwl"),
+&"new_animation": SubResource("Animation_1bvp3")
+}
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
@@ -208,6 +234,13 @@ label_settings = SubResource("LabelSettings_1637f")
 modulate = Color(1, 1, 1, 0.498039)
 theme = SubResource("Theme_u7t45")
 
+[node name="AnimationPlayerDelStorey" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_7mycd")
+}
+
+[node name="DelStoreyContainer" type="Node3D" parent="."]
+
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
@@ -233,3 +266,4 @@ theme = SubResource("Theme_u7t45")
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
+[connection signal="animation_finished" from="AnimationPlayerDelStorey" to="." method="_on_animation_player_del_storey_animation_finished"]

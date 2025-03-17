@@ -247,7 +247,12 @@ func del_old_storey() -> void:
 		var todel = storey_list[visible_down_index()-1]
 		storey_list[visible_down_index()-1] = null
 		remove_child(todel)
-		todel.queue_free()
+		$DelStoreyContainer.add_child(todel)
+		$AnimationPlayerDelStorey.play("new_animation")
+
+func _on_animation_player_del_storey_animation_finished(anim_name: StringName) -> void:
+	var todel = $DelStoreyContainer.get_child(0)
+	todel.queue_free()
 
 func visible_down_index() -> int:
 	var rtn = cur_storey_index - Settings.VisibleStoreyDown

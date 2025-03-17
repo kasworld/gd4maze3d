@@ -274,20 +274,16 @@ func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	storey_list[-1].view_floor_ceiling(f,false)
 
 func set_wallview_mode(w :WallView) -> void:
-	match w:
-		WallView.Full:
-			var st = visible_down_index()
-			for i in range(st,storey_list.size()):
+	var st = visible_down_index()
+	for i in range(st,storey_list.size()):
+		match w:
+			WallView.Full:
 				storey_list[i].view_walls(true)
 				storey_list[i].set_wall_size(true)
-		WallView.Reduced:
-			var st = visible_down_index()
-			for i in range(st,storey_list.size()):
+			WallView.Reduced:
 				storey_list[i].view_walls(true)
 				storey_list[i].set_wall_size(false)
-		WallView.Off:
-			var st = visible_down_index()
-			for i in range(st,storey_list.size()):
+			WallView.Off:
 				storey_list[i].view_walls(false)
 
 func set_pillars_visible(w :bool) -> void:

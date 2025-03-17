@@ -240,7 +240,13 @@ func add_new_storey(stnum :int) -> void:
 	var st = storey_scene.instantiate().init(stnum, stp, gp)
 	st.position.y = Settings.calc_storey_base_y_pos(stnum)
 	storey_list.append(st)
-	add_child(st)
+	$AddStoreyContainer.add_child(st)
+	$AnimationPlayerAddStorey.play("new_animation")
+
+func _on_animation_player_add_storey_animation_finished(anim_name: StringName) -> void:
+	for st in $AddStoreyContainer.get_children():
+		$AddStoreyContainer.remove_child(st)
+		add_child(st)
 
 func del_old_storey() -> void:
 	if visible_down_index()-1 >=0 :
@@ -251,8 +257,9 @@ func del_old_storey() -> void:
 		$AnimationPlayerDelStorey.play("new_animation")
 
 func _on_animation_player_del_storey_animation_finished(anim_name: StringName) -> void:
-	var todel = $DelStoreyContainer.get_child(0)
-	todel.queue_free()
+	for todel in $DelStoreyContainer.get_children():
+		$DelStoreyContainer.remove_child(todel)
+		todel.queue_free()
 
 func visible_down_index() -> int:
 	var rtn = cur_storey_index - Settings.VisibleStoreyDown

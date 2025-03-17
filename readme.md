@@ -3,3 +3,5 @@
 ![player view](doc/screenshot1.png)
 
 ![top view](doc/screenshot2.png)
+
+![alt text](doc/screenshot3.png)

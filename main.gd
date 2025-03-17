@@ -118,8 +118,7 @@ func _process(_delta: float) -> void:
 	update_info()
 	if camera_move:
 		var t = Time.get_unix_time_from_system() /2.0
-		var rt = Settings.MazeSize*Settings.LaneW
-		var r = sqrt(rt.x*rt.x+ rt.y*rt.y)/2
+		var r = (Settings.MazeSize*Settings.LaneW).length() /2
 		var 중심 = ($Floor.position + $Ceiling.position)/2
 		var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 		$MovingCameraLight.position = Vector3( sin(t)*r, sin(t)*높이 *2, cos(t)*r ) + 중심

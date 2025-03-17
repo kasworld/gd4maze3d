@@ -12,7 +12,6 @@ const LaneW :float = 4.0
 const WallThick :float = LaneW *0.05
 const InterStoreyH :float = StoryH / 100
 
-const TotalH :float = (VisibleStoreyUp+VisibleStoreyDown+1)*(StoryH+InterStoreyH)
 const TotalX :float = MazeSize.x * LaneW
 const TotalY :float = MazeSize.y * LaneW
 

@@ -154,26 +154,36 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
 func make_pillas() -> void:
+	var multi_inst = make_box_multi_inst(pillar_mat, Vector3(Settings.WallThick,Settings.StoryH,Settings.WallThick) )
+	$PillarContainer.add_child(multi_inst)
+	var pos_list :Array = []
+	for y in Settings.MazeSize.y+1:
+		for x in Settings.MazeSize.x+1:
+			pos_list.append(Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW) )
+	pos_multimesh(multi_inst.multimesh, pos_list)
+
+func make_box_multi_inst(mat :Material, sz :Vector3) -> MultiMeshInstance3D:
 	var mesh = BoxMesh.new()
-	mesh.size = Vector3(Settings.WallThick,Settings.StoryH,Settings.WallThick)
-	mesh.material = pillar_mat
+	mesh.size = sz
+	mesh.material = mat
 	var multimesh = MultiMesh.new()
 	multimesh.mesh = mesh
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	var count = (Settings.MazeSize.y+1)*(Settings.MazeSize.x+1)
-	multimesh.instance_count = count
-	multimesh.visible_instance_count = count
-	var multi_ball = MultiMeshInstance3D.new()
-	multi_ball.multimesh = multimesh
-	$PillarContainer.add_child(multi_ball)
-	var i := 0
-	for y in Settings.MazeSize.y+1:
-		for x in Settings.MazeSize.x+1:
-			var pos := Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW)
-			var t = Transform3D(Basis(), pos)
-			multimesh.set_instance_transform(i,t)
-			i += 1
+	var multi_inst = MultiMeshInstance3D.new()
+	multi_inst.multimesh = multimesh
+	return multi_inst
 
+func pos_multimesh(multimesh :MultiMesh, pos_list :Array) -> void:
+	multimesh.instance_count = pos_list.size()
+	multimesh.visible_instance_count = pos_list.size()
+	for i in pos_list.size():
+		var t = Transform3D(Basis(), pos_list[i])
+		multimesh.set_instance_transform(i,t)
+
+var wall_multi_inst_ew_main :MultiMeshInstance3D
+var wall_multi_inst_ns_main :MultiMeshInstance3D
+var wall_multi_inst_ew_sub :MultiMeshInstance3D
+var wall_multi_inst_ns_sub :MultiMeshInstance3D
 func make_wall_by_maze() -> void:
 	for y in Settings.MazeSize.y:
 		for x in Settings.MazeSize.x:
@@ -190,19 +200,6 @@ func make_wall_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(Settings.MazeSize.x-1,y,DirLib.Flag.East):
 			add_wall_at( Settings.MazeSize.x , y , DirLib.Flag.East)
 
-func set_wall_size(full :bool) -> void:
-	var size_face_ns :Vector3
-	var size_face_ew :Vector3
-	if full:
-		size_face_ns = Vector3(Settings.LaneW,Settings.StoryH,Settings.WallThick)
-		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW)
-	else:
-		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW-Settings.WallThick)
-		size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick)
-	for w in get_tree().get_nodes_in_group("wall_ns"):
-		w.mesh.size = size_face_ns
-	for w in get_tree().get_nodes_in_group("wall_ew"):
-		w.mesh.size = size_face_ew
 
 func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	var pos_face_ew = Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW +Settings.LaneW/2)
@@ -262,6 +259,20 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 				n.position = pos_face_ns + Vector3(0,0,Settings.WallThick)
 			DirLib.Flag.South:
 				n.position = pos_face_ns - Vector3(0,0,Settings.WallThick)
+
+func set_wall_size(full :bool) -> void:
+	var size_face_ns :Vector3
+	var size_face_ew :Vector3
+	if full:
+		size_face_ns = Vector3(Settings.LaneW,Settings.StoryH,Settings.WallThick)
+		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW)
+	else:
+		size_face_ew = Vector3(Settings.WallThick,Settings.StoryH,Settings.LaneW-Settings.WallThick)
+		size_face_ns = Vector3(Settings.LaneW-Settings.WallThick,Settings.StoryH,Settings.WallThick)
+	for w in get_tree().get_nodes_in_group("wall_ns"):
+		w.mesh.size = size_face_ns
+	for w in get_tree().get_nodes_in_group("wall_ew"):
+		w.mesh.size = size_face_ew
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#print_debug(size_pixel)

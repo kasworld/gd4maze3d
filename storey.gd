@@ -42,7 +42,7 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	sub_wall_mat = StandardMaterial3D.new()
 	sub_wall_mat.albedo_texture = Texmat.wall_tex_dict[sub_wall_tex_name]
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-	sub_wall_mat.uv1_scale = Vector3(4, 2, 1)
+	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
 	#sub_wall_mat.uv1_scale = Vector3(Settings.LaneW/2, Settings.StoryH/2, 1)
 
 	var mat_keys = Texmat.wall_mat_dict.keys()

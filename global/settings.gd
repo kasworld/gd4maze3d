@@ -10,7 +10,7 @@ const MazeSize := Vector2i(16*1,9*1)
 const StoryH :float = 3.0
 const LaneW :float = 4.0
 const WallThick :float = LaneW *0.05
-const InterStoreyH :float = StoryH / 100
+const InterStoreyH :float = StoryH # / 100
 
 const TotalX :float = MazeSize.x * LaneW
 const TotalY :float = MazeSize.y * LaneW

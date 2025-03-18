@@ -268,7 +268,7 @@ func visible_down_index() -> int:
 	return rtn
 
 func set_minimap_mode(v :MiniMapView) -> void:
-	match minimap_mode:
+	match v:
 		MiniMapView.Off:
 			minimap.hide()
 		MiniMapView.Known:

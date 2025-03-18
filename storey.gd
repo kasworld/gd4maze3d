@@ -180,15 +180,36 @@ func pos_multimesh(multimesh :MultiMesh, pos_list :Array) -> void:
 		var t = Transform3D(Basis(), pos_list[i])
 		multimesh.set_instance_transform(i,t)
 
+func set_wall_size(full :bool) -> void:
+	if full:
+		wall_multi_inst_ns_main.multimesh.mesh.size = Settings.WallSize_NS_Full
+		wall_multi_inst_ns_sub.multimesh.mesh.size = Settings.WallSize_NS_Full
+		wall_multi_inst_ew_main.multimesh.mesh.size = Settings.WallSize_EW_Full
+		wall_multi_inst_ew_sub.multimesh.mesh.size = Settings.WallSize_EW_Full
+	else:
+		wall_multi_inst_ns_main.multimesh.mesh.size = Settings.WallSize_NS_Reduced
+		wall_multi_inst_ns_sub.multimesh.mesh.size = Settings.WallSize_NS_Reduced
+		wall_multi_inst_ew_main.multimesh.mesh.size = Settings.WallSize_EW_Reduced
+		wall_multi_inst_ew_sub.multimesh.mesh.size = Settings.WallSize_EW_Reduced
+
 var wall_multi_inst_ew_main :MultiMeshInstance3D
 var wall_multi_inst_ns_main :MultiMeshInstance3D
 var wall_multi_inst_ew_sub :MultiMeshInstance3D
 var wall_multi_inst_ns_sub :MultiMeshInstance3D
+var pos_list_ew_main :Array
+var pos_list_ns_main :Array
+var pos_list_ew_sub :Array
+var pos_list_ns_sub :Array
 func make_wall_by_maze() -> void:
 	wall_multi_inst_ew_main = make_box_multi_inst(main_wall_mat,Settings.WallSize_EW_Reduced)
 	wall_multi_inst_ns_main = make_box_multi_inst(main_wall_mat,Settings.WallSize_NS_Reduced)
 	wall_multi_inst_ew_sub = make_box_multi_inst(sub_wall_mat,Settings.WallSize_EW_Reduced)
 	wall_multi_inst_ns_sub = make_box_multi_inst(sub_wall_mat,Settings.WallSize_NS_Reduced)
+	$WallContainer.add_child(wall_multi_inst_ew_main)
+	$WallContainer.add_child(wall_multi_inst_ns_main)
+	$WallContainer.add_child(wall_multi_inst_ew_sub)
+	$WallContainer.add_child(wall_multi_inst_ns_sub)
+
 	for y in Settings.MazeSize.y:
 		for x in Settings.MazeSize.x:
 			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
@@ -204,6 +225,10 @@ func make_wall_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(Settings.MazeSize.x-1,y,DirLib.Flag.East):
 			add_wall_at( Settings.MazeSize.x , y , DirLib.Flag.East)
 
+	pos_multimesh(wall_multi_inst_ew_main.multimesh, pos_list_ew_main)
+	pos_multimesh(wall_multi_inst_ns_main.multimesh, pos_list_ns_main)
+	pos_multimesh(wall_multi_inst_ew_sub.multimesh, pos_list_ew_sub)
+	pos_multimesh(wall_multi_inst_ns_sub.multimesh, pos_list_ns_sub)
 
 func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 	var pos_face_ew = Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW +Settings.LaneW/2)
@@ -221,22 +246,17 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 				b.position = pos_face_ns
 		return
 
-	var mat :StandardMaterial3D
-	if randf() < Settings.MakeSubWallRate:
-		mat = sub_wall_mat
-	else:
-		mat = main_wall_mat
-	var w :MeshInstance3D
 	match dir:
 		DirLib.Flag.West, DirLib.Flag.East:
-			w = Global3d.new_box(Settings.WallSize_EW_Reduced, mat)
-			w.position = pos_face_ew
-			w.add_to_group("wall_ew")
+			if randf() < Settings.MakeSubWallRate:
+				pos_list_ew_sub.append(pos_face_ew)
+			else:
+				pos_list_ew_main.append(pos_face_ew)
 		DirLib.Flag.North, DirLib.Flag.South:
-			w = Global3d.new_box(Settings.WallSize_NS_Reduced, mat)
-			w.position = pos_face_ns
-			w.add_to_group("wall_ns")
-	$WallContainer.add_child(w)
+			if randf() < Settings.MakeSubWallRate:
+				pos_list_ns_sub.append(pos_face_ns)
+			else:
+				pos_list_ns_main.append(pos_face_ns)
 
 	# add clock or calendar
 	if randf() < Settings.MakeClockCalWallRate:
@@ -262,19 +282,6 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 			DirLib.Flag.South:
 				n.position = pos_face_ns - Vector3(0,0,Settings.WallThick)
 
-func set_wall_size(full :bool) -> void:
-	var size_face_ns :Vector3
-	var size_face_ew :Vector3
-	if full:
-		size_face_ns = Settings.WallSize_NS_Full
-		size_face_ew = Settings.WallSize_EW_Full
-	else:
-		size_face_ew = Settings.WallSize_EW_Reduced
-		size_face_ns = Settings.WallSize_NS_Reduced
-	for w in get_tree().get_nodes_in_group("wall_ns"):
-		w.mesh.size = size_face_ns
-	for w in get_tree().get_nodes_in_group("wall_ew"):
-		w.mesh.size = size_face_ew
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#print_debug(size_pixel)

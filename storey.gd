@@ -154,21 +154,25 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
 func make_pillas() -> void:
-	var co = NamedColorList.color_list.pick_random()[0]
-	for y in Settings.MazeSize.y+1:
-		for x in Settings.MazeSize.x+1:
-			var pos := Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW)
-			var pla = new_pilla()
-			pla.position = pos
-			$PillarContainer.add_child(pla)
-
-func new_pilla()->MeshInstance3D:
 	var mesh = BoxMesh.new()
 	mesh.size = Vector3(Settings.WallThick,Settings.StoryH,Settings.WallThick)
 	mesh.material = pillar_mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	return sp
+	var multimesh = MultiMesh.new()
+	multimesh.mesh = mesh
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	var count = (Settings.MazeSize.y+1)*(Settings.MazeSize.x+1)
+	multimesh.instance_count = count
+	multimesh.visible_instance_count = count
+	var multi_ball = MultiMeshInstance3D.new()
+	multi_ball.multimesh = multimesh
+	$PillarContainer.add_child(multi_ball)
+	var i := 0
+	for y in Settings.MazeSize.y+1:
+		for x in Settings.MazeSize.x+1:
+			var pos := Vector3( x *Settings.LaneW, Settings.StoryH/2.0, y *Settings.LaneW)
+			var t = Transform3D(Basis(), pos)
+			multimesh.set_instance_transform(i,t)
+			i += 1
 
 func make_wall_by_maze() -> void:
 	for y in Settings.MazeSize.y:

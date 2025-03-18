@@ -15,6 +15,12 @@ const InterStoreyH :float = StoryH # / 100
 const TotalX :float = MazeSize.x * LaneW
 const TotalY :float = MazeSize.y * LaneW
 
+const WallSize_NS_Full = Vector3(LaneW,StoryH,WallThick)
+const WallSize_NS_Reduced = Vector3(LaneW-WallThick,StoryH,WallThick)
+const WallSize_EW_Full = Vector3(WallThick,StoryH,LaneW)
+const WallSize_EW_Reduced = Vector3(WallThick,StoryH,LaneW-WallThick)
+
+
 func calc_storey_base_y_pos(storey_num :int) -> float:
 	return storey_num * (StoryH + InterStoreyH)
 

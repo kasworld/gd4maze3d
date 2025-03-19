@@ -112,16 +112,16 @@ func enter_new_storey() -> void:
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	move_character(cur_storey)
 	update_info()
-	move_moon()
-	move_earth()
+	move_moon(delta)
+	move_earth(delta)
 	if camera_move:
-		move_camera()
+		move_camera(delta)
 
-func move_camera() -> void:
+func move_camera(_delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0
 	var r = (Settings.MazeSize*Settings.LaneW).length() /2
 	var 중심 = ($Floor.position + $Ceiling.position)/2
@@ -129,20 +129,22 @@ func move_camera() -> void:
 	$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*높이 *2, cos(t)*r ) + 중심
 	$MovingCameraLight.look_at($Floor.position)
 
-func move_moon() -> void:
+func move_moon(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 - PI/2
 	var r = (Settings.MazeSize*Settings.LaneW).length()
 	var 중심 = ($Floor.position + $Ceiling.position)/2
 	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 	$Moon.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
-	$Moon.look_at($Floor.position)
+	$Moon.rotate_y(-delta)
+	#$Moon.look_at($Floor.position)
 
-func move_earth() -> void:
+func move_earth(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI/2
 	var r = (Settings.MazeSize*Settings.LaneW).length()
 	var 중심 = ($Floor.position + $Ceiling.position)/2
 	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 	$Earth.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
+	$Earth.rotate_y(-delta)
 	#$Earth.look_at($Floor.position)
 
 func move_character(cur_storey :Storey) -> void:
@@ -264,7 +266,7 @@ func add_new_storey(stnum :int) -> void:
 	$AddStoreyContainer.add_child(st)
 	$AnimationPlayerAddStorey.play("new_animation")
 
-func _on_animation_player_add_storey_animation_finished(anim_name: StringName) -> void:
+func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) -> void:
 	for st in $AddStoreyContainer.get_children():
 		$AddStoreyContainer.remove_child(st)
 		add_child(st)
@@ -277,7 +279,7 @@ func del_old_storey() -> void:
 		$DelStoreyContainer.add_child(todel)
 		$AnimationPlayerDelStorey.play("new_animation")
 
-func _on_animation_player_del_storey_animation_finished(anim_name: StringName) -> void:
+func _on_animation_player_del_storey_animation_finished(_anim_name: StringName) -> void:
 	for todel in $DelStoreyContainer.get_children():
 		$DelStoreyContainer.remove_child(todel)
 		todel.queue_free()

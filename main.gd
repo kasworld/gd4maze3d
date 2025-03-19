@@ -117,6 +117,7 @@ func _process(_delta: float) -> void:
 	move_character(cur_storey)
 	update_info()
 	move_moon()
+	move_earth()
 	if camera_move:
 		var t = Time.get_unix_time_from_system() /2.0
 		var r = (Settings.MazeSize*Settings.LaneW).length() /2
@@ -126,13 +127,20 @@ func _process(_delta: float) -> void:
 		$MovingCameraLight.look_at($Floor.position)
 
 func move_moon() -> void:
-	var t = Time.get_unix_time_from_system() /-2.0
+	var t = Time.get_unix_time_from_system() /2.0 - PI/2
 	var r = (Settings.MazeSize*Settings.LaneW).length()
 	var 중심 = ($Floor.position + $Ceiling.position)/2
 	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 	$Moon.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
 	$Moon.look_at($Floor.position)
 
+func move_earth() -> void:
+	var t = Time.get_unix_time_from_system() /2.0 + PI/2
+	var r = (Settings.MazeSize*Settings.LaneW).length()
+	var 중심 = ($Floor.position + $Ceiling.position)/2
+	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
+	$Earth.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
+	$Earth.look_at($Floor.position)
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

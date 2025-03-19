@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=27 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
 [ext_resource type="Texture2D" uid="uid://dmu4xdw0s4lne" path="res://earthmoon/moon.png" id="5_7mycd"]
 [ext_resource type="Texture2D" uid="uid://2x0cka7afmvg" path="res://earthmoon/moon_normals.png" id="6_272bh"]
+[ext_resource type="Texture2D" uid="uid://dchsb4beh4umq" path="res://earthmoon/earthmap8k.png" id="7_5vw27"]
+[ext_resource type="Texture2D" uid="uid://b0lmvtff4piv" path="res://earthmoon/earthbump8k.png" id="8_kek77"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 transparency = 2
@@ -102,6 +104,16 @@ normal_texture = ExtResource("6_272bh")
 
 [sub_resource type="SphereMesh" id="SphereMesh_kek77"]
 material = SubResource("StandardMaterial3D_5vw27")
+radius = 5.0
+height = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4c57u"]
+albedo_texture = ExtResource("7_5vw27")
+normal_enabled = true
+normal_texture = ExtResource("8_kek77")
+
+[sub_resource type="SphereMesh" id="SphereMesh_efxa6"]
+material = SubResource("StandardMaterial3D_4c57u")
 radius = 5.0
 height = 10.0
 
@@ -291,6 +303,9 @@ libraries = {
 [node name="Moon" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 50, 50)
 mesh = SubResource("SphereMesh_kek77")
+
+[node name="Earth" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_efxa6")
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

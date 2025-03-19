@@ -63,7 +63,7 @@ func _ready() -> void:
 	$MovingCameraLight.init()
 	vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 17.0.0"))
+	$TimedMessage.init(80, msgrect, tr("gd4maze3d 18.0.0"))
 	$TimedMessage.show_message("",3)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
@@ -119,12 +119,15 @@ func _process(_delta: float) -> void:
 	move_moon()
 	move_earth()
 	if camera_move:
-		var t = Time.get_unix_time_from_system() /2.0
-		var r = (Settings.MazeSize*Settings.LaneW).length() /2
-		var 중심 = ($Floor.position + $Ceiling.position)/2
-		var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
-		$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*높이 *2, cos(t)*r ) + 중심
-		$MovingCameraLight.look_at($Floor.position)
+		move_camera()
+
+func move_camera() -> void:
+	var t = Time.get_unix_time_from_system() /2.0
+	var r = (Settings.MazeSize*Settings.LaneW).length() /2
+	var 중심 = ($Floor.position + $Ceiling.position)/2
+	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
+	$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*높이 *2, cos(t)*r ) + 중심
+	$MovingCameraLight.look_at($Floor.position)
 
 func move_moon() -> void:
 	var t = Time.get_unix_time_from_system() /2.0 - PI/2

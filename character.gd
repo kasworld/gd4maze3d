@@ -24,6 +24,7 @@ func init_char(walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> Characte
 	mi3d.mesh = mesh
 	mi3d.rotation.x = -PI/2
 	mi3d.scale.x = 0.5
+	mi3d.position.x = LaneW*0.2
 	add_child(mi3d)
 
 	return self

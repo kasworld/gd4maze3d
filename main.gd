@@ -143,7 +143,7 @@ func move_earth() -> void:
 	var 중심 = ($Floor.position + $Ceiling.position)/2
 	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 	$Earth.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
-	$Earth.look_at($Floor.position)
+	#$Earth.look_at($Floor.position)
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

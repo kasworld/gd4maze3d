@@ -97,8 +97,11 @@ _data = {
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
 albedo_texture = ExtResource("5_7mycd")
-emission = Color(0.622881, 0.622881, 0.622881, 1)
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.5
 emission_operator = 1
+emission_texture = ExtResource("5_7mycd")
 normal_enabled = true
 normal_texture = ExtResource("6_272bh")
 
@@ -109,6 +112,11 @@ height = 10.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4c57u"]
 albedo_texture = ExtResource("7_5vw27")
+emission_enabled = true
+emission = Color(0.997053, 0.997053, 0.997053, 1)
+emission_energy_multiplier = 0.5
+emission_operator = 1
+emission_texture = ExtResource("7_5vw27")
 normal_enabled = true
 normal_texture = ExtResource("8_kek77")
 

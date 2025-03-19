@@ -1,9 +1,9 @@
 [gd_resource type="Environment" load_steps=4 format=3 uid="uid://bjvwie8t5k8es"]
 
-[ext_resource type="Texture2D" uid="uid://bc5g4j4hpwts4" path="res://backgrounds/experiment.hdr" id="1_nfwag"]
+[ext_resource type="Texture2D" uid="uid://dchsb4beh4umq" path="res://earthmoon/earthmap8k.png" id="1_ooua1"]
 
 [sub_resource type="PanoramaSkyMaterial" id="1"]
-panorama = ExtResource("1_nfwag")
+panorama = ExtResource("1_ooua1")
 
 [sub_resource type="Sky" id="2"]
 sky_material = SubResource("1")

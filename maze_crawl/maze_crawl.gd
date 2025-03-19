@@ -135,8 +135,8 @@ func walk_left_first() -> bool:
 		return true
 	# try backward
 	if can_move(DirLib.DirOpppsite[dir_src]):
-		enqueue_action(ActLib.Action.TurnLeft)
-		enqueue_action(ActLib.Action.TurnLeft)
+		enqueue_action(ActLib.Action.TurnRight)
+		enqueue_action(ActLib.Action.TurnRight)
 		enqueue_action(ActLib.Action.Forward)
 		return true
 	return false

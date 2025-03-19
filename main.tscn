@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=31 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
@@ -122,6 +122,28 @@ normal_texture = ExtResource("8_kek77")
 
 [sub_resource type="SphereMesh" id="SphereMesh_efxa6"]
 material = SubResource("StandardMaterial3D_4c57u")
+radius = 5.0
+height = 10.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5vw27"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kek77"]
+in_3d_space = true
+seamless = true
+noise = SubResource("FastNoiseLite_5vw27")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kek77"]
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 2.0
+emission_operator = 1
+emission_texture = SubResource("NoiseTexture2D_kek77")
+subsurf_scatter_strength = 1.0
+backlight_enabled = true
+backlight = Color(1, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_dg77c"]
+material = SubResource("StandardMaterial3D_kek77")
 radius = 5.0
 height = 10.0
 
@@ -314,6 +336,9 @@ mesh = SubResource("SphereMesh_kek77")
 
 [node name="Earth" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_efxa6")
+
+[node name="Sun" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_dg77c")
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

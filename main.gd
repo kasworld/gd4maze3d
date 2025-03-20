@@ -137,7 +137,6 @@ func move_moon(delta: float) -> void:
 	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 	$Moon.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
 	$Moon.rotate_y(-delta)
-	#$Moon.look_at($Floor.position)
 
 func move_earth(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *2
@@ -146,7 +145,6 @@ func move_earth(delta: float) -> void:
 	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
 	$Earth.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
 	$Earth.rotate_y(-delta)
-	#$Earth.look_at($Floor.position)
 
 func move_sun(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *3

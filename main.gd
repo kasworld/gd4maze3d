@@ -134,26 +134,22 @@ func move_moon(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *1
 	var r = (Settings.MazeSize*Settings.LaneW).length()
 	var 중심 = ($Floor.position + $Ceiling.position)/2
-	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
-	$Moon.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
+	$Moon.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.FORWARD, PI/6) + 중심
 	$Moon.rotate_y(-delta)
 
 func move_earth(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *2
 	var r = (Settings.MazeSize*Settings.LaneW).length()
 	var 중심 = ($Floor.position + $Ceiling.position)/2
-	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
-	$Earth.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
+	$Earth.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.BACK, PI/6) + 중심
 	$Earth.rotate_y(-delta)
 
 func move_sun(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *3
 	var r = (Settings.MazeSize*Settings.LaneW).length()
 	var 중심 = ($Floor.position + $Ceiling.position)/2
-	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
-	$Sun.position = Vector3( sin(t)*r, sin(t*1.3)*높이, cos(t)*r ) + 중심
+	$Sun.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.RIGHT, PI/6) + 중심
 	$Sun.rotate_y(-delta)
-
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

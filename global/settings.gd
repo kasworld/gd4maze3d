@@ -14,6 +14,8 @@ const InterStoreyH :float = StoryH # / 100
 
 const TotalX :float = MazeSize.x * LaneW
 const TotalY :float = MazeSize.y * LaneW
+var TotalDiagonal :float = (MazeSize*LaneW).length()
+const MeshSize :Vector2 = MazeSize*LaneW +Vector2(WallThick, WallThick)
 
 const WallSize_NS_Full = Vector3(LaneW,StoryH,WallThick)
 const WallSize_NS_Reduced = Vector3(LaneW-WallThick,StoryH,WallThick)

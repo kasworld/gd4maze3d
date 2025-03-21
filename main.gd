@@ -34,20 +34,16 @@ var view_pillars :bool = true
 var camera_move := false
 
 func _ready() -> void:
-	var msh = Settings.MazeSize*Settings.LaneW +Vector2(Settings.WallThick, Settings.WallThick)
-
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
 	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
-	$Floor.mesh.size = msh
-	$Floor.position = Vector3(msh.x/2, 0, msh.y/2)
+	$Floor.mesh.size = Settings.MeshSize
 	$Floor.mesh.material.uv1_scale = Vector3(Settings.MazeSize.x,(Settings.MazeSize.x+Settings.MazeSize.y)/2.0,Settings.MazeSize.y)
 
 	mat_keys = Texmat.ceiling_mat_dict.keys()
 	mat_keys.shuffle()
 	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[0]].duplicate()
-	$Ceiling.mesh.size = $Floor.mesh.size
-	$Ceiling.position = $Floor.position
+	$Ceiling.mesh.size = Settings.MeshSize
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 
 	for i in Settings.CharacterCount:
@@ -78,14 +74,13 @@ func _on_vpsize_changed() -> void:
 	minimap.change_scale(map_scale)
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
-	#$ButtonContainer.position = vp_size  - $ButtonContainer.size
 
 func enter_new_storey() -> void:
 	cur_storey_index +=1
 	del_old_storey()
 	add_new_storey(storey_list.size())
-	$Floor.position.y = Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.InterStoreyH/2 # visible_down_index()*Settings.StoryH
-	$Ceiling.position.y = Settings.calc_storey_base_y_pos(storey_list.size()) + Settings.InterStoreyH/2 #storey_list.size()*Settings.StoryH
+	$Floor.position = calc_floor_position()
+	$Ceiling.position = calc_ceiling_position()
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
@@ -122,33 +117,40 @@ func _process(delta: float) -> void:
 	if camera_move:
 		move_camera(delta)
 
+func calc_floor_position() -> Vector3:
+	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.InterStoreyH/2, Settings.MeshSize.y/2)
+
+func calc_ceiling_position() -> Vector3:
+	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.InterStoreyH/2, Settings.MeshSize.y/2)
+
+func calc_center() -> Vector3:
+	return (calc_floor_position() + calc_ceiling_position())/2
+
+func calc_height() -> float:
+	return (calc_ceiling_position() - calc_floor_position()).y
+
 func move_camera(_delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.3
-	var r = (Settings.MazeSize*Settings.LaneW).length() *1.0
-	var 중심 = ($Floor.position + $Ceiling.position)/2
-	var 높이 = Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_storey_base_y_pos(visible_down_index())
-	$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*높이 *2, cos(t)*r ) + 중심
-	$MovingCameraLight.look_at($Floor.position)
+	var r = Settings.TotalDiagonal *1.0
+	$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*calc_height() *2, cos(t)*r ) + calc_center()
+	$MovingCameraLight.look_at(calc_center())
 
 func move_moon(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *1
-	var r = (Settings.MazeSize*Settings.LaneW).length()
-	var 중심 = ($Floor.position + $Ceiling.position)/2
-	$Moon.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.FORWARD, PI/6) + 중심
+	var r = Settings.TotalDiagonal
+	$Moon.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.FORWARD, PI/6) + calc_center()
 	$Moon.rotate_y(-delta)
 
 func move_earth(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *2
-	var r = (Settings.MazeSize*Settings.LaneW).length()
-	var 중심 = ($Floor.position + $Ceiling.position)/2
-	$Earth.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.BACK, PI/6) + 중심
+	var r = Settings.TotalDiagonal
+	$Earth.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.BACK, PI/6) + calc_center()
 	$Earth.rotate_y(-delta)
 
 func move_sun(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *3
-	var r = (Settings.MazeSize*Settings.LaneW).length()
-	var 중심 = ($Floor.position + $Ceiling.position)/2
-	$Sun.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.RIGHT, PI/6) + 중심
+	var r = Settings.TotalDiagonal
+	$Sun.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.RIGHT, PI/6) + calc_center()
 	$Sun.rotate_y(-delta)
 
 func move_character(cur_storey :Storey) -> void:

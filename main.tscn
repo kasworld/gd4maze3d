@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=37 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
@@ -146,6 +146,21 @@ backlight = Color(1, 1, 0, 1)
 material = SubResource("StandardMaterial3D_kek77")
 radius = 5.0
 height = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efxa6"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_5vw27"]
+material = SubResource("StandardMaterial3D_efxa6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg77c"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_ycdy4"]
+material = SubResource("StandardMaterial3D_dg77c")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w48qg"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_vivmo"]
+material = SubResource("StandardMaterial3D_w48qg")
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
@@ -339,6 +354,15 @@ mesh = SubResource("SphereMesh_efxa6")
 
 [node name="Sun" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_dg77c")
+
+[node name="MoonOrbit" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_5vw27")
+
+[node name="EarthOrbit" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_ycdy4")
+
+[node name="SunOrbit" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_vivmo")
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

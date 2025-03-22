@@ -66,6 +66,7 @@ func _ready() -> void:
 	update_button_text()
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
+	init_orbit()
 	enter_new_storey()
 
 func _on_vpsize_changed() -> void:
@@ -84,6 +85,7 @@ func enter_new_storey() -> void:
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
+	orbit_pos()
 
 	vp_size = get_viewport().get_visible_rect().size
 	var cur_storey = get_cur_storey()
@@ -130,10 +132,26 @@ func calc_height() -> float:
 	return (calc_ceiling_position() - calc_floor_position()).y
 
 func move_camera(_delta: float) -> void:
-	var t = Time.get_unix_time_from_system() /2.3
+	var t = -Time.get_unix_time_from_system() /2.3
 	var r = Settings.TotalDiagonal *1.0
 	$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*calc_height() *2, cos(t)*r ) + calc_center()
 	$MovingCameraLight.look_at(calc_center())
+
+func init_orbit() -> void:
+	$MoonOrbit.mesh.inner_radius = Settings.TotalDiagonal *0.999
+	$MoonOrbit.mesh.outer_radius = Settings.TotalDiagonal *1.001
+	$MoonOrbit.rotate(Vector3.FORWARD, PI/6)
+	$EarthOrbit.mesh.inner_radius = Settings.TotalDiagonal *0.999
+	$EarthOrbit.mesh.outer_radius = Settings.TotalDiagonal *1.001
+	$EarthOrbit.rotate(Vector3.BACK, PI/6)
+	$SunOrbit.mesh.inner_radius = Settings.TotalDiagonal *0.999
+	$SunOrbit.mesh.outer_radius = Settings.TotalDiagonal *1.001
+	$SunOrbit.rotate(Vector3.RIGHT, PI/6)
+
+func orbit_pos() -> void:
+	$MoonOrbit.position = calc_center()
+	$EarthOrbit.position = calc_center()
+	$SunOrbit.position = calc_center()
 
 func move_moon(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *1

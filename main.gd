@@ -140,9 +140,9 @@ func init_orbit() -> void:
 	var axis1 = Vector3.UP.rotated(Vector3.RIGHT, a30)
 	var axis2 = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,a120), a30)
 	var axis3 = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,a120*2), a30)
-	$Earth.궤도설정(Settings.TotalDiagonal, 1.0/2, axis1, 0).구설정(4, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres"))
-	$Moon.궤도설정(Settings.TotalDiagonal*0.9, 1.0/1, axis2, a120).구설정(3, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres"))
-	$Sun.궤도설정(Settings.TotalDiagonal*1.1, 1.0/3, axis3, a120*2).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres"))
+	$Earth.궤도설정(Settings.TotalDiagonal, 1.0/2, axis1, 0).구설정(4, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.RED))
+	$Moon.궤도설정(Settings.TotalDiagonal*0.9, 1.0/1, axis2, a120).구설정(3, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.YELLOW))
+	$Sun.궤도설정(Settings.TotalDiagonal*1.1, 1.0/3, axis3, a120*2).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.GREEN))
 
 func orbit_pos() -> void:
 	$Moon.position = calc_center()

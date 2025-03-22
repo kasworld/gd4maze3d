@@ -23,6 +23,14 @@ func 구재질설정(mat :Material) -> OrbitSphere:
 	$Sphere.mesh.material = mat
 	return self
 
+func show_orbit(b :bool) -> OrbitSphere:
+	$Orbit.visible = b
+	return self
+
+func show_sphere(b :bool) -> OrbitSphere:
+	$Sphere.visible = b
+	return self
+
 var 자전속도 :float
 var 자전축 :Vector3
 var 구반지름 :float

@@ -27,15 +27,13 @@ func 구재질설정(mat :Material) -> OrbitSphere:
 
 var 자전속도 :float
 var 자전축 :Vector3
-var 자전축기울기 :float
 var 구반지름 :float
-func 구설정(반지름 :float, 속도 :float, 축 :Vector3, 기울기 :float) -> OrbitSphere:
+func 구설정(반지름 :float, 속도 :float, 축 :Vector3) -> OrbitSphere:
 	구반지름 = 반지름
 	$Sphere.mesh.radius = 구반지름
 	$Sphere.mesh.height = 구반지름*2
 	자전속도 = 속도
 	자전축 = 축
-	자전축기울기 = 기울기
 	return self
 
 func _process(delta: float) -> void:

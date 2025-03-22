@@ -135,9 +135,10 @@ func move_camera(_delta: float) -> void:
 	$MovingCameraLight.look_at(calc_center())
 
 func init_orbit() -> void:
-	$Earth.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT, PI/6, PI*2/3).구설정(5, 1, Vector3.UP, 0).구재질설정(preload("res://earth_mat.tres"))
-	$Moon.궤도설정(Settings.TotalDiagonal, 3, Vector3.FORWARD, PI/6, PI*2*2/3).구설정(5, 1, Vector3.UP, 0).구재질설정(preload("res://moon_mat.tres"))
-	$Sun.궤도설정(Settings.TotalDiagonal, 3, Vector3.BACK, PI/6, PI*2*3/3).구설정(5, 1, Vector3.UP, 0).구재질설정(preload("res://sun_mat.tres"))
+
+	$Earth.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT, PI/6, PI*2/3).구설정(5, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres"))
+	$Moon.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT.rotated(Vector3.UP, 2*PI/3), PI/6, PI*2*2/3).구설정(5, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres"))
+	$Sun.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT.rotated(Vector3.UP, 2*PI*2/3), PI/6, PI*2*3/3).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres"))
 
 func orbit_pos() -> void:
 	$Moon.position = calc_center()

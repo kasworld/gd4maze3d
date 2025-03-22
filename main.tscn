@@ -1,13 +1,10 @@
-[gd_scene load_steps=37 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=20 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
-[ext_resource type="Texture2D" uid="uid://dmu4xdw0s4lne" path="res://earthmoon/moon.png" id="5_7mycd"]
-[ext_resource type="Texture2D" uid="uid://2x0cka7afmvg" path="res://earthmoon/moon_normals.png" id="6_272bh"]
-[ext_resource type="Texture2D" uid="uid://dchsb4beh4umq" path="res://earthmoon/earthmap8k.png" id="7_5vw27"]
-[ext_resource type="Texture2D" uid="uid://b0lmvtff4piv" path="res://earthmoon/earthbump8k.png" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://c5ifq7nknxri4" path="res://orbit_sphere/orbit_sphere.tscn" id="9_kek77"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 transparency = 2
@@ -94,73 +91,6 @@ _data = {
 &"RESET": SubResource("Animation_272bh"),
 &"new_animation": SubResource("Animation_7mycd")
 }
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
-albedo_texture = ExtResource("5_7mycd")
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 0.5
-emission_operator = 1
-emission_texture = ExtResource("5_7mycd")
-normal_enabled = true
-normal_texture = ExtResource("6_272bh")
-
-[sub_resource type="SphereMesh" id="SphereMesh_kek77"]
-material = SubResource("StandardMaterial3D_5vw27")
-radius = 5.0
-height = 10.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4c57u"]
-albedo_texture = ExtResource("7_5vw27")
-emission_enabled = true
-emission = Color(0.997053, 0.997053, 0.997053, 1)
-emission_energy_multiplier = 0.5
-emission_operator = 1
-emission_texture = ExtResource("7_5vw27")
-normal_enabled = true
-normal_texture = ExtResource("8_kek77")
-
-[sub_resource type="SphereMesh" id="SphereMesh_efxa6"]
-material = SubResource("StandardMaterial3D_4c57u")
-radius = 5.0
-height = 10.0
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5vw27"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kek77"]
-in_3d_space = true
-seamless = true
-noise = SubResource("FastNoiseLite_5vw27")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kek77"]
-emission_enabled = true
-emission = Color(1, 1, 0, 1)
-emission_energy_multiplier = 2.0
-emission_operator = 1
-emission_texture = SubResource("NoiseTexture2D_kek77")
-subsurf_scatter_strength = 1.0
-backlight_enabled = true
-backlight = Color(1, 1, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_dg77c"]
-material = SubResource("StandardMaterial3D_kek77")
-radius = 5.0
-height = 10.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efxa6"]
-
-[sub_resource type="TorusMesh" id="TorusMesh_5vw27"]
-material = SubResource("StandardMaterial3D_efxa6")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg77c"]
-
-[sub_resource type="TorusMesh" id="TorusMesh_ycdy4"]
-material = SubResource("StandardMaterial3D_dg77c")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w48qg"]
-
-[sub_resource type="TorusMesh" id="TorusMesh_vivmo"]
-material = SubResource("StandardMaterial3D_w48qg")
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
@@ -345,24 +275,11 @@ libraries = {
 
 [node name="AddStoreyContainer" type="Node3D" parent="."]
 
-[node name="Moon" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 50, 50)
-mesh = SubResource("SphereMesh_kek77")
+[node name="Moon" parent="." instance=ExtResource("9_kek77")]
 
-[node name="Earth" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_efxa6")
+[node name="Earth" parent="." instance=ExtResource("9_kek77")]
 
-[node name="Sun" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_dg77c")
-
-[node name="MoonOrbit" type="MeshInstance3D" parent="."]
-mesh = SubResource("TorusMesh_5vw27")
-
-[node name="EarthOrbit" type="MeshInstance3D" parent="."]
-mesh = SubResource("TorusMesh_ycdy4")
-
-[node name="SunOrbit" type="MeshInstance3D" parent="."]
-mesh = SubResource("TorusMesh_vivmo")
+[node name="Sun" parent="." instance=ExtResource("9_kek77")]
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

@@ -10,6 +10,7 @@ material = SubResource("StandardMaterial3D_dct2n")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tjfih"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_tjfih"]
+resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_tjfih")
 
 [node name="OrbitSphere" type="Node3D"]

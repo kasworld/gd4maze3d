@@ -113,9 +113,6 @@ func _process(delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	move_character(cur_storey)
 	update_info()
-	move_moon(delta)
-	move_earth(delta)
-	move_sun(delta)
 	if camera_move:
 		move_camera(delta)
 
@@ -138,38 +135,14 @@ func move_camera(_delta: float) -> void:
 	$MovingCameraLight.look_at(calc_center())
 
 func init_orbit() -> void:
-	$MoonOrbit.mesh.inner_radius = Settings.TotalDiagonal *0.999
-	$MoonOrbit.mesh.outer_radius = Settings.TotalDiagonal *1.001
-	$MoonOrbit.rotate(Vector3.FORWARD, PI/6)
-	$EarthOrbit.mesh.inner_radius = Settings.TotalDiagonal *0.999
-	$EarthOrbit.mesh.outer_radius = Settings.TotalDiagonal *1.001
-	$EarthOrbit.rotate(Vector3.BACK, PI/6)
-	$SunOrbit.mesh.inner_radius = Settings.TotalDiagonal *0.999
-	$SunOrbit.mesh.outer_radius = Settings.TotalDiagonal *1.001
-	$SunOrbit.rotate(Vector3.RIGHT, PI/6)
+	$Earth.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT, PI/6, PI*2/3).구설정(5, 1, Vector3.UP, 0).구재질설정(preload("res://earth_mat.tres"))
+	$Moon.궤도설정(Settings.TotalDiagonal, 3, Vector3.FORWARD, PI/6, PI*2*2/3).구설정(5, 1, Vector3.UP, 0).구재질설정(preload("res://moon_mat.tres"))
+	$Sun.궤도설정(Settings.TotalDiagonal, 3, Vector3.BACK, PI/6, PI*2*3/3).구설정(5, 1, Vector3.UP, 0).구재질설정(preload("res://sun_mat.tres"))
 
 func orbit_pos() -> void:
-	$MoonOrbit.position = calc_center()
-	$EarthOrbit.position = calc_center()
-	$SunOrbit.position = calc_center()
-
-func move_moon(delta: float) -> void:
-	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *1
-	var r = Settings.TotalDiagonal
-	$Moon.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.FORWARD, PI/6) + calc_center()
-	$Moon.rotate_y(-delta)
-
-func move_earth(delta: float) -> void:
-	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *2
-	var r = Settings.TotalDiagonal
-	$Earth.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.BACK, PI/6) + calc_center()
-	$Earth.rotate_y(-delta)
-
-func move_sun(delta: float) -> void:
-	var t = Time.get_unix_time_from_system() /2.0 + PI*2.0/3.0 *3
-	var r = Settings.TotalDiagonal
-	$Sun.position = Vector3( sin(t)*r, 0, cos(t)*r ).rotated(Vector3.RIGHT, PI/6) + calc_center()
-	$Sun.rotate_y(-delta)
+	$Moon.position = calc_center()
+	$Earth.position = calc_center()
+	$Sun.position = calc_center()
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

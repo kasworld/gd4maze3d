@@ -59,7 +59,7 @@ func _ready() -> void:
 	$MovingCameraLight.init()
 	vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.0.0"))
+	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.1.0"))
 	$TimedMessage.show_message("",3)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
@@ -135,10 +135,14 @@ func move_camera(_delta: float) -> void:
 	$MovingCameraLight.look_at(calc_center())
 
 func init_orbit() -> void:
-
-	$Earth.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT, PI/6, PI*2/3).구설정(5, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres"))
-	$Moon.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT.rotated(Vector3.UP, 2*PI/3), PI/6, PI*2*2/3).구설정(5, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres"))
-	$Sun.궤도설정(Settings.TotalDiagonal, 3, Vector3.RIGHT.rotated(Vector3.UP, 2*PI*2/3), PI/6, PI*2*3/3).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres"))
+	var a120 = PI*2/3
+	var a30 = PI/6
+	var axis1 = Vector3.UP.rotated(Vector3.RIGHT, a30)
+	var axis2 = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,a120), a30)
+	var axis3 = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,a120*2), a30)
+	$Earth.궤도설정(Settings.TotalDiagonal, 1.0/2, axis1, 0).구설정(4, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres"))
+	$Moon.궤도설정(Settings.TotalDiagonal, 1.0/1, axis2, a120).구설정(3, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres"))
+	$Sun.궤도설정(Settings.TotalDiagonal, 1.0/3, axis3, a120*2).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres"))
 
 func orbit_pos() -> void:
 	$Moon.position = calc_center()

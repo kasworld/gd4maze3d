@@ -144,14 +144,18 @@ func init_orbit() -> void:
 	$Sun.궤도설정(Settings.TotalDiagonal*1.1, 1.0/3, axis1, a120*2).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.GREEN))
 	$Earth.궤도설정(Settings.TotalDiagonal, 1.0/2, axis2, 0).구설정(4, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.RED))
 	$Moon.궤도설정(Settings.TotalDiagonal*0.9, 1.0/1, axis3, a120).구설정(3, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.YELLOW))
+	#many_orbit_sphere(9)
 
 var orbsph_list :Array =[]
-func many_orbit_sphere() -> void:
-	for i in 9:
-		var axis = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,PI*randf()), randfn(0,1)*PI/18 )
+func many_orbit_sphere(n :int) -> void:
+	var orbit_r = Settings.TotalDiagonal/2 *1.1
+	for i in n:
+		var ob_r = orbit_r + orbit_r/n*i
+		var sp_r = orbit_r / 30
+		var axis = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,PI*randf()), randfn(0,1)*PI/60 )
 		var orsp = orbitsphere_scene.instantiate(
-			).궤도설정(randfn(Settings.TotalDiagonal,Settings.TotalDiagonal/10)/2 +i*10 , randf()*2-1, axis, 0
-			).구설정(randfn(Settings.TotalDiagonal,Settings.TotalDiagonal/10) / 50, randf(), Vector3.UP
+			).궤도설정(randfn(ob_r,ob_r/10), randf()*2-1, axis, 0
+			).구설정(randfn(sp_r,sp_r/10), 0, Vector3.UP
 			).구재질설정(Global3d.get_color_mat(NamedColorList.color_list.pick_random()[0])
 			).궤도재질설정(Global3d.get_color_mat(NamedColorList.color_list.pick_random()[0])
 		)
@@ -159,11 +163,13 @@ func many_orbit_sphere() -> void:
 		add_child(orsp)
 
 func orbit_pos() -> void:
-	$Sun.position = calc_center()
-	$Earth.position = calc_center()
-	$Moon.position = calc_center()
+	var cp = calc_center()
+	$Sun.position = cp
+	$Earth.position = cp
+	$Moon.position = cp
+	cp.y = Settings.calc_storey_mid_y_pos(cur_storey_index+1)
 	for n in orbsph_list:
-		n.position = calc_center()
+		n.position = cp
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

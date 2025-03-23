@@ -1,10 +1,10 @@
 extends Node3D
 class_name OrbitSphere
 
-var 공전시작각도 :float
-var 공전속도 :float
-var 공전축 :Vector3
-var 궤도반지름 :float
+@export var 공전시작각도 :float = 0
+@export var 공전속도 :float = 1
+@export var 공전축 :Vector3 = Vector3.UP
+@export var 궤도반지름 :float = 10
 func 궤도설정(반지름 :float, 속도 :float, 축 :Vector3, 시작각도 :float) -> OrbitSphere:
 	궤도반지름 = 반지름
 	$Orbit.mesh.inner_radius = 궤도반지름*0.999
@@ -13,6 +13,17 @@ func 궤도설정(반지름 :float, 속도 :float, 축 :Vector3, 시작각도 :f
 	공전속도 = 속도
 	공전축 = 축
 	rotation = 공전축
+	return self
+
+@export var 자전속도 :float = 1
+@export var 자전축 :Vector3 = Vector3.UP
+@export var 구반지름 :float = 1
+func 구설정(반지름 :float, 속도 :float, 축 :Vector3) -> OrbitSphere:
+	구반지름 = 반지름
+	$Sphere.mesh.radius = 구반지름
+	$Sphere.mesh.height = 구반지름*2
+	자전속도 = 속도
+	자전축 = 축
 	return self
 
 func 궤도재질설정(mat :Material) -> OrbitSphere:
@@ -31,16 +42,8 @@ func show_sphere(b :bool) -> OrbitSphere:
 	$Sphere.visible = b
 	return self
 
-var 자전속도 :float
-var 자전축 :Vector3
-var 구반지름 :float
-func 구설정(반지름 :float, 속도 :float, 축 :Vector3) -> OrbitSphere:
-	구반지름 = 반지름
-	$Sphere.mesh.radius = 구반지름
-	$Sphere.mesh.height = 구반지름*2
-	자전속도 = 속도
-	자전축 = 축
-	return self
+func get_sphere() -> MeshInstance3D:
+	return $Sphere
 
 func _process(delta: float) -> void:
 	var t = Time.get_unix_time_from_system() *공전속도 + 공전시작각도

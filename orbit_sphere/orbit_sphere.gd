@@ -20,14 +20,30 @@ func 궤도설정(반지름 :float, 속도 :float, 축 :Vector3, 시작각도 :f
 @export var 구반지름 :float = 1
 func 구설정(반지름 :float, 속도 :float, 축 :Vector3) -> OrbitSphere:
 	구반지름 = 반지름
-	$Sphere.mesh.radius = 구반지름
-	$Sphere.mesh.height = 구반지름*2
 	자전속도 = 속도
 	자전축 = 축
+	$Sphere.mesh.radius = 구반지름
+	$Sphere.mesh.height = 구반지름*2
+	$Sphere/Axis.mesh.top_radius = 구반지름/50
+	$Sphere/Axis.mesh.bottom_radius = 구반지름/50
+	$Sphere/Axis.mesh.height = 구반지름*3
+	$Sphere/Axis.rotation = 자전축
 	return self
 
 func 궤도재질설정(mat :Material) -> OrbitSphere:
 	$Orbit.mesh.material = mat
+	return self
+
+func 궤도색설정(co :Color) -> OrbitSphere:
+	$Orbit.mesh.material.albedo_color = co
+	return self
+
+func 구색설정(co :Color) -> OrbitSphere:
+	$Sphere.mesh.material.albedo_color = co
+	return self
+
+func 구축색설정(co :Color) -> OrbitSphere:
+	$Sphere/Axis.mesh.material.albedo_color = co
 	return self
 
 func 구재질설정(mat :Material) -> OrbitSphere:
@@ -40,6 +56,10 @@ func show_orbit(b :bool) -> OrbitSphere:
 
 func show_sphere(b :bool) -> OrbitSphere:
 	$Sphere.visible = b
+	return self
+
+func show_sphere_axis(b :bool) -> OrbitSphere:
+	$Sphere/Axis.visible = b
 	return self
 
 func get_sphere() -> MeshInstance3D:

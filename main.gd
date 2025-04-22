@@ -110,6 +110,13 @@ func enter_new_storey() -> void:
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
+func apply_storey_gap_change() -> void:
+	for st in storey_list:
+		var stnum = st.storey_num
+		st.position.y = Settings.calc_storey_base_y_pos(stnum)
+	$Floor.position = calc_floor_position()
+	$Ceiling.position = calc_ceiling_position()
+
 func _process(delta: float) -> void:
 	var cur_storey = get_cur_storey()
 	move_character(cur_storey)
@@ -290,6 +297,7 @@ func add_new_storey(stnum :int) -> void:
 	storey_list.append(st)
 	$AddStoreyContainer.add_child(st)
 	$AnimationPlayerAddStorey.play("new_animation")
+	
 
 func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) -> void:
 	for st in $AddStoreyContainer.get_children():
@@ -454,4 +462,8 @@ func _on_button_camera_pressed() -> void:
 		$MovingCameraLight.snap_90()
 
 func _on_button_storey_gap_pressed() -> void:
-	pass # Replace with function body.
+	if Settings.StoreyGapRate >= 1.0 :
+		Settings.StoreyGapRate = 0.5
+	else :
+		Settings.StoreyGapRate = 1.0 
+	apply_storey_gap_change()

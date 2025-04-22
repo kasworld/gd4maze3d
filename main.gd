@@ -34,6 +34,10 @@ var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
 var camera_move := false
 
+var start_gap_rate : float
+var end_gap_rate : float
+var animate_gap_start_time :float
+
 func _ready() -> void:
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
@@ -112,6 +116,8 @@ func enter_new_storey() -> void:
 
 func apply_storey_gap_change() -> void:
 	for st in storey_list:
+		if st == null:
+			continue
 		var stnum = st.storey_num
 		st.position.y = Settings.calc_storey_base_y_pos(stnum)
 	$Floor.position = calc_floor_position()
@@ -123,6 +129,11 @@ func _process(delta: float) -> void:
 	update_info()
 	if camera_move:
 		move_camera(delta)
+	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
+	if rate <= 1.0 :
+		var c_rate = lerp(start_gap_rate, end_gap_rate, rate)
+		Settings.StoreyGapRate = c_rate
+		apply_storey_gap_change()
 
 func calc_floor_position() -> Vector3:
 	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
@@ -297,7 +308,6 @@ func add_new_storey(stnum :int) -> void:
 	storey_list.append(st)
 	$AddStoreyContainer.add_child(st)
 	$AnimationPlayerAddStorey.play("new_animation")
-	
 
 func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) -> void:
 	for st in $AddStoreyContainer.get_children():
@@ -462,8 +472,10 @@ func _on_button_camera_pressed() -> void:
 		$MovingCameraLight.snap_90()
 
 func _on_button_storey_gap_pressed() -> void:
+	animate_gap_start_time = Time.get_unix_time_from_system()
 	if Settings.StoreyGapRate >= 1.0 :
-		Settings.StoreyGapRate = 0.5
+		start_gap_rate = 1.0
+		end_gap_rate = 0.0
 	else :
-		Settings.StoreyGapRate = 1.0 
-	apply_storey_gap_change()
+		start_gap_rate = 0.0
+		end_gap_rate = 1.0

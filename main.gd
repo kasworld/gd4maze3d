@@ -118,10 +118,10 @@ func _process(delta: float) -> void:
 		move_camera(delta)
 
 func calc_floor_position() -> Vector3:
-	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.InterStoreyH/2, Settings.MeshSize.y/2)
+	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
 
 func calc_ceiling_position() -> Vector3:
-	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.InterStoreyH/2, Settings.MeshSize.y/2)
+	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
 
 func calc_center() -> Vector3:
 	return (calc_floor_position() + calc_ceiling_position())/2
@@ -225,6 +225,7 @@ var key2fn = {
 	KEY_ENTER:_on_button_storey_up_pressed,
 	KEY_SPACE:_on_button_fire_pressed,
 	KEY_C: _on_button_camera_pressed,
+	KEY_O: _on_button_storey_gap_pressed,
 }
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -451,3 +452,6 @@ func _on_button_camera_pressed() -> void:
 	camera_move = !camera_move
 	if camera_move == false:
 		$MovingCameraLight.snap_90()
+
+func _on_button_storey_gap_pressed() -> void:
+	pass # Replace with function body.

@@ -10,7 +10,6 @@ const MazeSize := Vector2i(16*1,9*1)
 const StoryH :float = 3.0
 const LaneW :float = 4.0
 const WallThick :float = LaneW *0.05
-const InterStoreyH :float = StoryH # / 100
 
 const TotalX :float = MazeSize.x * LaneW
 const TotalY :float = MazeSize.y * LaneW
@@ -22,12 +21,15 @@ const WallSize_NS_Reduced = Vector3(LaneW-WallThick,StoryH,WallThick)
 const WallSize_EW_Full = Vector3(WallThick,StoryH,LaneW)
 const WallSize_EW_Reduced = Vector3(WallThick,StoryH,LaneW-WallThick)
 
+var StoreyGapRate := 1.0
+func calc_current_storey_gap() -> float:
+	return StoryH * StoreyGapRate
 
 func calc_storey_base_y_pos(storey_num :int) -> float:
-	return storey_num * (StoryH + InterStoreyH)
+	return storey_num * (StoryH + calc_current_storey_gap())
 
 func calc_storey_mid_y_pos(storey_num :int) -> float:
-	return storey_num * (StoryH + InterStoreyH) + StoryH /2
+	return storey_num * (StoryH + calc_current_storey_gap()) + StoryH /2
 
 const BallTrailCount :int = 14
 const CharacterCount :int = max(1, MazeSize.x*MazeSize.y/10.0)

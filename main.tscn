@@ -209,6 +209,11 @@ layout_mode = 2
 text = "C:
 Camera"
 
+[node name="ButtonStoreyGap" type="Button" parent="ButtonContainer/HBoxContainer2"]
+layout_mode = 2
+text = "O: StoreyGap
+Open/Close"
+
 [node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
 layout_mode = 2
 columns = 3
@@ -300,6 +305,7 @@ libraries = {
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonFire" to="." method="_on_button_fire_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonCamera" to="." method="_on_button_camera_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonStoreyGap" to="." method="_on_button_storey_gap_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]

@@ -58,11 +58,11 @@ func init(stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	var meshx = Settings.MazeSize.x*Settings.LaneW +Settings.WallThick
 	var meshy = Settings.MazeSize.y*Settings.LaneW +Settings.WallThick
 	$Floor.mesh.size = Vector2(meshx, meshy)
-	$Floor.position = Vector3(meshx/2, -Settings.InterStoreyH/2 , meshy/2)
+	$Floor.position = Vector3(meshx/2, -Settings.calc_current_storey_gap()/2 , meshy/2)
 	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 	$Ceiling.mesh.size = $Floor.mesh.size
-	$Ceiling.position = Vector3(meshx/2, Settings.StoryH + Settings.InterStoreyH/2 , meshy/2)
+	$Ceiling.position = Vector3(meshx/2, Settings.StoryH + Settings.calc_current_storey_gap()/2 , meshy/2)
 	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Ceiling.mesh.material.transparency = $Floor.mesh.material.transparency
 

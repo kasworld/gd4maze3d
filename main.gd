@@ -15,7 +15,6 @@ static func minimapview_next(a :MiniMapView) -> MiniMapView:
 var minimap_scene = preload("res://mini_map.tscn")
 var storey_scene = preload("res://storey.tscn")
 var character_scene = preload("res://character.tscn")
-var orbitsphere_scene = preload("res://orbit_sphere/orbit_sphere.tscn")
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
 @onready var performancelabel = $ButtonContainer/LabelContainer/Performance
@@ -70,7 +69,7 @@ func _ready() -> void:
 	update_button_text()
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
-	init_orbit()
+	$DecoOrbit.init()
 	enter_new_storey()
 
 func _on_vpsize_changed() -> void:
@@ -89,7 +88,7 @@ func enter_new_storey() -> void:
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
-	orbit_pos()
+	$DecoOrbit.orbit_pos(calc_center(), cur_storey_index)
 
 	vp_size = get_viewport().get_visible_rect().size
 	var cur_storey = get_cur_storey()
@@ -159,42 +158,6 @@ func move_camera(_delta: float) -> void:
 	var r = Settings.TotalDiagonal *1.0
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*calc_height() *2, cos(t)*r ) + calc_center()
 	cameralight.look_at(calc_center())
-
-func init_orbit() -> void:
-	var a120 = PI*2/3
-	var a30 = PI/6
-	var axis1 = Vector3.UP.rotated(Vector3.RIGHT, a30)
-	var axis2 = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,a120), a30)
-	var axis3 = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,a120*2), a30)
-	$Sun.궤도설정(Settings.TotalDiagonal*1.1, 1.0/3, axis1, a120*2).구설정(5, 1, Vector3.UP).구재질설정(preload("res://sun_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.GREEN))
-	$Earth.궤도설정(Settings.TotalDiagonal, 1.0/2, axis2, 0).구설정(4, 1, Vector3.UP).구재질설정(preload("res://earth_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.RED))
-	$Moon.궤도설정(Settings.TotalDiagonal*0.9, 1.0/1, axis3, a120).구설정(3, 1, Vector3.UP).구재질설정(preload("res://moon_mat.tres")).궤도재질설정(Global3d.get_color_mat(Color.YELLOW))
-	#many_orbit_sphere(3)
-
-var orbsph_list :Array =[]
-func many_orbit_sphere(n :int) -> void:
-	var orbit_r = Settings.TotalDiagonal/2 *1.5
-	for i in n:
-		var ob_r = orbit_r #+ orbit_r/n*i
-		var sp_r = orbit_r / 50
-		var axis = Vector3.UP.rotated(Vector3.RIGHT.rotated(Vector3.UP,2*PI/n*i), PI/6 )
-		var orsp = orbitsphere_scene.instantiate(
-			).궤도설정(ob_r, 1, axis, 2*PI/n*i
-			).구설정(sp_r, 0, Vector3.UP
-			).구재질설정(Global3d.get_color_mat(NamedColorList.color_list.pick_random()[0])
-			).궤도재질설정(Global3d.get_color_mat(NamedColorList.color_list.pick_random()[0])
-		)
-		orbsph_list.append(orsp)
-		add_child(orsp)
-
-func orbit_pos() -> void:
-	var cp = calc_center()
-	$Sun.position = cp
-	$Earth.position = cp
-	$Moon.position = cp
-	cp.y = Settings.calc_storey_mid_y_pos(cur_storey_index+1)
-	for n in orbsph_list:
-		n.position = cp
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

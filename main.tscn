@@ -4,7 +4,7 @@
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
-[ext_resource type="PackedScene" uid="uid://c5ifq7nknxri4" path="res://orbit_sphere/orbit_sphere.tscn" id="9_kek77"]
+[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="6_7mycd"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 transparency = 2
@@ -280,11 +280,7 @@ libraries = {
 
 [node name="AddStoreyContainer" type="Node3D" parent="."]
 
-[node name="Moon" parent="." instance=ExtResource("9_kek77")]
-
-[node name="Earth" parent="." instance=ExtResource("9_kek77")]
-
-[node name="Sun" parent="." instance=ExtResource("9_kek77")]
+[node name="DecoOrbit" parent="." instance=ExtResource("6_7mycd")]
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

@@ -61,10 +61,10 @@ func _ready() -> void:
 	for i in Settings.VisibleStoreyUp:
 		add_new_storey(i)
 
-	$MovingCameraLight.init()
+	cameralight.init()
 	vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.1.0"))
+	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.2.0"))
 	$TimedMessage.show_message("",3)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
@@ -122,6 +122,12 @@ func apply_storey_gap_change() -> void:
 		st.position.y = Settings.calc_storey_base_y_pos(stnum)
 	$Floor.position = calc_floor_position()
 	$Ceiling.position = calc_ceiling_position()
+	for ch in char_container.get_children():
+		var y =  Settings.calc_storey_mid_y_pos(get_cur_storey().storey_num)
+		ch.position.y = y
+		if ch.serial == player_number:
+			if not camera_move:
+				cameralight.copy_position_rotation(ch)
 
 func _process(delta: float) -> void:
 	var cur_storey = get_cur_storey()
@@ -150,8 +156,8 @@ func calc_height() -> float:
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
 	var r = Settings.TotalDiagonal *1.0
-	$MovingCameraLight.position = Vector3( sin(t)*r, sin(t*1.3)*calc_height() *2, cos(t)*r ) + calc_center()
-	$MovingCameraLight.look_at(calc_center())
+	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*calc_height() *2, cos(t)*r ) + calc_center()
+	cameralight.look_at(calc_center())
 
 func init_orbit() -> void:
 	var a120 = PI*2/3
@@ -195,7 +201,7 @@ func move_character(cur_storey :Storey) -> void:
 		if ch.is_action_ended(ani_dur): # true on act end
 			ch.end_action()
 			if ch.serial == player_number  : # player
-				$MovingCameraLight.snap_90()
+				cameralight.snap_90()
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_new_storey()
 					return
@@ -439,10 +445,10 @@ func _on_button_roll_left_pressed() -> void:
 	player.enqueue_action_with_speed(ActLib.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
-	$MovingCameraLight.fov_inc()
+	cameralight.fov_inc()
 
 func _on_button_fov_down_pressed() -> void:
-	$MovingCameraLight.fov_dec()
+	cameralight.fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
 	var player = char_container.get_child(player_number)
@@ -469,7 +475,7 @@ func _on_button_fire_pressed() -> void:
 func _on_button_camera_pressed() -> void:
 	camera_move = !camera_move
 	if camera_move == false:
-		$MovingCameraLight.snap_90()
+		cameralight.snap_90()
 
 func _on_button_storey_gap_pressed() -> void:
 	animate_gap_start_time = Time.get_unix_time_from_system()

@@ -34,8 +34,7 @@ var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
 var camera_move := false
 
-var start_gap_rate : float
-var end_gap_rate : float
+var gap_ani_dir_open : bool = true # true:open, false:close
 var animate_gap_start_time :float
 
 func _ready() -> void:
@@ -137,8 +136,10 @@ func _process(delta: float) -> void:
 		move_camera(delta)
 	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
 	if rate <= 1.0 :
-		var c_rate = lerp(start_gap_rate, end_gap_rate, rate)
-		Settings.StoreyGapRate = c_rate
+		if gap_ani_dir_open:
+			Settings.StoreyGapRate = lerp(0.0, 1.0, rate)
+		else:
+			Settings.StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
 
 func calc_floor_position() -> Vector3:
@@ -479,9 +480,4 @@ func _on_button_camera_pressed() -> void:
 
 func _on_button_storey_gap_pressed() -> void:
 	animate_gap_start_time = Time.get_unix_time_from_system()
-	if Settings.StoreyGapRate >= 1.0 :
-		start_gap_rate = 1.0
-		end_gap_rate = 0.0
-	else :
-		start_gap_rate = 0.0
-		end_gap_rate = 1.0
+	gap_ani_dir_open = not gap_ani_dir_open

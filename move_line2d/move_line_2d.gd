@@ -1,42 +1,74 @@
 extends Node2D
 
-var draw_area_size :Vector2
+class_name MoveLine2D
 
+var rng :RandomNumberGenerator
+var draw_area_size :Vector2
 var line_cursor :int
 var line_width :float
-
 var point_count :int
+var line_count :int
 var color_list :PackedColorArray
 var velocity_list :PackedVector2Array
-var auto_move :float
+var init_point_list :PackedVector2Array
+var move_speed :float
+var auto_move :bool
 
-func init(ln_count :int, pt_count :int, w:float, dsize :Vector2, amove :float = 1.0/60.0 ):
+func init_with_random(ln_count :int, pt_count :int, w:float, dsize :Vector2, amovespd :float = 1.0/60.0 ) -> MoveLine2D:
+	rng = RandomNumberGenerator.new()
 	point_count = pt_count
 	line_width = w
+	line_count = ln_count
 	draw_area_size = dsize
-	auto_move = amove
-
+	move_speed = amovespd
 	velocity_list = make_vel_list(point_count, draw_area_size)
 	color_list = make_color_list(point_count)
-	var point_list = make_point_list(point_count, draw_area_size)
-	for i in ln_count:
+	init_point_list = make_point_list(point_count, draw_area_size)
+	for i in line_count:
 		var ln = Line2D.new()
-		ln.points = point_list
+		ln.points = init_point_list
 		ln.gradient = Gradient.new()
 		ln.gradient.colors = color_list
 		ln.width = line_width
 		$LineContainer.add_child(ln)
+	return self
+
+func init_with_copy(other :MoveLine2D) -> MoveLine2D:
+	rng = RandomNumberGenerator.new()
+	rng.seed = other.rng.seed
+	point_count = other.point_count
+	line_width = other.line_width
+	line_count = other.line_count
+	draw_area_size = other.draw_area_size
+	move_speed = other.move_speed
+	velocity_list = other.velocity_list.duplicate()
+	color_list = other.color_list.duplicate()
+	init_point_list = other.init_point_list.duplicate()
+	for i in line_count:
+		var ln = Line2D.new()
+		ln.points = init_point_list
+		ln.gradient = Gradient.new()
+		ln.gradient.colors = color_list
+		ln.width = line_width
+		$LineContainer.add_child(ln)
+	return self
+
+func start() -> void:
+	auto_move = true
+
+func stop() -> void:
+	auto_move = false
 
 func _process(_delta: float) -> void:
-	if auto_move != 0.0:
-		move(auto_move)
+	if auto_move:
+		move_1_step()
 
-func move(delta :float)->void:
+func move_1_step()->void:
 	var old_line_points = $LineContainer.get_child(line_cursor).points.duplicate()
 	line_cursor +=1
 	line_cursor %= $LineContainer.get_child_count()
 	$LineContainer.get_child(line_cursor).points = old_line_points
-	move_line(delta, $LineContainer.get_child(line_cursor))
+	move_line(move_speed, $LineContainer.get_child(line_cursor))
 
 func move_line(delta: float, ln :Line2D) -> void:
 	var bounced = false
@@ -78,7 +110,7 @@ func make_point_list(count :int, rt :Vector2)->PackedVector2Array:
 	return rtn
 
 func random_pos_vector2d(rt :Vector2)->Vector2:
-	return Vector2( randf_range(0,rt.x), randf_range(0,rt.y) )
+	return Vector2( rng.randf_range(0,rt.x), rng.randf_range(0,rt.y) )
 
 func make_vel_list(count :int, rt :Vector2)->PackedVector2Array:
 	var rtn = []
@@ -91,7 +123,7 @@ func random_vel_vector2d(rt :Vector2)->Vector2:
 
 func random_no_zero(w :float)->float:
 	var v = random_positive(w/2)
-	match randi_range(1,2):
+	match rng.randi_range(1,2):
 		1:
 			pass
 		2:
@@ -99,7 +131,7 @@ func random_no_zero(w :float)->float:
 	return v
 
 func random_positive(w :float)->float:
-	return randf_range(w/10,w)
+	return rng.randf_range(w/10,w)
 
 func make_color_list(count :int)->PackedColorArray:
 	var rtn = []
@@ -108,4 +140,4 @@ func make_color_list(count :int)->PackedColorArray:
 	return rtn
 
 func random_color()->Color:
-	return Color(randf(),randf(),randf())
+	return Color(rng.randf(),rng.randf(),rng.randf())

@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=10 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
+[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="5_lquwl"]
 
 [sub_resource type="Theme" id="Theme_sfr3e"]
 default_font_size = 32
@@ -181,6 +182,8 @@ label_settings = SubResource("LabelSettings_1637f")
 [node name="TimedMessage" parent="." instance=ExtResource("4_fd2hu")]
 modulate = Color(1, 1, 1, 0.498039)
 theme = SubResource("Theme_u7t45")
+
+[node name="DecoOrbit" parent="." instance=ExtResource("5_lquwl")]
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

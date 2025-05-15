@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://brywee43bqjex"]
+[gd_scene load_steps=12 format=3 uid="uid://brywee43bqjex"]
 
 [ext_resource type="Script" uid="uid://bqo1fk2lfpr8d" path="res://tower.gd" id="1_k1sas"]
-[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="2_vedim"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
 transparency = 2
@@ -102,5 +101,3 @@ libraries = {
 }
 
 [node name="AddStoreyContainer" type="Node3D" parent="."]
-
-[node name="DecoOrbit" parent="." instance=ExtResource("2_vedim")]

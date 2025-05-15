@@ -32,7 +32,6 @@ func init() -> Tower:
 	
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
-	$DecoOrbit.init()
 	for i in Settings.VisibleStoreyUp:
 		add_new_storey(i)
 	#enter_new_storey()
@@ -59,7 +58,6 @@ func enter_new_storey() -> void:
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
-	$DecoOrbit.orbit_pos(calc_center(), cur_storey_index)
 
 func apply_storey_gap_change() -> void:
 	for st in storey_list:

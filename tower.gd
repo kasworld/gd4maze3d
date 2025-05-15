@@ -17,6 +17,12 @@ var view_pillars :bool = true
 var gap_ani_dir_open : bool = true # true:open, false:close
 var animate_gap_start_time :float
 
+func _to_string() -> String:
+	return "Tower %s/%s floor,ceiling %s %s" % [
+	cur_storey_index, storey_list.size(),
+	view_floor_ceiling, get_cur_storey(),
+	]
+
 func init() -> Tower:
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()

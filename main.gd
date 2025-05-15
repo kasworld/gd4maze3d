@@ -1,6 +1,5 @@
 extends Node3D
 
-
 var minimap_scene = preload("res://mini_map.tscn")
 var character_scene = preload("res://character.tscn")
 var tower_scene = preload("res://tower.tscn")
@@ -178,15 +177,14 @@ Currently rendering: occlusion culling:%s
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 	]
-	infolabel.text = """storey %d/%d, minimap:%s, single storey view:%s
+	infolabel.text = """%s,
 %s
 %s
 %s
 %s""" % [
-	current_tower.cur_storey_index,current_tower.storey_list.size(),
-	minimap, current_tower.view_floor_ceiling,
+	current_tower,
+	minimap,
 	Settings,
-	current_tower.get_cur_storey(),
 	player,
 	$MovingCameraLight,
 	]

@@ -1,11 +1,5 @@
 extends Node3D
 
-enum WallView {Reduced, Full, Off}
-static func wallview2str(vd :WallView) -> String:
-	return WallView.keys()[vd]
-static func wallview_next(a :WallView) -> WallView:
-	return (a +1) % WallView.keys().size() as WallView
-
 enum MiniMapView {Off, Known, Full}
 static func minimapview2str(vd :MiniMapView) -> String:
 	return MiniMapView.keys()[vd]
@@ -13,8 +7,8 @@ static func minimapview_next(a :MiniMapView) -> MiniMapView:
 	return (a +1) % MiniMapView.keys().size() as MiniMapView
 
 var minimap_scene = preload("res://mini_map.tscn")
-var storey_scene = preload("res://storey.tscn")
 var character_scene = preload("res://character.tscn")
+var tower_scene = preload("res://tower.tscn")
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
 @onready var performancelabel = $ButtonContainer/LabelContainer/Performance
@@ -23,32 +17,15 @@ var character_scene = preload("res://character.tscn")
 @onready var char_container = $CharacterContainer
 
 var minimap :MiniMap
-var storey_list :Array[Storey]
-var cur_storey_index :int = -1 # +1 on enter_new_storey
 var player_number := 0
 var vp_size :Vector2
 var minimap_mode :MiniMapView = MiniMapView.Off
-var view_floor_ceiling :bool = false
-var view_walls :WallView = WallView.Reduced
-var view_pillars :bool = true
 var camera_move := false
-
-var gap_ani_dir_open : bool = true # true:open, false:close
-var animate_gap_start_time :float
+var current_tower :Tower
 
 func _ready() -> void:
-	var mat_keys = Texmat.floor_mat_dict.keys()
-	mat_keys.shuffle()
-	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
-	$Floor.mesh.size = Settings.MeshSize
-	$Floor.mesh.material.uv1_scale = Vector3(Settings.MazeSize.x,(Settings.MazeSize.x+Settings.MazeSize.y)/2.0,Settings.MazeSize.y)
-
-	mat_keys = Texmat.ceiling_mat_dict.keys()
-	mat_keys.shuffle()
-	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[0]].duplicate()
-	$Ceiling.mesh.size = Settings.MeshSize
-	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
-
+	current_tower = tower_scene.instantiate().init()
+	add_child(current_tower)
 	for i in Settings.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
@@ -56,8 +33,6 @@ func _ready() -> void:
 			pl.init_char(AILib.Walk.RightFirst, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
 		else:
 			pl.init_char(AILib.Walk.LeftFirst, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
-	for i in Settings.VisibleStoreyUp:
-		add_new_storey(i)
 
 	cameralight.init()
 	vp_size = get_viewport().get_visible_rect().size
@@ -67,10 +42,20 @@ func _ready() -> void:
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	update_button_text()
-	set_wallview_mode(view_walls)
-	set_pillars_visible(view_pillars)
-	$DecoOrbit.init()
 	enter_new_storey()
+
+func _process(delta: float) -> void:
+	var rate :=  Time.get_unix_time_from_system() - current_tower.animate_gap_start_time
+	if rate <= 1.0 :
+		if current_tower.gap_ani_dir_open:
+			Settings.StoreyGapRate = lerp(0.0, 1.0, rate)
+		else:
+			Settings.StoreyGapRate = lerp(1.0, 0.0, rate)
+		apply_storey_gap_change()
+	move_character(current_tower.get_cur_storey())
+	update_info()
+	if camera_move:
+		move_camera(delta)
 
 func _on_vpsize_changed() -> void:
 	vp_size = get_viewport().get_visible_rect().size
@@ -80,84 +65,42 @@ func _on_vpsize_changed() -> void:
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
 
 func enter_new_storey() -> void:
-	cur_storey_index +=1
-	del_old_storey()
-	add_new_storey(storey_list.size())
-	$Floor.position = calc_floor_position()
-	$Ceiling.position = calc_ceiling_position()
-	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
-	set_wallview_mode(view_walls)
-	set_pillars_visible(view_pillars)
-	$DecoOrbit.orbit_pos(calc_center(), cur_storey_index)
-
+	current_tower.enter_new_storey()
 	vp_size = get_viewport().get_visible_rect().size
-	var cur_storey = get_cur_storey()
 	var map_scale = min( vp_size.x / Settings.MazeSize.x , vp_size.y / Settings.MazeSize.y )
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(cur_storey,map_scale)
+	minimap.init(current_tower.get_cur_storey(),map_scale)
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
 		var stpos = Settings.rand_pos_2i()
 		if ch.serial == player_number:
-			stpos = cur_storey.start_pos
+			stpos = current_tower.get_cur_storey().start_pos
 			minimap.add_character(ch,stpos, 8)
 		else:
 			minimap.add_character(ch,stpos, 0)
-		ch.enqueue_action(ActLib.Action.EnterStorey, [cur_storey, stpos])
+		ch.enqueue_action(ActLib.Action.EnterStorey, [current_tower.get_cur_storey(), stpos])
 
 	set_minimap_mode(minimap_mode)
 	_on_vpsize_changed()
 
 func apply_storey_gap_change() -> void:
-	for st in storey_list:
-		if st == null:
-			continue
-		var stnum = st.storey_num
-		st.position.y = Settings.calc_storey_base_y_pos(stnum)
-	$Floor.position = calc_floor_position()
-	$Ceiling.position = calc_ceiling_position()
+	current_tower.apply_storey_gap_change()
 	for ch in char_container.get_children():
-		var y =  Settings.calc_storey_mid_y_pos(get_cur_storey().storey_num)
+		var y =  Settings.calc_storey_mid_y_pos(current_tower.get_cur_storey().storey_num)
 		ch.position.y = y
 		if ch.serial == player_number:
 			if not camera_move:
 				cameralight.copy_position_rotation(ch)
 
-func _process(delta: float) -> void:
-	var cur_storey = get_cur_storey()
-	move_character(cur_storey)
-	update_info()
-	if camera_move:
-		move_camera(delta)
-	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
-	if rate <= 1.0 :
-		if gap_ani_dir_open:
-			Settings.StoreyGapRate = lerp(0.0, 1.0, rate)
-		else:
-			Settings.StoreyGapRate = lerp(1.0, 0.0, rate)
-		apply_storey_gap_change()
-
-func calc_floor_position() -> Vector3:
-	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
-
-func calc_ceiling_position() -> Vector3:
-	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
-
-func calc_center() -> Vector3:
-	return (calc_floor_position() + calc_ceiling_position())/2
-
-func calc_height() -> float:
-	return (calc_ceiling_position() - calc_floor_position()).y
-
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
 	var r = Settings.TotalDiagonal *1.0
-	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*calc_height() *2, cos(t)*r ) + calc_center()
-	cameralight.look_at(calc_center())
+	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
+	cameralight.look_at(current_tower.calc_center())
 
 func move_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():
@@ -243,10 +186,10 @@ Currently rendering: occlusion culling:%s
 %s
 %s
 %s""" % [
-	cur_storey_index,storey_list.size(),
-	minimap_mode, view_floor_ceiling,
+	current_tower.cur_storey_index,current_tower.storey_list.size(),
+	minimap_mode, current_tower.view_floor_ceiling,
 	Settings,
-	get_cur_storey(),
+	current_tower.get_cur_storey(),
 	player,
 	$MovingCameraLight,
 	]
@@ -260,48 +203,10 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 		ActLib.Action.RollRight,ActLib.Action.RollLeft:
 			ch.animate_roll_by_dur(dur)
 		ActLib.Action.EnterStorey:
-			ch.animate_move_storey_by_dur(dur, cur_storey_index -1, cur_storey_index)
+			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey_index -1, current_tower.cur_storey_index)
 	if ch.serial == player_number:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)
-
-func get_cur_storey() -> Storey:
-	return storey_list[cur_storey_index]
-
-func add_new_storey(stnum :int) -> void:
-	var gp = Settings.rand_pos_2i()
-	var stp = Settings.rand_pos_2i()
-	if stnum > 0 :
-		stp = storey_list[-1].goal_pos
-	var st = storey_scene.instantiate().init(stnum, stp, gp)
-	st.position.y = Settings.calc_storey_base_y_pos(stnum)
-	storey_list.append(st)
-	$AddStoreyContainer.add_child(st)
-	$AnimationPlayerAddStorey.play("new_animation")
-
-func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) -> void:
-	for st in $AddStoreyContainer.get_children():
-		$AddStoreyContainer.remove_child(st)
-		add_child(st)
-
-func del_old_storey() -> void:
-	if visible_down_index()-1 >=0 :
-		var todel = storey_list[visible_down_index()-1]
-		storey_list[visible_down_index()-1] = null
-		remove_child(todel)
-		$DelStoreyContainer.add_child(todel)
-		$AnimationPlayerDelStorey.play("new_animation")
-
-func _on_animation_player_del_storey_animation_finished(_anim_name: StringName) -> void:
-	for todel in $DelStoreyContainer.get_children():
-		$DelStoreyContainer.remove_child(todel)
-		todel.queue_free()
-
-func visible_down_index() -> int:
-	var rtn = cur_storey_index - Settings.VisibleStoreyDown
-	if rtn < 0:
-		return 0
-	return rtn
 
 func set_minimap_mode(v :MiniMapView) -> void:
 	match v:
@@ -314,31 +219,6 @@ func set_minimap_mode(v :MiniMapView) -> void:
 			minimap.show()
 			minimap.view_full_map()
 
-func set_floor_ceiling_visible(f :bool,c :bool) -> void:
-	var st = visible_down_index()
-	for i in range(st,storey_list.size()):
-		storey_list[i].view_floor_ceiling(f,c)
-	storey_list[st].view_floor_ceiling(false,c)
-	storey_list[-1].view_floor_ceiling(f,false)
-
-func set_wallview_mode(w :WallView) -> void:
-	var st = visible_down_index()
-	for i in range(st,storey_list.size()):
-		match w:
-			WallView.Full:
-				storey_list[i].view_walls(true)
-				storey_list[i].set_wall_size(true)
-			WallView.Reduced:
-				storey_list[i].view_walls(true)
-				storey_list[i].set_wall_size(false)
-			WallView.Off:
-				storey_list[i].view_walls(false)
-
-func set_pillars_visible(w :bool) -> void:
-	var st = visible_down_index()
-	for i in range(st,storey_list.size()):
-		storey_list[i].view_pillars(w)
-
 func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
@@ -350,18 +230,18 @@ func _on_button_minimap_pressed() -> void:
 	set_minimap_mode(minimap_mode)
 	update_button_text()
 
-func _on_button_floor_ceiling_pressed() -> void:
-	view_floor_ceiling = not view_floor_ceiling
-	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
-
 func _on_button_walls_pressed() -> void:
-	view_walls = wallview_next(view_walls)
-	set_wallview_mode(view_walls)
+	current_tower._on_button_walls_pressed()
 	update_button_text()
 
+func _on_button_floor_ceiling_pressed() -> void:
+	current_tower._on_button_floor_ceiling_pressed()
+
 func _on_button_pillars_pressed() -> void:
-	view_pillars = not view_pillars
-	set_pillars_visible(view_pillars)
+	current_tower._on_button_pillars_pressed()
+	
+func _on_button_storey_gap_pressed() -> void:
+	current_tower._on_button_storey_gap_pressed()
 
 func _on_button_auto_move_pressed() -> void:
 	var player = char_container.get_child(player_number)
@@ -372,7 +252,7 @@ func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:Minimap %s" % minimapview2str(minimap_mode)
 	var player = char_container.get_child(player_number)
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
-	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % wallview2str(view_walls)
+	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % current_tower.wallview2str(current_tower.view_walls)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible
@@ -440,7 +320,3 @@ func _on_button_camera_pressed() -> void:
 	camera_move = !camera_move
 	if camera_move == false:
 		cameralight.snap_90()
-
-func _on_button_storey_gap_pressed() -> void:
-	animate_gap_start_time = Time.get_unix_time_from_system()
-	gap_ani_dir_open = not gap_ani_dir_open

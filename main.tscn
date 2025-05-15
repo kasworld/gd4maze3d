@@ -1,32 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene load_steps=9 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
-[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="6_7mycd"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
-transparency = 2
-alpha_scissor_threshold = 0.5
-alpha_antialiasing_mode = 0
-emission = Color(0.188235, 0.188235, 0.188235, 1)
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_fo7pf"]
-material = SubResource("StandardMaterial3D_ydl53")
-size = Vector2(100, 100)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhpxw"]
-emission = Color(0.384314, 0.384314, 0.384314, 1)
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_jjisx"]
-material = SubResource("StandardMaterial3D_dhpxw")
-flip_faces = true
-size = Vector2(100, 100)
 
 [sub_resource type="Theme" id="Theme_sfr3e"]
 default_font_size = 32
@@ -40,73 +17,12 @@ font_size = 32
 resource_local_to_scene = true
 default_font = SubResource("SystemFont_bejao")
 
-[sub_resource type="Animation" id="Animation_lquwl"]
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("DelStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
-
-[sub_resource type="Animation" id="Animation_1bvp3"]
-resource_name = "new_animation"
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("DelStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_7mycd"]
-_data = {
-&"RESET": SubResource("Animation_lquwl"),
-&"new_animation": SubResource("Animation_1bvp3")
-}
-
-[sub_resource type="Animation" id="Animation_272bh"]
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AddStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
-
-[sub_resource type="Animation" id="Animation_7mycd"]
-resource_name = "new_animation"
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AddStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 50, 0, 1, 1, 0, 0, 0)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_5vw27"]
-_data = {
-&"RESET": SubResource("Animation_272bh"),
-&"new_animation": SubResource("Animation_7mycd")
-}
-
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ct15n")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
-
-[node name="Floor" type="MeshInstance3D" parent="."]
-mesh = SubResource("PlaneMesh_fo7pf")
-skeleton = NodePath("../..")
-
-[node name="Ceiling" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("PlaneMesh_jjisx")
-skeleton = NodePath("../..")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("2_styvs")
@@ -266,22 +182,6 @@ label_settings = SubResource("LabelSettings_1637f")
 modulate = Color(1, 1, 1, 0.498039)
 theme = SubResource("Theme_u7t45")
 
-[node name="AnimationPlayerDelStorey" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_7mycd")
-}
-
-[node name="DelStoreyContainer" type="Node3D" parent="."]
-
-[node name="AnimationPlayerAddStorey" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_5vw27")
-}
-
-[node name="AddStoreyContainer" type="Node3D" parent="."]
-
-[node name="DecoOrbit" parent="." instance=ExtResource("6_7mycd")]
-
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
@@ -308,5 +208,3 @@ libraries = {
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
-[connection signal="animation_finished" from="AnimationPlayerDelStorey" to="." method="_on_animation_player_del_storey_animation_finished"]
-[connection signal="animation_finished" from="AnimationPlayerAddStorey" to="." method="_on_animation_player_add_storey_animation_finished"]

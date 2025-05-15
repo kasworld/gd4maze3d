@@ -1,0 +1,106 @@
+[gd_scene load_steps=13 format=3 uid="uid://brywee43bqjex"]
+
+[ext_resource type="Script" uid="uid://bqo1fk2lfpr8d" path="res://tower.gd" id="1_k1sas"]
+[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="2_vedim"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+emission = Color(0.188235, 0.188235, 0.188235, 1)
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_stebd"]
+material = SubResource("StandardMaterial3D_ydl53")
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhpxw"]
+emission = Color(0.384314, 0.384314, 0.384314, 1)
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jbe1c"]
+material = SubResource("StandardMaterial3D_dhpxw")
+flip_faces = true
+size = Vector2(100, 100)
+
+[sub_resource type="Animation" id="Animation_lquwl"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DelStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
+
+[sub_resource type="Animation" id="Animation_1bvp3"]
+resource_name = "new_animation"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DelStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7mycd"]
+_data = {
+&"RESET": SubResource("Animation_lquwl"),
+&"new_animation": SubResource("Animation_1bvp3")
+}
+
+[sub_resource type="Animation" id="Animation_272bh"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AddStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_7mycd"]
+resource_name = "new_animation"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AddStoreyContainer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 50, 0, 1, 1, 0, 0, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5vw27"]
+_data = {
+&"RESET": SubResource("Animation_272bh"),
+&"new_animation": SubResource("Animation_7mycd")
+}
+
+[node name="Tower" type="Node3D"]
+script = ExtResource("1_k1sas")
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_stebd")
+skeleton = NodePath("../..")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PlaneMesh_jbe1c")
+skeleton = NodePath("../..")
+
+[node name="AnimationPlayerDelStorey" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_7mycd")
+}
+
+[node name="DelStoreyContainer" type="Node3D" parent="."]
+
+[node name="AnimationPlayerAddStorey" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_5vw27")
+}
+
+[node name="AddStoreyContainer" type="Node3D" parent="."]
+
+[node name="DecoOrbit" parent="." instance=ExtResource("2_vedim")]

@@ -1,6 +1,28 @@
 extends Node2D
-
 class_name MiniMap
+
+enum MiniMapView {Off, Known, Full}
+static func minimapview2str(vd :MiniMapView) -> String:
+	return MiniMapView.keys()[vd]
+static func minimapview_next(a :MiniMapView) -> MiniMapView:
+	return (a +1) % MiniMapView.keys().size() as MiniMapView
+
+func set_minimap_mode(playernum :int) -> void:
+	match minimap_mode:
+		MiniMapView.Off:
+			hide()
+		MiniMapView.Known:
+			show()
+			view_known_map(playernum)
+		MiniMapView.Full:
+			show()
+			view_full_map()
+
+func mode_next(playernum :int) -> void:
+	minimap_mode = minimapview_next(minimap_mode)
+	set_minimap_mode(playernum)
+
+var minimap_mode :MiniMapView = MiniMapView.Off
 
 var map_scale :float = 20
 var WallThick :float = 2
@@ -12,6 +34,10 @@ var map_mode_full :bool
 
 var goal :Label
 var start :Label
+
+func _to_string() -> String:
+	return "Minimap %s" % [minimapview2str(minimap_mode) ]
+
 func init(st :Storey, sc :float) -> MiniMap:
 	map_mode_full = false
 	storey = st

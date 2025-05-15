@@ -1,10 +1,5 @@
 extends Node3D
 
-enum MiniMapView {Off, Known, Full}
-static func minimapview2str(vd :MiniMapView) -> String:
-	return MiniMapView.keys()[vd]
-static func minimapview_next(a :MiniMapView) -> MiniMapView:
-	return (a +1) % MiniMapView.keys().size() as MiniMapView
 
 var minimap_scene = preload("res://mini_map.tscn")
 var character_scene = preload("res://character.tscn")
@@ -19,7 +14,6 @@ var tower_scene = preload("res://tower.tscn")
 var minimap :MiniMap
 var player_number := 0
 var vp_size :Vector2
-var minimap_mode :MiniMapView = MiniMapView.Off
 var camera_move := false
 var current_tower :Tower
 
@@ -86,7 +80,8 @@ func enter_new_storey() -> void:
 		ch.enqueue_action(ActLib.Action.EnterStorey, [current_tower.get_cur_storey(), stpos])
 
 	$DecoOrbit.orbit_pos(current_tower.calc_center(), current_tower.cur_storey_index)
-	set_minimap_mode(minimap_mode)
+	minimap.set_minimap_mode(player_number)
+	update_button_text()
 	_on_vpsize_changed()
 
 func apply_storey_gap_change() -> void:
@@ -183,13 +178,13 @@ Currently rendering: occlusion culling:%s
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 	]
-	infolabel.text = """storey %d/%d, minimap mode:%s, single storey view:%s
+	infolabel.text = """storey %d/%d, minimap:%s, single storey view:%s
 %s
 %s
 %s
 %s""" % [
 	current_tower.cur_storey_index,current_tower.storey_list.size(),
-	minimap_mode, current_tower.view_floor_ceiling,
+	minimap, current_tower.view_floor_ceiling,
 	Settings,
 	current_tower.get_cur_storey(),
 	player,
@@ -210,17 +205,6 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)
 
-func set_minimap_mode(v :MiniMapView) -> void:
-	match v:
-		MiniMapView.Off:
-			minimap.hide()
-		MiniMapView.Known:
-			minimap.show()
-			minimap.view_known_map(player_number)
-		MiniMapView.Full:
-			minimap.show()
-			minimap.view_full_map()
-
 func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
@@ -228,8 +212,7 @@ func _on_button_help_pressed() -> void:
 	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
-	minimap_mode = minimapview_next(minimap_mode)
-	set_minimap_mode(minimap_mode)
+	minimap.mode_next(player_number)
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
@@ -251,7 +234,7 @@ func _on_button_auto_move_pressed() -> void:
 	update_button_text()
 
 func update_button_text() -> void:
-	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:Minimap %s" % minimapview2str(minimap_mode)
+	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
 	var player = char_container.get_child(player_number)
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
 	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % current_tower.wallview2str(current_tower.view_walls)

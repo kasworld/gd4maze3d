@@ -3,15 +3,18 @@ class_name MazeCrawl
 
 const ActionQueueLimit = 10
 
-func enqueue_action(a :ActLib.Action, args :=[]) -> void:
+func enqueue_action(a :ActLib.Action, args :=[]) -> MazeCrawl:
 	action_queue.push_back([a,action_per_second.get_value(), args])
 	crop_action_queue()
-func enqueue_action_with_speed(a :ActLib.Action,s :float, args :=[]) -> void:
+	return self
+func enqueue_action_with_speed(a :ActLib.Action,s :float, args :=[]) -> MazeCrawl:
 	action_queue.push_back([a,s, args])
 	crop_action_queue()
-func crop_action_queue() -> void:
+	return self
+func crop_action_queue() -> MazeCrawl:
 	if action_queue.size() > ActionQueueLimit:
 		action_queue = action_queue.slice(action_queue.size()-ActionQueueLimit)
+	return self
 func action_queue_to_str() -> String:
 	var rtn = ""
 	for a in action_queue:
@@ -32,7 +35,13 @@ var pos_src :Vector2i
 var pos_dst :Vector2i
 var action_start_time :float # unixtime sec
 var action_current : Array # [Action, action_per_second.value]
+
 var ai_walk_type := AILib.Walk.RightFirst
+func set_next_walk_type() -> MazeCrawl:
+	ai_walk_type = AILib.next(ai_walk_type)
+	return self
+func set_ai_walk_type(t :AILib.Walk) -> void:
+	ai_walk_type = t
 
 func init(ts :TowerSetting, walk_type :AILib.Walk) -> MazeCrawl:
 	tower_setting = ts
@@ -96,8 +105,6 @@ func ai_action() -> void:
 			AILib.Walk.Off:
 				pass
 
-func set_ai_walk_type(t :AILib.Walk) -> void:
-	ai_walk_type = t
 
 func walk_right_first() -> bool:
 	# try right

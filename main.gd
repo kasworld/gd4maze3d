@@ -221,8 +221,7 @@ func _on_button_storey_gap_pressed() -> void:
 	current_tower._on_button_storey_gap_pressed()
 
 func _on_button_auto_move_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.ai_walk_type = AILib.next(player.ai_walk_type)
+	char_container.get_child(player_number).set_next_walk_type()
 	update_button_text()
 
 func update_button_text() -> void:
@@ -241,29 +240,22 @@ func _on_button_info_pressed() -> void:
 	infolabel.visible = !infolabel.visible
 
 func _on_button_forward_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(ActLib.Action.Forward, 10)
+	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
-	player.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(ActLib.Action.TurnRight, 10)
+	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(ActLib.Action.RollRight, 10)
+	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.enqueue_action_with_speed(ActLib.Action.RollLeft, 10)
+	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	cameralight.fov_inc()
@@ -272,20 +264,16 @@ func _on_button_fov_down_pressed() -> void:
 	cameralight.fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.action_per_second.set_max()
+	char_container.get_child(player_number).action_per_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.action_per_second.set_up()
+	char_container.get_child(player_number).action_per_second.set_up()
 
 func _on_button_aps_min_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.action_per_second.set_min()
+	char_container.get_child(player_number).action_per_second.set_min()
 
 func _on_button_aps_down_pressed() -> void:
-	var player = char_container.get_child(player_number)
-	player.action_per_second.set_down()
+	char_container.get_child(player_number).action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
 	enter_new_storey()

@@ -45,6 +45,15 @@ func init(ts :TowerSetting) -> Tower:
 		add_new_storey(i)
 	return self
 
+func _process(delta: float) -> void:
+	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
+	if rate <= 1.0 :
+		if gap_ani_dir_open:
+			tower_setting.StoreyGapRate = lerp(0.0, 1.0, rate)
+		else:
+			tower_setting.StoreyGapRate = lerp(1.0, 0.0, rate)
+		apply_storey_gap_change()
+
 func calc_floor_position() -> Vector3:
 	return Vector3(tower_setting.MeshSize.x/2, tower_setting.calc_storey_base_y_pos(visible_down_index()) - tower_setting.calc_current_storey_gap()/2, tower_setting.MeshSize.y/2)
 

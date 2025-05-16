@@ -21,6 +21,8 @@ func _ready() -> void:
 	tower_setting = TowerSetting.new()
 	current_tower = tower_scene.instantiate().init(tower_setting)
 	add_child(current_tower)
+	$DecoOrbit.init(tower_setting.TotalDiagonal)
+
 	for i in tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
@@ -34,20 +36,11 @@ func _ready() -> void:
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.2.0"))
 	$TimedMessage.show_message("",3)
-	$DecoOrbit.init(tower_setting.TotalDiagonal)
-
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	update_button_text()
 	enter_new_storey()
 
 func _process(delta: float) -> void:
-	var rate :=  Time.get_unix_time_from_system() - current_tower.animate_gap_start_time
-	if rate <= 1.0 :
-		if current_tower.gap_ani_dir_open:
-			tower_setting.StoreyGapRate = lerp(0.0, 1.0, rate)
-		else:
-			tower_setting.StoreyGapRate = lerp(1.0, 0.0, rate)
-		apply_storey_gap_change()
 	move_character(current_tower.get_cur_storey())
 	update_info()
 	if camera_move:

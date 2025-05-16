@@ -43,7 +43,6 @@ func init(ts :TowerSetting) -> Tower:
 	set_pillars_visible(view_pillars)
 	for i in tower_setting.VisibleStoreyUp:
 		add_new_storey(i)
-	#enter_new_storey()
 	return self
 
 func calc_floor_position() -> Vector3:

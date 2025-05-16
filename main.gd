@@ -34,7 +34,7 @@ func _ready() -> void:
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.2.0"))
 	$TimedMessage.show_message("",3)
-	$DecoOrbit.init(tower_setting)
+	$DecoOrbit.init(tower_setting.TotalDiagonal)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	update_button_text()
@@ -80,7 +80,7 @@ func enter_new_storey() -> void:
 			minimap.add_character(ch,stpos, 0)
 		ch.enqueue_action(ActLib.Action.EnterStorey, [current_tower.get_cur_storey(), stpos])
 
-	$DecoOrbit.orbit_pos(current_tower.calc_center(), current_tower.cur_storey_index)
+	$DecoOrbit.position = current_tower.calc_center()
 	minimap.set_minimap_mode(player_number)
 	update_button_text()
 	_on_vpsize_changed()

@@ -10,7 +10,6 @@ var tower_scene = preload("res://tower.tscn")
 @onready var cameralight = $MovingCameraLight
 @onready var char_container = $CharacterContainer
 
-var tower_setting :TowerSetting
 var minimap :MiniMap
 var player_number := 0
 var camera_move := false
@@ -18,28 +17,26 @@ var current_tower :Tower
 var deco_tower :Tower
 
 func _ready() -> void:
-	tower_setting = TowerSetting.new()
-	current_tower = tower_scene.instantiate().init(tower_setting)
-	add_child(current_tower)
-	$DecoOrbit.init(tower_setting.TotalDiagonal)
-	
-	deco_tower = tower_scene.instantiate().init(tower_setting)
-	add_child(deco_tower)
-	deco_tower.position = Vector3(100,10,100)
-	deco_tower.enter_new_storey()
-
-	for i in tower_setting.CharacterCount:
-		var pl = character_scene.instantiate()
-		char_container.add_child(pl)
-		pl.init_char(tower_setting, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
-			i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
-
 	cameralight.init()
 	var vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.2.0"))
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
+	
+	deco_tower = tower_scene.instantiate().init(TowerSetting.new())
+	add_child(deco_tower)
+	deco_tower.position = Vector3(100,10,100)
+	deco_tower.enter_new_storey()
+	
+	current_tower = tower_scene.instantiate().init(TowerSetting.new())
+	add_child(current_tower)
+	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal)
+	for i in current_tower.tower_setting.CharacterCount:
+		var pl = character_scene.instantiate()
+		char_container.add_child(pl)
+		pl.init_char(current_tower.tower_setting, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
+			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	update_button_text()
 	enter_new_storey()
 
@@ -63,7 +60,7 @@ func enter_new_storey() -> void:
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
-		var stpos = tower_setting.rand_pos_2i()
+		var stpos = current_tower.tower_setting.rand_pos_2i()
 		if ch.serial == player_number:
 			stpos = current_tower.get_cur_storey().start_pos
 			minimap.add_character(ch,stpos, 8)
@@ -79,7 +76,7 @@ func enter_new_storey() -> void:
 func apply_storey_gap_change() -> void:
 	current_tower.apply_storey_gap_change()
 	for ch in char_container.get_children():
-		var y =  tower_setting.calc_storey_mid_y_pos(current_tower.get_cur_storey().storey_num)
+		var y =  current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.get_cur_storey().storey_num)
 		ch.position.y = y
 		if ch.serial == player_number:
 			if not camera_move:
@@ -87,7 +84,7 @@ func apply_storey_gap_change() -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = tower_setting.TotalDiagonal *1.0
+	var r = current_tower.tower_setting.TotalDiagonal *1.0
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
 	cameralight.look_at(current_tower.calc_center())
 

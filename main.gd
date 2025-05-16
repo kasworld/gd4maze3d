@@ -15,12 +15,18 @@ var minimap :MiniMap
 var player_number := 0
 var camera_move := false
 var current_tower :Tower
+var deco_tower :Tower
 
 func _ready() -> void:
 	tower_setting = TowerSetting.new()
 	current_tower = tower_scene.instantiate().init(tower_setting)
 	add_child(current_tower)
 	$DecoOrbit.init(tower_setting.TotalDiagonal)
+	
+	deco_tower = tower_scene.instantiate().init(tower_setting)
+	add_child(deco_tower)
+	deco_tower.position = Vector3(100,10,100)
+	deco_tower.enter_new_storey()
 
 	for i in tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()

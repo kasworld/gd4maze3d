@@ -10,6 +10,7 @@ var tower_scene = preload("res://tower.tscn")
 @onready var cameralight = $MovingCameraLight
 @onready var char_container = $CharacterContainer
 
+var tower_setting :TowerSetting
 var minimap :MiniMap
 var player_number := 0
 var vp_size :Vector2
@@ -17,22 +18,23 @@ var camera_move := false
 var current_tower :Tower
 
 func _ready() -> void:
-	current_tower = tower_scene.instantiate().init()
+	tower_setting = TowerSetting.new()
+	current_tower = tower_scene.instantiate().init(tower_setting)
 	add_child(current_tower)
-	for i in Settings.CharacterCount:
+	for i in tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
 		if i % 2 == 0:
-			pl.init_char(AILib.Walk.RightFirst, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
+			pl.init_char(tower_setting, AILib.Walk.RightFirst, i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 		else:
-			pl.init_char(AILib.Walk.LeftFirst, i, Settings.LaneW, NamedColorList.color_list.pick_random()[0])
+			pl.init_char(tower_setting, AILib.Walk.LeftFirst, i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 
 	cameralight.init()
 	vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.2.0"))
 	$TimedMessage.show_message("",3)
-	$DecoOrbit.init()
+	$DecoOrbit.init(tower_setting)
 
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	update_button_text()
@@ -42,9 +44,9 @@ func _process(delta: float) -> void:
 	var rate :=  Time.get_unix_time_from_system() - current_tower.animate_gap_start_time
 	if rate <= 1.0 :
 		if current_tower.gap_ani_dir_open:
-			Settings.StoreyGapRate = lerp(0.0, 1.0, rate)
+			tower_setting.StoreyGapRate = lerp(0.0, 1.0, rate)
 		else:
-			Settings.StoreyGapRate = lerp(1.0, 0.0, rate)
+			tower_setting.StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
 	move_character(current_tower.get_cur_storey())
 	update_info()
@@ -53,7 +55,7 @@ func _process(delta: float) -> void:
 
 func _on_vpsize_changed() -> void:
 	vp_size = get_viewport().get_visible_rect().size
-	var map_scale = min( vp_size.x / Settings.MazeSize.x , vp_size.y / Settings.MazeSize.y )
+	var map_scale = min( vp_size.x / tower_setting.MazeSize.x , vp_size.y / tower_setting.MazeSize.y )
 	minimap.change_scale(map_scale)
 	minimap.position.y = (vp_size.y -minimap.get_height())/2
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
@@ -61,7 +63,7 @@ func _on_vpsize_changed() -> void:
 func enter_new_storey() -> void:
 	current_tower.enter_new_storey()
 	vp_size = get_viewport().get_visible_rect().size
-	var map_scale = min( vp_size.x / Settings.MazeSize.x , vp_size.y / Settings.MazeSize.y )
+	var map_scale = min( vp_size.x / tower_setting.MazeSize.x , vp_size.y / tower_setting.MazeSize.y )
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
@@ -70,7 +72,7 @@ func enter_new_storey() -> void:
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
-		var stpos = Settings.rand_pos_2i()
+		var stpos = tower_setting.rand_pos_2i()
 		if ch.serial == player_number:
 			stpos = current_tower.get_cur_storey().start_pos
 			minimap.add_character(ch,stpos, 8)
@@ -86,7 +88,7 @@ func enter_new_storey() -> void:
 func apply_storey_gap_change() -> void:
 	current_tower.apply_storey_gap_change()
 	for ch in char_container.get_children():
-		var y =  Settings.calc_storey_mid_y_pos(current_tower.get_cur_storey().storey_num)
+		var y =  tower_setting.calc_storey_mid_y_pos(current_tower.get_cur_storey().storey_num)
 		ch.position.y = y
 		if ch.serial == player_number:
 			if not camera_move:
@@ -94,7 +96,7 @@ func apply_storey_gap_change() -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = Settings.TotalDiagonal *1.0
+	var r = tower_setting.TotalDiagonal *1.0
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
 	cameralight.look_at(current_tower.calc_center())
 
@@ -180,11 +182,9 @@ Currently rendering: occlusion culling:%s
 	infolabel.text = """%s,
 %s
 %s
-%s
 %s""" % [
 	current_tower,
 	minimap,
-	Settings,
 	player,
 	$MovingCameraLight,
 	]

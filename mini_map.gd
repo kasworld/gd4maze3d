@@ -42,9 +42,9 @@ func init(st :Storey, sc :float) -> MiniMap:
 	map_mode_full = false
 	storey = st
 	walls_known = []
-	walls_known.resize(Settings.MazeSize.y*2+1)
+	walls_known.resize(storey.tower_setting.MazeSize.y*2+1)
 	for cl in walls_known:
-		cl.resize(Settings.MazeSize.x*2+1)
+		cl.resize(storey.tower_setting.MazeSize.x*2+1)
 	goal = new_label(Color.RED, "Goal", 8)
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
@@ -117,7 +117,7 @@ func pos2mapscale(pos :Vector2) -> Vector2:
 # make wallline by maze
 func make_walllines_all() -> void:
 	walllines_all = []
-	var MazeSize = Settings.MazeSize
+	var MazeSize = storey.tower_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if not storey.maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
@@ -136,7 +136,7 @@ func make_walllines_all() -> void:
 # make wallline by walls_known
 func make_walllines_known() -> void:
 	walllines_known = []
-	var MazeSize = Settings.MazeSize
+	var MazeSize = storey.tower_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if is_wall_at(x,y,DirLib.Dir.North):
@@ -153,9 +153,9 @@ func make_walllines_known() -> void:
 			add_wall_at_raw( MazeSize.x-1 , y , DirLib.Dir.East, walllines_known)
 
 func get_width() -> float:
-	return Settings.MazeSize.x * map_scale
+	return storey.tower_setting.MazeSize.x * map_scale
 func get_height() -> float:
-	return Settings.MazeSize.y * map_scale
+	return storey.tower_setting.MazeSize.y * map_scale
 
 func view_full_map() -> void:
 	for ch in $CharacterContainer.get_children():

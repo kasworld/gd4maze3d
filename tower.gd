@@ -7,6 +7,8 @@ static func wallview2str(vd :WallView) -> String:
 static func wallview_next(a :WallView) -> WallView:
 	return (a +1) % WallView.keys().size() as WallView
 
+
+var tower_setting :TowerSetting
 var storey_scene = preload("res://storey.tscn")
 
 var storey_list :Array[Storey]
@@ -23,31 +25,32 @@ func _to_string() -> String:
 	view_floor_ceiling, get_cur_storey(),
 	]
 
-func init() -> Tower:
+func init(ts :TowerSetting) -> Tower:
+	tower_setting = ts
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
 	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
-	$Floor.mesh.size = Settings.MeshSize
-	$Floor.mesh.material.uv1_scale = Vector3(Settings.MazeSize.x,(Settings.MazeSize.x+Settings.MazeSize.y)/2.0,Settings.MazeSize.y)
+	$Floor.mesh.size = tower_setting.MeshSize
+	$Floor.mesh.material.uv1_scale = Vector3(tower_setting.MazeSize.x,(tower_setting.MazeSize.x+tower_setting.MazeSize.y)/2.0,tower_setting.MazeSize.y)
 
 	mat_keys = Texmat.ceiling_mat_dict.keys()
 	mat_keys.shuffle()
 	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[0]].duplicate()
-	$Ceiling.mesh.size = Settings.MeshSize
+	$Ceiling.mesh.size = tower_setting.MeshSize
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 	
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
-	for i in Settings.VisibleStoreyUp:
+	for i in tower_setting.VisibleStoreyUp:
 		add_new_storey(i)
 	#enter_new_storey()
 	return self
 
 func calc_floor_position() -> Vector3:
-	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(visible_down_index()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
+	return Vector3(tower_setting.MeshSize.x/2, tower_setting.calc_storey_base_y_pos(visible_down_index()) - tower_setting.calc_current_storey_gap()/2, tower_setting.MeshSize.y/2)
 
 func calc_ceiling_position() -> Vector3:
-	return Vector3(Settings.MeshSize.x/2, Settings.calc_storey_base_y_pos(storey_list.size()) - Settings.calc_current_storey_gap()/2, Settings.MeshSize.y/2)
+	return Vector3(tower_setting.MeshSize.x/2, tower_setting.calc_storey_base_y_pos(storey_list.size()) - tower_setting.calc_current_storey_gap()/2, tower_setting.MeshSize.y/2)
 
 func calc_center() -> Vector3:
 	return (calc_floor_position() + calc_ceiling_position())/2
@@ -70,7 +73,7 @@ func apply_storey_gap_change() -> void:
 		if st == null:
 			continue
 		var stnum = st.storey_num
-		st.position.y = Settings.calc_storey_base_y_pos(stnum)
+		st.position.y = tower_setting.calc_storey_base_y_pos(stnum)
 	$Floor.position = calc_floor_position()
 	$Ceiling.position = calc_ceiling_position()
 
@@ -78,12 +81,12 @@ func get_cur_storey() -> Storey:
 	return storey_list[cur_storey_index]
 
 func add_new_storey(stnum :int) -> void:
-	var gp = Settings.rand_pos_2i()
-	var stp = Settings.rand_pos_2i()
+	var gp = tower_setting.rand_pos_2i()
+	var stp = tower_setting.rand_pos_2i()
 	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
-	var st = storey_scene.instantiate().init(stnum, stp, gp)
-	st.position.y = Settings.calc_storey_base_y_pos(stnum)
+	var st = storey_scene.instantiate().init(tower_setting, stnum, stp, gp)
+	st.position.y = tower_setting.calc_storey_base_y_pos(stnum)
 	storey_list.append(st)
 	$AddStoreyContainer.add_child(st)
 	$AnimationPlayerAddStorey.play("new_animation")
@@ -107,7 +110,7 @@ func _on_animation_player_del_storey_animation_finished(_anim_name: StringName) 
 		todel.queue_free()
 
 func visible_down_index() -> int:
-	var rtn = cur_storey_index - Settings.VisibleStoreyDown
+	var rtn = cur_storey_index - tower_setting.VisibleStoreyDown
 	if rtn < 0:
 		return 0
 	return rtn

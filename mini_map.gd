@@ -38,7 +38,7 @@ var start :Label
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey, sc :float) -> MiniMap:
+func init(st :Storey) -> MiniMap:
 	map_mode_full = false
 	storey = st
 	walls_known = []
@@ -49,8 +49,25 @@ func init(st :Storey, sc :float) -> MiniMap:
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
 	add_child(start)
-	change_scale(sc)
+	update_size()
 	return self
+
+func update_size() -> void:
+	var vp_size = get_viewport().get_visible_rect().size
+	var map_scale = min( vp_size.x / storey.tower_setting.MazeSize.x , vp_size.y / storey.tower_setting.MazeSize.y )
+	change_scale(map_scale)
+	position.y = (vp_size.y - get_height())/2
+	position.x = (vp_size.x - get_width())/2
+
+# call scale changed
+func change_scale(sc :float) -> void:
+	map_scale = sc
+	WallThick = map_scale*0.1
+	if WallThick < 1 :
+		WallThick = 1
+	make_walllines_all()
+	make_walllines_known()
+	update_labels()
 
 func add_character(achar :Character, pos :Vector2, outline :int) -> void:
 	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
@@ -89,16 +106,6 @@ func new_label(co:Color, text :String, outline :int) -> Label:
 		stb.border_width_top = outline
 	lb.add_theme_stylebox_override("normal", stb)
 	return lb
-
-# call scale changed
-func change_scale(sc :float) -> void:
-	map_scale = sc
-	WallThick = map_scale*0.1
-	if WallThick < 1 :
-		WallThick = 1
-	make_walllines_all()
-	make_walllines_known()
-	update_labels()
 
 func update_labels() -> void:
 	update_label_pos_size(goal,storey.goal_pos)
@@ -180,7 +187,6 @@ func is_wall_at(x :int, y:int, dir :DirLib.Dir) -> bool:
 func set_wall_at(x :int, y:int, dir :DirLib.Dir):
 	var wpos = calc_wall_pos(x,y,dir)
 	walls_known[wpos.y][wpos.x] = 1
-
 
 func _draw() -> void:
 	if map_mode_full:

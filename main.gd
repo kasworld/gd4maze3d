@@ -13,7 +13,6 @@ var tower_scene = preload("res://tower.tscn")
 var tower_setting :TowerSetting
 var minimap :MiniMap
 var player_number := 0
-var vp_size :Vector2
 var camera_move := false
 var current_tower :Tower
 
@@ -32,7 +31,7 @@ func _ready() -> void:
 			pl.init_char(tower_setting, AILib.Walk.LeftFirst, i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 
 	cameralight.init()
-	vp_size = get_viewport().get_visible_rect().size
+	var vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 19.2.0"))
 	$TimedMessage.show_message("",3)
@@ -47,22 +46,16 @@ func _process(delta: float) -> void:
 		move_camera(delta)
 
 func _on_vpsize_changed() -> void:
-	vp_size = get_viewport().get_visible_rect().size
-	var map_scale = min( vp_size.x / tower_setting.MazeSize.x , vp_size.y / tower_setting.MazeSize.y )
-	minimap.change_scale(map_scale)
-	minimap.position.y = (vp_size.y -minimap.get_height())/2
-	minimap.position.x = (vp_size.x - minimap.get_width())/2
+	minimap.update_size()
 
 func enter_new_storey() -> void:
 	if minimap != null:
 		minimap.queue_free()
 	current_tower.enter_new_storey()
 
-	vp_size = get_viewport().get_visible_rect().size
-	var map_scale = min( vp_size.x / tower_setting.MazeSize.x , vp_size.y / tower_setting.MazeSize.y )
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(current_tower.get_cur_storey(),map_scale)
+	minimap.init(current_tower.get_cur_storey())
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)

@@ -25,10 +25,8 @@ func _ready() -> void:
 	for i in tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		if i % 2 == 0:
-			pl.init_char(tower_setting, AILib.Walk.RightFirst, i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
-		else:
-			pl.init_char(tower_setting, AILib.Walk.LeftFirst, i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+		pl.init_char(tower_setting, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
+			i, tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 
 	cameralight.init()
 	var vp_size = get_viewport().get_visible_rect().size
@@ -115,6 +113,42 @@ func move_character(cur_storey :Storey) -> void:
 		if ch.action_current[0] != ActLib.Action.None :
 			animate_action(ch, ani_dur)
 
+func update_info() -> void:
+	var player = char_container.get_child(player_number)
+	debuglabel.text = player.debug_str()
+	performancelabel.text = """%d FPS (%.2f mspf)
+Currently rendering: occlusion culling:%s
+%d objects
+%dK primitive indices
+%d draw calls""" % [
+	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
+	get_tree().root.use_occlusion_culling,
+	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
+	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
+	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+	]
+	infolabel.text = """%s\n%s\n%s\n%s""" % [current_tower, minimap, player, $MovingCameraLight ]
+
+func update_button_text() -> void:
+	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
+	var player = char_container.get_child(player_number)
+	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
+	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)
+
+func animate_action(ch :MazeCrawl, dur :float) -> void:
+	match ch.action_current[0]:
+		ActLib.Action.Forward:
+			ch.animate_move_by_dur(dur)
+		ActLib.Action.TurnLeft, ActLib.Action.TurnRight:
+			ch.animate_turn_by_dur(dur)
+		ActLib.Action.RollRight,ActLib.Action.RollLeft:
+			ch.animate_roll_by_dur(dur)
+		ActLib.Action.EnterStorey:
+			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey_index -1, current_tower.cur_storey_index)
+	if ch.serial == player_number:
+		if not camera_move:
+			cameralight.copy_position_rotation(ch)
+
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,
 	KEY_1:_on_button_help_pressed,
@@ -152,44 +186,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.is_pressed():
 		pass
 
-func update_info() -> void:
-	var player = char_container.get_child(player_number)
-	debuglabel.text = player.debug_str()
-	performancelabel.text = """%d FPS (%.2f mspf)
-Currently rendering: occlusion culling:%s
-%d objects
-%dK primitive indices
-%d draw calls""" % [
-	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
-	get_tree().root.use_occlusion_culling,
-	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
-	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
-	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
-	]
-	infolabel.text = """%s,
-%s
-%s
-%s""" % [
-	current_tower,
-	minimap,
-	player,
-	$MovingCameraLight,
-	]
-
-func animate_action(ch :MazeCrawl, dur :float) -> void:
-	match ch.action_current[0]:
-		ActLib.Action.Forward:
-			ch.animate_move_by_dur(dur)
-		ActLib.Action.TurnLeft, ActLib.Action.TurnRight:
-			ch.animate_turn_by_dur(dur)
-		ActLib.Action.RollRight,ActLib.Action.RollLeft:
-			ch.animate_roll_by_dur(dur)
-		ActLib.Action.EnterStorey:
-			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey_index -1, current_tower.cur_storey_index)
-	if ch.serial == player_number:
-		if not camera_move:
-			cameralight.copy_position_rotation(ch)
-
 func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
@@ -216,12 +212,6 @@ func _on_button_storey_gap_pressed() -> void:
 func _on_button_auto_move_pressed() -> void:
 	char_container.get_child(player_number).set_next_walk_type()
 	update_button_text()
-
-func update_button_text() -> void:
-	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
-	var player = char_container.get_child(player_number)
-	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
-	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible

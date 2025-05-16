@@ -54,11 +54,12 @@ func _on_vpsize_changed() -> void:
 	minimap.position.x = (vp_size.x - minimap.get_width())/2
 
 func enter_new_storey() -> void:
-	current_tower.enter_new_storey()
-	vp_size = get_viewport().get_visible_rect().size
-	var map_scale = min( vp_size.x / tower_setting.MazeSize.x , vp_size.y / tower_setting.MazeSize.y )
 	if minimap != null:
 		minimap.queue_free()
+	current_tower.enter_new_storey()
+
+	vp_size = get_viewport().get_visible_rect().size
+	var map_scale = min( vp_size.x / tower_setting.MazeSize.x , vp_size.y / tower_setting.MazeSize.y )
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
 	minimap.init(current_tower.get_cur_storey(),map_scale)
@@ -228,7 +229,7 @@ func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
 	var player = char_container.get_child(player_number)
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
-	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % current_tower.wallview2str(current_tower.view_walls)
+	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible

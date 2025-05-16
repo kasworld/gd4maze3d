@@ -7,10 +7,9 @@ static func wallview2str(vd :WallView) -> String:
 static func wallview_next(a :WallView) -> WallView:
 	return (a +1) % WallView.keys().size() as WallView
 
-
-var tower_setting :TowerSetting
 var storey_scene = preload("res://storey.tscn")
 
+var tower_setting :TowerSetting
 var storey_list :Array[Storey]
 var cur_storey_index :int = -1 # +1 on enter_new_storey
 var view_floor_ceiling :bool = false
@@ -45,7 +44,7 @@ func init(ts :TowerSetting) -> Tower:
 		add_new_storey(i)
 	return self
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
 	if rate <= 1.0 :
 		if gap_ani_dir_open:

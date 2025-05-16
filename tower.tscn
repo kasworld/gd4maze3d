@@ -101,3 +101,6 @@ libraries = {
 }
 
 [node name="AddStoreyContainer" type="Node3D" parent="."]
+
+[connection signal="animation_finished" from="AnimationPlayerDelStorey" to="." method="_on_animation_player_del_storey_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayerAddStorey" to="." method="_on_animation_player_add_storey_animation_finished"]

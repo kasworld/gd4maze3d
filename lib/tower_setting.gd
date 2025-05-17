@@ -14,7 +14,8 @@ var WallThick :float = LaneW *0.05
 var TotalX :float = MazeSize.x * LaneW
 var TotalY :float = MazeSize.y * LaneW
 var TotalDiagonal :float = (MazeSize*LaneW).length()
-var MeshSize :Vector2 = MazeSize*LaneW +Vector2(WallThick, WallThick)
+var MeshSize :Vector2 = MazeSize*LaneW + Vector2(WallThick, WallThick)
+var MeshCenter :Vector2 = MazeSize*LaneW/2
 
 var WallSize_NS_Full = Vector3(LaneW,StoryH,WallThick)
 var WallSize_NS_Reduced = Vector3(LaneW-WallThick,StoryH,WallThick)

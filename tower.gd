@@ -54,10 +54,16 @@ func _process(_delta: float) -> void:
 		apply_storey_gap_change()
 
 func calc_floor_position() -> Vector3:
-	return Vector3(tower_setting.MeshSize.x/2, tower_setting.calc_storey_base_y_pos(visible_down_index()) - tower_setting.calc_current_storey_gap()/2, tower_setting.MeshSize.y/2)
+	return Vector3(
+		tower_setting.MeshSize.x/2-tower_setting.WallThick/2, 
+		tower_setting.calc_storey_base_y_pos(visible_down_index()) - tower_setting.calc_current_storey_gap()/2, 
+		tower_setting.MeshSize.y/2-tower_setting.WallThick/2)
 
 func calc_ceiling_position() -> Vector3:
-	return Vector3(tower_setting.MeshSize.x/2, tower_setting.calc_storey_base_y_pos(storey_list.size()) - tower_setting.calc_current_storey_gap()/2, tower_setting.MeshSize.y/2)
+	return Vector3(
+		tower_setting.MeshSize.x/2-tower_setting.WallThick/2, 
+		tower_setting.calc_storey_base_y_pos(storey_list.size()) - tower_setting.calc_current_storey_gap()/2, 
+		tower_setting.MeshSize.y/2-tower_setting.WallThick/2)
 
 func calc_center() -> Vector3:
 	return (calc_floor_position() + calc_ceiling_position())/2

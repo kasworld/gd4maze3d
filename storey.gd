@@ -57,14 +57,20 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	var meshx = tower_setting.MazeSize.x*tower_setting.LaneW +tower_setting.WallThick
-	var meshy = tower_setting.MazeSize.y*tower_setting.LaneW +tower_setting.WallThick
-	$Floor.mesh.size = Vector2(meshx, meshy)
-	$Floor.position = Vector3(meshx/2, -tower_setting.calc_current_storey_gap()/2 , meshy/2)
+	#var meshx = tower_setting.MazeSize.x*tower_setting.LaneW +tower_setting.WallThick
+	#var meshy = tower_setting.MazeSize.y*tower_setting.LaneW +tower_setting.WallThick
+	$Floor.mesh.size = tower_setting.MeshSize
+	$Floor.position = Vector3(
+		tower_setting.MeshSize.x/2-tower_setting.WallThick/2, 
+		-tower_setting.calc_current_storey_gap()/2 , 
+		tower_setting.MeshSize.y/2-tower_setting.WallThick/2)
 	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
 	$Ceiling.mesh.size = $Floor.mesh.size
-	$Ceiling.position = Vector3(meshx/2, tower_setting.StoryH + tower_setting.calc_current_storey_gap()/2 , meshy/2)
+	$Ceiling.position = Vector3(
+		tower_setting.MeshSize.x/2-tower_setting.WallThick/2, 
+		tower_setting.StoryH + tower_setting.calc_current_storey_gap()/2 , 
+		tower_setting.MeshSize.y/2-tower_setting.WallThick/2)
 	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
 	$Ceiling.mesh.material.transparency = $Floor.mesh.material.transparency
 

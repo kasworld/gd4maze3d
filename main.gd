@@ -112,7 +112,7 @@ func move_character(cur_storey :Storey) -> void:
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
 			if ch.serial == player_number and ch.action_current[0] != ActLib.Action.EnterStorey: # player
-				minimap.update_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
+				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
 		if ch.action_current[0] != ActLib.Action.None :
 			animate_action(ch, ani_dur)
 

@@ -9,18 +9,25 @@ var VisibleStoreyDown :int = 3
 var MazeSize := Vector2i(16*1,9*1)
 var StoryH :float = 3.0
 var LaneW :float = 4.0
-var WallThick :float = LaneW *0.05
 
-var TotalX :float = MazeSize.x * LaneW
-var TotalY :float = MazeSize.y * LaneW
-var TotalDiagonal :float = (MazeSize*LaneW).length()
-var MeshSize :Vector2 = MazeSize*LaneW + Vector2(WallThick, WallThick)
-var MeshCenter :Vector2 = MazeSize*LaneW/2
-
-var WallSize_NS_Full = Vector3(LaneW,StoryH,WallThick)
-var WallSize_NS_Reduced = Vector3(LaneW-WallThick,StoryH,WallThick)
-var WallSize_EW_Full = Vector3(WallThick,StoryH,LaneW)
-var WallSize_EW_Reduced = Vector3(WallThick,StoryH,LaneW-WallThick)
+func WallThick() -> float:
+	return LaneW *0.05
+func StoreySize() -> Vector2:
+	return MazeSize*LaneW
+func TotalDiagonal() -> float:
+	return (MazeSize*LaneW).length()
+func MeshSize() -> Vector2:
+	return MazeSize*LaneW + Vector2(WallThick(), WallThick())
+func MeshCenter() ->Vector2:
+	return MazeSize*LaneW/2
+func WallSize_NS_Full() -> Vector3:
+	return Vector3(LaneW, StoryH, WallThick())
+func WallSize_NS_Reduced() -> Vector3:
+	return Vector3(LaneW-WallThick(), StoryH, WallThick())
+func WallSize_EW_Full() -> Vector3:
+	return Vector3(WallThick(), StoryH, LaneW)
+func WallSize_EW_Reduced() -> Vector3:
+	return Vector3(WallThick(), StoryH, LaneW-WallThick())
 
 var StoreyGapRate := 1.0
 func calc_current_storey_gap() -> float:

@@ -40,10 +40,13 @@ func calc_storey_mid_y_pos(storey_num :int) -> float:
 	return storey_num * (StoryH + calc_current_storey_gap()) + StoryH /2
 
 var BallTrailCount :int = 14
-var DonutCapsuleCount :int = max(1, MazeSize.x*MazeSize.y/20.0)
-var TreeCount :int = max(1, MazeSize.x*MazeSize.y/30.0)
+func DonutCapsuleCount() -> int:
+	return max(1, MazeSize.x*MazeSize.y/20.0)
+func TreeCount() -> int:
+	return max(1, MazeSize.x*MazeSize.y/30.0)
 
-var CharacterCount :int = max(1, MazeSize.x*MazeSize.y/10.0)
+func CharacterCount() -> int:
+	return max(1, MazeSize.x*MazeSize.y/10.0)
 
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
@@ -55,6 +58,6 @@ func _to_string() -> String:
 	Character count:%d" % [
 		VisibleStoreyUp, VisibleStoreyDown,
 		MazeSize, StoryH, LaneW, WallThick,
-		BallTrailCount, DonutCapsuleCount, TreeCount,
-		CharacterCount,
+		BallTrailCount, DonutCapsuleCount(), TreeCount(),
+		CharacterCount(),
 	]

@@ -83,8 +83,8 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 			if maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
 
-	add_donut_capsule(tower_setting.DonutCapsuleCount)
-	add_trees(tower_setting.TreeCount)
+	add_donut_capsule(tower_setting.DonutCapsuleCount())
+	add_trees(tower_setting.TreeCount())
 	add_ball_trails(tower_setting.BallTrailCount)
 	return self
 

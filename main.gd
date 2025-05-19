@@ -32,7 +32,7 @@ func _ready() -> void:
 	current_tower = tower_scene.instantiate().init(TowerSetting.new())
 	add_child(current_tower)
 	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal())
-	for i in current_tower.tower_setting.CharacterCount:
+	for i in current_tower.tower_setting.CharacterCount():
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
 		pl.init_char(current_tower.tower_setting, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 

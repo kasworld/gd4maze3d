@@ -151,18 +151,18 @@ func set_pillars_visible(w :bool) -> void:
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_pillars(w)
 
-func _on_button_floor_ceiling_pressed() -> void:
+func toggle_visible_floor_ceiling_() -> void:
 	view_floor_ceiling = not view_floor_ceiling
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
-func _on_button_walls_pressed() -> void:
+func view_wall_next() -> void:
 	view_walls = wallview_next(view_walls)
 	set_wallview_mode(view_walls)
 
-func _on_button_pillars_pressed() -> void:
+func toggle_visible_pillars() -> void:
 	view_pillars = not view_pillars
 	set_pillars_visible(view_pillars)
 
-func _on_button_storey_gap_pressed() -> void:
+func start_storey_gap_animation() -> void:
 	animate_gap_start_time = Time.get_unix_time_from_system()
 	gap_ani_dir_open = not gap_ani_dir_open

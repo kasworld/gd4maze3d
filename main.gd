@@ -200,17 +200,17 @@ func _on_button_minimap_pressed() -> void:
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
-	current_tower._on_button_walls_pressed()
+	current_tower.view_wall_next()
 	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
-	current_tower._on_button_floor_ceiling_pressed()
+	current_tower.toggle_visible_floor_ceiling_()
 
 func _on_button_pillars_pressed() -> void:
-	current_tower._on_button_pillars_pressed()
+	current_tower.toggle_visible_pillars()
 	
 func _on_button_storey_gap_pressed() -> void:
-	current_tower._on_button_storey_gap_pressed()
+	current_tower.start_storey_gap_animation()
 
 func _on_button_auto_move_pressed() -> void:
 	char_container.get_child(player_number).set_next_walk_type()

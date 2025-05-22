@@ -29,10 +29,10 @@ func _ready() -> void:
 	add_deco_tower(Vector3(80,0,-80))
 	add_deco_tower(Vector3(-80,0,-80))
 	
-	current_tower = tower_scene.instantiate().init(TowerSetting.new())
+	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(current_tower)
-	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal())
-	for i in current_tower.tower_setting.CharacterCount():
+	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal)
+	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
 		pl.init_char(current_tower.tower_setting, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
@@ -41,7 +41,7 @@ func _ready() -> void:
 	enter_new_storey()
 
 func add_deco_tower(p :Vector3) -> void:
-	deco_tower = tower_scene.instantiate().init(TowerSetting.new())
+	deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.enter_new_storey()
@@ -91,7 +91,7 @@ func apply_storey_gap_change() -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = current_tower.tower_setting.TotalDiagonal() *1.0
+	var r = current_tower.tower_setting.TotalDiagonal *1.0
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
 	cameralight.look_at(current_tower.calc_center())
 

@@ -29,13 +29,13 @@ func init(ts :TowerSetting) -> Tower:
 	var mat_keys = Texmat.floor_mat_dict.keys()
 	mat_keys.shuffle()
 	$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
-	$Floor.mesh.size = tower_setting.MeshSize()
+	$Floor.mesh.size = tower_setting.MeshSize
 	$Floor.mesh.material.uv1_scale = Vector3(tower_setting.MazeSize.x,(tower_setting.MazeSize.x+tower_setting.MazeSize.y)/2.0,tower_setting.MazeSize.y)
 
 	mat_keys = Texmat.ceiling_mat_dict.keys()
 	mat_keys.shuffle()
 	$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[0]].duplicate()
-	$Ceiling.mesh.size = tower_setting.MeshSize()
+	$Ceiling.mesh.size = tower_setting.MeshSize
 	$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 	
 	set_wallview_mode(view_walls)
@@ -54,14 +54,14 @@ func _process(_delta: float) -> void:
 		apply_storey_gap_change()
 
 func calc_floor_position() -> Vector3:
-	return Vector3(tower_setting.MeshCenter().x, 
+	return Vector3(tower_setting.MeshCenter.x, 
 		tower_setting.calc_storey_base_y_pos(visible_down_index()) - tower_setting.calc_current_storey_gap()/2, 
-		tower_setting.MeshCenter().y)
+		tower_setting.MeshCenter.y)
 
 func calc_ceiling_position() -> Vector3:
-	return Vector3(tower_setting.MeshCenter().x, 
+	return Vector3(tower_setting.MeshCenter.x, 
 		tower_setting.calc_storey_base_y_pos(storey_list.size()) - tower_setting.calc_current_storey_gap()/2, 
-		tower_setting.MeshCenter().y)
+		tower_setting.MeshCenter.y)
 
 func calc_center() -> Vector3:
 	return (calc_floor_position() + calc_ceiling_position())/2

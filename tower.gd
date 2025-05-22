@@ -151,7 +151,7 @@ func set_pillars_visible(w :bool) -> void:
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_pillars(w)
 
-func toggle_visible_floor_ceiling_() -> void:
+func toggle_visible_floor_ceiling() -> void:
 	view_floor_ceiling = not view_floor_ceiling
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
@@ -166,3 +166,20 @@ func toggle_visible_pillars() -> void:
 func start_storey_gap_animation() -> void:
 	animate_gap_start_time = Time.get_unix_time_from_system()
 	gap_ani_dir_open = not gap_ani_dir_open
+
+var demo_function_list = [
+	enter_new_storey,
+	toggle_visible_floor_ceiling,
+	view_wall_next,
+	toggle_visible_pillars,
+	start_storey_gap_animation,
+]
+
+func start_demo(n :int = 100) -> void:
+	$TimerDemo.start()
+
+func stop_demo() -> void:
+	$TimerDemo.stop()
+	
+func _on_timer_demo_timeout() -> void:
+	demo_function_list.pick_random().call()

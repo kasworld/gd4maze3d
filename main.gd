@@ -20,7 +20,7 @@ func _ready() -> void:
 	cameralight.init()
 	var vp_size = get_viewport().get_visible_rect().size
 	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 20.0.0"))
+	$TimedMessage.init(80, msgrect, tr("gd4maze3d 21.0.0"))
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
@@ -28,6 +28,7 @@ func _ready() -> void:
 	add_child(deco_tower)
 	deco_tower.position = Vector3(100,10,100)
 	deco_tower.enter_new_storey()
+	deco_tower.start_demo()
 	
 	current_tower = tower_scene.instantiate().init(TowerSetting.new())
 	add_child(current_tower)
@@ -204,7 +205,7 @@ func _on_button_walls_pressed() -> void:
 	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
-	current_tower.toggle_visible_floor_ceiling_()
+	current_tower.toggle_visible_floor_ceiling()
 
 func _on_button_pillars_pressed() -> void:
 	current_tower.toggle_visible_pillars()

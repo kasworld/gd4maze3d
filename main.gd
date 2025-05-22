@@ -24,11 +24,10 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
-	deco_tower = tower_scene.instantiate().init(TowerSetting.new())
-	add_child(deco_tower)
-	deco_tower.position = Vector3(100,10,100)
-	deco_tower.enter_new_storey()
-	deco_tower.start_demo()
+	add_deco_tower(Vector3(80,0,80))
+	add_deco_tower(Vector3(-80,0,80))
+	add_deco_tower(Vector3(80,0,-80))
+	add_deco_tower(Vector3(-80,0,-80))
 	
 	current_tower = tower_scene.instantiate().init(TowerSetting.new())
 	add_child(current_tower)
@@ -40,6 +39,13 @@ func _ready() -> void:
 			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	update_button_text()
 	enter_new_storey()
+
+func add_deco_tower(p :Vector3) -> void:
+	deco_tower = tower_scene.instantiate().init(TowerSetting.new())
+	add_child(deco_tower)
+	deco_tower.position = p
+	deco_tower.enter_new_storey()
+	deco_tower.start_demo()
 
 func _process(delta: float) -> void:
 	move_character(current_tower.get_cur_storey())

@@ -1,8 +1,5 @@
 class_name TowerSetting
 
-var MakeLine2DWallRate :float
-var MakeSubWallRate :float
-var MakeClockCalWallRate :float
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
 var MazeSize :Vector2i
@@ -17,15 +14,15 @@ var WallSize_NS_Full :Vector3
 var WallSize_NS_Reduced :Vector3
 var WallSize_EW_Full :Vector3
 var WallSize_EW_Reduced :Vector3
+var MakeLine2DWallRate :float
+var MakeSubWallRate :float
+var MakeClockCalWallRate :float
 var BallTrailCount :int
 var DonutCapsuleCount :int
 var TreeCount :int
 var CharacterCount :int
 
 func make_default() -> TowerSetting:
-	MakeLine2DWallRate = 1.0/40.0
-	MakeSubWallRate = 1.0/20.0
-	MakeClockCalWallRate = 1.0/70.0
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3
 	MazeSize = Vector2i(16,9)
@@ -40,16 +37,16 @@ func make_default() -> TowerSetting:
 	WallSize_NS_Reduced = Vector3(LaneW-WallThick, StoryH, WallThick)
 	WallSize_EW_Full = Vector3(WallThick, StoryH, LaneW)
 	WallSize_EW_Reduced = Vector3(WallThick, StoryH, LaneW-WallThick)
-	BallTrailCount = 14
+	MakeLine2DWallRate = 2.0/(MazeSize.x*MazeSize.y)
+	MakeSubWallRate = 2.0/(MazeSize.x*MazeSize.y)
+	MakeClockCalWallRate = 2.0/(MazeSize.x*MazeSize.y)
+	BallTrailCount = 7
 	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
 	TreeCount = max(1, MazeSize.x*MazeSize.y/30.0)
 	CharacterCount = max(1, MazeSize.x*MazeSize.y/10.0)
 	return self
 
 func make_deco() -> TowerSetting:
-	MakeLine2DWallRate = 0.01
-	MakeSubWallRate = 0.01
-	MakeClockCalWallRate = 0.01
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3
 	MazeSize = Vector2i(10,10)
@@ -64,10 +61,13 @@ func make_deco() -> TowerSetting:
 	WallSize_NS_Reduced = Vector3(LaneW-WallThick, StoryH, WallThick)
 	WallSize_EW_Full = Vector3(WallThick, StoryH, LaneW)
 	WallSize_EW_Reduced = Vector3(WallThick, StoryH, LaneW-WallThick)
+	MakeLine2DWallRate = 1.0/(MazeSize.x*MazeSize.y)
+	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
+	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	BallTrailCount = 1
 	DonutCapsuleCount = 1
 	TreeCount = 1
-	CharacterCount = 0
+	CharacterCount = 1
 	return self
 
 # used to animate

@@ -41,7 +41,7 @@ func _ready() -> void:
 	enter_new_storey()
 
 func add_deco_tower(p :Vector3) -> void:
-	deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
+	deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_deco())
 	add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.enter_new_storey()

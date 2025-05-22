@@ -28,7 +28,7 @@ func make_default() -> TowerSetting:
 	MakeClockCalWallRate = 1.0/70.0
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3
-	MazeSize = Vector2i(16*1,9*1)
+	MazeSize = Vector2i(16,9)
 	StoryH = 3.0
 	LaneW = 4.0
 	WallThick = LaneW *0.05
@@ -44,6 +44,30 @@ func make_default() -> TowerSetting:
 	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
 	TreeCount = max(1, MazeSize.x*MazeSize.y/30.0)
 	CharacterCount = max(1, MazeSize.x*MazeSize.y/10.0)
+	return self
+
+func make_deco() -> TowerSetting:
+	MakeLine2DWallRate = 0.01
+	MakeSubWallRate = 0.01
+	MakeClockCalWallRate = 0.01
+	VisibleStoreyUp = 3
+	VisibleStoreyDown = 3
+	MazeSize = Vector2i(10,10)
+	StoryH = 3.0
+	LaneW = 4.0
+	WallThick = LaneW *0.05
+	StoreySize = MazeSize*LaneW
+	TotalDiagonal = (MazeSize*LaneW).length()
+	MeshSize = MazeSize*LaneW + Vector2(WallThick, WallThick)
+	MeshCenter = MazeSize*LaneW/2
+	WallSize_NS_Full = Vector3(LaneW, StoryH, WallThick)
+	WallSize_NS_Reduced = Vector3(LaneW-WallThick, StoryH, WallThick)
+	WallSize_EW_Full = Vector3(WallThick, StoryH, LaneW)
+	WallSize_EW_Reduced = Vector3(WallThick, StoryH, LaneW-WallThick)
+	BallTrailCount = 1
+	DonutCapsuleCount = 1
+	TreeCount = 1
+	CharacterCount = 0
 	return self
 
 # used to animate

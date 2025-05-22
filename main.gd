@@ -45,7 +45,7 @@ func add_deco_tower(p :Vector3) -> void:
 	add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.enter_new_storey()
-	deco_tower.start_demo()
+	deco_tower.start_demo_random()
 
 func _process(delta: float) -> void:
 	move_character(current_tower.get_cur_storey())

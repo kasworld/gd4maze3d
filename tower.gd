@@ -167,19 +167,16 @@ func start_storey_gap_animation() -> void:
 	animate_gap_start_time = Time.get_unix_time_from_system()
 	gap_ani_dir_open = not gap_ani_dir_open
 
-var demo_function_list = [
+var demo_random_list = [
 	enter_new_storey,
 	toggle_visible_floor_ceiling,
 	view_wall_next,
 	toggle_visible_pillars,
 	start_storey_gap_animation,
 ]
-
-func start_demo(n :int = 100) -> void:
-	$TimerDemo.start()
-
-func stop_demo() -> void:
-	$TimerDemo.stop()
-	
-func _on_timer_demo_timeout() -> void:
-	demo_function_list.pick_random().call()
+func start_demo_random() -> void:
+	$TimerDemoRandom.start()
+func stop_demo_random() -> void:
+	$TimerDemoRandom.stop()
+func _on_timer_demo_random_timeout() -> void:
+	demo_random_list.pick_random().call()

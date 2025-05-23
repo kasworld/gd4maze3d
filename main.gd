@@ -48,7 +48,7 @@ func add_deco_tower(p :Vector3) -> void:
 	deco_tower.start_demo_random()
 
 func _process(delta: float) -> void:
-	move_character(current_tower.get_cur_storey())
+	move_character(current_tower.cur_storey)
 	update_info()
 	if camera_move:
 		move_camera(delta)
@@ -63,17 +63,17 @@ func enter_new_storey() -> void:
 
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(current_tower.get_cur_storey())
+	minimap.init(current_tower.cur_storey)
 
 	for ch in char_container.get_children():
 		ch.action_queue.resize(0)
 		var stpos = current_tower.tower_setting.rand_pos_2i()
 		if ch.serial == player_number:
-			stpos = current_tower.get_cur_storey().start_pos
+			stpos = current_tower.cur_storey.start_pos
 			minimap.add_character(ch,stpos, 8)
 		else:
 			minimap.add_character(ch,stpos, 0)
-		ch.enqueue_action(ActLib.Action.EnterStorey, [current_tower.get_cur_storey(), stpos])
+		ch.enqueue_action(ActLib.Action.EnterStorey, [current_tower.cur_storey, stpos])
 
 	$DecoOrbit.position = current_tower.calc_center()
 	minimap.set_minimap_mode(player_number)
@@ -83,7 +83,7 @@ func enter_new_storey() -> void:
 func apply_storey_gap_change() -> void:
 	current_tower.apply_storey_gap_change()
 	for ch in char_container.get_children():
-		var y =  current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.get_cur_storey().storey_num)
+		var y =  current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.cur_storey.storey_num)
 		ch.position.y = y
 		if ch.serial == player_number:
 			if not camera_move:
@@ -154,7 +154,7 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 		ActLib.Action.RollRight,ActLib.Action.RollLeft:
 			ch.animate_roll_by_dur(dur)
 		ActLib.Action.EnterStorey:
-			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey_index -1, current_tower.cur_storey_index)
+			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey.storey_num -1, current_tower.cur_storey.storey_num)
 	if ch.serial == player_number:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)

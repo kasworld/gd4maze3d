@@ -11,7 +11,7 @@ var storey_scene = preload("res://storey.tscn")
 
 var tower_setting :TowerSetting
 var storey_list :Array[Storey]
-var cur_storey_index :int = -1 # +1 on enter_new_storey
+var cur_storey :Storey 
 var view_floor_ceiling :bool = false
 var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
@@ -20,8 +20,8 @@ var animate_gap_start_time :float
 
 func _to_string() -> String:
 	return "Tower %s/%s floor,ceiling %s %s" % [
-	cur_storey_index, storey_list.size(),
-	view_floor_ceiling, get_cur_storey(),
+	cur_storey, storey_list.size(),
+	view_floor_ceiling, cur_storey,
 	]
 
 func init(ts :TowerSetting) -> Tower:
@@ -42,6 +42,7 @@ func init(ts :TowerSetting) -> Tower:
 	set_pillars_visible(view_pillars)
 	for i in tower_setting.VisibleStoreyUp:
 		add_new_storey(i)
+	cur_storey = storey_list[0]
 	return self
 
 func _process(_delta: float) -> void:
@@ -55,7 +56,7 @@ func _process(_delta: float) -> void:
 
 func calc_floor_position() -> Vector3:
 	return Vector3(tower_setting.MeshCenter.x, 
-		tower_setting.calc_storey_base_y_pos(visible_down_index()) - tower_setting.calc_current_storey_gap()/2, 
+		tower_setting.calc_storey_base_y_pos(0) - tower_setting.calc_current_storey_gap()/2, 
 		tower_setting.MeshCenter.y)
 
 func calc_ceiling_position() -> Vector3:
@@ -70,9 +71,14 @@ func calc_height() -> float:
 	return (calc_ceiling_position() - calc_floor_position()).y
 
 func enter_new_storey() -> void:
-	cur_storey_index +=1
 	del_old_storey()
-	add_new_storey(storey_list.size())
+	add_new_storey(storey_list[-1].storey_num +1)
+	var new_cur_storey_num = cur_storey.storey_num +1
+	for st in storey_list:
+		if st.storey_num == new_cur_storey_num:
+			cur_storey = st
+			break
+	assert(new_cur_storey_num == cur_storey.storey_num)
 	$Floor.position = calc_floor_position()
 	$Ceiling.position = calc_ceiling_position()
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
@@ -80,16 +86,10 @@ func enter_new_storey() -> void:
 	set_pillars_visible(view_pillars)
 
 func apply_storey_gap_change() -> void:
-	for st in storey_list:
-		if st == null:
-			continue
-		var stnum = st.storey_num
-		st.position.y = tower_setting.calc_storey_base_y_pos(stnum)
+	for i in storey_list.size():
+		storey_list[i].position.y = tower_setting.calc_storey_base_y_pos(i)
 	$Floor.position = calc_floor_position()
 	$Ceiling.position = calc_ceiling_position()
-
-func get_cur_storey() -> Storey:
-	return storey_list[cur_storey_index]
 
 func add_new_storey(stnum :int) -> void:
 	var gp = tower_setting.rand_pos_2i()
@@ -97,8 +97,8 @@ func add_new_storey(stnum :int) -> void:
 	if stnum > 0 :
 		stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate().init(tower_setting, stnum, stp, gp)
-	st.position.y = tower_setting.calc_storey_base_y_pos(stnum)
 	storey_list.append(st)
+	apply_storey_gap_change()
 	$AddStoreyContainer.add_child(st)
 	$AnimationPlayerAddStorey.play("new_animation")
 
@@ -108,9 +108,8 @@ func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) 
 		add_child(st)
 
 func del_old_storey() -> void:
-	if visible_down_index()-1 >=0 :
-		var todel = storey_list[visible_down_index()-1]
-		storey_list[visible_down_index()-1] = null
+	if cur_storey.storey_num > tower_setting.VisibleStoreyDown :
+		var todel = storey_list.pop_front()
 		remove_child(todel)
 		$DelStoreyContainer.add_child(todel)
 		$AnimationPlayerDelStorey.play("new_animation")
@@ -120,21 +119,15 @@ func _on_animation_player_del_storey_animation_finished(_anim_name: StringName) 
 		$DelStoreyContainer.remove_child(todel)
 		todel.queue_free()
 
-func visible_down_index() -> int:
-	var rtn = cur_storey_index - tower_setting.VisibleStoreyDown
-	if rtn < 0:
-		return 0
-	return rtn
-
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
-	var st = visible_down_index()
+	var st = 0
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_floor_ceiling(f,c)
 	storey_list[st].view_floor_ceiling(false,c)
 	storey_list[-1].view_floor_ceiling(f,false)
 
 func set_wallview_mode(w :WallView) -> void:
-	var st = visible_down_index()
+	var st = 0
 	for i in range(st,storey_list.size()):
 		match w:
 			WallView.Full:
@@ -147,7 +140,7 @@ func set_wallview_mode(w :WallView) -> void:
 				storey_list[i].view_walls(false)
 
 func set_pillars_visible(w :bool) -> void:
-	var st = visible_down_index()
+	var st = 0
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_pillars(w)
 

@@ -74,10 +74,10 @@ func make_deco() -> TowerSetting:
 var StoreyGapRate := 1.0
 func calc_current_storey_gap() -> float:
 	return StoryH * StoreyGapRate
-func calc_storey_base_y_pos(storey_num :int) -> float:
-	return storey_num * (StoryH + calc_current_storey_gap())
-func calc_storey_mid_y_pos(storey_num :int) -> float:
-	return storey_num * (StoryH + calc_current_storey_gap()) + StoryH /2
+func calc_storey_base_y_pos(storey_index :int) -> float:
+	return storey_index * (StoryH + calc_current_storey_gap())
+func calc_storey_mid_y_pos(storey_index :int) -> float:
+	return storey_index * (StoryH + calc_current_storey_gap()) + StoryH /2
 
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )

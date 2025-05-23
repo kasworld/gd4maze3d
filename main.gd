@@ -24,10 +24,6 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
-	add_deco_tower(Vector3(80,0,80))
-	add_deco_tower(Vector3(-80,0,80))
-	add_deco_tower(Vector3(80,0,-80))
-	add_deco_tower(Vector3(-80,0,-80))
 	
 	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(current_tower)
@@ -37,6 +33,13 @@ func _ready() -> void:
 		char_container.add_child(pl)
 		pl.init(current_tower, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
 			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+
+	var n = 4
+	for i in n:
+		var rd = 2*PI/n *i
+		var r = current_tower.tower_setting.TotalDiagonal 
+		add_deco_tower(Vector3(sin(rd)*r,0,cos(rd)*r))
+
 	update_button_text()
 	enter_new_storey()
 

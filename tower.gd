@@ -63,10 +63,12 @@ func calc_ceiling_position() -> Vector3:
 		tower_setting.MeshCenter.y)
 
 func calc_center() -> Vector3:
-	return (calc_floor_position() + calc_ceiling_position())/2
+	return Vector3(tower_setting.MeshCenter.x, 
+		calc_height()/2, 
+		tower_setting.MeshCenter.y)
 
 func calc_height() -> float:
-	return (calc_ceiling_position() - calc_floor_position()).y
+	return tower_setting.calc_storey_base_y_pos(storey_list.size())
 
 func cell_pos_to_vec3(p2 :Vector2i, storeynum :int) -> Vector3:
 	var st_index = find_storey_num_to_index(storeynum)

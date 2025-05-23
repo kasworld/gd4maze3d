@@ -66,14 +66,14 @@ func enter_new_storey() -> void:
 	minimap.init(current_tower.cur_storey)
 
 	for ch in char_container.get_children():
-		ch.action_queue.resize(0)
+		ch.action_queue.clear()
 		var stpos = current_tower.tower_setting.rand_pos_2i()
 		if ch.serial == player_number:
 			stpos = current_tower.cur_storey.start_pos
 			minimap.add_character(ch,stpos, 8)
 		else:
 			minimap.add_character(ch,stpos, 0)
-		ch.enqueue_action(ActLib.Action.EnterStorey, [current_tower.cur_storey, stpos])
+		ch.action_queue.enqueue_action(ActLib.Action.EnterStorey, [current_tower.cur_storey, stpos])
 
 	$DecoOrbit.position = current_tower.calc_center()
 	minimap.set_minimap_mode(player_number)
@@ -107,11 +107,11 @@ func move_character(cur_storey :Storey) -> void:
 					return
 				var ft = cur_storey.놓인것들.get_at(ch.pos_src)
 				if ft is Donut:
-					ch.enqueue_action(ActLib.Action.RollLeft)
+					ch.action_queue.enqueue_action(ActLib.Action.RollLeft)
 					cur_storey.놓인것들.del_at(ch.pos_src)
 					ft.queue_free()
 				elif ft is Capsule:
-					ch.enqueue_action(ActLib.Action.RollRight)
+					ch.action_queue.enqueue_action(ActLib.Action.RollRight)
 					cur_storey.놓인것들.del_at(ch.pos_src)
 					ft.queue_free()
 			minimap.move_character(ch.serial, ch.pos_src)
@@ -233,22 +233,22 @@ func _on_button_info_pressed() -> void:
 	infolabel.visible = !infolabel.visible
 
 func _on_button_forward_pressed() -> void:
-	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.Forward, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.TurnRight, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.RollRight, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	char_container.get_child(player_number).enqueue_action_with_speed(ActLib.Action.RollLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	cameralight.fov_inc()
@@ -257,16 +257,16 @@ func _on_button_fov_down_pressed() -> void:
 	cameralight.fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
-	char_container.get_child(player_number).action_per_second.set_max()
+	char_container.get_child(player_number).action_queue.action_per_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
-	char_container.get_child(player_number).action_per_second.set_up()
+	char_container.get_child(player_number).action_queue.action_per_second.set_up()
 
 func _on_button_aps_min_pressed() -> void:
-	char_container.get_child(player_number).action_per_second.set_min()
+	char_container.get_child(player_number).action_queue.action_per_second.set_min()
 
 func _on_button_aps_down_pressed() -> void:
-	char_container.get_child(player_number).action_per_second.set_down()
+	char_container.get_child(player_number).action_queue.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
 	enter_new_storey()

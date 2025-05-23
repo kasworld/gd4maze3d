@@ -1,25 +1,9 @@
 extends Node3D
 class_name MazeCrawl
 
-const ActionQueueLimit = 10
-
-func enqueue_action(a :ActLib.Action, args :=[]) -> MazeCrawl:
-	action_queue.push_back([a,action_per_second.get_value(), args])
-	crop_action_queue()
-	return self
-func enqueue_action_with_speed(a :ActLib.Action,s :float, args :=[]) -> MazeCrawl:
-	action_queue.push_back([a,s, args])
-	crop_action_queue()
-	return self
-func crop_action_queue() -> MazeCrawl:
-	if action_queue.size() > ActionQueueLimit:
-		action_queue = action_queue.slice(action_queue.size()-ActionQueueLimit)
-	return self
-func action_queue_to_str() -> String:
-	var rtn = ""
-	for a in action_queue:
-		rtn += "%s(%.1f)%s " % [ ActLib.action2str(a[0]), a[1], a[2] ]
-	return rtn
+var action_queue :ActionQueue
+var action_start_time :float # unixtime sec
+var action_current : Array # [Action, action_per_second.value]
 
 var current_tower :Tower
 var serial :int
@@ -29,15 +13,11 @@ var roll_dir :RollLib.Dir
 var roll_dir_dst :RollLib.Dir
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
-var action_queue :Array
 var storey :Storey
-var action_per_second := ClampedFloat.new(2,0.5,4.5) # sec
 var dir_src : DirLib.Dir
 var dir_dst : DirLib.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
-var action_start_time :float # unixtime sec
-var action_current : Array # [Action, action_per_second.value]
 
 var ai_walk_type := AILib.Walk.RightFirst
 func set_next_walk_type() -> MazeCrawl:
@@ -52,7 +32,7 @@ func init(tw :Tower, walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> Ma
 	total_action_stats = ActLib.new_stats()
 	dir_src = DirLib.Dir.North
 	action_current = [ActLib.Action.None, 0,[]]
-	action_per_second.set_randfn()
+	action_queue = ActionQueue.new().init()
 	
 	serial = n
 	color = co
@@ -75,7 +55,7 @@ func init(tw :Tower, walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> Ma
 
 # return true on new act
 func start_new_action() -> bool:
-	if action_current[0] != ActLib.Action.None || action_queue.size() == 0:
+	if action_current[0] != ActLib.Action.None || action_queue.is_empty():
 		return false
 	action_start_time = Time.get_unix_time_from_system()
 	action_current = action_queue.pop_front()
@@ -98,7 +78,7 @@ func start_new_action() -> bool:
 			storey = args[0]
 			pos_dst = args[1]
 			storey_action_stats = ActLib.new_stats()
-			action_per_second.set_randfn()
+			action_queue.rand_act_speed()
 			animate_move_by_dur(0)
 			animate_turn_by_dur(0)
 	total_action_stats[action_current[0]] += 1
@@ -117,7 +97,7 @@ func end_action() -> void:
 	snap_90()
 
 func ai_action() -> void:
-	if action_current[0] == ActLib.Action.None && action_queue.size() == 0: # add new ai action
+	if action_current[0] == ActLib.Action.None && action_queue.is_empty(): # add new ai action
 		match ai_walk_type:
 			AILib.Walk.RightFirst:
 				walk_right_first()
@@ -126,50 +106,49 @@ func ai_action() -> void:
 			AILib.Walk.Off:
 				pass
 
-
 func walk_right_first() -> bool:
 	# try right
 	if can_move(DirLib.DirTurnRight[dir_src]):
-		enqueue_action(ActLib.Action.TurnRight)
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.TurnRight)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	# try forward
 	if can_move(dir_src):
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	# try left
 	if can_move(DirLib.DirTurnLeft[dir_src]):
-		enqueue_action(ActLib.Action.TurnLeft)
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.TurnLeft)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	# try backward
 	if can_move(DirLib.DirOpppsite[dir_src]):
-		enqueue_action(ActLib.Action.TurnLeft)
-		enqueue_action(ActLib.Action.TurnLeft)
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.TurnLeft)
+		action_queue.enqueue_action(ActLib.Action.TurnLeft)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	return false
 
 func walk_left_first() -> bool:
 	# try left
 	if can_move(DirLib.DirTurnLeft[dir_src]):
-		enqueue_action(ActLib.Action.TurnLeft)
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.TurnLeft)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	# try forward
 	if can_move(dir_src):
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	# try right
 	if can_move(DirLib.DirTurnRight[dir_src]):
-		enqueue_action(ActLib.Action.TurnRight)
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.TurnRight)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	# try backward
 	if can_move(DirLib.DirOpppsite[dir_src]):
-		enqueue_action(ActLib.Action.TurnRight)
-		enqueue_action(ActLib.Action.TurnRight)
-		enqueue_action(ActLib.Action.Forward)
+		action_queue.enqueue_action(ActLib.Action.TurnRight)
+		action_queue.enqueue_action(ActLib.Action.TurnRight)
+		action_queue.enqueue_action(ActLib.Action.Forward)
 		return true
 	return false
 
@@ -202,14 +181,14 @@ func snap_90() -> void:
 
 func _to_string() -> String:
 	return "MazeCrawl[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		AILib.walk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
+		AILib.walk2str(ai_walk_type), action_queue.action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)\nOpen: %s" % [
 		ActLib.stats2str(total_action_stats),
 		ActLib.stats2str(storey_action_stats),
-		ActLib.action2str(action_current[0]), action_queue_to_str(),
+		ActLib.action2str(action_current[0]), action_queue,
 		DirLib.DirToStr[dir_src], DirLib.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),

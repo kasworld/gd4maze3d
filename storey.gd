@@ -70,8 +70,8 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	make_wall_by_maze()
 	make_pillas()
 
-	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start").position = mazepos2storeypos(start_pos, tower_setting.StoryH/2.0)
-	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal").position = mazepos2storeypos(goal_pos, tower_setting.StoryH/2.0)
+	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start %d" % storey_num).position = mazepos2storeypos(start_pos, tower_setting.StoryH/2.0)
+	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, tower_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos,$StartMark)
 	놓인것들.set_at(goal_pos,$EndMark)
 

@@ -21,7 +21,7 @@ func action_queue_to_str() -> String:
 		rtn += "%s(%.1f)%s " % [ ActLib.action2str(a[0]), a[1], a[2] ]
 	return rtn
 
-var tower_setting :TowerSetting
+var current_tower :Tower
 var roll_dir :RollLib.Dir
 var roll_dir_dst :RollLib.Dir
 var total_action_stats :Dictionary
@@ -43,8 +43,8 @@ func set_next_walk_type() -> MazeCrawl:
 func set_ai_walk_type(t :AILib.Walk) -> void:
 	ai_walk_type = t
 
-func init(ts :TowerSetting, walk_type :AILib.Walk) -> MazeCrawl:
-	tower_setting = ts
+func init(tw :Tower, walk_type :AILib.Walk) -> MazeCrawl:
+	current_tower = tw
 	ai_walk_type = walk_type
 	total_action_stats = ActLib.new_stats()
 	dir_src = DirLib.Dir.North
@@ -160,14 +160,14 @@ func get_animation_progress() -> float:
 	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
 
 func animate_move_by_dur( dur :float) -> void:
-	var y =  tower_setting.calc_storey_mid_y_pos(storey.storey_num)
+	var y =  current_tower.tower_setting.calc_storey_mid_y_pos( current_tower.find_storey_num_to_index(storey.storey_num) )
 	var p1 = storey.mazepos2storeypos(pos_src,y)
 	var p2 = storey.mazepos2storeypos(pos_dst,y)
 	position = p1.lerp(p2,dur)
 
 func animate_move_storey_by_dur(dur :float, from :int, to :int) -> void:
-	var p1 = storey.mazepos2storeypos(pos_src, tower_setting.calc_storey_mid_y_pos(from) )
-	var p2 = storey.mazepos2storeypos(pos_dst, tower_setting.calc_storey_mid_y_pos(to) )
+	var p1 = storey.mazepos2storeypos(pos_src, current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.find_storey_num_to_index(from)) )
+	var p2 = storey.mazepos2storeypos(pos_dst, current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.find_storey_num_to_index(to)) )
 	position = p1.lerp(p2,dur)
 
 func animate_turn_by_dur(dur :float) -> void:

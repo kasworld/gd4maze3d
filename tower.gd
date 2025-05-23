@@ -74,16 +74,19 @@ func enter_new_storey() -> void:
 	del_old_storey()
 	add_new_storey(storey_list[-1].storey_num +1)
 	var new_cur_storey_num = cur_storey.storey_num +1
-	for st in storey_list:
-		if st.storey_num == new_cur_storey_num:
-			cur_storey = st
-			break
-	assert(new_cur_storey_num == cur_storey.storey_num)
+	cur_storey = storey_list[find_storey_num_to_index(new_cur_storey_num)]
 	$Floor.position = calc_floor_position()
 	$Ceiling.position = calc_ceiling_position()
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
+
+func find_storey_num_to_index(num :int) -> int:
+	for i in storey_list.size():
+		if storey_list[i].storey_num == num:
+			return i
+	assert(false)
+	return -1
 
 func apply_storey_gap_change() -> void:
 	for i in storey_list.size():

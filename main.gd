@@ -1,7 +1,7 @@
 extends Node3D
 
 var minimap_scene = preload("res://mini_map.tscn")
-var character_scene = preload("res://character.tscn")
+var character_scene = preload("res://maze_crawl/maze_crawl.tscn")
 var tower_scene = preload("res://tower.tscn")
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
@@ -35,7 +35,7 @@ func _ready() -> void:
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init_char(current_tower, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
+		pl.init(current_tower, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
 			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	update_button_text()
 	enter_new_storey()

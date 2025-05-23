@@ -22,6 +22,9 @@ func action_queue_to_str() -> String:
 	return rtn
 
 var current_tower :Tower
+var serial :int
+var color :Color
+
 var roll_dir :RollLib.Dir
 var roll_dir_dst :RollLib.Dir
 var total_action_stats :Dictionary
@@ -43,13 +46,31 @@ func set_next_walk_type() -> MazeCrawl:
 func set_ai_walk_type(t :AILib.Walk) -> void:
 	ai_walk_type = t
 
-func init(tw :Tower, walk_type :AILib.Walk) -> MazeCrawl:
+func init(tw :Tower, walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> MazeCrawl:
 	current_tower = tw
 	ai_walk_type = walk_type
 	total_action_stats = ActLib.new_stats()
 	dir_src = DirLib.Dir.North
 	action_current = [ActLib.Action.None, 0,[]]
 	action_per_second.set_randfn()
+	
+	serial = n
+	color = co
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = co
+	var mesh = CylinderMesh.new()
+	mesh.height = 0.2*LaneW
+	mesh.top_radius = 0.01*LaneW
+	mesh.bottom_radius = 0.07*LaneW
+	mesh.radial_segments = 5
+	mesh.material = mat
+	var mi3d = MeshInstance3D.new()
+	mi3d.mesh = mesh
+	mi3d.rotation.x = -PI/2
+	mi3d.scale.x = 0.5
+	mi3d.position.x = LaneW*0.2
+	add_child(mi3d)
+	
 	return self
 
 # return true on new act

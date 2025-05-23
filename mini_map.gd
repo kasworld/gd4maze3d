@@ -62,7 +62,7 @@ func update_size() -> void:
 	position.y = (vp_size.y - get_height())/2
 	position.x = (vp_size.x - get_width())/2
 
-func add_character(achar :Character, pos :Vector2, outline :int) -> void:
+func add_character(achar :MazeCrawl, pos :Vector2, outline :int) -> void:
 	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
 	update_label_pos_size(ch,pos)

@@ -19,10 +19,8 @@ var gap_ani_dir_open : bool = true # true:open, false:close
 var animate_gap_start_time :float
 
 func _to_string() -> String:
-	return "Tower %s/%s floor,ceiling %s %s" % [
-	cur_storey, storey_list.size(),
-	view_floor_ceiling, cur_storey,
-	]
+	return "Tower %s, floor,ceiling %s\n%s" % [
+	storey_list.size(), view_floor_ceiling, cur_storey ]
 
 func init(ts :TowerSetting) -> Tower:
 	tower_setting = ts

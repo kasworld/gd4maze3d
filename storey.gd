@@ -88,7 +88,8 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	add_ball_trails(tower_setting.BallTrailCount)
 	$Label3D.pixel_size = tower_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(tower_setting.MeshSize.x, tower_setting.StoryH/2, tower_setting.MeshSize.y)
+	$Label3D.position = Vector3(-tower_setting.WallThick, tower_setting.StoryH/2, -tower_setting.WallThick)
+	#$Label3D.position = Vector3(tower_setting.MeshSize.x, tower_setting.StoryH/2, tower_setting.MeshSize.y)
 	return self
 
 func add_donut_capsule(n :int) -> void:

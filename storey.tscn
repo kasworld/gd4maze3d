@@ -35,3 +35,6 @@ mesh = SubResource("PlaneMesh_me8ve")
 [node name="StartMark" parent="." instance=ExtResource("2_wtqod")]
 
 [node name="PillarContainer" type="Node3D" parent="."]
+
+[node name="Label3D" type="Label3D" parent="."]
+billboard = 1

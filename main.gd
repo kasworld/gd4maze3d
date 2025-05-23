@@ -239,7 +239,7 @@ func _on_button_left_pressed() -> void:
 	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
 	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnRight, 10)

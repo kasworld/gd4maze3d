@@ -54,7 +54,7 @@ func _process(_delta: float) -> void:
 
 func calc_floor_position() -> Vector3:
 	return Vector3(tower_setting.MeshCenter.x, 
-		tower_setting.calc_storey_base_y_pos(0) - tower_setting.calc_current_storey_gap()/2, 
+		-tower_setting.calc_current_storey_gap()/2, 
 		tower_setting.MeshCenter.y)
 
 func calc_ceiling_position() -> Vector3:

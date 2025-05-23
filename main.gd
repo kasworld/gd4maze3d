@@ -83,7 +83,7 @@ func enter_new_storey() -> void:
 func apply_storey_gap_change() -> void:
 	current_tower.apply_storey_gap_change()
 	for ch in char_container.get_children():
-		var y =  current_tower.tower_setting.calc_storey_mid_y_pos( 
+		var y = current_tower.tower_setting.calc_storey_mid_y_pos( 
 			current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num) )
 		ch.position.y = y
 		if ch.serial == player_number:

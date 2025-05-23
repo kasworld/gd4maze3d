@@ -70,6 +70,11 @@ func calc_center() -> Vector3:
 func calc_height() -> float:
 	return (calc_ceiling_position() - calc_floor_position()).y
 
+func cell_pos_to_vec3(p2 :Vector2i, storeynum :int) -> Vector3:
+	var st_index = find_storey_num_to_index(storeynum)
+	var y = tower_setting.calc_storey_mid_y_pos(st_index) 
+	return storey_list[st_index].mazepos2storeypos(p2, y)	
+
 func enter_new_storey() -> void:
 	del_old_storey()
 	add_new_storey(storey_list[-1].storey_num +1)

@@ -160,14 +160,13 @@ func get_animation_progress() -> float:
 	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
 
 func animate_move_by_dur( dur :float) -> void:
-	var y =  current_tower.tower_setting.calc_storey_mid_y_pos( current_tower.find_storey_num_to_index(storey.storey_num) )
-	var p1 = storey.mazepos2storeypos(pos_src,y)
-	var p2 = storey.mazepos2storeypos(pos_dst,y)
+	var p1 = current_tower.cell_pos_to_vec3(pos_src, storey.storey_num)
+	var p2 = current_tower.cell_pos_to_vec3(pos_dst, storey.storey_num) 
 	position = p1.lerp(p2,dur)
 
 func animate_move_storey_by_dur(dur :float, from :int, to :int) -> void:
-	var p1 = storey.mazepos2storeypos(pos_src, current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.find_storey_num_to_index(from)) )
-	var p2 = storey.mazepos2storeypos(pos_dst, current_tower.tower_setting.calc_storey_mid_y_pos(current_tower.find_storey_num_to_index(to)) )
+	var p1 = current_tower.cell_pos_to_vec3(pos_src, from) 
+	var p2 = current_tower.cell_pos_to_vec3(pos_dst, to)
 	position = p1.lerp(p2,dur)
 
 func animate_turn_by_dur(dur :float) -> void:

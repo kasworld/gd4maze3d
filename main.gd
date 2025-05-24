@@ -11,7 +11,7 @@ var tower_scene = preload("res://tower.tscn")
 @onready var char_container = $CharacterContainer
 
 var minimap :MiniMap
-var player_number := 0
+var player :MazeCrawl
 var camera_move := false
 var current_tower :Tower
 var deco_tower :Tower
@@ -24,7 +24,6 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
-	
 	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(current_tower)
 	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal)
@@ -33,6 +32,7 @@ func _ready() -> void:
 		char_container.add_child(pl)
 		pl.init(current_tower, [EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
 			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+	player = char_container.get_child(0)
 
 	var n = 4
 	for i in n:
@@ -71,7 +71,7 @@ func enter_new_storey() -> void:
 	for ch in char_container.get_children():
 		ch.action_queue.clear()
 		var stpos = current_tower.tower_setting.rand_pos_2i()
-		if ch.serial == player_number:
+		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
 			minimap.add_character(ch,stpos, 8)
 		else:
@@ -79,7 +79,7 @@ func enter_new_storey() -> void:
 		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [current_tower.cur_storey, stpos])
 
 	$DecoOrbit.position = current_tower.calc_center()
-	minimap.set_minimap_mode(player_number)
+	minimap.set_minimap_mode(player.serial)
 	update_button_text()
 	_on_vpsize_changed()
 
@@ -88,7 +88,7 @@ func apply_storey_gap_change() -> void:
 	for ch in char_container.get_children():
 		ch.position.y = current_tower.tower_setting.calc_storey_mid_y_pos( 
 			current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num) )
-		if ch.serial == player_number:
+		if ch == player:
 			if not camera_move:
 				cameralight.copy_position_rotation(ch)
 
@@ -103,7 +103,7 @@ func move_character(cur_storey :Storey) -> void:
 		var ani_dur = ch.get_animation_progress()
 		if ch.is_action_ended(ani_dur): # true on act end
 			ch.end_action()
-			if ch.serial == player_number  : # player
+			if ch == player  : # player
 				cameralight.snap_90()
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_new_storey()
@@ -121,13 +121,12 @@ func move_character(cur_storey :Storey) -> void:
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
-			if ch.serial == player_number and ch.action_current[0] != EnumAction.Action.EnterStorey: # player
+			if ch == player and ch.action_current[0] != EnumAction.Action.EnterStorey: # player
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
 		if ch.action_current[0] != EnumAction.Action.None :
 			animate_action(ch, ani_dur)
 
 func update_info() -> void:
-	var player = char_container.get_child(player_number)
 	debuglabel.text = player.debug_str()
 	performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
@@ -144,7 +143,6 @@ Currently rendering: occlusion culling:%s
 
 func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
-	var player = char_container.get_child(player_number)
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % EnumWalk.walk2str(player.ai_walk_type)
 	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)
 
@@ -158,7 +156,7 @@ func animate_action(ch :MazeCrawl, dur :float) -> void:
 			ch.animate_roll_by_dur(dur)
 		EnumAction.Action.EnterStorey:
 			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey.storey_num -1, current_tower.cur_storey.storey_num)
-	if ch.serial == player_number:
+	if ch == player:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)
 
@@ -206,7 +204,7 @@ func _on_button_help_pressed() -> void:
 	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
-	minimap.mode_next(player_number)
+	minimap.mode_next(player.serial)
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
@@ -223,7 +221,7 @@ func _on_button_storey_gap_pressed() -> void:
 	current_tower.start_storey_gap_animation()
 
 func _on_button_auto_move_pressed() -> void:
-	char_container.get_child(player_number).set_next_walk_type()
+	player.set_next_walk_type()
 	update_button_text()
 
 func _on_button_debug_pressed() -> void:
@@ -236,22 +234,22 @@ func _on_button_info_pressed() -> void:
 	infolabel.visible = !infolabel.visible
 
 func _on_button_forward_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.Forward, 10)
+	player.action_queue.enqueue_action_with_speed(EnumAction.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
+	player.action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10).enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
+	player.action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10).enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.TurnRight, 10)
+	player.action_queue.enqueue_action_with_speed(EnumAction.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.RollRight, 10)
+	player.action_queue.enqueue_action_with_speed(EnumAction.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.RollLeft, 10)
+	player.action_queue.enqueue_action_with_speed(EnumAction.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	cameralight.fov_inc()
@@ -260,16 +258,16 @@ func _on_button_fov_down_pressed() -> void:
 	cameralight.fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
-	char_container.get_child(player_number).action_queue.action_per_second.set_max()
+	player.action_queue.action_per_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
-	char_container.get_child(player_number).action_queue.action_per_second.set_up()
+	player.action_queue.action_per_second.set_up()
 
 func _on_button_aps_min_pressed() -> void:
-	char_container.get_child(player_number).action_queue.action_per_second.set_min()
+	player.action_queue.action_per_second.set_min()
 
 func _on_button_aps_down_pressed() -> void:
-	char_container.get_child(player_number).action_queue.action_per_second.set_down()
+	player.action_queue.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
 	enter_new_storey()

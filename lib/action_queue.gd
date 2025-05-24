@@ -20,12 +20,12 @@ func is_empty() -> bool:
 func pop_front():
 	return queue.pop_front()
 
-func enqueue_action(a :ActLib.Action, args :=[]) -> ActionQueue:
+func enqueue_action(a :EnumAction.Action, args :=[]) -> ActionQueue:
 	queue.push_back([a,action_per_second.get_value(), args])
 	crop_queue()
 	return self
 	
-func enqueue_action_with_speed(a :ActLib.Action,s :float, args :=[]) -> ActionQueue:
+func enqueue_action_with_speed(a :EnumAction.Action,s :float, args :=[]) -> ActionQueue:
 	queue.push_back([a,s, args])
 	crop_queue()
 	return self
@@ -38,5 +38,5 @@ func crop_queue() -> ActionQueue:
 func _to_string() -> String:
 	var rtn = "ActionQueue "
 	for a in queue:
-		rtn += "%s(%.1f)%s " % [ ActLib.action2str(a[0]), a[1], a[2] ]
+		rtn += "%s(%.1f)%s " % [ EnumAction.action2str(a[0]), a[1], a[2] ]
 	return rtn

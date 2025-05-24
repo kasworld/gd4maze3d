@@ -1,4 +1,4 @@
-class_name DirLib
+class_name EnumDir
 
 enum Dir {
 	North = 0,

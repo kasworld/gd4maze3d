@@ -31,7 +31,7 @@ func _ready() -> void:
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init(current_tower, [AILib.Walk.RightFirst,AILib.Walk.LeftFirst][i%2], 
+		pl.init(current_tower, [EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
 			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 
 	var n = 4
@@ -76,7 +76,7 @@ func enter_new_storey() -> void:
 			minimap.add_character(ch,stpos, 8)
 		else:
 			minimap.add_character(ch,stpos, 0)
-		ch.action_queue.enqueue_action(ActLib.Action.EnterStorey, [current_tower.cur_storey, stpos])
+		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [current_tower.cur_storey, stpos])
 
 	$DecoOrbit.position = current_tower.calc_center()
 	minimap.set_minimap_mode(player_number)
@@ -110,20 +110,20 @@ func move_character(cur_storey :Storey) -> void:
 					return
 				var ft = cur_storey.놓인것들.get_at(ch.pos_src)
 				if ft is Donut:
-					ch.action_queue.enqueue_action(ActLib.Action.RollLeft)
+					ch.action_queue.enqueue_action(EnumAction.Action.RollLeft)
 					cur_storey.놓인것들.del_at(ch.pos_src)
 					ft.queue_free()
 				elif ft is Capsule:
-					ch.action_queue.enqueue_action(ActLib.Action.RollRight)
+					ch.action_queue.enqueue_action(EnumAction.Action.RollRight)
 					cur_storey.놓인것들.del_at(ch.pos_src)
 					ft.queue_free()
 			minimap.move_character(ch.serial, ch.pos_src)
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
-			if ch.serial == player_number and ch.action_current[0] != ActLib.Action.EnterStorey: # player
+			if ch.serial == player_number and ch.action_current[0] != EnumAction.Action.EnterStorey: # player
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
-		if ch.action_current[0] != ActLib.Action.None :
+		if ch.action_current[0] != EnumAction.Action.None :
 			animate_action(ch, ani_dur)
 
 func update_info() -> void:
@@ -145,18 +145,18 @@ Currently rendering: occlusion culling:%s
 func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
 	var player = char_container.get_child(player_number)
-	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % AILib.walk2str(player.ai_walk_type)
+	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % EnumWalk.walk2str(player.ai_walk_type)
 	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)
 
 func animate_action(ch :MazeCrawl, dur :float) -> void:
 	match ch.action_current[0]:
-		ActLib.Action.Forward:
+		EnumAction.Action.Forward:
 			ch.animate_move_by_dur(dur)
-		ActLib.Action.TurnLeft, ActLib.Action.TurnRight:
+		EnumAction.Action.TurnLeft, EnumAction.Action.TurnRight:
 			ch.animate_turn_by_dur(dur)
-		ActLib.Action.RollRight,ActLib.Action.RollLeft:
+		EnumAction.Action.RollRight,EnumAction.Action.RollLeft:
 			ch.animate_roll_by_dur(dur)
-		ActLib.Action.EnterStorey:
+		EnumAction.Action.EnterStorey:
 			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey.storey_num -1, current_tower.cur_storey.storey_num)
 	if ch.serial == player_number:
 		if not camera_move:
@@ -236,22 +236,22 @@ func _on_button_info_pressed() -> void:
 	infolabel.visible = !infolabel.visible
 
 func _on_button_forward_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.Forward, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnLeft, 10).enqueue_action_with_speed(ActLib.Action.TurnLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10).enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.TurnRight, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.RollRight, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(ActLib.Action.RollLeft, 10)
+	char_container.get_child(player_number).action_queue.enqueue_action_with_speed(EnumAction.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	cameralight.fov_inc()

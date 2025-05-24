@@ -1,4 +1,4 @@
-class_name ActLib
+class_name EnumAction
 
 enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action) -> String:

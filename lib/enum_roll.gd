@@ -1,4 +1,4 @@
-class_name RollLib
+class_name EnumRoll
 
 enum Dir {Up,Right,Down,Left}
 static func dir2str(vd :Dir) -> String:

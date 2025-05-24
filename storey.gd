@@ -140,9 +140,9 @@ func add_ball_trails(n :int) ->void:
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
 	var axis_wall = [
-		[maze_cells.is_wall_dir_at(x,y, DirLib.Flag.West), maze_cells.is_wall_dir_at(x,y, DirLib.Flag.East)],
+		[maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.West), maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.East)],
 		[true,true],
-		[maze_cells.is_wall_dir_at(x,y, DirLib.Flag.North), maze_cells.is_wall_dir_at(x,y, DirLib.Flag.South)],
+		[maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.North), maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.South)],
 	]
 	var aabb = AABB( Vector3(tower_setting.LaneW*x +tower_setting.WallThick/2, 0, tower_setting.LaneW*y +tower_setting.WallThick/2),
 		Vector3(tower_setting.LaneW -tower_setting.WallThick, tower_setting.StoryH, tower_setting.LaneW -tower_setting.WallThick) )
@@ -216,25 +216,25 @@ func make_wall_by_maze() -> void:
 
 	for y in tower_setting.MazeSize.y:
 		for x in tower_setting.MazeSize.x:
-			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.North):
-				add_wall_at( x , y , DirLib.Flag.North)
-			if not maze_cells.is_open_dir_at(x,y,DirLib.Flag.West):
-				add_wall_at( x , y , DirLib.Flag.West)
+			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
+				add_wall_at( x , y , EnumDir.Flag.North)
+			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
+				add_wall_at( x , y , EnumDir.Flag.West)
 
 	for x in tower_setting.MazeSize.x :
-		if not maze_cells.is_open_dir_at(x,tower_setting.MazeSize.y-1,DirLib.Flag.South):
-			add_wall_at( x , tower_setting.MazeSize.y , DirLib.Flag.South)
+		if not maze_cells.is_open_dir_at(x,tower_setting.MazeSize.y-1,EnumDir.Flag.South):
+			add_wall_at( x , tower_setting.MazeSize.y , EnumDir.Flag.South)
 
 	for y in tower_setting.MazeSize.y:
-		if not maze_cells.is_open_dir_at(tower_setting.MazeSize.x-1,y,DirLib.Flag.East):
-			add_wall_at( tower_setting.MazeSize.x , y , DirLib.Flag.East)
+		if not maze_cells.is_open_dir_at(tower_setting.MazeSize.x-1,y,EnumDir.Flag.East):
+			add_wall_at( tower_setting.MazeSize.x , y , EnumDir.Flag.East)
 
 	pos_multimesh(wall_multi_inst_ew_main.multimesh, pos_list_ew_main)
 	pos_multimesh(wall_multi_inst_ns_main.multimesh, pos_list_ns_main)
 	pos_multimesh(wall_multi_inst_ew_sub.multimesh, pos_list_ew_sub)
 	pos_multimesh(wall_multi_inst_ns_sub.multimesh, pos_list_ns_sub)
 
-func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
+func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	var pos_face_ew = Vector3( x *tower_setting.LaneW, tower_setting.StoryH/2.0, y *tower_setting.LaneW +tower_setting.LaneW/2)
 	var pos_face_ns = Vector3( x *tower_setting.LaneW +tower_setting.LaneW/2, tower_setting.StoryH/2.0, y *tower_setting.LaneW)
 
@@ -242,21 +242,21 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
-			DirLib.Flag.West, DirLib.Flag.East:
+			EnumDir.Flag.West, EnumDir.Flag.East:
 				var b = make_box_from_subviewport(line2d_subviewport, tower_setting.WallSize_EW_Reduced)
 				b.position = pos_face_ew
-			DirLib.Flag.North, DirLib.Flag.South:
+			EnumDir.Flag.North, EnumDir.Flag.South:
 				var b = make_box_from_subviewport(line2d_subviewport, tower_setting.WallSize_NS_Reduced)
 				b.position = pos_face_ns
 		return
 
 	match dir:
-		DirLib.Flag.West, DirLib.Flag.East:
+		EnumDir.Flag.West, EnumDir.Flag.East:
 			if randf() < tower_setting.MakeSubWallRate:
 				pos_list_ew_sub.append(pos_face_ew)
 			else:
 				pos_list_ew_main.append(pos_face_ew)
-		DirLib.Flag.North, DirLib.Flag.South:
+		EnumDir.Flag.North, EnumDir.Flag.South:
 			if randf() < tower_setting.MakeSubWallRate:
 				pos_list_ns_sub.append(pos_face_ns)
 			else:
@@ -274,16 +274,16 @@ func add_wall_at(x :int, y :int, dir :DirLib.Flag) -> void:
 			n = clock_scene.instantiate()
 			n.init(min(tower_setting.LaneW,tower_setting.StoryH)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
-		n.rotate_y(DirLib.dir2rad(1+DirLib.Flag2Dir[dir]))
+		n.rotate_y(EnumDir.dir2rad(1+EnumDir.Flag2Dir[dir]))
 		add_child(n)
 		match dir:
-			DirLib.Flag.West:
+			EnumDir.Flag.West:
 				n.position = pos_face_ew + Vector3(tower_setting.WallThick,0,0)
-			DirLib.Flag.East:
+			EnumDir.Flag.East:
 				n.position = pos_face_ew - Vector3(tower_setting.WallThick,0,0)
-			DirLib.Flag.North:
+			EnumDir.Flag.North:
 				n.position = pos_face_ns + Vector3(0,0,tower_setting.WallThick)
-			DirLib.Flag.South:
+			EnumDir.Flag.South:
 				n.position = pos_face_ns - Vector3(0,0,tower_setting.WallThick)
 
 
@@ -312,8 +312,8 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
 	add_child(sp)
 	return sp
 
-func can_move(x :int , y :int, dir :DirLib.Dir) -> bool:
-	return maze_cells.is_open_dir_at(x,y, DirLib.Dir2Flag[dir] )
+func can_move(x :int , y :int, dir :EnumDir.Dir) -> bool:
+	return maze_cells.is_open_dir_at(x,y, EnumDir.Dir2Flag[dir] )
 
 func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 	return Vector3(tower_setting.LaneW/2+ mp.x*tower_setting.LaneW, y, tower_setting.LaneW/2+ mp.y*tower_setting.LaneW)

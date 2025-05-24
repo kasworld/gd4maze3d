@@ -1,4 +1,4 @@
-class_name AILib
+class_name EnumWalk
 
 enum Walk {Off, RightFirst, LeftFirst}
 static func walk2str(a :Walk) -> String:

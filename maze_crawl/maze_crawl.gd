@@ -33,7 +33,10 @@ func init(tw :Tower, walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> Ma
 	dir_src = DirLib.Dir.North
 	action_current = [ActLib.Action.None, 0,[]]
 	action_queue = ActionQueue.new().init()
-	
+	add_shape(n,LaneW,co)
+	return self
+
+func add_shape(n :int, LaneW:float,co :Color) -> MazeCrawl:
 	serial = n
 	color = co
 	var mat = StandardMaterial3D.new()
@@ -50,7 +53,6 @@ func init(tw :Tower, walk_type :AILib.Walk, n :int, LaneW:float,co :Color) -> Ma
 	mi3d.scale.x = 0.5
 	mi3d.position.x = LaneW*0.2
 	add_child(mi3d)
-	
 	return self
 
 # return true on new act

@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://cmyt4l4pcbk2f" path="res://maze_crawl/maze_crawl.gd" id="1_omgnc"]
 
-[node name="Character" type="Node3D"]
+[node name="MazeCrawl" type="Node3D"]
 script = ExtResource("1_omgnc")

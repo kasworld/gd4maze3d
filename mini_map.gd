@@ -152,6 +152,10 @@ func make_walllines_known() -> void:
 		if is_known_wall_at(MazeSize.x-1,y,EnumDir.Dir.East):
 			add_wall_at_to_walllines( MazeSize.x-1 , y , EnumDir.Dir.East, walllines_known)
 
+# cell wall[y*2+1][x*2+1]
+# wall wall[y*2][x*2]
+func calc_wall_pos(x :int, y:int, dir :EnumDir.Dir) -> Vector2i:
+	return Vector2i(x*2+1,y*2+1) + EnumDir.Dir2Vt[dir]
 func is_known_wall_at(x :int, y:int, dir :EnumDir.Dir) -> bool:
 	var wpos = calc_wall_pos(x,y,dir)
 	return walls_known[wpos.y][wpos.x] != 0
@@ -186,11 +190,6 @@ func view_known_map(playernum :int) -> void:
 	$CharacterContainer.get_child(playernum).visible = true
 	map_mode_full = false
 	queue_redraw()
-
-# cell wall[y*2+1][x*2+1]
-# wall wall[y*2][x*2]
-func calc_wall_pos(x :int, y:int, dir :EnumDir.Dir) -> Vector2i:
-	return Vector2i(x*2+1,y*2+1) + EnumDir.Dir2Vt[dir]
 
 func _draw() -> void:
 	if map_mode_full:

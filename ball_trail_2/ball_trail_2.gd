@@ -89,10 +89,10 @@ func move_ball(delta: float, oldi :int, newi:int) -> void:
 		velocity = velocity.normalized() * speed_max
 	if velocity.length() < speed_min:
 		velocity = velocity.normalized() * speed_min
-
+# ♠♣♥♦
 func new_mesh_by_type(t :int, r :float) -> Mesh:
 	var mesh:Mesh
-	match t%7:
+	match t%10:
 		0:
 			mesh = SphereMesh.new()
 			mesh.radius = r
@@ -104,24 +104,24 @@ func new_mesh_by_type(t :int, r :float) -> Mesh:
 			mesh = PrismMesh.new()
 			mesh.size = Vector3(r,r,r)*1.5
 		3:
-			mesh = TextMesh.new()
-			mesh.depth = r/4
-			mesh.pixel_size = r / 10
-			mesh.font_size = r*200
-			mesh.text = "A"
-		4:
 			mesh = TorusMesh.new()
 			mesh.inner_radius = r/2
 			mesh.outer_radius = r
-		5:
+		4:
 			mesh = CapsuleMesh.new()
 			mesh.height = r*2
 			mesh.radius = r*0.5
-		6:
+		5:
 			mesh = CylinderMesh.new()
 			mesh.height = r*2
 			mesh.bottom_radius = r
 			mesh.top_radius = 0
+		6,7,8,9:
+			mesh = TextMesh.new()
+			mesh.depth = r/4
+			mesh.pixel_size = r / 10
+			mesh.font_size = r*200
+			mesh.text = "♠♣♥♦".split()[t%10-6]
 	return mesh
 
 func rand_rad() -> float:

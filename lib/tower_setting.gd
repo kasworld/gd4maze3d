@@ -40,7 +40,7 @@ func make_default() -> TowerSetting:
 	MakeLine2DWallRate = 2.0/(MazeSize.x*MazeSize.y)
 	MakeSubWallRate = 2.0/(MazeSize.x*MazeSize.y)
 	MakeClockCalWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	BallTrailCount = 7
+	BallTrailCount = 10
 	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
 	TreeCount = max(1, MazeSize.x*MazeSize.y/30.0)
 	CharacterCount = max(1, MazeSize.x*MazeSize.y/10.0)

@@ -41,13 +41,12 @@ func _ready() -> void:
 		add_deco_tower(Vector3(sin(rd)*r,0,cos(rd)*r))
 
 	update_button_text()
-	enter_new_storey()
+	enter_next_storey()
 
 func add_deco_tower(p :Vector3) -> void:
 	deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_deco())
 	add_child(deco_tower)
 	deco_tower.position = p
-	deco_tower.enter_new_storey()
 	deco_tower.start_demo_random()
 
 func _process(delta: float) -> void:
@@ -59,10 +58,10 @@ func _process(delta: float) -> void:
 func _on_vpsize_changed() -> void:
 	minimap.update_size()
 
-func enter_new_storey() -> void:
+func enter_next_storey() -> void:
 	if minimap != null:
 		minimap.queue_free()
-	current_tower.enter_new_storey()
+	current_tower.enter_next_storey()
 
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
@@ -106,7 +105,7 @@ func move_character(cur_storey :Storey) -> void:
 			if ch == player  : # player
 				cameralight.snap_90()
 				if cur_storey.is_goal_pos(ch.pos_src):
-					enter_new_storey()
+					enter_next_storey()
 					return
 				var ft = cur_storey.놓인것들.get_at(ch.pos_src)
 				if ft is Donut:
@@ -270,7 +269,7 @@ func _on_button_aps_down_pressed() -> void:
 	player.action_queue.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
-	enter_new_storey()
+	enter_next_storey()
 
 func _on_button_fire_pressed() -> void:
 	pass # Replace with function body.

@@ -36,7 +36,7 @@ var start :Label
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey) -> MiniMap:
+func init(st :Storey, char_list :Array, player :MazeCrawl) -> MiniMap:
 	map_mode_full = false
 	storey = st
 	walls_known = []
@@ -47,6 +47,17 @@ func init(st :Storey) -> MiniMap:
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
 	add_child(start)
+
+	for ch in char_list:
+		ch.action_queue.clear()
+		var stpos = st.tower_setting.rand_pos_2i()
+		if ch == player:
+			stpos = st.start_pos
+			add_character(ch, stpos, 8)
+		else:
+			add_character(ch, stpos, 0)
+		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [st, stpos])
+	set_minimap_mode(player.serial)
 	update_size()
 	return self
 

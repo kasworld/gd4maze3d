@@ -68,18 +68,7 @@ func enter_storey() -> void:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
-	minimap.init(current_tower.cur_storey)
-	for ch in char_container.get_children():
-		ch.action_queue.clear()
-		var stpos = current_tower.tower_setting.rand_pos_2i()
-		if ch == player:
-			stpos = current_tower.cur_storey.start_pos
-			minimap.add_character(ch,stpos, 8)
-		else:
-			minimap.add_character(ch,stpos, 0)
-		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [current_tower.cur_storey, stpos])
-	minimap.set_minimap_mode(player.serial)
-	_on_vpsize_changed()
+	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 
 func apply_storey_gap_change() -> void:

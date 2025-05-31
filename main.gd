@@ -41,7 +41,7 @@ func _ready() -> void:
 		add_deco_tower(Vector3(sin(rd)*r,0,cos(rd)*r))
 
 	update_button_text()
-	enter_next_storey()
+	enter_storey()
 
 func add_deco_tower(p :Vector3) -> void:
 	deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_deco())
@@ -59,14 +59,16 @@ func _on_vpsize_changed() -> void:
 	minimap.update_size()
 
 func enter_next_storey() -> void:
+	current_tower.enter_next_storey()
+	$DecoOrbit.position = current_tower.calc_center()
+	enter_storey()
+
+func enter_storey() -> void:
 	if minimap != null:
 		minimap.queue_free()
-	current_tower.enter_next_storey()
-
 	minimap = minimap_scene.instantiate()
 	add_child(minimap)
 	minimap.init(current_tower.cur_storey)
-
 	for ch in char_container.get_children():
 		ch.action_queue.clear()
 		var stpos = current_tower.tower_setting.rand_pos_2i()
@@ -76,11 +78,9 @@ func enter_next_storey() -> void:
 		else:
 			minimap.add_character(ch,stpos, 0)
 		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [current_tower.cur_storey, stpos])
-
-	$DecoOrbit.position = current_tower.calc_center()
 	minimap.set_minimap_mode(player.serial)
-	update_button_text()
 	_on_vpsize_changed()
+	update_button_text()
 
 func apply_storey_gap_change() -> void:
 	current_tower.apply_storey_gap_change()

@@ -167,6 +167,8 @@ func animate_move_by_dur( dur :float) -> void:
 	position = p1.lerp(p2,dur)
 
 func animate_move_storey_by_dur(dur :float, from :int, to :int) -> void:
+	if from < 0 :
+		from = 0
 	var p1 = current_tower.cell_pos_to_vec3(pos_src, from) 
 	var p2 = current_tower.cell_pos_to_vec3(pos_dst, to)
 	position = p1.lerp(p2,dur)

@@ -1,7 +1,8 @@
 extends Node3D
 
-class_name BallTrail
+class_name MeshTrail
 
+const RotateLimit := PI/4
 var velocity :Vector3
 var bounce_fn :Callable
 var radius :float
@@ -11,16 +12,17 @@ var obj_cursor :int
 var current_color :Color
 var current_rot :float
 var current_rot_accel :float
-var multi_ball :MultiMeshInstance3D
+var mesh_trail :MultiMeshInstance3D
 var multimesh :MultiMesh
 
-func init(bnfn :Callable, r :float, count :int, mesh_type, pos :Vector3) -> BallTrail:
+func init(bnfn :Callable, r :float, count :int, mesh_type, pos :Vector3) -> MeshTrail:
 	radius = r
 	bounce_fn = bnfn
 	speed_max = radius * 120
 	speed_min = radius * 80
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
 	current_color = NamedColorList.color_list.pick_random()[0]
+	current_rot = randf_range(-RotateLimit,RotateLimit)
 	current_rot_accel = rand_rad()
 	make_mat_multi(new_mesh_by_type(mesh_type,radius), count, pos)
 	return self
@@ -36,9 +38,9 @@ func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
 	# Then resize (otherwise, changing the format is not allowed).
 	multimesh.instance_count = count
 	multimesh.visible_instance_count = count
-	multi_ball = MultiMeshInstance3D.new()
-	multi_ball.multimesh = multimesh
-	add_child(multi_ball)
+	mesh_trail = MultiMeshInstance3D.new()
+	mesh_trail.multimesh = multimesh
+	add_child(mesh_trail)
 
 	for i in multimesh.visible_instance_count:
 		multimesh.set_instance_color(i,current_color)
@@ -66,9 +68,9 @@ func move(delta :float) -> void:
 	var old_cursor = obj_cursor
 	obj_cursor +=1
 	obj_cursor %= multimesh.instance_count
-	move_ball(delta, old_cursor, obj_cursor)
+	move_trail(delta, old_cursor, obj_cursor)
 
-func move_ball(delta: float, oldi :int, newi:int) -> void:
+func move_trail(delta: float, oldi :int, newi:int) -> void:
 	var oldpos = multimesh.get_instance_transform(oldi).origin
 	var newpos = oldpos + velocity * delta
 	var bn = bounce_fn.call(oldpos,newpos,radius)
@@ -83,13 +85,14 @@ func move_ball(delta: float, oldi :int, newi:int) -> void:
 		current_rot_accel = rand_rad()
 	set_multi_color(newi, current_color)
 	current_rot += current_rot_accel
+	current_rot = clampf(current_rot, -RotateLimit, RotateLimit)
 	set_multi_rotation(newi, velocity.normalized(), current_rot)
 
 	if velocity.length() > speed_max:
 		velocity = velocity.normalized() * speed_max
 	if velocity.length() < speed_min:
 		velocity = velocity.normalized() * speed_min
-# ♠♣♥♦
+
 func new_mesh_by_type(mesh_type , r :float) -> Mesh:
 	var mesh:Mesh
 	match mesh_type:

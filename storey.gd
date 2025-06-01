@@ -6,7 +6,7 @@ var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
 var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
-var ball_trail_scene = preload("res://ball_trail_2/ball_trail_2.tscn")
+var mesh_trail_scene = preload("res://mesh_trail/mesh_trail.tscn")
 var donut_scene = preload("res://donut.tscn")
 var capsule_scene = preload("res://capsule.tscn")
 var text_mark_scene = preload("res://text_mark.tscn")
@@ -85,7 +85,7 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 
 	add_donut_capsule(tower_setting.DonutCapsuleCount)
 	add_trees(tower_setting.TreeCount)
-	add_ball_trails(tower_setting.BallTrailMeshTypeList)
+	add_ball_trails(tower_setting.MeshTrailTypeList)
 	$Label3D.pixel_size = tower_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-tower_setting.WallThick, tower_setting.StoryH/2, -tower_setting.WallThick)
@@ -135,7 +135,7 @@ func add_ball_trails(mesh_type_list) ->void:
 			randf_range(ba.position.y, ba.end.y),
 			randf_range(ba.position.z, ba.end.z),
 		)
-		var bt = ball_trail_scene.instantiate().init(bounce_cell ,tower_setting.StoryH/30, 20, mt , pos)
+		var bt = mesh_trail_scene.instantiate().init(bounce_cell ,tower_setting.StoryH/30, 20, mt , pos)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

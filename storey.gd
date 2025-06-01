@@ -85,7 +85,7 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 
 	add_donut_capsule(tower_setting.DonutCapsuleCount)
 	add_trees(tower_setting.TreeCount)
-	add_ball_trails(tower_setting.BallTrailCount)
+	add_ball_trails(tower_setting.BallTrailMeshTypeList)
 	$Label3D.pixel_size = tower_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-tower_setting.WallThick, tower_setting.StoryH/2, -tower_setting.WallThick)
@@ -126,16 +126,16 @@ func add_trees(n :int) ->void:
 		add_child(t)
 		놓인것들.set_at(p,t)
 
-func add_ball_trails(n :int) ->void:
+func add_ball_trails(mesh_type_list) ->void:
 	var ba = AABB( Vector3(tower_setting.WallThick/2,0, tower_setting.WallThick/2),
 		Vector3(tower_setting.MazeSize.x*tower_setting.LaneW -tower_setting.WallThick, tower_setting.StoryH, tower_setting.MazeSize.y*tower_setting.LaneW -tower_setting.WallThick) )
-	for i in n:
+	for mt in mesh_type_list:
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
 			randf_range(ba.position.y, ba.end.y),
 			randf_range(ba.position.z, ba.end.z),
 		)
-		var bt = ball_trail_scene.instantiate().init(bounce_cell ,tower_setting.StoryH/30, 20, i , pos)
+		var bt = ball_trail_scene.instantiate().init(bounce_cell ,tower_setting.StoryH/30, 20, mt , pos)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

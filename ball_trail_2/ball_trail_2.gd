@@ -14,7 +14,7 @@ var current_rot_accel :float
 var multi_ball :MultiMeshInstance3D
 var multimesh :MultiMesh
 
-func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3) -> BallTrail:
+func init(bnfn :Callable, r :float, count :int, mesh_type, pos :Vector3) -> BallTrail:
 	radius = r
 	bounce_fn = bnfn
 	speed_max = radius * 120
@@ -22,7 +22,7 @@ func init(bnfn :Callable, r :float, count :int, t:int, pos :Vector3) -> BallTrai
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
 	current_color = NamedColorList.color_list.pick_random()[0]
 	current_rot_accel = rand_rad()
-	make_mat_multi(new_mesh_by_type(t,radius), count, pos)
+	make_mat_multi(new_mesh_by_type(mesh_type,radius), count, pos)
 	return self
 
 func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
@@ -90,9 +90,9 @@ func move_ball(delta: float, oldi :int, newi:int) -> void:
 	if velocity.length() < speed_min:
 		velocity = velocity.normalized() * speed_min
 # ♠♣♥♦
-func new_mesh_by_type(t :int, r :float) -> Mesh:
+func new_mesh_by_type(mesh_type , r :float) -> Mesh:
 	var mesh:Mesh
-	match t%10:
+	match mesh_type:
 		0:
 			mesh = SphereMesh.new()
 			mesh.radius = r
@@ -116,12 +116,12 @@ func new_mesh_by_type(t :int, r :float) -> Mesh:
 			mesh.height = r*2
 			mesh.bottom_radius = r
 			mesh.top_radius = 0
-		6,7,8,9:
+		_:
 			mesh = TextMesh.new()
 			mesh.depth = r/4
 			mesh.pixel_size = r / 10
 			mesh.font_size = r*200
-			mesh.text = "♠♣♥♦".split()[t%10-6]
+			mesh.text = "%s" % mesh_type
 	return mesh
 
 func rand_rad() -> float:

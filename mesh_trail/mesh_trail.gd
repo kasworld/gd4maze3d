@@ -73,7 +73,7 @@ func move_trail(delta: float, oldi :int, newi:int) -> void:
 
 	if bn.bounced != Vector3i.ZERO:
 		current_color = NamedColorList.color_list.pick_random()[0]
-		current_rot_accel = randf_range(-PI,PI)/4
+		current_rot_accel =  randfn(0, PI/4)
 	current_rot += current_rot_accel
 	set_multi_pos_rot(newi, bn.pos, velocity.normalized(), current_rot)
 	set_multi_color(newi, current_color)

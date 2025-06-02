@@ -40,7 +40,7 @@ func make_default() -> TowerSetting:
 	MakeLine2DWallRate = 2.0/(MazeSize.x*MazeSize.y)
 	MakeSubWallRate = 2.0/(MazeSize.x*MazeSize.y)
 	MakeClockCalWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	MeshTrailTypeList = [0,1,2,3,4,5,"♠","♣","♥","♦"]
+	MeshTrailTypeList = [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"]
 	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
 	TreeCount = max(1, MazeSize.x*MazeSize.y/30.0)
 	CharacterCount = max(1, MazeSize.x*MazeSize.y/10.0)
@@ -64,7 +64,7 @@ func make_deco() -> TowerSetting:
 	MakeLine2DWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦"].pick_random() ]
+	MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
 	DonutCapsuleCount = 1
 	TreeCount = 1
 	CharacterCount = 1

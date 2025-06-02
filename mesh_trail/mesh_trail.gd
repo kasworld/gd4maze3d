@@ -8,23 +8,29 @@ var radius :float
 var speed_max :float
 var speed_min :float
 var obj_cursor :int
-var current_color :Color
-var current_rot :float
-var current_rot_accel :float
+var current_rotation :float
+var current_rotation_velocity :float
+var rotation_velocity_deviation :float
 var mesh_trail :MultiMeshInstance3D
 var multimesh :MultiMesh
+var color_from :Color
+var color_to :Color
+var color_progress :int # 0 to mesh_count-1
 
-func init(bnfn :Callable, r :float, count :int, mesh_type, pos :Vector3) -> MeshTrail:
-	radius = r
-	bounce_fn = bnfn
+
+func init(bounce_fn_a :Callable, radius_a :float, mesh_count :int, mesh_type, initial_pos :Vector3, rotation_velocity_deviation_a :float = 4*PI) -> MeshTrail:
+	radius = radius_a
+	bounce_fn = bounce_fn_a
+	rotation_velocity_deviation = rotation_velocity_deviation_a
 	speed_max = radius * 120
 	speed_min = radius * 80
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
-	current_color = NamedColorList.color_list.pick_random()[0]
-	make_mat_multi(new_mesh_by_type(mesh_type,radius), count, pos)
+	color_from = NamedColorList.color_list.pick_random()[0]
+	color_to = NamedColorList.color_list.pick_random()[0]
+	make_mat_multi(new_mesh_by_type(mesh_type,radius), mesh_count, initial_pos)
 	return self
 
-func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
+func make_mat_multi(mesh :Mesh,count :int, initial_pos:Vector3):
 	var mat = Global3d.get_color_mat(Color.WHITE)
 	mat.vertex_color_use_as_albedo = true
 	mesh.material = mat
@@ -40,10 +46,17 @@ func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
 	add_child(mesh_trail)
 
 	for i in multimesh.visible_instance_count:
-		multimesh.set_instance_color(i,current_color)
-		var ball_position = pos
-		var t = Transform3D(Basis(), ball_position)
+		multimesh.set_instance_color(i,get_next_color())
+		var t = Transform3D(Basis(), initial_pos)
 		multimesh.set_instance_transform(i,t)
+
+func get_next_color() -> Color:
+	color_progress += 1
+	if color_progress >= multimesh.instance_count:
+		color_from = color_to
+		color_to = NamedColorList.color_list.pick_random()[0]
+		color_progress = 0
+	return lerp(color_from, color_to, float(color_progress)/float(multimesh.instance_count))
 
 func set_multi_pos_rot(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:
 	var t = Transform3D(Basis(), pos)
@@ -72,11 +85,12 @@ func move_trail(delta: float, oldi :int, newi:int) -> void:
 			velocity[i] = -random_positive(speed_max/2)*bn.bounced[i]
 
 	if bn.bounced != Vector3i.ZERO:
-		current_color = NamedColorList.color_list.pick_random()[0]
-		current_rot_accel =  randfn(0, PI/4)
-	current_rot += current_rot_accel
-	set_multi_pos_rot(newi, bn.pos, velocity.normalized(), current_rot)
-	set_multi_color(newi, current_color)
+		current_rotation_velocity =  randfn(0, rotation_velocity_deviation)
+	current_rotation += current_rotation_velocity * delta
+
+	set_multi_pos_rot(newi, bn.pos, velocity.normalized(), current_rotation)
+	
+	set_multi_color(newi, get_next_color())
 
 	if velocity.length() > speed_max:
 		velocity = velocity.normalized() * speed_max

@@ -2,7 +2,6 @@ extends Node3D
 
 class_name MeshTrail
 
-const RotateLimit := PI/4
 var velocity :Vector3
 var bounce_fn :Callable
 var radius :float
@@ -22,8 +21,6 @@ func init(bnfn :Callable, r :float, count :int, mesh_type, pos :Vector3) -> Mesh
 	speed_min = radius * 80
 	velocity = Vector3( (randf()-0.5)*speed_max,(randf()-0.5)*speed_max,(randf()-0.5)*speed_max)
 	current_color = NamedColorList.color_list.pick_random()[0]
-	current_rot = randf_range(-RotateLimit,RotateLimit)
-	current_rot_accel = rand_rad()
 	make_mat_multi(new_mesh_by_type(mesh_type,radius), count, pos)
 	return self
 
@@ -48,14 +45,9 @@ func make_mat_multi(mesh :Mesh,count :int, pos:Vector3):
 		var t = Transform3D(Basis(), ball_position)
 		multimesh.set_instance_transform(i,t)
 
-func set_multi_rotation(i :int,axis :Vector3, rot :float) -> void:
-	var t = multimesh.get_instance_transform(i)
+func set_multi_pos_rot(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:
+	var t = Transform3D(Basis(), pos)
 	t = t.rotated_local(axis, rot)
-	multimesh.set_instance_transform(i,t )
-
-func set_multi_pos(i :int, pos :Vector3) -> void:
-	var t = multimesh.get_instance_transform(i)
-	t.origin = pos
 	multimesh.set_instance_transform(i,t )
 
 func set_multi_color(i, co :Color) -> void:
@@ -74,7 +66,6 @@ func move_trail(delta: float, oldi :int, newi:int) -> void:
 	var oldpos = multimesh.get_instance_transform(oldi).origin
 	var newpos = oldpos + velocity * delta
 	var bn = bounce_fn.call(oldpos,newpos,radius)
-	set_multi_pos(newi, bn.pos)
 	for i in 3:
 		# change vel on bounce
 		if bn.bounced[i] != 0 :
@@ -82,11 +73,10 @@ func move_trail(delta: float, oldi :int, newi:int) -> void:
 
 	if bn.bounced != Vector3i.ZERO:
 		current_color = NamedColorList.color_list.pick_random()[0]
-		current_rot_accel = rand_rad()
-	set_multi_color(newi, current_color)
+		current_rot_accel = randf_range(-PI,PI)/4
 	current_rot += current_rot_accel
-	current_rot = clampf(current_rot, -RotateLimit, RotateLimit)
-	set_multi_rotation(newi, velocity.normalized(), current_rot)
+	set_multi_pos_rot(newi, bn.pos, velocity.normalized(), current_rot)
+	set_multi_color(newi, current_color)
 
 	if velocity.length() > speed_max:
 		velocity = velocity.normalized() * speed_max
@@ -126,9 +116,6 @@ func new_mesh_by_type(mesh_type , r :float) -> Mesh:
 			mesh.font_size = r*200
 			mesh.text = "%s" % mesh_type
 	return mesh
-
-func rand_rad() -> float:
-	return randf_range(-PI,PI)/100
 
 func random_positive(w :float) -> float:
 	return randf_range(w/10,w)

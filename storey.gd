@@ -128,7 +128,7 @@ func add_trees(n :int) ->void:
 
 func add_ball_trails(mesh_type_list) ->void:
 	var ba = AABB( Vector3(tower_setting.WallThick/2,0, tower_setting.WallThick/2),
-		Vector3(tower_setting.MazeSize.x*tower_setting.LaneW -tower_setting.WallThick, tower_setting.StoryH, tower_setting.MazeSize.y*tower_setting.LaneW -tower_setting.WallThick) )
+		Vector3(tower_setting.StoreySize.x -tower_setting.WallThick, tower_setting.StoryH, tower_setting.StoreySize.y -tower_setting.WallThick) )
 	for mt in mesh_type_list:
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
@@ -136,7 +136,7 @@ func add_ball_trails(mesh_type_list) ->void:
 			randf_range(ba.position.z, ba.end.z),
 		)
 		var tc := randi_range(10,30)
-		var bt = mesh_trail_scene.instantiate().init(bounce_cell ,tower_setting.StoryH/30, tc, mt , pos)
+		var bt = mesh_trail_scene.instantiate().with_color_MeshGradient().init(bounce_cell, tower_setting.StoryH/30, tc, mt, pos)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

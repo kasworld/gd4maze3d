@@ -45,17 +45,24 @@ func make_color_multi(co1 :Color, co2:Color):
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.use_colors = true # before set instance_count
 	# Then resize (otherwise, changing the format is not allowed).
+	make_multi_common()
+
+	var bar_height = tree_height/bar_count
+	for i in multimesh.visible_instance_count:
+		var rate = float(i)/bar_count
+		var rev_rate = 1 - rate
+		multimesh.set_instance_color(i,co1.lerp(co2,rate))
+	
+func make_multi_common() -> void:
 	multimesh.instance_count = bar_count
 	multimesh.visible_instance_count = bar_count
-
 	# Set the transform of the instances.
 	var bar_height = tree_height/bar_count
 	for i in multimesh.visible_instance_count:
 		var rate = float(i)/bar_count
 		var rev_rate = 1 - rate
 
-		multimesh.set_instance_color(i,co1.lerp(co2,rate))
-		var bar_position = Vector3(0,i *bar_height,0)
+		var bar_position = Vector3(0, i *bar_height +bar_height/2, 0)
 		var bar_size = Vector3(bar_width * rev_rate, bar_height, tree_width * rev_rate )
 		var bar_rot = bar_rotation * rate
 
@@ -77,27 +84,7 @@ func make_mat_multi(mat :Material):
 	multimesh.mesh = mesh
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	# Then resize (otherwise, changing the format is not allowed).
-	multimesh.instance_count = bar_count
-	multimesh.visible_instance_count = bar_count
-
-	# Set the transform of the instances.
-	var bar_height = tree_height/bar_count
-	for i in multimesh.visible_instance_count:
-		var rate = float(i)/bar_count
-		var rev_rate = 1 - rate
-
-		var bar_position = Vector3(0,i *bar_height,0)
-		var bar_size = Vector3(bar_width * rev_rate, bar_height, tree_width * rev_rate )
-		var bar_rot = bar_rotation * rate
-
-		var t = Transform3D(Basis(), bar_position)
-		t = t.rotated_local(Vector3(0,1,0), bar_rot)
-		t = t.scaled_local( bar_size )
-		multimesh.set_instance_transform(i,t )
-
-	multi_bar = MultiMeshInstance3D.new()
-	multi_bar.multimesh = multimesh
-	add_child(multi_bar)
+	make_multi_common()
 
 func _process(_delta: float) -> void:
 	if auto_rotate_bar:
@@ -120,6 +107,6 @@ func bar_rotation_y() -> void:
 func get_color_mat(co: Color)->Material:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = co
-	mat.metallic = 1
-	mat.clearcoat = true
+	#mat.metallic = 1
+	#mat.clearcoat = true
 	return mat

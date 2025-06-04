@@ -19,7 +19,18 @@ func init_with_color(co1 :Color, co2:Color,
 	bar_count = b_count
 	bar_rotation = rot_vel
 	auto_rotate_bar = autorot
-	make_color_multi(co1,co2)
+	
+	var mat = get_color_mat(Color.WHITE)
+	mat.vertex_color_use_as_albedo = true
+	init_mesh_multi1(mat)
+	multimesh.use_colors = true # before set instance_count
+	# Then resize (otherwise, changing the format is not allowed).
+	init_mesh_multi2()
+	var bar_height = tree_height/bar_count
+	for i in multimesh.visible_instance_count:
+		var rate = float(i)/bar_count
+		var rev_rate = 1 - rate
+		multimesh.set_instance_color(i,co1.lerp(co2,rate))
 	return self
 
 func init_with_material(mat :Material,
@@ -30,30 +41,21 @@ func init_with_material(mat :Material,
 	bar_count = b_count
 	bar_rotation = rot_vel
 	auto_rotate_bar = autorot
-	make_mat_multi(mat)
+	
+	init_mesh_multi1(mat)
+	# Then resize (otherwise, changing the format is not allowed).
+	init_mesh_multi2()
 	return self
 
-func make_color_multi(co1 :Color, co2:Color):
-	var mat = get_color_mat(Color.WHITE)
-	mat.vertex_color_use_as_albedo = true
+func init_mesh_multi1(mat :Material) -> void:
 	var mesh = BoxMesh.new()
 	mesh.size = Vector3(1,1,1)
 	mesh.material = mat
-
 	multimesh = MultiMesh.new()
 	multimesh.mesh = mesh
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	multimesh.use_colors = true # before set instance_count
-	# Then resize (otherwise, changing the format is not allowed).
-	make_multi_common()
 
-	var bar_height = tree_height/bar_count
-	for i in multimesh.visible_instance_count:
-		var rate = float(i)/bar_count
-		var rev_rate = 1 - rate
-		multimesh.set_instance_color(i,co1.lerp(co2,rate))
-	
-func make_multi_common() -> void:
+func init_mesh_multi2() -> void:
 	multimesh.instance_count = bar_count
 	multimesh.visible_instance_count = bar_count
 	# Set the transform of the instances.
@@ -74,17 +76,6 @@ func make_multi_common() -> void:
 	multi_bar = MultiMeshInstance3D.new()
 	multi_bar.multimesh = multimesh
 	add_child(multi_bar)
-
-func make_mat_multi(mat :Material):
-	var mesh = BoxMesh.new()
-	mesh.size = Vector3(1,1,1)
-	mesh.material = mat
-
-	multimesh = MultiMesh.new()
-	multimesh.mesh = mesh
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	# Then resize (otherwise, changing the format is not allowed).
-	make_multi_common()
 
 func _process(_delta: float) -> void:
 	if auto_rotate_bar:

@@ -136,7 +136,7 @@ func add_ball_trails(mesh_type_list) ->void:
 			randf_range(ba.position.z, ba.end.z),
 		)
 		var tc := randi_range(10,30)
-		var bt = mesh_trail_scene.instantiate().with_color_MeshGradient().init(bounce_cell, tower_setting.StoryH/30, tc, mt, pos)
+		var bt = mesh_trail_scene.instantiate().init_MeshGradient().init(bounce_cell, tower_setting.StoryH/30, tc, mt, pos)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

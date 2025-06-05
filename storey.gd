@@ -117,6 +117,7 @@ func add_trees(n :int) ->void:
 			randf_range(tower_setting.StoryH*0.5, tower_setting.StoryH*0.9),
 			randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)/10,
 			randi_range(10,100),
+			randf_range(0,2*PI),
 			randfn(0.0,0.3),
 			0.0,
 			true,			

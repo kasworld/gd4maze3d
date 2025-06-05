@@ -74,7 +74,7 @@ func update_bar_transform() -> void:
 		var bar_size = Vector3(bar_width * rev_rate, bar_height, tree_width * rev_rate )
 		var bar_rot = bar_rotation * rate
 		var t = Transform3D(Basis(), bar_position)
-		t = t.rotated_local(Vector3(0,1,0), bar_rot)
+		t = t.rotated(Vector3(0,1,0), bar_rot)
 		t = t.scaled_local( bar_size )
 		multimesh.set_instance_transform(i,t )
 
@@ -109,7 +109,7 @@ func _process(_delta: float) -> void:
 func reset_bar_rotation() -> void:
 	for i in multimesh.visible_instance_count:
 		var t = multimesh.get_instance_transform(i)
-		t = t.rotated_local(Vector3(0,1,0), 0)
+		t = t.rotated(Vector3(0,1,0), 0)
 		multimesh.set_instance_transform(i,t )
 
 func bar_rotation_y() -> void:

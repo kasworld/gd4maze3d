@@ -112,15 +112,18 @@ func add_trees(n :int) ->void:
 		var p = tower_setting.rand_pos_2i()
 		if 놓인것들.get_at(p) != null:
 			continue
-		var t = tree_scene.instantiate().init_with_color(
-			NamedColorList.color_list.pick_random()[0],
-			NamedColorList.color_list.pick_random()[0],
+		var t = tree_scene.instantiate().init_common_params(
 			randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9),
 			randf_range(tower_setting.StoryH*0.5, tower_setting.StoryH*0.9),
 			randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)/10,
 			randi_range(10,100),
 			randfn(0.0,0.3),
-			true)
+			0.0,
+			true,			
+		).init_with_color(
+			NamedColorList.color_list.pick_random()[0],
+			NamedColorList.color_list.pick_random()[0],
+		)
 		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
 		t.rotation.y = randf_range(0, 2*PI)
 		add_child(t)

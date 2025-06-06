@@ -73,6 +73,7 @@ func init_mesh_multi2() -> void:
 	multi_bar.multimesh = multimesh
 	add_child(multi_bar)
 
+# also reset bar rotation
 func update_bar_transform() -> void:
 	# Set the transform of the instances.
 	var bar_height = tree_height/bar_count
@@ -90,10 +91,8 @@ func update_bar_transform() -> void:
 
 func update_bar_color() -> void:
 	assert(use_color)
-	var bar_height = tree_height/bar_count
 	for i in multimesh.visible_instance_count:
 		var rate = float(i)/bar_count
-		var rev_rate = 1 - rate
 		multimesh.set_instance_color(i,color_from.lerp(color_to,rate))
 		
 func set_visible_bar_count(bar_count_a :int) -> void:
@@ -115,12 +114,6 @@ func set_bar_color(co1 :Color, co2:Color) -> void:
 func _process(_delta: float) -> void:
 	if auto_rotate_bar:
 		bar_rotation_y()
-
-func reset_bar_rotation() -> void:
-	for i in multimesh.visible_instance_count:
-		var t = multimesh.get_instance_transform(i)
-		t = t.rotated(Vector3(0,1,0), 0)
-		multimesh.set_instance_transform(i,t )
 
 func bar_rotation_y() -> void:
 	for i in multimesh.visible_instance_count:

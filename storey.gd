@@ -84,7 +84,11 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 				구석자리목록.append(Vector2i(x,y))
 
 	add_donut_capsule(tower_setting.DonutCapsuleCount)
-	add_trees(tower_setting.TreeCount)
+	for i in tower_setting.TreeCount:
+		var p = tower_setting.rand_pos_2i()
+		if 놓인것들.get_at(p) != null:
+			continue
+		add_tree(p)
 	add_ball_trails(tower_setting.MeshTrailTypeList)
 	$Label3D.pixel_size = tower_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
@@ -107,28 +111,49 @@ func add_donut_capsule(n :int) -> void:
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)
 
-func add_trees(n :int) ->void:
-	for i in n:
-		var p = tower_setting.rand_pos_2i()
-		if 놓인것들.get_at(p) != null:
-			continue
-		var t = tree_scene.instantiate().init_common_params(
-			randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9),
-			randf_range(tower_setting.StoryH*0.5, tower_setting.StoryH*0.9),
-			randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)/10,
-			randi_range(10,100),
-			randf_range(0,2*PI),
-			randfn(0.0,0.3),
-			0.0,
-			true,			
-		).init_with_color(
-			NamedColorList.color_list.pick_random()[0],
-			NamedColorList.color_list.pick_random()[0],
-		)
+func add_tree(p :Vector2i) ->void:
+	var tree_width := randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)
+	var tree_height := randf_range(tower_setting.StoryH*0.5, tower_setting.StoryH*0.9)
+	var bar_width = randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)/10
+	var bar_count := randi_range(10,200)
+	var bar_rotation := randfn(0,PI/40)
+	var bar_rotation_begin := randf_range(0, 2*PI)
+
+	var make_flag := randi_range(1,7)
+	var t :BarTree2	
+	# add left side 
+	if make_flag & (1<<0) != 0:
+		t = tree_scene.instantiate().init_common_params(
+			tree_width/3, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 2.0, true,
+		).init_with_color(random_color(), random_color())
 		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
-		t.rotation.y = randf_range(0, 2*PI)
 		add_child(t)
-		놓인것들.set_at(p,t)
+
+	# add right side 
+	if make_flag & (1<<1) != 0:
+		t = tree_scene.instantiate().init_common_params(
+			tree_width/3, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin , -2.0, true,
+		).init_with_color(random_color(), random_color())
+		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
+		add_child(t)
+
+	# add center 
+	if make_flag & (1<<2) != 0:
+		if make_flag != (1<<2):
+			tree_width *= 3
+		else:
+			tree_width *= 0.9
+		t = tree_scene.instantiate().init_common_params(
+			tree_width/3, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
+		).init_with_color(random_color(), random_color())
+		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
+		add_child(t)
+	놓인것들.set_at(p,t)
+
+func random_color()->Color:
+	#return Color(randf(),randf(),randf())
+	return NamedColorList.color_list.pick_random()[0]
+
 
 func add_ball_trails(mesh_type_list) ->void:
 	var ba = AABB( Vector3(tower_setting.WallThick/2,0, tower_setting.WallThick/2),

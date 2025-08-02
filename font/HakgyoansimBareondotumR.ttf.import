@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://dnl0k5122l6sv"
-path="res://.godot/imported/HakgyoansimBareondotumR.ttf-26fd2c3d8bc0b89a18b06535f12e42f1.fontdata"
+uid="uid://gdh6qls28unk"
+path="res://.godot/imported/HakgyoansimBareondotumR.ttf-32a8f43a90b9bcd389d2ef9a02137c3c.fontdata"
 
 [deps]
 
-source_file="res://HakgyoansimBareondotumR.ttf"
-dest_files=["res://.godot/imported/HakgyoansimBareondotumR.ttf-26fd2c3d8bc0b89a18b06535f12e42f1.fontdata"]
+source_file="res://font/HakgyoansimBareondotumR.ttf"
+dest_files=["res://.godot/imported/HakgyoansimBareondotumR.ttf-32a8f43a90b9bcd389d2ef9a02137c3c.fontdata"]
 
 [params]
 

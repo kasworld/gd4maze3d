@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
-[ext_resource type="Environment" uid="uid://bjvwie8t5k8es" path="res://default_env.tres" id="2_styvs"]
+[ext_resource type="Environment" uid="uid://dq6rkclkoup3n" path="res://skymap/skymap.tres" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_camera_light.tscn" id="3_hdadt"]
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
 [ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="5_lquwl"]
@@ -26,7 +26,7 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = ExtResource("2_styvs")
+environment = ExtResource("2_lquwl")
 
 [node name="MovingCameraLight" parent="." instance=ExtResource("3_hdadt")]
 

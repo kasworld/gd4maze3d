@@ -21,12 +21,55 @@ func make_light_color_list(l :float= 0.5) -> Array:
 			rtn.append(i)
 	return rtn
 
-func make_dark_color_list(l :float= 0.5) -> Array:
+func make_dark_color_list(l :float= 0.5, clist = color_list) -> Array:
 	var rtn := []
-	for i in color_list:
+	for i in clist:
 		if i[0].get_luminance() < l:
 			rtn.append(i)
 	return rtn
+	
+func make_red_color_list(clist = color_list) -> Array:
+	var rtn := []
+	for i in clist:
+		if i[0].r > i[0].g and i[0].r > i[0].b:
+			rtn.append(i)
+	return rtn
+
+func make_blue_color_list(clist = color_list) -> Array:
+	var rtn := []
+	for i in clist:
+		if i[0].b > i[0].g and i[0].b > i[0].r:
+			rtn.append(i)
+	return rtn
+
+func make_green_color_list(clist = color_list) -> Array:
+	var rtn := []
+	for i in clist:
+		if i[0].g > i[0].r and i[0].g > i[0].b:
+			rtn.append(i)
+	return rtn
+
+func make_yellow_color_list(clist = color_list) -> Array:
+	var rtn := []
+	for i in clist:
+		if i[0].r > i[0].b and i[0].g > i[0].b:
+			rtn.append(i)
+	return rtn
+
+func make_cyan_color_list(clist = color_list) -> Array:
+	var rtn := []
+	for i in clist:
+		if i[0].b > i[0].r and i[0].g > i[0].r:
+			rtn.append(i)
+	return rtn
+
+func make_magenta_color_list(clist = color_list) -> Array:
+	var rtn := []
+	for i in clist:
+		if i[0].b > i[0].g and i[0].r > i[0].g:
+			rtn.append(i)
+	return rtn
+
 
 const color_list = [
 [Color.ALICE_BLUE, "ALICE_BLUE"],

@@ -1,9 +1,52 @@
 extends Node3D
-
 class_name Calendar3D
+
+var font = preload("res://font/HakgyoansimBareondotumR.ttf")
+const weekdaystring = ["일","월","화","수","목","금","토"]
+var colors = {
+	weekday = [
+		Color.RED,  # sunday
+		Color.WHITE,  # monday
+		Color.WHITE,
+		Color.WHITE,
+		Color.WHITE,
+		Color.WHITE,
+		Color.BLUE,  # saturday
+	],
+	today = Color.GREEN,
+	calbg = Color.BLACK.lightened(0.2),
+	datelabel = Color.WHITE,
+}
 
 # 1+7x7 : year+month, weekdayname, 6 weeek
 var calendar_labels = []
+
+func get_color_mat(co: Color)->Material:
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = co
+	#mat.metallic = 1
+	#mat.clearcoat = true
+	return mat
+
+func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
+	var mesh = BoxMesh.new()
+	mesh.size = bsize
+	mesh.material = mat
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	return sp
+
+func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshInstance3D:
+	var mesh = TextMesh.new()
+	mesh.font = font
+	mesh.depth = fdepth
+	mesh.pixel_size = fsize / 100
+	mesh.font_size = fsize
+	mesh.text = text
+	mesh.material = mat
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	return sp
 
 func init(w :float, h:float,d:float, fsize :float, backplane:bool=true)->void:
 	calendar_labels = []
@@ -11,19 +54,19 @@ func init(w :float, h:float,d:float, fsize :float, backplane:bool=true)->void:
 		o.queue_free()
 
 	if backplane:
-		var plane = Global3d.new_box(Vector3(w, d*0.5, h), Global3d.get_color_mat(Global3d.colors.calbg ) )
+		var plane = new_box(Vector3(w, d*0.5, h), get_color_mat(colors.calbg ) )
 		plane.position.y = -d*0.25
 		$LabelConatiner.add_child(plane)
 
-	init_calendar(w/Global3d.weekdaystring.size(), h/8,d, fsize)
+	init_calendar(w/weekdaystring.size(), h/8,d, fsize)
 	update_calendar()
 
 func init_calendar(w :float, h :float, d:float, fsize :float)->void:
 	# add year month
 	var fdepth = d * 0.2
 	var time_now_dict = Time.get_datetime_dict_from_system()
-	var mat = Global3d.get_color_mat(Global3d.colors.datelabel)
-	var lb = Global3d.new_text(fsize, fdepth, mat,
+	var mat = get_color_mat(colors.datelabel)
+	var lb = new_text(fsize, fdepth, mat,
 		"%4d년 %2d월" % [time_now_dict["year"] , time_now_dict["month"]])
 	lb.rotation.x = deg_to_rad(-90)
 	lb.rotation.z = deg_to_rad(-90)
@@ -34,10 +77,10 @@ func init_calendar(w :float, h :float, d:float, fsize :float)->void:
 	# prepare calendar
 	for i in range(1,8): # skip yearmonth, week title + 6 week
 		var ln = []
-		for wd in Global3d.weekdaystring.size():
-			var co = Global3d.colors.weekday[wd]
-			mat = Global3d.get_color_mat(co)
-			lb = Global3d.new_text(fsize,fdepth, mat, Global3d.weekdaystring[wd])
+		for wd in weekdaystring.size():
+			var co = colors.weekday[wd]
+			mat = get_color_mat(co)
+			lb = new_text(fsize,fdepth, mat, weekdaystring[wd])
 			lb.rotation.x = deg_to_rad(-90)
 			#t.rotation.y = deg2rad(90)
 			lb.rotation.z = deg_to_rad(-90)
@@ -47,7 +90,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float)->void:
 		calendar_labels.append(ln)
 
 func set_mesh_color(sp:MeshInstance3D, co:Color)->void:
-	sp.mesh.material = Global3d.get_color_mat(co)
+	sp.mesh.material = get_color_mat(co)
 
 func set_mesh_text(sp:MeshInstance3D, text :String)->void:
 	sp.mesh.text = text
@@ -58,27 +101,27 @@ func update_calendar()->void:
 	var today_dict = Time.get_date_dict_from_unix_time(today)
 	var day_index = today - (7 + today_dict["weekday"] )*24*60*60 #datetime.timedelta(days=(-today.weekday() - 7))
 
-	for wd in Global3d.weekdaystring.size():
+	for wd in weekdaystring.size():
 		var curLabel = calendar_labels[1][wd]
-		var co = Global3d.colors.weekday[wd]
+		var co = colors.weekday[wd]
 		var lb_scale = Vector3(1,1,1)
 		if wd == today_dict["weekday"] :
-			co = Global3d.colors.today
+			co = colors.today
 			lb_scale = Vector3(1.3,1.3,1)
 		curLabel.scale = lb_scale
 		set_mesh_color(curLabel, co)
 
 	for i in range(2,8): # skip week title , 6 week
-		for wd in Global3d.weekdaystring.size():
+		for wd in weekdaystring.size():
 			var day_index_dict = Time.get_date_dict_from_unix_time(day_index)
 			var curLabel = calendar_labels[i][wd]
 			set_mesh_text(curLabel, "%d" % day_index_dict["day"] )
-			var co = Global3d.colors.weekday[wd]
+			var co = colors.weekday[wd]
 			var lb_scale = Vector3(1,1,1)
 			if day_index_dict["month"] != today_dict["month"]:
 				co = co.darkened(0.5)
 			elif day_index_dict["day"] == today_dict["day"]:
-				co = Global3d.colors.today
+				co = colors.today
 				lb_scale = Vector3(1.3,1.3,1)
 			curLabel.scale = lb_scale
 			set_mesh_color(curLabel, co)
@@ -97,4 +140,3 @@ func _on_timer_timeout() -> void:
 			time_now_dict["year"] , time_now_dict["month"]
 			]
 			)
-

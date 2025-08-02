@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b7xxw75asvp0w"]
 
-[ext_resource type="Script" path="res://calendar3d/calendar_3d.gd" id="1_ss2hb"]
+[ext_resource type="Script" uid="uid://bx3uyyj3600av" path="res://calendar3d/calendar_3d.gd" id="1_ss2hb"]
 
 [node name="Calendar3d" type="Node3D"]
 script = ExtResource("1_ss2hb")

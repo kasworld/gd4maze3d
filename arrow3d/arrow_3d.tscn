@@ -1,10 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://c8npqlgeyy3xa"]
+[gd_scene load_steps=6 format=3 uid="uid://c8npqlgeyy3xa"]
 
-[ext_resource type="Script" path="res://arrow3d/arrow_3d.gd" id="1_5keum"]
+[ext_resource type="Script" uid="uid://bsay8ghokgijt" path="res://arrow3d/arrow_3d.gd" id="1_v14xl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qickl"]
+resource_local_to_scene = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_h4ipo"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_qickl")
+top_radius = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ct3x0"]
+resource_local_to_scene = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_oc4q6"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_ct3x0")
+top_radius = 0.2
+bottom_radius = 0.2
 
 [node name="Arrow3D" type="Node3D"]
-script = ExtResource("1_5keum")
-
-[node name="Body" type="MeshInstance3D" parent="."]
+script = ExtResource("1_v14xl")
 
 [node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_h4ipo")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("CylinderMesh_oc4q6")

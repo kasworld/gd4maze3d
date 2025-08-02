@@ -75,7 +75,8 @@ func init(bounce_fn_a :Callable, radius_a :float, mesh_count :int, mesh_type, in
 	return self
 
 func make_mat_multi(mesh :Mesh,count :int, initial_pos:Vector3):
-	var mat = Global3d.get_color_mat(Color.WHITE)
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color.WHITE
 	mat.vertex_color_use_as_albedo = true
 	mesh.material = mat
 	multimesh = MultiMesh.new()

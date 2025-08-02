@@ -1,7 +1,7 @@
 extends Node3D
 class_name TextMark
 
-var font = preload("res://HakgyoansimBareondotumR.ttf")
+var font = preload("res://font/HakgyoansimBareondotumR.ttf")
 var text :String
 
 func init(fsize :float, fdepth :float, co:Color, atext :String) -> TextMark:

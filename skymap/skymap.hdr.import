@@ -3,8 +3,8 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://k1k5bbintag5"
-path.bptc="res://.godot/imported/skymap.hdr-870d0f3b93315b39b599f8361b9d4343.bptc.ctex"
-path.astc="res://.godot/imported/skymap.hdr-870d0f3b93315b39b599f8361b9d4343.astc.ctex"
+path.bptc="res://.godot/imported/skymap.hdr-1af627690e0b5b5837c7fac0dfd9301a.bptc.ctex"
+path.astc="res://.godot/imported/skymap.hdr-1af627690e0b5b5837c7fac0dfd9301a.astc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://earthmoon/skymap.hdr"
-dest_files=["res://.godot/imported/skymap.hdr-870d0f3b93315b39b599f8361b9d4343.bptc.ctex", "res://.godot/imported/skymap.hdr-870d0f3b93315b39b599f8361b9d4343.astc.ctex"]
+source_file="res://skymap/skymap.hdr"
+dest_files=["res://.godot/imported/skymap.hdr-1af627690e0b5b5837c7fac0dfd9301a.bptc.ctex", "res://.godot/imported/skymap.hdr-1af627690e0b5b5837c7fac0dfd9301a.astc.ctex"]
 
 [params]
 

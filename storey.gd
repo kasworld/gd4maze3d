@@ -57,11 +57,11 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.init_with_color(tower_setting.MeshSize, tower_setting.MazeSize*2, 0.1, Color.DARK_BLUE)
+	$Floor.init_with_color(tower_setting.MeshSize, tower_setting.MeshSize, 0.1, Color.DARK_BLUE)
 	$Floor.rotate_x(PI/2)
 	$Floor.position = Vector3(0, 0 ,0)
 	#$Floor.position = Vector3(0, -tower_setting.calc_current_storey_gap()/2 ,0)
-	$Ceiling.init_with_color(tower_setting.MeshSize, tower_setting.MazeSize*2, 0.1, Color.DARK_RED)
+	$Ceiling.init_with_color(tower_setting.MeshSize, tower_setting.MeshSize, 0.1, Color.DARK_RED)
 	$Ceiling.rotate_x(PI/2)
 	$Ceiling.position = Vector3(0, tower_setting.StoryH  ,0)
 	#$Ceiling.position = Vector3(0, tower_setting.StoryH + tower_setting.calc_current_storey_gap()/2 ,0)
@@ -118,36 +118,11 @@ func add_tree(p :Vector2i) ->void:
 	var bar_count := randi_range(20,50)
 	var bar_rotation := randfn(0,PI/40)
 	var bar_rotation_begin := randf_range(0, 2*PI)
-
-	var make_flag := randi_range(1,7)
-	var t :BarTree2	
-	# add left side 
-	if make_flag & (1<<0) != 0:
-		t = tree_scene.instantiate().init_common_params(
-			tree_width/3, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 2.0, true,
-		).init_with_color(random_color(), random_color())
-		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
-		add_child(t)
-
-	# add right side 
-	if make_flag & (1<<1) != 0:
-		t = tree_scene.instantiate().init_common_params(
-			tree_width/3, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin , -2.0, true,
-		).init_with_color(random_color(), random_color())
-		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
-		add_child(t)
-
-	# add center 
-	if make_flag & (1<<2) != 0:
-		if make_flag != (1<<2):
-			tree_width *= 3
-		else:
-			tree_width *= 0.9
-		t = tree_scene.instantiate().init_common_params(
-			tree_width/3, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
-		).init_with_color(random_color(), random_color())
-		t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
-		add_child(t)
+	var t :BarTree2	= tree_scene.instantiate().init_common_params(
+		tree_width, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
+	).init_with_color(random_color(), random_color())
+	t.position = mazepos2storeypos(p, tower_setting.StoryH*0.1)
+	add_child(t)
 	놓인것들.set_at(p,t)
 
 func random_color()->Color:

@@ -140,8 +140,8 @@ func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	var st = 0
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_floor_ceiling(f,c)
-	storey_list[st].view_floor_ceiling(false,c)
-	storey_list[-1].view_floor_ceiling(f,false)
+	#storey_list[st].view_floor_ceiling(false,c)
+	#storey_list[-1].view_floor_ceiling(f,false)
 
 func set_wallview_mode(w :WallView) -> void:
 	var st = 0

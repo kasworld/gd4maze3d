@@ -27,6 +27,7 @@ func _ready() -> void:
 	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(current_tower)
 	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal)
+	
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
@@ -60,10 +61,10 @@ func _on_vpsize_changed() -> void:
 
 func enter_next_storey() -> void:
 	current_tower.enter_next_storey()
-	$DecoOrbit.position = current_tower.calc_center()
 	enter_storey()
 
 func enter_storey() -> void:
+	$DecoOrbit.position = current_tower.calc_center()
 	if minimap != null:
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()

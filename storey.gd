@@ -57,14 +57,14 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.mesh.size = tower_setting.MeshSize
-	$Floor.position = Vector3(tower_setting.MeshCenter.x, -tower_setting.calc_current_storey_gap()/2 ,tower_setting.MeshCenter.y)
-	$Floor.mesh.material.albedo_texture = Texmat.interfloor_mat
-	$Floor.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA_SCISSOR
-	$Ceiling.mesh.size = $Floor.mesh.size
-	$Ceiling.position = Vector3(tower_setting.MeshCenter.x, tower_setting.StoryH + tower_setting.calc_current_storey_gap()/2 ,tower_setting.MeshCenter.y)
-	$Ceiling.mesh.material.albedo_texture = Texmat.interfloor_mat
-	$Ceiling.mesh.material.transparency = $Floor.mesh.material.transparency
+	$Floor.init_with_color(tower_setting.MeshSize, tower_setting.MazeSize*2, 0.1, Color.DARK_BLUE)
+	$Floor.rotate_x(PI/2)
+	$Floor.position = Vector3(0, 0 ,0)
+	#$Floor.position = Vector3(0, -tower_setting.calc_current_storey_gap()/2 ,0)
+	$Ceiling.init_with_color(tower_setting.MeshSize, tower_setting.MazeSize*2, 0.1, Color.DARK_RED)
+	$Ceiling.rotate_x(PI/2)
+	$Ceiling.position = Vector3(0, tower_setting.StoryH  ,0)
+	#$Ceiling.position = Vector3(0, tower_setting.StoryH + tower_setting.calc_current_storey_gap()/2 ,0)
 
 	maze_cells = Maze.new(tower_setting.MazeSize)
 	make_wall_by_maze()

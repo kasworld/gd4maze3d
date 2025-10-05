@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://cy34xu36jq84y"]
+[gd_scene load_steps=3 format=3 uid="uid://cy34xu36jq84y"]
 
 [ext_resource type="Script" uid="uid://dtntmrnos3ie" path="res://mesh_trail/mesh_trail.gd" id="1_8pbi7"]
 
+[sub_resource type="MultiMesh" id="MultiMesh_0ntik"]
+resource_local_to_scene = true
+transform_format = 1
+use_colors = true
+
 [node name="MeshTrail" type="Node3D"]
 script = ExtResource("1_8pbi7")
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_0ntik")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

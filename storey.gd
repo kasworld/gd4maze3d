@@ -115,7 +115,7 @@ func add_tree(p :Vector2i) ->void:
 	var tree_width := randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)
 	var tree_height := randf_range(tower_setting.StoryH*0.5, tower_setting.StoryH*0.9)
 	var bar_width = randf_range(tower_setting.LaneW*0.5, tower_setting.LaneW*0.9)/10
-	var bar_count := randi_range(10,200)
+	var bar_count := randi_range(20,50)
 	var bar_rotation := randfn(0,PI/40)
 	var bar_rotation_begin := randf_range(0, 2*PI)
 
@@ -154,7 +154,6 @@ func random_color()->Color:
 	#return Color(randf(),randf(),randf())
 	return NamedColorList.color_list.pick_random()[0]
 
-
 func add_ball_trails(mesh_type_list) ->void:
 	var ba = AABB( Vector3(tower_setting.WallThick/2,0, tower_setting.WallThick/2),
 		Vector3(tower_setting.StoreySize.x -tower_setting.WallThick, tower_setting.StoryH, tower_setting.StoreySize.y -tower_setting.WallThick) )
@@ -164,8 +163,8 @@ func add_ball_trails(mesh_type_list) ->void:
 			randf_range(ba.position.y, ba.end.y),
 			randf_range(ba.position.z, ba.end.z),
 		)
-		var tc := randi_range(10,30)
-		var bt = mesh_trail_scene.instantiate().init_MeshGradient().init(bounce_cell, tower_setting.StoryH/30, tc, mt, pos)
+		var tc := randi_range(20,50)
+		var bt = mesh_trail_scene.instantiate().init_MeshGradient().init(bounce_cell, tower_setting.StoryH/30, tc, mt, pos).set_speed(1,4,0.05)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

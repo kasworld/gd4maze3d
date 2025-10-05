@@ -28,14 +28,6 @@ func get_color_mat(co: Color)->Material:
 	#mat.clearcoat = true
 	return mat
 
-func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
-	var mesh = BoxMesh.new()
-	mesh.size = bsize
-	mesh.material = mat
-	var sp = MeshInstance3D.new()
-	sp.mesh = mesh
-	return sp
-
 func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshInstance3D:
 	var mesh = TextMesh.new()
 	mesh.font = font
@@ -48,20 +40,22 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshIns
 	sp.mesh = mesh
 	return sp
 
-func init(w :float, h:float,d:float, fsize :float, backplane:bool=true)->void:
+func init(w :float, h:float,d:float, fsize :float, backplane:bool=true) -> Calendar3D:
 	calendar_labels = []
 	for o in $LabelConatiner.get_children():
 		o.queue_free()
 
+	$BackplaneBox.visible = backplane
 	if backplane:
-		var plane = new_box(Vector3(w, d*0.5, h), get_color_mat(colors.calbg ) )
-		plane.position.y = -d*0.25
-		$LabelConatiner.add_child(plane)
+		$BackplaneBox.mesh.material.albedo_color = colors.calbg
+		$BackplaneBox.mesh.size = Vector3(h, d*0.5, w)
+		$BackplaneBox.position.y = -d*0.25
 
 	init_calendar(w/weekdaystring.size(), h/8,d, fsize)
 	update_calendar()
+	return self
 
-func init_calendar(w :float, h :float, d:float, fsize :float)->void:
+func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 	# add year month
 	var fdepth = d * 0.2
 	var time_now_dict = Time.get_datetime_dict_from_system()
@@ -89,13 +83,13 @@ func init_calendar(w :float, h :float, d:float, fsize :float)->void:
 			$LabelConatiner.add_child(lb)
 		calendar_labels.append(ln)
 
-func set_mesh_color(sp:MeshInstance3D, co:Color)->void:
+func set_mesh_color(sp:MeshInstance3D, co:Color) -> void:
 	sp.mesh.material = get_color_mat(co)
 
-func set_mesh_text(sp:MeshInstance3D, text :String)->void:
+func set_mesh_text(sp:MeshInstance3D, text :String) -> void:
 	sp.mesh.text = text
 
-func update_calendar()->void:
+func update_calendar() -> void:
 	var tz = Time.get_time_zone_from_system()
 	var today = int(Time.get_unix_time_from_system()) +tz["bias"]*60
 	var today_dict = Time.get_date_dict_from_unix_time(today)

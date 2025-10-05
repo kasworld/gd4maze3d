@@ -31,7 +31,7 @@ func get_color_mat(co: Color)->Material:
 	#mat.clearcoat = true
 	return mat
 
-func new_cylinder(h :float, r1 :float, r2 :float, mat :Material)->MeshInstance3D:
+func new_cylinder(h :float, r1 :float, r2 :float, mat :Material) -> MeshInstance3D:
 	var mesh = CylinderMesh.new()
 	mesh.height = h
 	mesh.top_radius = r1
@@ -42,7 +42,7 @@ func new_cylinder(h :float, r1 :float, r2 :float, mat :Material)->MeshInstance3D
 	sp.mesh = mesh
 	return sp
 
-func new_torus(r1 :float,r2 :float, mat :Material)->MeshInstance3D:
+func new_torus(r1 :float,r2 :float, mat :Material) -> MeshInstance3D:
 	var mesh = TorusMesh.new()
 	mesh.outer_radius = r1
 	mesh.inner_radius = r2
@@ -51,7 +51,7 @@ func new_torus(r1 :float,r2 :float, mat :Material)->MeshInstance3D:
 	sp.mesh = mesh
 	return sp
 
-func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
+func new_box(bsize :Vector3, mat :Material) -> MeshInstance3D:
 	var mesh = BoxMesh.new()
 	mesh.size = bsize
 	mesh.material = mat
@@ -59,7 +59,7 @@ func new_box(bsize :Vector3, mat :Material)->MeshInstance3D:
 	sp.mesh = mesh
 	return sp
 
-func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshInstance3D:
+func new_text(fsize :float, fdepth :float, mat :Material, text :String) -> MeshInstance3D:
 	var mesh = TextMesh.new()
 	mesh.font = font
 	mesh.depth = fdepth
@@ -72,7 +72,7 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshIns
 	return sp
 
 
-func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> void:
+func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> AnalogClock3D:
 	tz_shift = tzs
 
 	if backplane:
@@ -92,6 +92,7 @@ func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=tru
 	var cc2 = new_torus(r/20, r/40, get_color_mat(colors.center_circle2))
 	cc2.position.y = d*0.5/2
 	add_child( cc2 )
+	return self
 
 func _process(_delta: float) -> void:
 	update_clock()

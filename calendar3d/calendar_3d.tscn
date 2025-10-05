@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7xxw75asvp0w"]
+[gd_scene load_steps=4 format=3 uid="uid://b7xxw75asvp0w"]
 
 [ext_resource type="Script" uid="uid://bx3uyyj3600av" path="res://calendar3d/calendar_3d.gd" id="1_ss2hb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g3tgt"]
+resource_local_to_scene = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_yig0t"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_g3tgt")
 
 [node name="Calendar3d" type="Node3D"]
 script = ExtResource("1_ss2hb")
@@ -9,5 +16,8 @@ script = ExtResource("1_ss2hb")
 autostart = true
 
 [node name="LabelConatiner" type="Node3D" parent="."]
+
+[node name="BackplaneBox" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_yig0t")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

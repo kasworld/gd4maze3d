@@ -57,14 +57,12 @@ func init(ts :TowerSetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.init_with_color(tower_setting.MeshSize, tower_setting.MeshSize, 0.1, Color.DARK_BLUE)
+	$Floor.init_with_color(tower_setting.MeshSize, tower_setting.MeshSize*2, 0.01, Color.GREEN)
 	$Floor.rotate_x(PI/2)
 	$Floor.position = Vector3(0, 0 ,0)
-	#$Floor.position = Vector3(0, -tower_setting.calc_current_storey_gap()/2 ,0)
-	$Ceiling.init_with_color(tower_setting.MeshSize, tower_setting.MeshSize, 0.1, Color.DARK_RED)
+	$Ceiling.init_with_color(tower_setting.MeshSize, tower_setting.MeshSize*2, 0.01, Color.YELLOW)
 	$Ceiling.rotate_x(PI/2)
 	$Ceiling.position = Vector3(0, tower_setting.StoryH  ,0)
-	#$Ceiling.position = Vector3(0, tower_setting.StoryH + tower_setting.calc_current_storey_gap()/2 ,0)
 
 	maze_cells = Maze.new(tower_setting.MazeSize)
 	make_wall_by_maze()

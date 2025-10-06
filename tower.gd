@@ -43,7 +43,7 @@ func init(ts :TowerSetting) -> Tower:
 	cur_storey = storey_list[0]
 	
 	set_floor_ceiling_pos()
-	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+	#set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
 	return self
@@ -140,8 +140,6 @@ func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	var st = 0
 	for i in range(st,storey_list.size()):
 		storey_list[i].view_floor_ceiling(f,c)
-	#storey_list[st].view_floor_ceiling(false,c)
-	#storey_list[-1].view_floor_ceiling(f,false)
 
 func set_wallview_mode(w :WallView) -> void:
 	var st = 0

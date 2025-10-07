@@ -25,7 +25,6 @@ func _ready() -> void:
 	
 	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(current_tower)
-	$DecoOrbit.init(current_tower.tower_setting.storey_setting.CalcDiagonalLength())
 	
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
@@ -35,11 +34,15 @@ func _ready() -> void:
 			i, current_tower.tower_setting.storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
-	var n = 0
+	var n = 4
 	for i in n:
 		var rd = 2*PI/n *i
-		var r = current_tower.tower_setting.storey_setting.CalcDiagonalLength() 
+		var r = current_tower.tower_setting.storey_setting.CalcDiagonalLength()
 		add_deco_tower(Vector3(sin(rd)*r,0,cos(rd)*r))
+	var orbitr := current_tower.tower_setting.storey_setting.CalcDiagonalLength()
+	if n != 0:
+		orbitr *= 2
+	$DecoOrbit.init(orbitr)
 
 	update_button_text()
 	enter_storey()

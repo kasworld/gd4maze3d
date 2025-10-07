@@ -124,8 +124,7 @@ func _on_animation_player_del_storey_animation_finished(_anim_name: StringName) 
 		todel.queue_free()
 
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
-	var st = 0
-	for i in range(st,storey_list.size()):
+	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(f,c)
 
 func set_wallview_mode(w :WallView) -> void:

@@ -66,8 +66,6 @@ func calc_storey_base_y_pos(storey_index :int) -> float:
 func calc_storey_mid_y_pos(storey_index :int) -> float:
 	return storey_index * (storey_setting.StoryH + calc_current_storey_gap()) + storey_setting.StoryH /2
 
-func rand_pos_2i() -> Vector2i:
-	return Vector2i(randi_range(0,storey_setting.MazeSize.x-1),randi_range(0,storey_setting.MazeSize.y-1) )
 
 func _to_string() -> String:
 	return "TowerSetting upper:%d lower:%d

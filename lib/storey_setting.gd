@@ -16,6 +16,7 @@ var MakeLine2DWallRate :float
 var MakeSubWallRate :float
 var MakeClockCalWallRate :float
 var MeshTrailTypeList :Array
+var MakeMeshTrailRate :float
 var DonutCapsuleCount :int
 var TreeCount :int
 
@@ -32,10 +33,11 @@ func make_default() -> StoreySetting:
 	WallSize_NS_Reduced = Vector3(LaneW-WallThick, StoryH, WallThick)
 	WallSize_EW_Full = Vector3(WallThick, StoryH, LaneW)
 	WallSize_EW_Reduced = Vector3(WallThick, StoryH, LaneW-WallThick)
-	MakeLine2DWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	MakeSubWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	MakeClockCalWallRate = 2.0/(MazeSize.x*MazeSize.y)
+	MakeLine2DWallRate = 1.0/(MazeSize.x*MazeSize.y)
+	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
+	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	MeshTrailTypeList = ["♠","♣","♥","♦","★"]
+	MakeMeshTrailRate = 2.0/(MazeSize.x*MazeSize.y)
 	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
 	TreeCount = max(1, MazeSize.x*MazeSize.y/50.0)
 	return self 

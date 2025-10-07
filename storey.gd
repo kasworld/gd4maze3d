@@ -131,6 +131,9 @@ func add_ball_trails(mesh_type_list) ->void:
 	var ba = AABB( Vector3(storey_setting.WallThick/2,0, storey_setting.WallThick/2),
 		Vector3(storey_setting.StoreySize.x -storey_setting.WallThick, storey_setting.StoryH, storey_setting.StoreySize.y -storey_setting.WallThick) )
 	for mt in mesh_type_list:
+		if randf() > storey_setting.MakeMeshTrailRate:
+			continue
+		
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
 			randf_range(ba.position.y, ba.end.y),
@@ -287,7 +290,6 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 				n.position = pos_face_ns + Vector3(0,0,storey_setting.WallThick)
 			EnumDir.Flag.South:
 				n.position = pos_face_ns - Vector3(0,0,storey_setting.WallThick)
-
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#print_debug(size_pixel)

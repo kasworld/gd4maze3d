@@ -12,7 +12,7 @@ var storey_scene = preload("res://storey.tscn")
 var tower_setting :TowerSetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
-var view_floor_ceiling :bool = false
+var view_floor_ceiling :bool = true
 var view_walls :WallView = WallView.Reduced
 var view_pillars :bool = true
 var gap_ani_dir_open : bool = true # true:open, false:close

@@ -22,21 +22,26 @@ var animate_gap_start_time :float
 var StoreyGapRate := 1.0
 
 func calc_current_storey_gap() -> float:
-	return tower_setting.storey_setting.StoryH * StoreyGapRate
+	return tower_setting.StoreyGap * StoreyGapRate
 
 func calc_storey_base_y_pos(storey_index :int) -> float:
-	return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap())
+	var rtn := 0.0
+	for i in storey_index:
+		rtn += calc_current_storey_gap() + storey_list[i].storey_setting.StoryH
+	return rtn
+	#return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap())
 
 func calc_storey_mid_y_pos(storey_index :int) -> float:
-	return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap()) + tower_setting.storey_setting.StoryH /2
-
-func calc_center() -> Vector3:
-	return Vector3(tower_setting.storey_setting.CalcMeshCenter().x, 
-		calc_height()/2, 
-		tower_setting.storey_setting.CalcMeshCenter().y)
+	return calc_storey_base_y_pos(storey_index) + storey_list[storey_index].storey_setting.StoryH/2
+	#return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap()) + tower_setting.storey_setting.StoryH /2
 
 func calc_height() -> float:
 	return calc_storey_base_y_pos(storey_list.size())
+
+func calc_center() -> Vector3:
+	return Vector3(cur_storey.storey_setting.CalcMeshCenter().x, 
+		calc_height()/2, 
+		cur_storey.storey_setting.CalcMeshCenter().y)
 
 func cell_pos_to_vec3(p2 :Vector2i, storeynum :int) -> Vector3:
 	var st_index = find_storey_num_to_index(storeynum)

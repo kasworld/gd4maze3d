@@ -66,9 +66,12 @@ func enter_next_storey() -> void:
 
 func enter_storey() -> void:
 	$DecoOrbit.position = current_tower.calc_center()
+	var oldminimapviewmode :MiniMap.MiniMapView
 	if minimap != null:
+		oldminimapviewmode = minimap.minimap_mode
 		minimap.queue_free()
 	minimap = minimap_scene.instantiate()
+	minimap.minimap_mode = oldminimapviewmode
 	add_child(minimap)
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()

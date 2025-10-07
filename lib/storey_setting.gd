@@ -35,7 +35,7 @@ func CalcWallSize_EW_Reduced() -> Vector3:
 	return Vector3(WallThick, StoryH, LaneW-WallThick)
 
 func make_default() -> StoreySetting:
-	MazeSize = Vector2i(3,3)
+	MazeSize = Vector2i(4,4)
 	StoryH = 3.0
 	LaneW = 4.0
 	WallThick = LaneW *0.05
@@ -50,7 +50,7 @@ func make_default() -> StoreySetting:
 	return self 
 
 func make_deco() -> StoreySetting:
-	MazeSize = Vector2i(10,10)
+	MazeSize = Vector2i(4,4)
 	StoryH = 3.0
 	LaneW = 4.0
 	WallThick = LaneW *0.05

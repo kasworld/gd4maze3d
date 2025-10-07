@@ -31,9 +31,9 @@ func calc_storey_mid_y_pos(storey_index :int) -> float:
 	return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap()) + tower_setting.storey_setting.StoryH /2
 
 func calc_center() -> Vector3:
-	return Vector3(tower_setting.storey_setting.MeshCenter.x, 
+	return Vector3(tower_setting.storey_setting.CalcMeshCenter().x, 
 		calc_height()/2, 
-		tower_setting.storey_setting.MeshCenter.y)
+		tower_setting.storey_setting.CalcMeshCenter().y)
 
 func calc_height() -> float:
 	return calc_storey_base_y_pos(storey_list.size())

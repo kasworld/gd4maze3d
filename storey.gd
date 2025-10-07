@@ -57,10 +57,10 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.init_with_color(storey_setting.MeshSize, storey_setting.MeshSize*2, 0.01, Color.GREEN)
+	$Floor.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, Color.GREEN)
 	$Floor.rotate_x(PI/2)
 	$Floor.position = Vector3(0, 0 ,0)
-	$Ceiling.init_with_color(storey_setting.MeshSize, storey_setting.MeshSize*2, 0.01, Color.YELLOW)
+	$Ceiling.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, Color.YELLOW)
 	$Ceiling.rotate_x(PI/2)
 	$Ceiling.position = Vector3(0, storey_setting.StoryH  ,0)
 
@@ -91,7 +91,7 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	$Label3D.pixel_size = storey_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-storey_setting.WallThick, storey_setting.StoryH/2, -storey_setting.WallThick)
-	#$Label3D.position = Vector3(storey_setting.MeshSize.x, storey_setting.StoryH/2, storey_setting.MeshSize.y)
+	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, storey_setting.StoryH/2, storey_setting.CalcMeshSize().y)
 	return self
 
 func add_donut_capsule(n :int) -> void:
@@ -129,7 +129,7 @@ func random_color()->Color:
 
 func add_ball_trails(mesh_type_list) ->void:
 	var ba = AABB( Vector3(storey_setting.WallThick/2,0, storey_setting.WallThick/2),
-		Vector3(storey_setting.StoreySize.x -storey_setting.WallThick, storey_setting.StoryH, storey_setting.StoreySize.y -storey_setting.WallThick) )
+		Vector3(storey_setting.CalcStoreySize().x -storey_setting.WallThick, storey_setting.StoryH, storey_setting.CalcStoreySize().y -storey_setting.WallThick) )
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
@@ -191,15 +191,15 @@ func pos_multimesh(multimesh :MultiMesh, pos_list :Array) -> void:
 
 func set_wall_size(full :bool) -> void:
 	if full:
-		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.WallSize_NS_Full
-		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.WallSize_NS_Full
-		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.WallSize_EW_Full
-		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.WallSize_EW_Full
+		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Full()
+		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Full()
+		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Full()
+		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Full()
 	else:
-		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.WallSize_NS_Reduced
-		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.WallSize_NS_Reduced
-		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.WallSize_EW_Reduced
-		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.WallSize_EW_Reduced
+		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Reduced()
+		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Reduced()
+		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Reduced()
+		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Reduced()
 
 var wall_multi_inst_ew_main :MultiMeshInstance3D
 var wall_multi_inst_ns_main :MultiMeshInstance3D
@@ -210,10 +210,10 @@ var pos_list_ns_main :Array
 var pos_list_ew_sub :Array
 var pos_list_ns_sub :Array
 func make_wall_by_maze() -> void:
-	wall_multi_inst_ew_main = make_box_multi_inst(main_wall_mat, storey_setting.WallSize_EW_Reduced)
-	wall_multi_inst_ns_main = make_box_multi_inst(main_wall_mat, storey_setting.WallSize_NS_Reduced)
-	wall_multi_inst_ew_sub = make_box_multi_inst(sub_wall_mat, storey_setting.WallSize_EW_Reduced)
-	wall_multi_inst_ns_sub = make_box_multi_inst(sub_wall_mat, storey_setting.WallSize_NS_Reduced)
+	wall_multi_inst_ew_main = make_box_multi_inst(main_wall_mat, storey_setting.CalcWallSize_EW_Reduced())
+	wall_multi_inst_ns_main = make_box_multi_inst(main_wall_mat, storey_setting.CalcWallSize_NS_Reduced())
+	wall_multi_inst_ew_sub = make_box_multi_inst(sub_wall_mat, storey_setting.CalcWallSize_EW_Reduced())
+	wall_multi_inst_ns_sub = make_box_multi_inst(sub_wall_mat, storey_setting.CalcWallSize_NS_Reduced())
 	$WallContainer.add_child(wall_multi_inst_ew_main)
 	$WallContainer.add_child(wall_multi_inst_ns_main)
 	$WallContainer.add_child(wall_multi_inst_ew_sub)
@@ -248,10 +248,10 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		match dir:
 			EnumDir.Flag.West, EnumDir.Flag.East:
-				var b = make_box_from_subviewport(line2d_subviewport, storey_setting.WallSize_EW_Reduced)
+				var b = make_box_from_subviewport(line2d_subviewport, storey_setting.CalcWallSize_EW_Reduced())
 				b.position = pos_face_ew
 			EnumDir.Flag.North, EnumDir.Flag.South:
-				var b = make_box_from_subviewport(line2d_subviewport, storey_setting.WallSize_NS_Reduced)
+				var b = make_box_from_subviewport(line2d_subviewport, storey_setting.CalcWallSize_NS_Reduced())
 				b.position = pos_face_ns
 		return
 

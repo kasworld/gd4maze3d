@@ -26,19 +26,20 @@ func _ready() -> void:
 	
 	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
 	add_child(current_tower)
-	$DecoOrbit.init(current_tower.tower_setting.TotalDiagonal)
+	$DecoOrbit.init(current_tower.tower_setting.storey_setting.TotalDiagonal)
 	
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init(current_tower, [EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
-			i, current_tower.tower_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+		pl.init(current_tower, 
+			[EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
+			i, current_tower.tower_setting.storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
 	var n = 0
 	for i in n:
 		var rd = 2*PI/n *i
-		var r = current_tower.tower_setting.TotalDiagonal 
+		var r = current_tower.tower_setting.storey_setting.TotalDiagonal 
 		add_deco_tower(Vector3(sin(rd)*r,0,cos(rd)*r))
 
 	update_button_text()
@@ -83,7 +84,7 @@ func apply_storey_gap_change() -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = current_tower.tower_setting.TotalDiagonal *1.0
+	var r = current_tower.tower_setting.storey_setting.TotalDiagonal *1.0
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
 	cameralight.look_at(current_tower.calc_center())
 

@@ -40,9 +40,9 @@ func init(st :Storey, char_list :Array, player :MazeCrawl) -> MiniMap:
 	map_mode_full = false
 	storey = st
 	walls_known = []
-	walls_known.resize(storey.tower_setting.MazeSize.y*2+1)
+	walls_known.resize(storey.storey_setting.MazeSize.y*2+1)
 	for cl in walls_known:
-		cl.resize(storey.tower_setting.MazeSize.x*2+1)
+		cl.resize(storey.storey_setting.MazeSize.x*2+1)
 	goal = new_label(Color.RED, "Goal", 8)
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
@@ -50,7 +50,7 @@ func init(st :Storey, char_list :Array, player :MazeCrawl) -> MiniMap:
 
 	for ch in char_list:
 		ch.action_queue.clear()
-		var stpos = st.tower_setting.rand_pos_2i()
+		var stpos = st.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = st.start_pos
 			add_character(ch, stpos, 8)
@@ -63,7 +63,7 @@ func init(st :Storey, char_list :Array, player :MazeCrawl) -> MiniMap:
 
 func update_size() -> void:
 	var vp_size = get_viewport().get_visible_rect().size
-	map_scale = min( vp_size.x / storey.tower_setting.MazeSize.x , vp_size.y / storey.tower_setting.MazeSize.y )
+	map_scale = min( vp_size.x / storey.storey_setting.MazeSize.x , vp_size.y / storey.storey_setting.MazeSize.y )
 	WallThick = map_scale*0.1
 	if WallThick < 1 :
 		WallThick = 1
@@ -128,7 +128,7 @@ func pos2mapscale(pos :Vector2) -> Vector2:
 # make wallline by maze
 func make_walllines_all() -> void:
 	walllines_all = []
-	var MazeSize = storey.tower_setting.MazeSize
+	var MazeSize = storey.storey_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if not storey.maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
@@ -147,7 +147,7 @@ func make_walllines_all() -> void:
 # make wallline by walls_known
 func make_walllines_known() -> void:
 	walllines_known = []
-	var MazeSize = storey.tower_setting.MazeSize
+	var MazeSize = storey.storey_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if is_known_wall_at(x,y,EnumDir.Dir.North):
@@ -185,9 +185,9 @@ func update_knonw_walls_by_pos(x:int,y :int) -> void:
 		add_known_wall_at(x,y,EnumDir.Flag2Dir[d])
 
 func get_width() -> float:
-	return storey.tower_setting.MazeSize.x * map_scale
+	return storey.storey_setting.MazeSize.x * map_scale
 func get_height() -> float:
-	return storey.tower_setting.MazeSize.y * map_scale
+	return storey.storey_setting.MazeSize.y * map_scale
 
 func view_full_map() -> void:
 	for ch in $CharacterContainer.get_children():

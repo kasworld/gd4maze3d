@@ -84,11 +84,13 @@ _data = {
 script = ExtResource("1_k1sas")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("PlaneMesh_stebd")
 skeleton = NodePath("../..")
 
 [node name="Ceiling" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 mesh = SubResource("PlaneMesh_jbe1c")
 skeleton = NodePath("../..")
 

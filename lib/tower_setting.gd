@@ -2,93 +2,78 @@ class_name TowerSetting
 
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
-var MazeSize :Vector2i
-var StoryH :float
-var LaneW :float
-var WallThick :float
-var StoreySize :Vector2
-var TotalDiagonal :float
-var MeshSize :Vector2
-var MeshCenter :Vector2
-var WallSize_NS_Full :Vector3
-var WallSize_NS_Reduced :Vector3
-var WallSize_EW_Full :Vector3
-var WallSize_EW_Reduced :Vector3
-var MakeLine2DWallRate :float
-var MakeSubWallRate :float
-var MakeClockCalWallRate :float
-var MeshTrailTypeList :Array
-var DonutCapsuleCount :int
-var TreeCount :int
 var CharacterCount :int
+var storey_setting :StoreySetting
 
 func make_default() -> TowerSetting:
+	storey_setting = StoreySetting.new()
+	storey_setting.MazeSize = Vector2i(3,3)
+	storey_setting.StoryH = 3.0
+	storey_setting.LaneW = 4.0
+	storey_setting.WallThick = storey_setting.LaneW *0.05
+	storey_setting.StoreySize = storey_setting.MazeSize*storey_setting.LaneW
+	storey_setting.TotalDiagonal = (storey_setting.MazeSize*storey_setting.LaneW).length()
+	storey_setting.MeshSize = storey_setting.MazeSize*storey_setting.LaneW + Vector2(storey_setting.WallThick, storey_setting.WallThick)
+	storey_setting.MeshCenter = storey_setting.MazeSize*storey_setting.LaneW/2
+	storey_setting.WallSize_NS_Full = Vector3(storey_setting.LaneW, storey_setting.StoryH, storey_setting.WallThick)
+	storey_setting.WallSize_NS_Reduced = Vector3(storey_setting.LaneW-storey_setting.WallThick, storey_setting.StoryH, storey_setting.WallThick)
+	storey_setting.WallSize_EW_Full = Vector3(storey_setting.WallThick, storey_setting.StoryH, storey_setting.LaneW)
+	storey_setting.WallSize_EW_Reduced = Vector3(storey_setting.WallThick, storey_setting.StoryH, storey_setting.LaneW-storey_setting.WallThick)
+	storey_setting.MakeLine2DWallRate = 2.0/(storey_setting.MazeSize.x*storey_setting.MazeSize.y)
+	storey_setting.MakeSubWallRate = 2.0/(storey_setting.MazeSize.x*storey_setting.MazeSize.y)
+	storey_setting.MakeClockCalWallRate = 2.0/(storey_setting.MazeSize.x*storey_setting.MazeSize.y)
+	storey_setting.MeshTrailTypeList = ["♠","♣","♥","♦","★"]
+	storey_setting.DonutCapsuleCount = max(1, storey_setting.MazeSize.x*storey_setting.MazeSize.y/20.0)
+	storey_setting.TreeCount = max(1, storey_setting.MazeSize.x*storey_setting.MazeSize.y/50.0)
+
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3
-	MazeSize = Vector2i(16,9)
-	StoryH = 3.0
-	LaneW = 4.0
-	WallThick = LaneW *0.05
-	StoreySize = MazeSize*LaneW
-	TotalDiagonal = (MazeSize*LaneW).length()
-	MeshSize = MazeSize*LaneW + Vector2(WallThick, WallThick)
-	MeshCenter = MazeSize*LaneW/2
-	WallSize_NS_Full = Vector3(LaneW, StoryH, WallThick)
-	WallSize_NS_Reduced = Vector3(LaneW-WallThick, StoryH, WallThick)
-	WallSize_EW_Full = Vector3(WallThick, StoryH, LaneW)
-	WallSize_EW_Reduced = Vector3(WallThick, StoryH, LaneW-WallThick)
-	MakeLine2DWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	MakeSubWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	MakeClockCalWallRate = 2.0/(MazeSize.x*MazeSize.y)
-	MeshTrailTypeList = ["♠","♣","♥","♦","★"]
-	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
-	TreeCount = max(1, MazeSize.x*MazeSize.y/50.0)
-	CharacterCount = max(1, MazeSize.x*MazeSize.y/10.0)
+	CharacterCount = max(1, storey_setting.MazeSize.x*storey_setting.MazeSize.y/10.0)
 	return self
 
 func make_deco() -> TowerSetting:
+	storey_setting = StoreySetting.new()
+	storey_setting.MazeSize = Vector2i(10,10)
+	storey_setting.StoryH = 3.0
+	storey_setting.LaneW = 4.0
+	storey_setting.WallThick = storey_setting.LaneW *0.05
+	storey_setting.StoreySize = storey_setting.MazeSize*storey_setting.LaneW
+	storey_setting.TotalDiagonal = (storey_setting.MazeSize*storey_setting.LaneW).length()
+	storey_setting.MeshSize = storey_setting.MazeSize*storey_setting.LaneW + Vector2(storey_setting.WallThick, storey_setting.WallThick)
+	storey_setting.MeshCenter = storey_setting.MazeSize*storey_setting.LaneW/2
+	storey_setting.WallSize_NS_Full = Vector3(storey_setting.LaneW, storey_setting.StoryH, storey_setting.WallThick)
+	storey_setting.WallSize_NS_Reduced = Vector3(storey_setting.LaneW-storey_setting.WallThick, storey_setting.StoryH, storey_setting.WallThick)
+	storey_setting.WallSize_EW_Full = Vector3(storey_setting.WallThick, storey_setting.StoryH, storey_setting.LaneW)
+	storey_setting.WallSize_EW_Reduced = Vector3(storey_setting.WallThick, storey_setting.StoryH, storey_setting.LaneW-storey_setting.WallThick)
+	storey_setting.MakeLine2DWallRate = 1.0/(storey_setting.MazeSize.x*storey_setting.MazeSize.y)
+	storey_setting.MakeSubWallRate = 1.0/(storey_setting.MazeSize.x*storey_setting.MazeSize.y)
+	storey_setting.MakeClockCalWallRate = 1.0/(storey_setting.MazeSize.x*storey_setting.MazeSize.y)
+	storey_setting.MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
+	storey_setting.DonutCapsuleCount = 1
+	storey_setting.TreeCount = 1
+
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3
-	MazeSize = Vector2i(10,10)
-	StoryH = 3.0
-	LaneW = 4.0
-	WallThick = LaneW *0.05
-	StoreySize = MazeSize*LaneW
-	TotalDiagonal = (MazeSize*LaneW).length()
-	MeshSize = MazeSize*LaneW + Vector2(WallThick, WallThick)
-	MeshCenter = MazeSize*LaneW/2
-	WallSize_NS_Full = Vector3(LaneW, StoryH, WallThick)
-	WallSize_NS_Reduced = Vector3(LaneW-WallThick, StoryH, WallThick)
-	WallSize_EW_Full = Vector3(WallThick, StoryH, LaneW)
-	WallSize_EW_Reduced = Vector3(WallThick, StoryH, LaneW-WallThick)
-	MakeLine2DWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
-	DonutCapsuleCount = 1
-	TreeCount = 1
 	CharacterCount = 1
 	return self
 
 # used to animate
 var StoreyGapRate := 1.0
 func calc_current_storey_gap() -> float:
-	return StoryH * StoreyGapRate
+	return storey_setting.StoryH * StoreyGapRate
 func calc_storey_base_y_pos(storey_index :int) -> float:
-	return storey_index * (StoryH + calc_current_storey_gap())
+	return storey_index * (storey_setting.StoryH + calc_current_storey_gap())
 func calc_storey_mid_y_pos(storey_index :int) -> float:
-	return storey_index * (StoryH + calc_current_storey_gap()) + StoryH /2
+	return storey_index * (storey_setting.StoryH + calc_current_storey_gap()) + storey_setting.StoryH /2
 
 func rand_pos_2i() -> Vector2i:
-	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
+	return Vector2i(randi_range(0,storey_setting.MazeSize.x-1),randi_range(0,storey_setting.MazeSize.y-1) )
 
 func _to_string() -> String:
 	return "TowerSetting upper:%d lower:%d
-	Maze size:%s height:%.1f lane width:%.1f wall thick:%.1f
-	Count ball trail:%d donnut capsule:%d tree:%d
-	Character count:%d" % [
+	Character count:%d
+	Storey %s" % [
 		VisibleStoreyUp, VisibleStoreyDown,
-		MazeSize, StoryH, LaneW, WallThick,
-		MeshTrailTypeList.size(), DonutCapsuleCount, TreeCount,
 		CharacterCount,
+		storey_setting,
 	]

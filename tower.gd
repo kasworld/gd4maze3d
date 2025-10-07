@@ -24,17 +24,6 @@ func _to_string() -> String:
 
 func init(ts :TowerSetting) -> Tower:
 	tower_setting = ts
-	#var mat_keys = Texmat.floor_mat_dict.keys()
-	#mat_keys.shuffle()
-	#$Floor.mesh.material = Texmat.floor_mat_dict[mat_keys[0]].duplicate()
-	#$Floor.mesh.size = tower_setting.MeshSize
-	#$Floor.mesh.material.uv1_scale = Vector3(tower_setting.MazeSize.x,(tower_setting.MazeSize.x+tower_setting.MazeSize.y)/2.0,tower_setting.MazeSize.y)
-
-	#mat_keys = Texmat.ceiling_mat_dict.keys()
-	#mat_keys.shuffle()
-	#$Ceiling.mesh.material = Texmat.ceiling_mat_dict[mat_keys[0]].duplicate()
-	#$Ceiling.mesh.size = tower_setting.MeshSize
-	#$Ceiling.mesh.material.uv1_scale = $Floor.mesh.material.uv1_scale
 	
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
@@ -42,16 +31,9 @@ func init(ts :TowerSetting) -> Tower:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
 	
-	set_floor_ceiling_pos()
-	#set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
 	return self
-
-func set_floor_ceiling_pos() -> void:
-	pass
-	#$Floor.position = calc_floor_position()
-	#$Ceiling.position = calc_ceiling_position()
 
 func enter_next_storey() -> void:
 	del_old_storey()
@@ -59,7 +41,6 @@ func enter_next_storey() -> void:
 	var new_cur_storey_num = cur_storey.storey_num +1
 	cur_storey = storey_list[find_storey_num_to_index(new_cur_storey_num)]
 
-	set_floor_ceiling_pos()
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
@@ -72,16 +53,6 @@ func _process(_delta: float) -> void:
 		else:
 			tower_setting.StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
-
-#func calc_floor_position() -> Vector3:
-	#return Vector3(tower_setting.MeshCenter.x, 
-		#-tower_setting.calc_current_storey_gap()/2, 
-		#tower_setting.MeshCenter.y)
-#
-#func calc_ceiling_position() -> Vector3:
-	#return Vector3(tower_setting.MeshCenter.x, 
-		#tower_setting.calc_storey_base_y_pos(storey_list.size()) - tower_setting.calc_current_storey_gap()/2, 
-		#tower_setting.MeshCenter.y)
 
 func calc_center() -> Vector3:
 	return Vector3(tower_setting.storey_setting.MeshCenter.x, 
@@ -106,8 +77,6 @@ func find_storey_num_to_index(num :int) -> int:
 func apply_storey_gap_change() -> void:
 	for i in storey_list.size():
 		storey_list[i].position.y = tower_setting.calc_storey_base_y_pos(i)
-	#$Floor.position = calc_floor_position()
-	#$Ceiling.position = calc_ceiling_position()
 
 func add_new_storey(stnum :int) -> void:
 	var gp = tower_setting.storey_setting.rand_pos_2i()

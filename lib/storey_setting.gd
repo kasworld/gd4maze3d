@@ -59,6 +59,7 @@ func make_deco() -> StoreySetting:
 	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
+	MakeMeshTrailRate = 0.5
 	DonutCapsuleCount = 1
 	TreeCount = 1
 	return self 

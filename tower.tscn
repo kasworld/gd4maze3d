@@ -1,32 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://brywee43bqjex"]
+[gd_scene load_steps=8 format=3 uid="uid://brywee43bqjex"]
 
 [ext_resource type="Script" uid="uid://bqo1fk2lfpr8d" path="res://tower.gd" id="1_k1sas"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydl53"]
-resource_local_to_scene = true
-transparency = 2
-alpha_scissor_threshold = 0.5
-alpha_antialiasing_mode = 0
-emission = Color(0.188235, 0.188235, 0.188235, 1)
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_stebd"]
-resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_ydl53")
-size = Vector2(100, 100)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhpxw"]
-resource_local_to_scene = true
-emission = Color(0.384314, 0.384314, 0.384314, 1)
-uv1_scale = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_jbe1c"]
-resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_dhpxw")
-flip_faces = true
-size = Vector2(100, 100)
 
 [sub_resource type="Animation" id="Animation_lquwl"]
 length = 0.001
@@ -82,17 +56,6 @@ _data = {
 
 [node name="Tower" type="Node3D"]
 script = ExtResource("1_k1sas")
-
-[node name="Floor" type="MeshInstance3D" parent="."]
-visible = false
-mesh = SubResource("PlaneMesh_stebd")
-skeleton = NodePath("../..")
-
-[node name="Ceiling" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-visible = false
-mesh = SubResource("PlaneMesh_jbe1c")
-skeleton = NodePath("../..")
 
 [node name="AnimationPlayerDelStorey" type="AnimationPlayer" parent="."]
 libraries = {

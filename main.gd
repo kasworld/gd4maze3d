@@ -14,7 +14,6 @@ var minimap :MiniMap
 var player :MazeCrawl
 var camera_move := false
 var current_tower :Tower
-var deco_tower :Tower
 
 func _ready() -> void:
 	cameralight.init()
@@ -46,7 +45,7 @@ func _ready() -> void:
 	enter_storey()
 
 func add_deco_tower(p :Vector3) -> void:
-	deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_deco())
+	var deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_deco())
 	add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()

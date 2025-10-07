@@ -10,7 +10,7 @@ func make_default() -> TowerSetting:
 	storey_setting = StoreySetting.new().make_default()
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3
-	StoreyGap = 3
+	StoreyGap = 5
 	CharacterCount = max(1, storey_setting.MazeSize.x*storey_setting.MazeSize.y/10.0)
 	return self
 

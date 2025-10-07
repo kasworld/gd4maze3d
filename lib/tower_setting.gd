@@ -19,15 +19,6 @@ func make_deco() -> TowerSetting:
 	CharacterCount = 1
 	return self
 
-# used to animate
-var StoreyGapRate := 1.0
-func calc_current_storey_gap() -> float:
-	return storey_setting.StoryH * StoreyGapRate
-func calc_storey_base_y_pos(storey_index :int) -> float:
-	return storey_index * (storey_setting.StoryH + calc_current_storey_gap())
-func calc_storey_mid_y_pos(storey_index :int) -> float:
-	return storey_index * (storey_setting.StoryH + calc_current_storey_gap()) + storey_setting.StoryH /2
-
 func _to_string() -> String:
 	return "TowerSetting upper:%d lower:%d
 	Character count:%d

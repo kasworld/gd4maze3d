@@ -18,6 +18,31 @@ var view_pillars :bool = true
 var gap_ani_dir_open : bool = true # true:open, false:close
 var animate_gap_start_time :float
 
+# used to animate
+var StoreyGapRate := 1.0
+
+func calc_current_storey_gap() -> float:
+	return tower_setting.storey_setting.StoryH * StoreyGapRate
+
+func calc_storey_base_y_pos(storey_index :int) -> float:
+	return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap())
+
+func calc_storey_mid_y_pos(storey_index :int) -> float:
+	return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap()) + tower_setting.storey_setting.StoryH /2
+
+func calc_center() -> Vector3:
+	return Vector3(tower_setting.storey_setting.MeshCenter.x, 
+		calc_height()/2, 
+		tower_setting.storey_setting.MeshCenter.y)
+
+func calc_height() -> float:
+	return calc_storey_base_y_pos(storey_list.size())
+
+func cell_pos_to_vec3(p2 :Vector2i, storeynum :int) -> Vector3:
+	var st_index = find_storey_num_to_index(storeynum)
+	var y = calc_storey_mid_y_pos(st_index) 
+	return storey_list[st_index].mazepos2storeypos(p2, y)	
+
 func _to_string() -> String:
 	return "Tower %s, floor,ceiling %s\n%s" % [
 	storey_list.size(), view_floor_ceiling, cur_storey ]
@@ -49,23 +74,10 @@ func _process(_delta: float) -> void:
 	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
 	if rate <= 1.0 :
 		if gap_ani_dir_open:
-			tower_setting.StoreyGapRate = lerp(0.0, 1.0, rate)
+			StoreyGapRate = lerp(0.0, 1.0, rate)
 		else:
-			tower_setting.StoreyGapRate = lerp(1.0, 0.0, rate)
+			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
-
-func calc_center() -> Vector3:
-	return Vector3(tower_setting.storey_setting.MeshCenter.x, 
-		calc_height()/2, 
-		tower_setting.storey_setting.MeshCenter.y)
-
-func calc_height() -> float:
-	return tower_setting.calc_storey_base_y_pos(storey_list.size())
-
-func cell_pos_to_vec3(p2 :Vector2i, storeynum :int) -> Vector3:
-	var st_index = find_storey_num_to_index(storeynum)
-	var y = tower_setting.calc_storey_mid_y_pos(st_index) 
-	return storey_list[st_index].mazepos2storeypos(p2, y)	
 
 func find_storey_num_to_index(num :int) -> int:
 	for i in storey_list.size():
@@ -76,7 +88,7 @@ func find_storey_num_to_index(num :int) -> int:
 
 func apply_storey_gap_change() -> void:
 	for i in storey_list.size():
-		storey_list[i].position.y = tower_setting.calc_storey_base_y_pos(i)
+		storey_list[i].position.y = calc_storey_base_y_pos(i)
 
 func add_new_storey(stnum :int) -> void:
 	var gp = tower_setting.storey_setting.rand_pos_2i()

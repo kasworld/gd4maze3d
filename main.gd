@@ -34,7 +34,7 @@ func _ready() -> void:
 			i, current_tower.tower_setting.storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
-	var n = 4
+	var n = 0
 	for i in n:
 		var rd = 2*PI/n *i
 		var r = current_tower.tower_setting.storey_setting.CalcDiagonalLength()

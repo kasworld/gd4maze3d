@@ -98,8 +98,8 @@ func apply_storey_gap_change() -> void:
 func add_new_storey(stnum :int) -> void:
 	var gp = tower_setting.storey_setting.rand_pos_2i()
 	var stp = tower_setting.storey_setting.rand_pos_2i()
-	if stnum > 0 :
-		stp = storey_list[-1].goal_pos
+	#if stnum > 0 :
+		#stp = storey_list[-1].goal_pos
 	var st = storey_scene.instantiate().init(tower_setting.storey_setting, stnum, stp, gp)
 	storey_list.append(st)
 	apply_storey_gap_change()

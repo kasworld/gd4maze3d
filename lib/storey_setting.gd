@@ -13,6 +13,24 @@ var MakeMeshTrailRate :float
 var DonutCapsuleCount :int
 var TreeCount :int
 
+func duplicate(deep :bool = false) -> StoreySetting:
+	var rtn := new()
+	rtn.MazeSize = MazeSize
+	rtn.StoryH = StoryH
+	rtn.LaneW = LaneW
+	rtn.WallThick = WallThick
+	rtn.MakeLine2DWallRate = MakeLine2DWallRate
+	rtn.MakeSubWallRate = MakeSubWallRate
+	rtn.MakeClockCalWallRate = MakeClockCalWallRate
+	if deep:
+		rtn.MeshTrailTypeList = MeshTrailTypeList.duplicate()
+	else:
+		rtn.MeshTrailTypeList = MeshTrailTypeList
+	rtn.MakeMeshTrailRate = MakeMeshTrailRate
+	rtn.DonutCapsuleCount = DonutCapsuleCount
+	rtn.TreeCount = TreeCount
+	return rtn
+
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
 

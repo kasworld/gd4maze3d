@@ -5,6 +5,14 @@ var VisibleStoreyDown :int
 var CharacterCount :int
 var StoreyGap :float
 
+func duplicate() -> TowerSetting:
+	var rtn := new()
+	rtn.VisibleStoreyUp = VisibleStoreyUp
+	rtn.VisibleStoreyDown = VisibleStoreyDown
+	rtn.StoreyGap = StoreyGap
+	rtn.CharacterCount = CharacterCount
+	return rtn
+
 func make_default() -> TowerSetting:
 	VisibleStoreyUp = 3
 	VisibleStoreyDown = 3

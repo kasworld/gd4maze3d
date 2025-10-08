@@ -96,9 +96,10 @@ func apply_storey_gap_change() -> void:
 		storey_list[i].position.y = calc_storey_base_y_pos(i)
 
 func add_new_storey(stnum :int) -> void:
-	var gp = storey_setting.rand_pos_2i()
-	var stp = storey_setting.rand_pos_2i()
-	var st = storey_scene.instantiate().init(storey_setting, stnum, stp, gp)
+	var ss = storey_setting.duplicate()
+	var gp = ss.rand_pos_2i()
+	var stp = ss.rand_pos_2i()
+	var st = storey_scene.instantiate().init(ss, stnum, stp, gp)
 	storey_list.append(st)
 	apply_storey_gap_change()
 	$AddStoreyContainer.add_child(st)

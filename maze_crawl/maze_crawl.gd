@@ -5,7 +5,6 @@ var action_queue :ActionQueue
 var action_start_time :float # unixtime sec
 var action_current : Array # [Action, action_per_second.value]
 
-var current_tower :Tower
 var serial :int
 var color :Color
 
@@ -26,8 +25,7 @@ func set_next_walk_type() -> MazeCrawl:
 func set_ai_walk_type(t :EnumWalk.Walk) -> void:
 	ai_walk_type = t
 
-func init(tw :Tower, walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> MazeCrawl:
-	current_tower = tw
+func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> MazeCrawl:
 	ai_walk_type = walk_type
 	total_action_stats = EnumAction.new_stats()
 	dir_src = EnumDir.Dir.North
@@ -81,7 +79,7 @@ func start_new_action() -> bool:
 			pos_dst = args[1]
 			storey_action_stats = EnumAction.new_stats()
 			action_queue.rand_act_speed()
-			animate_move_by_dur(0)
+			animate_move_by_dur(0, storey, storey)
 			animate_turn_by_dur(0)
 	total_action_stats[action_current[0]] += 1
 	storey_action_stats[action_current[0]] += 1
@@ -161,16 +159,9 @@ func can_move(dir :EnumDir.Dir) -> bool:
 func get_animation_progress() -> float:
 	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
 
-func animate_move_by_dur( dur :float) -> void:
-	var p1 = current_tower.cell_pos_to_vec3(pos_src, storey.storey_num)
-	var p2 = current_tower.cell_pos_to_vec3(pos_dst, storey.storey_num) 
-	position = p1.lerp(p2,dur)
-
-func animate_move_storey_by_dur(dur :float, from :int, to :int) -> void:
-	if from < 0 :
-		from = 0
-	var p1 = current_tower.cell_pos_to_vec3(pos_src, from) 
-	var p2 = current_tower.cell_pos_to_vec3(pos_dst, to)
+func animate_move_by_dur(dur :float, from :Storey, to :Storey) -> void:
+	var p1 = from.mazepos2storeypos(pos_src, from.position.y + from.storey_setting.StoryH/2)
+	var p2 = to.mazepos2storeypos(pos_dst, to.position.y + to.storey_setting.StoryH/2)
 	position = p1.lerp(p2,dur)
 
 func animate_turn_by_dur(dur :float) -> void:

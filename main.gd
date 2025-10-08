@@ -33,7 +33,7 @@ func _ready() -> void:
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
-		pl.init(current_tower, 
+		pl.init(
 			[EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
 			i, default_storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
@@ -149,13 +149,17 @@ func update_button_text() -> void:
 func animate_action(ch :MazeCrawl, dur :float) -> void:
 	match ch.action_current[0]:
 		EnumAction.Action.Forward:
-			ch.animate_move_by_dur(dur)
+			ch.animate_move_by_dur(dur, current_tower.cur_storey, current_tower.cur_storey)
 		EnumAction.Action.TurnLeft, EnumAction.Action.TurnRight:
 			ch.animate_turn_by_dur(dur)
 		EnumAction.Action.RollRight,EnumAction.Action.RollLeft:
 			ch.animate_roll_by_dur(dur)
 		EnumAction.Action.EnterStorey:
-			ch.animate_move_storey_by_dur(dur, current_tower.cur_storey.storey_num -1, current_tower.cur_storey.storey_num)
+			var from_num := 0
+			if current_tower.cur_storey.storey_num > 0:
+				from_num = current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num -1)
+			var from_storey = current_tower.storey_list[from_num]
+			ch.animate_move_by_dur(dur, from_storey, current_tower.cur_storey)
 	if ch == player:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)

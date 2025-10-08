@@ -42,11 +42,6 @@ func calc_center() -> Vector3:
 		calc_height()/2, 
 		cur_storey.storey_setting.CalcMeshCenter().y)
 
-func cell_pos_to_vec3(p2 :Vector2i, storeynum :int) -> Vector3:
-	var st_index = find_storey_num_to_index(storeynum)
-	var y = calc_storey_mid_y_pos(st_index) 
-	return storey_list[st_index].mazepos2storeypos(p2, y)	
-
 func _to_string() -> String:
 	return "Tower %s, floor,ceiling %s\n%s" % [
 	storey_list.size(), view_floor_ceiling, cur_storey ]
@@ -97,6 +92,8 @@ func apply_storey_gap_change() -> void:
 
 func add_new_storey(stnum :int) -> void:
 	var ss = storey_setting.duplicate()
+	ss.MazeSize.x += randi_range(-1,1)
+	ss.MazeSize.y += randi_range(-1,1)
 	var gp = ss.rand_pos_2i()
 	var stp = ss.rand_pos_2i()
 	var st = storey_scene.instantiate().init(ss, stnum, stp, gp)

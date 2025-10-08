@@ -38,9 +38,7 @@ func calc_height() -> float:
 	return calc_storey_base_y_pos(storey_list.size())
 
 func calc_center() -> Vector3:
-	return Vector3(cur_storey.storey_setting.CalcMeshCenter().x, 
-		calc_height()/2, 
-		cur_storey.storey_setting.CalcMeshCenter().y)
+	return Vector3(0, calc_height()/2, 0)
 
 func _to_string() -> String:
 	return "Tower %s, floor,ceiling %s\n%s" % [
@@ -97,6 +95,7 @@ func add_new_storey(stnum :int) -> void:
 	var gp = ss.rand_pos_2i()
 	var stp = ss.rand_pos_2i()
 	var st = storey_scene.instantiate().init(ss, stnum, stp, gp)
+	st.position -= ss.CalcMeshCenterV3()
 	storey_list.append(st)
 	apply_storey_gap_change()
 	$AddStoreyContainer.add_child(st)

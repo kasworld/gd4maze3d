@@ -42,6 +42,8 @@ func CalcMeshSize() -> Vector2:
 	return MazeSize*LaneW + Vector2(WallThick, WallThick)
 func CalcMeshCenter() -> Vector2:
 	return MazeSize*LaneW/2
+func CalcMeshCenterV3() -> Vector3:
+	return Vector3(MazeSize.x*LaneW/2,0,MazeSize.y*LaneW/2)
 
 func CalcWallSize_NS_Full() -> Vector3:
 	return Vector3(LaneW, StoryH, WallThick)

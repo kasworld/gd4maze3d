@@ -180,11 +180,10 @@ func _to_string() -> String:
 		]
 
 func debug_str() -> String:
-	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)\nOpen: %s" % [
+	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
 		EnumAction.stats2str(total_action_stats),
 		EnumAction.stats2str(storey_action_stats),
 		EnumAction.action2str(action_current[0]), action_queue,
 		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
-		storey.maze_cells.open_dir_str(pos_src.x, pos_src.y),
 		]

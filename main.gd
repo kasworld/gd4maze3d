@@ -39,7 +39,7 @@ func _ready() -> void:
 	player = char_container.get_child(0)
 
 	var orbitr := default_storey_setting.CalcDiagonalLength()
-	var n = 0
+	var n = 4
 	for i in n:
 		var rd = 2*PI/n *i
 		add_deco_tower(Vector3(sin(rd)*orbitr,0,cos(rd)*orbitr))
@@ -127,19 +127,22 @@ func move_character(cur_storey :Storey) -> void:
 			animate_action(ch, ani_dur)
 
 func update_info() -> void:
-	debuglabel.text = player.debug_str()
-	performancelabel.text = """%d FPS (%.2f mspf)
+	if debuglabel.visible:
+		debuglabel.text = player.debug_str()
+	if performancelabel.visible:
+		performancelabel.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
 %d objects
 %dK primitive indices
 %d draw calls""" % [
-	Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
-	get_tree().root.use_occlusion_culling,
-	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
-	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
-	RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
-	]
-	infolabel.text = """%s\n%s\n%s\n%s""" % [current_tower, minimap, player, $MovingCameraLight ]
+		Engine.get_frames_per_second(),1000.0 / Engine.get_frames_per_second(),
+		get_tree().root.use_occlusion_culling,
+		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
+		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
+		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+		]
+	if infolabel.visible:
+		infolabel.text = """%s\n%s\n%s\n%s""" % [current_tower, minimap, player, $MovingCameraLight ]
 
 func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap

@@ -2,7 +2,7 @@ class_name ActionQueue
 
 const QueueLimit = 10
 var queue :Array
-var action_per_second := ClampedFloat.new(2,0.5,4.5) # sec
+var action_per_second := ClampedFloat.new(1,0.5,3.0) # sec
 
 func init() -> ActionQueue:
 	rand_act_speed()

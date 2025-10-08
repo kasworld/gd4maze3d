@@ -10,6 +10,7 @@ static func wallview_next(a :WallView) -> WallView:
 var storey_scene = preload("res://storey.tscn")
 
 var tower_setting :TowerSetting
+var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
 var view_floor_ceiling :bool = true
@@ -29,11 +30,9 @@ func calc_storey_base_y_pos(storey_index :int) -> float:
 	for i in storey_index:
 		rtn += calc_current_storey_gap() + storey_list[i].storey_setting.StoryH
 	return rtn
-	#return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap())
 
 func calc_storey_mid_y_pos(storey_index :int) -> float:
 	return calc_storey_base_y_pos(storey_index) + storey_list[storey_index].storey_setting.StoryH/2
-	#return storey_index * (tower_setting.storey_setting.StoryH + calc_current_storey_gap()) + tower_setting.storey_setting.StoryH /2
 
 func calc_height() -> float:
 	return calc_storey_base_y_pos(storey_list.size())
@@ -52,8 +51,9 @@ func _to_string() -> String:
 	return "Tower %s, floor,ceiling %s\n%s" % [
 	storey_list.size(), view_floor_ceiling, cur_storey ]
 
-func init(ts :TowerSetting) -> Tower:
+func init(ts :TowerSetting, ss :StoreySetting) -> Tower:
 	tower_setting = ts
+	storey_setting = ss
 	
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
@@ -96,11 +96,9 @@ func apply_storey_gap_change() -> void:
 		storey_list[i].position.y = calc_storey_base_y_pos(i)
 
 func add_new_storey(stnum :int) -> void:
-	var gp = tower_setting.storey_setting.rand_pos_2i()
-	var stp = tower_setting.storey_setting.rand_pos_2i()
-	#if stnum > 0 :
-		#stp = storey_list[-1].goal_pos
-	var st = storey_scene.instantiate().init(tower_setting.storey_setting, stnum, stp, gp)
+	var gp = storey_setting.rand_pos_2i()
+	var stp = storey_setting.rand_pos_2i()
+	var st = storey_scene.instantiate().init(storey_setting, stnum, stp, gp)
 	storey_list.append(st)
 	apply_storey_gap_change()
 	$AddStoreyContainer.add_child(st)

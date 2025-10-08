@@ -14,6 +14,7 @@ var minimap :MiniMap
 var player :MazeCrawl
 var camera_move := false
 var current_tower :Tower
+var default_storey_setting :StoreySetting
 
 func _ready() -> void:
 	cameralight.init()
@@ -23,7 +24,10 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
-	current_tower = tower_scene.instantiate().init(TowerSetting.new().make_default())
+	default_storey_setting = StoreySetting.new().make_default()
+	current_tower = tower_scene.instantiate().init(
+		TowerSetting.new().make_default(),default_storey_setting,
+		)
 	add_child(current_tower)
 	
 	for i in current_tower.tower_setting.CharacterCount:
@@ -31,15 +35,14 @@ func _ready() -> void:
 		char_container.add_child(pl)
 		pl.init(current_tower, 
 			[EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
-			i, current_tower.tower_setting.storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+			i, default_storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
+	var orbitr := default_storey_setting.CalcDiagonalLength()
 	var n = 0
 	for i in n:
 		var rd = 2*PI/n *i
-		var r = current_tower.tower_setting.storey_setting.CalcDiagonalLength()
-		add_deco_tower(Vector3(sin(rd)*r,0,cos(rd)*r))
-	var orbitr := current_tower.tower_setting.storey_setting.CalcDiagonalLength()
+		add_deco_tower(Vector3(sin(rd)*orbitr,0,cos(rd)*orbitr))
 	if n != 0:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
@@ -48,7 +51,9 @@ func _ready() -> void:
 	enter_storey()
 
 func add_deco_tower(p :Vector3) -> void:
-	var deco_tower = tower_scene.instantiate().init(TowerSetting.new().make_deco())
+	var deco_tower = tower_scene.instantiate().init(
+		TowerSetting.new().make_deco(),StoreySetting.new().make_deco(),
+		)
 	add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()
@@ -89,7 +94,7 @@ func apply_storey_gap_change() -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = current_tower.tower_setting.storey_setting.CalcDiagonalLength() *1.0
+	var r = default_storey_setting.CalcDiagonalLength() *1.0
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
 	cameralight.look_at(current_tower.calc_center())
 

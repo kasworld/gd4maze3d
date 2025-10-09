@@ -101,10 +101,11 @@ func add_donut_capsule(n :int) -> void:
 			continue
 		var co = NamedColorList.color_list.pick_random()[0]
 		var pobj
+		var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
 		if randi()%2 ==0:
-			pobj = capsule_scene.instantiate().init(storey_setting.LaneW*0.3, storey_setting.LaneW*0.05, co)
+			pobj = capsule_scene.instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
-			pobj = donut_scene.instantiate().init(storey_setting.LaneW*0.07, storey_setting.LaneW*0.15,co)
+			pobj = donut_scene.instantiate().init(크기기준*0.07, 크기기준*0.15,co)
 		pobj.position = mazepos2storeypos(p, storey_setting.StoryH/4.0)
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)

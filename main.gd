@@ -29,6 +29,7 @@ func _ready() -> void:
 		TowerSetting.new().make_default(),default_storey_setting,
 		)
 	add_child(current_tower)
+	current_tower.storey_gap_changed.connect(storey_gap_changed)
 	
 	for i in current_tower.tower_setting.CharacterCount:
 		var pl = character_scene.instantiate()
@@ -83,11 +84,10 @@ func enter_storey() -> void:
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 
-func apply_storey_gap_change() -> void:
-	current_tower.apply_storey_gap_change()
+func storey_gap_changed(tw :Tower) -> void:
 	for ch in char_container.get_children():
-		ch.position.y = current_tower.tower_setting.calc_storey_mid_y_pos( 
-			current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num) )
+		ch.position.y = tw.calc_storey_mid_y_pos( 
+			tw.find_storey_num_to_index(tw.cur_storey.storey_num) )
 		if ch == player:
 			if not camera_move:
 				cameralight.copy_position_rotation(ch)
@@ -255,7 +255,7 @@ func _on_button_aps_down_pressed() -> void:
 
 func _on_button_storey_up_pressed() -> void:
 	enter_next_storey()
-
+	
 func _on_button_fire_pressed() -> void:
 	pass # Replace with function body.
 

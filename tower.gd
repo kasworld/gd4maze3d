@@ -1,6 +1,8 @@
 extends Node3D
 class_name Tower
 
+signal storey_gap_changed(t :Tower)
+
 enum WallView {Reduced, Full, Off}
 static func wallview2str(vd :WallView) -> String:
 	return WallView.keys()[vd]
@@ -89,6 +91,7 @@ func find_storey_num_to_index(num :int) -> int:
 func apply_storey_gap_change() -> void:
 	for i in storey_list.size():
 		storey_list[i].position.y = calc_storey_base_y_pos(i)
+	storey_gap_changed.emit(self)
 
 func add_new_storey(stnum :int) -> void:
 	var ss = storey_setting.duplicate()

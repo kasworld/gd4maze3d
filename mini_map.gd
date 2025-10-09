@@ -49,14 +49,10 @@ func init(st :Storey, char_list :Array, player :MazeCrawl) -> MiniMap:
 	add_child(start)
 
 	for ch in char_list:
-		ch.action_queue.clear()
-		var stpos = st.storey_setting.rand_pos_2i()
 		if ch == player:
-			stpos = st.start_pos
-			add_character(ch, stpos, 8)
+			add_character(ch, 8)
 		else:
-			add_character(ch, stpos, 0)
-		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [st, stpos])
+			add_character(ch, 0)
 	set_minimap_mode(player.serial)
 	update_size()
 	return self
@@ -73,10 +69,9 @@ func update_size() -> void:
 	position.y = (vp_size.y - get_height())/2
 	position.x = (vp_size.x - get_width())/2
 
-func add_character(achar :MazeCrawl, pos :Vector2, outline :int) -> void:
+func add_character(achar :MazeCrawl, outline :int) -> void:
 	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
-	update_label_pos_size(ch,pos)
 
 func move_character(n :int, pos :Vector2) -> void:
 	$CharacterContainer.get_child(n).position = pos2mapscale( pos )

@@ -81,6 +81,12 @@ func enter_storey() -> void:
 	minimap = minimap_scene.instantiate()
 	minimap.minimap_mode = oldminimapviewmode
 	add_child(minimap)
+	for ch in char_container.get_children():
+		ch.action_queue.clear()
+		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
+		if ch == player:
+			stpos = current_tower.cur_storey.start_pos
+		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [current_tower.cur_storey, stpos])
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 

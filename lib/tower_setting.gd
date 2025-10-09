@@ -28,8 +28,6 @@ func make_deco() -> TowerSetting:
 	return self
 
 func _to_string() -> String:
-	return "TowerSetting upper:%d lower:%d
-	Character count:%d" % [
-		VisibleStoreyUp, VisibleStoreyDown,
-		CharacterCount,
+	return "TowerSetting upper:%d lower:%d Character count:%d" % [
+		VisibleStoreyUp, VisibleStoreyDown, CharacterCount,
 	]

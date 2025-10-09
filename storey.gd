@@ -29,8 +29,8 @@ var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
 func _to_string() -> String:
-	return "Storey[%d mainwall:%s subwall:%s]" % [
-		storey_num, main_wall_mat_name, sub_wall_tex_name ]
+	return "Storey %d mainwall:%s subwall:%s
+	%s" % [storey_num, main_wall_mat_name, sub_wall_tex_name, storey_setting ]
 
 func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	storey_setting = ts

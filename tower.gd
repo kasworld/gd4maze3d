@@ -92,6 +92,8 @@ func add_new_storey(stnum :int) -> void:
 	var ss = storey_setting.duplicate()
 	ss.MazeSize.x += randi_range(-1,1)
 	ss.MazeSize.y += randi_range(-1,1)
+	ss.StoryH *= randf() + 0.5
+	ss.LaneW *= randf() + 0.5
 	var gp = ss.rand_pos_2i()
 	var stp = ss.rand_pos_2i()
 	var st = storey_scene.instantiate().init(ss, stnum, stp, gp)

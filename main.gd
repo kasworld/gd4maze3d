@@ -38,7 +38,7 @@ func _ready() -> void:
 			i, default_storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
-	var orbitr := default_storey_setting.CalcDiagonalLength()
+	var orbitr := default_storey_setting.CalcDiagonalLength() * 2
 	var n = 4
 	for i in n:
 		var rd = 2*PI/n *i

@@ -68,8 +68,9 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	make_wall_by_maze()
 	make_pillas()
 
-	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start %d" % storey_num).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
-	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
+	var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
+	$StartMark.init(5.0, 0.01, Color.YELLOW, "Start %d" % storey_num).position = mazepos2storeypos(start_pos, 크기기준/2.0)
+	$EndMark.init(5.0, 0.01, Color.YELLOW, "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, 크기기준/2.0)
 	놓인것들.set_at(start_pos,$StartMark)
 	놓인것들.set_at(goal_pos,$EndMark)
 
@@ -111,9 +112,10 @@ func add_donut_capsule(n :int) -> void:
 		놓인것들.set_at(p,pobj)
 
 func add_tree(p :Vector2i) ->void:
-	var tree_width := randf_range(storey_setting.LaneW*0.5, storey_setting.LaneW*0.9)
-	var tree_height := randf_range(storey_setting.StoryH*0.5, storey_setting.StoryH*0.9)
-	var bar_width = randf_range(storey_setting.LaneW*0.5, storey_setting.LaneW*0.9)/10
+	var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
+	var tree_width := randf_range(크기기준*0.5, 크기기준*0.9)
+	var tree_height := randf_range(크기기준*0.5, 크기기준*0.9)
+	var bar_width = randf_range(크기기준*0.5, 크기기준*0.9)/10
 	var bar_count := randi_range(20,50)
 	var bar_rotation := randfn(0,PI/40)
 	var bar_rotation_begin := randf_range(0, 2*PI)
@@ -129,6 +131,7 @@ func random_color()->Color:
 	return NamedColorList.color_list.pick_random()[0]
 
 func add_ball_trails(mesh_type_list) ->void:
+	var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
 	var ba = AABB( Vector3(storey_setting.WallThick/2,0, storey_setting.WallThick/2),
 		Vector3(storey_setting.CalcStoreySize().x -storey_setting.WallThick, storey_setting.StoryH, storey_setting.CalcStoreySize().y -storey_setting.WallThick) )
 	for mt in mesh_type_list:
@@ -141,7 +144,7 @@ func add_ball_trails(mesh_type_list) ->void:
 			randf_range(ba.position.z, ba.end.z),
 		)
 		var tc := randi_range(20,50)
-		var bt = mesh_trail_scene.instantiate().init_MeshGradient().init(bounce_cell, storey_setting.StoryH/30, tc, mt, pos).set_speed(1,4,0.05)
+		var bt = mesh_trail_scene.instantiate().init_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4,0.05)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:

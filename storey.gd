@@ -68,9 +68,9 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	make_wall_by_maze()
 	make_pillas()
 
-	var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
-	$StartMark.init(크기기준*3, 크기기준/100, Color.YELLOW, "Start %d" % storey_num).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
-	$EndMark.init(크기기준*3, 크기기준/100, Color.YELLOW, "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
+	var 크기기준 = storey_setting.LaneW
+	$StartMark.init(크기기준*1.5, 크기기준/100, Color.YELLOW, "Start %d" % storey_num).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
+	$EndMark.init(크기기준*1.5, 크기기준/100, Color.YELLOW, "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos,$StartMark)
 	놓인것들.set_at(goal_pos,$EndMark)
 

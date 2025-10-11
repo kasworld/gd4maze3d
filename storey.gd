@@ -2,6 +2,9 @@ extends Node3D
 
 class_name Storey
 
+static var darkcolorlist = NamedColorList.make_dark_color_list()
+static var lightcolorlist = NamedColorList.make_light_color_list()
+
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
 var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
@@ -57,11 +60,19 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, Color.GREEN)
-	$Floor.rotate_x(PI/2)
+	$Floor.init_with_color(
+		storey_setting.CalcMeshSize(), 
+		storey_setting.CalcMeshSize()*2, 
+		0.01, 
+		darkcolorlist.pick_random()[0],
+		).rotate_x(PI/2)
 	$Floor.position = Vector3(0, 0 ,0)
-	$Ceiling.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, Color.YELLOW)
-	$Ceiling.rotate_x(PI/2)
+	$Ceiling.init_with_color(
+		storey_setting.CalcMeshSize(), 
+		storey_setting.CalcMeshSize()*2, 
+		0.01, 
+		lightcolorlist.pick_random()[0],
+		).rotate_x(PI/2)
 	$Ceiling.position = Vector3(0, storey_setting.StoryH  ,0)
 
 	maze_cells = Maze.new(storey_setting.MazeSize)
@@ -69,8 +80,8 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	make_pillas()
 
 	var 크기기준 = storey_setting.LaneW
-	$StartMark.init(크기기준*1.5, 크기기준/100, Color.YELLOW, "Start %d" % storey_num).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
-	$EndMark.init(크기기준*1.5, 크기기준/100, Color.YELLOW, "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
+	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
+	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos,$StartMark)
 	놓인것들.set_at(goal_pos,$EndMark)
 

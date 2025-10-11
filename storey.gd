@@ -60,18 +60,10 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.init_with_color(
-		storey_setting.CalcMeshSize(), 
-		storey_setting.CalcMeshSize()*2, 
-		0.01, 
-		darkcolorlist.pick_random()[0],
+	$Floor.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, darkcolorlist.pick_random()[0],
 		).rotate_x(PI/2)
 	$Floor.position = Vector3(0, 0 ,0)
-	$Ceiling.init_with_color(
-		storey_setting.CalcMeshSize(), 
-		storey_setting.CalcMeshSize()*2, 
-		0.01, 
-		lightcolorlist.pick_random()[0],
+	$Ceiling.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, lightcolorlist.pick_random()[0],
 		).rotate_x(PI/2)
 	$Ceiling.position = Vector3(0, storey_setting.StoryH  ,0)
 
@@ -80,10 +72,12 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	make_pillas()
 
 	var 크기기준 = storey_setting.LaneW
-	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
-	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
-	놓인것들.set_at(start_pos,$StartMark)
-	놓인것들.set_at(goal_pos,$EndMark)
+	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
+		).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
+	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
+		).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
+	놓인것들.set_at(start_pos, $StartMark)
+	놓인것들.set_at(goal_pos, $EndMark)
 
 	wall_info_all = []
 	for y in storey_setting.MazeSize.y:

@@ -73,7 +73,8 @@ func enter_next_storey() -> void:
 	set_pillars_visible(view_pillars)
 
 func _process(_delta: float) -> void:
-	var rate :=  Time.get_unix_time_from_system() - animate_gap_start_time
+	var timenow := Time.get_unix_time_from_system()
+	var rate :=  timenow - animate_gap_start_time
 	if rate <= 1.0 :
 		if gap_ani_dir_open:
 			StoreyGapRate = lerp(0.0, 1.0, rate)
@@ -81,6 +82,9 @@ func _process(_delta: float) -> void:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
 
+	#var r = cur_storey.storey_setting.CalcDiagonalLength()
+	#cur_storey.position.x = sin(timenow)*r
+	
 func find_storey_num_to_index(num :int) -> int:
 	for i in storey_list.size():
 		if storey_list[i].storey_num == num:

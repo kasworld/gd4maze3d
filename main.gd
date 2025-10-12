@@ -60,7 +60,7 @@ func add_deco_tower(p :Vector3) -> void:
 	deco_tower.start_demo_random()
 
 func _process(delta: float) -> void:
-	move_character(current_tower.cur_storey)
+	act_character(current_tower.cur_storey)
 	update_info()
 	if camera_move:
 		move_camera(delta)
@@ -104,7 +104,7 @@ func move_camera(_delta: float) -> void:
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
 	cameralight.look_at(current_tower.calc_center())
 
-func move_character(cur_storey :Storey) -> void:
+func act_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():
 		var ani_dur = ch.get_animation_progress()
 		if ch.is_action_ended(ani_dur): # true on act end

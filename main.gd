@@ -114,15 +114,7 @@ func act_character(cur_storey :Storey) -> void:
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_next_storey()
 					return
-				var ft = cur_storey.놓인것들.get_at(ch.pos_src)
-				if ft is Donut:
-					ch.action_queue.enqueue_action(EnumAction.Action.RollLeft)
-					cur_storey.놓인것들.del_at(ch.pos_src)
-					ft.queue_free()
-				elif ft is Capsule:
-					ch.action_queue.enqueue_action(EnumAction.Action.RollRight)
-					cur_storey.놓인것들.del_at(ch.pos_src)
-					ft.queue_free()
+				놓인것들줍기(ch)
 			minimap.move_character(ch.serial, ch.pos_src)
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
@@ -131,6 +123,18 @@ func act_character(cur_storey :Storey) -> void:
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
 		if ch.action_current[0] != EnumAction.Action.None :
 			animate_action(ch, ani_dur)
+
+func 놓인것들줍기(ch :MazeCrawl) -> void:
+	var cur_storey = current_tower.cur_storey
+	var ft = cur_storey.놓인것들.get_at(ch.pos_src)
+	if ft is Donut:
+		ch.action_queue.enqueue_action(EnumAction.Action.RollLeft)
+		cur_storey.놓인것들.del_at(ch.pos_src)
+		ft.queue_free()
+	elif ft is Capsule:
+		ch.action_queue.enqueue_action(EnumAction.Action.RollRight)
+		cur_storey.놓인것들.del_at(ch.pos_src)
+		ft.queue_free()
 
 func animate_action(ch :MazeCrawl, dur :float) -> void:
 	match ch.action_current[0]:

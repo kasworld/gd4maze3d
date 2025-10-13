@@ -110,8 +110,7 @@ func move_camera(_delta: float) -> void:
 
 func act_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():
-		var ani_dur = ch.get_animation_progress()
-		if ch.is_action_ended(ani_dur): # true on act end
+		if ch.is_current_action_ended(): # true on act end
 			ch.end_action()
 			if ch == player  : # player
 				cameralight.snap_90()
@@ -122,11 +121,10 @@ func act_character(cur_storey :Storey) -> void:
 			minimap.move_character(ch.serial, ch.pos_src)
 		ch.try_auto_walk()
 		if ch.start_new_action(): # new act start
-			ani_dur = 0
-			if ch == player and ch.action_current.Action != Crawler.Action.EnterStorey: # player
+			if ch == player and ch.current_action.Action != Crawler.Action.EnterStorey: # player
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
-		if not ch.action_current.is_empty():
-			animate_action(ch, ani_dur)
+		if not ch.current_action.is_empty():
+			animate_action(ch)
 
 func 놓인것들줍기(ch :Crawler) -> void:
 	var cur_storey = current_tower.cur_storey
@@ -140,20 +138,20 @@ func 놓인것들줍기(ch :Crawler) -> void:
 		cur_storey.놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 
-func animate_action(ch :Crawler, dur :float) -> void:
-	match ch.action_current.Action:
+func animate_action(ch :Crawler) -> void:
+	match ch.current_action.Action:
 		Crawler.Action.Forward:
-			ch.animate_move_by_dur(dur, current_tower.cur_storey, current_tower.cur_storey)
+			ch.animate_move(current_tower.cur_storey, current_tower.cur_storey)
 		Crawler.Action.TurnLeft, Crawler.Action.TurnRight:
-			ch.animate_turn_by_dur(dur)
+			ch.animate_turn()
 		Crawler.Action.RollRight,Crawler.Action.RollLeft:
-			ch.animate_roll_by_dur(dur)
+			ch.animate_roll()
 		Crawler.Action.EnterStorey:
 			var from_num := 0
 			if current_tower.cur_storey.storey_num > 0:
 				from_num = current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num -1)
 			var from_storey = current_tower.storey_list[from_num]
-			ch.animate_move_by_dur(dur, from_storey, current_tower.cur_storey)
+			ch.animate_move(from_storey, current_tower.cur_storey)
 	if ch == player:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)

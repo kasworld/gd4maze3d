@@ -69,7 +69,7 @@ func queue2str() -> String:
 
 #var action_queue :ActionQueue
 var action_start_time :float # unixtime sec
-var action_current : Dictionary # [Action, APS, Args]
+var current_action : Dictionary # [Action, APS, Args]
 
 var serial :int
 var color :Color
@@ -95,7 +95,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	auto_walk_type = walk_type
 	total_action_stats = new_stats()
 	dir_src = EnumDir.Dir.North
-	action_current = {}
+	current_action = {}
 	queue_init()
 	serial = n
 	color = co
@@ -110,16 +110,16 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 
 # return true on new act
 func start_new_action() -> bool:
-	if not action_current.is_empty() || is_queue_empty():
+	if not current_action.is_empty() || is_queue_empty():
 		return false
 	action_start_time = Time.get_unix_time_from_system()
-	action_current = action_pop_front()
-	match action_current.Action :
+	current_action = action_pop_front()
+	match current_action.Action :
 		Action.Forward:
 			if can_move(dir_src):
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 			else :
-				action_current = {}
+				current_action = {}
 		Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
 		Action.TurnRight:
@@ -129,25 +129,25 @@ func start_new_action() -> bool:
 		Action.RollLeft:
 			roll_dir_dst = EnumRoll.roll_left(roll_dir)
 		Action.EnterStorey:
-			var args = action_current.Args
+			var args = current_action.Args
 			storey = args.Storey
 			pos_dst = args.Pos
 			storey_action_stats = new_stats()
 			rand_act_speed()
-			animate_move_by_dur(0, storey, storey)
-			animate_turn_by_dur(0)
-	total_action_stats[action_current.Action ] += 1
-	storey_action_stats[action_current.Action ] += 1
+			animate_move(storey, storey)
+			animate_turn()
+	total_action_stats[current_action.Action ] += 1
+	storey_action_stats[current_action.Action ] += 1
 	return true
 
 # return true on act end
-func is_action_ended(ani_dur :float) -> bool:
-	return not action_current.is_empty() && ani_dur > 1.0
+func is_current_action_ended() -> bool:
+	return not current_action.is_empty() && get_animation_progress() > 1.0
 
 func end_action() -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
-	action_current = {}
+	current_action = {}
 	roll_dir = roll_dir_dst
 	snap_90()
 
@@ -156,19 +156,22 @@ func can_move(dir :EnumDir.Dir) -> bool:
 
 # return 0 - 1
 func get_animation_progress() -> float:
-	if action_current.is_empty():
+	if current_action.is_empty():
 		return 0
-	return (Time.get_unix_time_from_system() - action_start_time)*action_current.APS
+	return (Time.get_unix_time_from_system() - action_start_time)*current_action.APS
 
-func animate_move_by_dur(dur :float, from :Storey, to :Storey) -> void:
+func animate_move(from :Storey, to :Storey) -> void:
+	var dur = get_animation_progress()
 	var p1 = from.mazepos2storeypos(pos_src, from.storey_setting.StoryH/2) + from.position 
 	var p2 = to.mazepos2storeypos(pos_dst, to.storey_setting.StoryH/2) + to.position 
 	position = p1.lerp(p2,dur)
 
-func animate_turn_by_dur(dur :float) -> void:
+func animate_turn() -> void:
+	var dur = get_animation_progress()
 	rotation.y = lerp_angle(EnumDir.dir2rad(dir_src), EnumDir.dir2rad(dir_dst), dur)
 
-func animate_roll_by_dur(dur :float) -> void:
+func animate_roll() -> void:
+	var dur = get_animation_progress()
 	rotation.z = lerp_angle(EnumRoll.dir2rad(roll_dir), EnumRoll.dir2rad(roll_dir_dst), dur)
 
 func snap_90() -> void:
@@ -184,13 +187,13 @@ func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
 		stats2str(total_action_stats),
 		stats2str(storey_action_stats),
-		action2str(action_current.Action ), queue2str(),
+		action2str(current_action.Action ), queue2str(),
 		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
 
 func try_auto_walk() -> void:
-	if action_current.is_empty() && is_queue_empty(): # add new ai action
+	if current_action.is_empty() && is_queue_empty(): # add new ai action
 		match auto_walk_type:
 			Walk.RightFirst:
 				walk_right_first()

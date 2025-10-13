@@ -17,6 +17,13 @@ static func stats2str(d:Dictionary) -> String:
 		rtn += " %s:%d" % [action2str(i), d[i]]
 	return rtn
 
+enum Walk {Off, RightFirst, LeftFirst}
+static func walk2str(a :Walk) -> String:
+	return Walk.keys()[a]
+
+static func walk_next(a :Walk) -> Walk:
+	return (a +1) % Walk.keys().size() as Walk
+
 const QueueLimit = 10
 var queue :Array
 var action_per_second := ClampedFloat.new(1,0.5,3.0) # sec
@@ -62,7 +69,7 @@ func crop_queue() -> Crawler:
 		queue = queue.slice(queue.size()-QueueLimit)
 	return self
 
-func queue_to_string() -> String:
+func queue2str() -> String:
 	var rtn = "ActionQueue["
 	for a in queue:
 		rtn += "%s(%.1f)%s " % [ Crawler.action2str(a[0]), a[1], a[2] ]
@@ -86,14 +93,14 @@ var dir_dst : EnumDir.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
 
-var ai_walk_type := EnumWalk.Walk.RightFirst
+var ai_walk_type := Walk.RightFirst
 func set_next_walk_type() -> Crawler:
-	ai_walk_type = EnumWalk.next(ai_walk_type)
+	ai_walk_type = walk_next(ai_walk_type)
 	return self
-func set_ai_walk_type(t :EnumWalk.Walk) -> void:
+func set_ai_walk_type(t :Walk) -> void:
 	ai_walk_type = t
 
-func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> Crawler:
+func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	ai_walk_type = walk_type
 	total_action_stats = Crawler.new_stats()
 	dir_src = EnumDir.Dir.North
@@ -168,11 +175,11 @@ func end_action() -> void:
 func ai_action() -> void:
 	if action_current.Action == Crawler.Action.None && is_queue_empty(): # add new ai action
 		match ai_walk_type:
-			EnumWalk.Walk.RightFirst:
+			Walk.RightFirst:
 				walk_right_first()
-			EnumWalk.Walk.LeftFirst:
+			Walk.LeftFirst:
 				walk_left_first()
-			EnumWalk.Walk.Off:
+			Walk.Off:
 				pass
 
 func walk_right_first() -> bool:
@@ -245,14 +252,14 @@ func snap_90() -> void:
 
 func _to_string() -> String:
 	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		EnumWalk.walk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
+		walk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
 		Crawler.stats2str(total_action_stats),
 		Crawler.stats2str(storey_action_stats),
-		Crawler.action2str(action_current.Action ), queue_to_string(),
+		Crawler.action2str(action_current.Action ), queue2str(),
 		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]

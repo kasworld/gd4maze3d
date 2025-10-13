@@ -35,7 +35,7 @@ func _ready() -> void:
 		var pl = character_scene.instantiate()
 		char_container.add_child(pl)
 		pl.init(
-			[EnumWalk.Walk.RightFirst,EnumWalk.Walk.LeftFirst][i%2], 
+			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2], 
 			i, default_storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
@@ -294,5 +294,5 @@ Currently rendering: occlusion culling:%s
 
 func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
-	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % EnumWalk.walk2str(player.ai_walk_type)
+	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.ai_walk_type)
 	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)

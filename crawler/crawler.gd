@@ -135,8 +135,6 @@ func start_new_action() -> bool:
 			pos_dst = args.Pos
 			storey_action_stats = new_stats()
 			rand_act_speed()
-			animate_move(storey, storey)
-			animate_turn()
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true

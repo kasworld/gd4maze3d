@@ -172,7 +172,6 @@ func end_action() -> void:
 	roll_dir = roll_dir_dst
 	snap_90()
 
-
 func can_move(dir :EnumDir.Dir) -> bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 

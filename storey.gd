@@ -60,10 +60,12 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
-	$Floor.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, darkcolorlist.pick_random()[0],
+	$Floor.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 
+		0.01, darkcolorlist.pick_random()[0],
 		).rotate_x(PI/2)
 	$Floor.position = Vector3(0, 0 ,0)
-	$Ceiling.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 0.01, lightcolorlist.pick_random()[0],
+	$Ceiling.init_with_color(storey_setting.CalcMeshSize(), storey_setting.CalcMeshSize()*2, 
+		0.01, lightcolorlist.pick_random()[0],
 		).rotate_x(PI/2)
 	$Ceiling.position = Vector3(0, storey_setting.StoryH  ,0)
 

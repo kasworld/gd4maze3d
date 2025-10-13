@@ -87,11 +87,10 @@ func enter_storey() -> void:
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
 		ch.enqueue_action(
-			Crawler.Action.EnterStorey, 
-			{
-				"Storey": current_tower.cur_storey, 
-				"Pos": stpos,
-			})
+			Crawler.Action.EnterStorey, {
+			"Storey": current_tower.cur_storey, 
+			"Pos": stpos,
+		})
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 

@@ -144,7 +144,6 @@ func add_ball_trails(mesh_type_list) ->void:
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
-		
 		var pos = Vector3(
 			randf_range(ba.position.x, ba.end.x),
 			randf_range(ba.position.y, ba.end.y),

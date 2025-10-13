@@ -82,11 +82,11 @@ func enter_storey() -> void:
 	minimap.minimap_mode = oldminimapviewmode
 	add_child(minimap)
 	for ch in char_container.get_children():
-		ch.action_queue.clear()
+		ch.queue_clear()
 		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
-		ch.action_queue.enqueue_action(Crawler.Action.EnterStorey, [current_tower.cur_storey, stpos])
+		ch.enqueue_action(Crawler.Action.EnterStorey, [current_tower.cur_storey, stpos])
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 
@@ -128,11 +128,11 @@ func 놓인것들줍기(ch :Crawler) -> void:
 	var cur_storey = current_tower.cur_storey
 	var ft = cur_storey.놓인것들.get_at(ch.pos_src)
 	if ft is Donut:
-		ch.action_queue.enqueue_action(Crawler.Action.RollLeft)
+		ch.enqueue_action(Crawler.Action.RollLeft)
 		cur_storey.놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 	elif ft is Capsule:
-		ch.action_queue.enqueue_action(Crawler.Action.RollRight)
+		ch.enqueue_action(Crawler.Action.RollRight)
 		cur_storey.놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 
@@ -228,22 +228,22 @@ func _on_button_info_pressed() -> void:
 	infolabel.visible = !infolabel.visible
 
 func _on_button_forward_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(Crawler.Action.Forward, 10)
+	player.enqueue_action_with_speed(Crawler.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10).enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10).enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(Crawler.Action.TurnRight, 10)
+	player.enqueue_action_with_speed(Crawler.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(Crawler.Action.RollRight, 10)
+	player.enqueue_action_with_speed(Crawler.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(Crawler.Action.RollLeft, 10)
+	player.enqueue_action_with_speed(Crawler.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	cameralight.fov_inc()
@@ -252,16 +252,16 @@ func _on_button_fov_down_pressed() -> void:
 	cameralight.fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
-	player.action_queue.action_per_second.set_max()
+	player.action_per_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
-	player.action_queue.action_per_second.set_up()
+	player.action_per_second.set_up()
 
 func _on_button_aps_min_pressed() -> void:
-	player.action_queue.action_per_second.set_min()
+	player.action_per_second.set_min()
 
 func _on_button_aps_down_pressed() -> void:
-	player.action_queue.action_per_second.set_down()
+	player.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
 	enter_next_storey()

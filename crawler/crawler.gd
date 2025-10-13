@@ -17,8 +17,59 @@ static func stats2str(d:Dictionary) -> String:
 		rtn += " %s:%d" % [action2str(i), d[i]]
 	return rtn
 
+const QueueLimit = 10
+var queue :Array
+var action_per_second := ClampedFloat.new(1,0.5,3.0) # sec
 
-var action_queue :ActionQueue
+func queue_init() -> Crawler:
+	rand_act_speed()
+	return self
+
+func rand_act_speed() -> void:
+	action_per_second.set_randfn()
+	
+func queue_clear() -> void:
+	queue.resize(0)
+	
+func is_queue_empty() -> bool:
+	return queue.size() == 0
+	
+func action_pop_front():
+	return queue.pop_front()
+
+func enqueue_action(a :Crawler.Action, args :=[]) -> Crawler:
+	queue.push_back(
+		{
+			"Action":a,
+			"APS": action_per_second.get_value(), 
+			"Args":args,
+		})
+	crop_queue()
+	return self
+	
+func enqueue_action_with_speed(a :Crawler.Action,s :float, args :=[]) -> Crawler:
+	queue.push_back(
+		{
+			"Action":a,
+			"APS":s, 
+			"Args":args,
+		})
+	crop_queue()
+	return self
+	
+func crop_queue() -> Crawler:
+	if queue.size() > QueueLimit:
+		queue = queue.slice(queue.size()-QueueLimit)
+	return self
+
+func queue_to_string() -> String:
+	var rtn = "ActionQueue["
+	for a in queue:
+		rtn += "%s(%.1f)%s " % [ Crawler.action2str(a[0]), a[1], a[2] ]
+	rtn += "]"
+	return rtn
+
+#var action_queue :ActionQueue
 var action_start_time :float # unixtime sec
 var action_current : Dictionary # [Action, APS, Args]
 
@@ -51,7 +102,7 @@ func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> Crawler:
 		"APS":0,
 		"Args":[],
 	}
-	action_queue = ActionQueue.new().init()
+	queue_init()
 	add_shape(n,LaneW,co)
 	return self
 
@@ -76,10 +127,10 @@ func add_shape(n :int, LaneW:float,co :Color) -> Crawler:
 
 # return true on new act
 func start_new_action() -> bool:
-	if action_current.Action  != Crawler.Action.None || action_queue.is_empty():
+	if action_current.Action  != Crawler.Action.None || is_queue_empty():
 		return false
 	action_start_time = Time.get_unix_time_from_system()
-	action_current = action_queue.pop_front()
+	action_current = action_pop_front()
 	match action_current.Action :
 		Crawler.Action.Forward:
 			if can_move(dir_src):
@@ -103,7 +154,7 @@ func start_new_action() -> bool:
 			storey = args[0]
 			pos_dst = args[1]
 			storey_action_stats = Crawler.new_stats()
-			action_queue.rand_act_speed()
+			rand_act_speed()
 			animate_move_by_dur(0, storey, storey)
 			animate_turn_by_dur(0)
 	total_action_stats[action_current.Action ] += 1
@@ -126,7 +177,7 @@ func end_action() -> void:
 	snap_90()
 
 func ai_action() -> void:
-	if action_current.Action == Crawler.Action.None && action_queue.is_empty(): # add new ai action
+	if action_current.Action == Crawler.Action.None && is_queue_empty(): # add new ai action
 		match ai_walk_type:
 			EnumWalk.Walk.RightFirst:
 				walk_right_first()
@@ -138,46 +189,46 @@ func ai_action() -> void:
 func walk_right_first() -> bool:
 	# try right
 	if can_move(EnumDir.DirTurnRight[dir_src]):
-		action_queue.enqueue_action(Crawler.Action.TurnRight)
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.TurnRight)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	# try forward
 	if can_move(dir_src):
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	# try left
 	if can_move(EnumDir.DirTurnLeft[dir_src]):
-		action_queue.enqueue_action(Crawler.Action.TurnLeft)
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.TurnLeft)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	# try backward
 	if can_move(EnumDir.DirOpppsite[dir_src]):
-		action_queue.enqueue_action(Crawler.Action.TurnLeft)
-		action_queue.enqueue_action(Crawler.Action.TurnLeft)
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.TurnLeft)
+		enqueue_action(Crawler.Action.TurnLeft)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	return false
 
 func walk_left_first() -> bool:
 	# try left
 	if can_move(EnumDir.DirTurnLeft[dir_src]):
-		action_queue.enqueue_action(Crawler.Action.TurnLeft)
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.TurnLeft)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	# try forward
 	if can_move(dir_src):
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	# try right
 	if can_move(EnumDir.DirTurnRight[dir_src]):
-		action_queue.enqueue_action(Crawler.Action.TurnRight)
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.TurnRight)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	# try backward
 	if can_move(EnumDir.DirOpppsite[dir_src]):
-		action_queue.enqueue_action(Crawler.Action.TurnRight)
-		action_queue.enqueue_action(Crawler.Action.TurnRight)
-		action_queue.enqueue_action(Crawler.Action.Forward)
+		enqueue_action(Crawler.Action.TurnRight)
+		enqueue_action(Crawler.Action.TurnRight)
+		enqueue_action(Crawler.Action.Forward)
 		return true
 	return false
 
@@ -205,14 +256,14 @@ func snap_90() -> void:
 
 func _to_string() -> String:
 	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		EnumWalk.walk2str(ai_walk_type), action_queue.action_per_second, roll_dir*90, rotation_degrees,
+		EnumWalk.walk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
 		Crawler.stats2str(total_action_stats),
 		Crawler.stats2str(storey_action_stats),
-		Crawler.action2str(action_current.Action ), action_queue,
+		Crawler.action2str(action_current.Action ), queue_to_string(),
 		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]

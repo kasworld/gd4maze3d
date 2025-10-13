@@ -1,5 +1,5 @@
 extends Node3D
-class_name MazeCrawl
+class_name Crawler
 
 var action_queue :ActionQueue
 var action_start_time :float # unixtime sec
@@ -19,13 +19,13 @@ var pos_src :Vector2i
 var pos_dst :Vector2i
 
 var ai_walk_type := EnumWalk.Walk.RightFirst
-func set_next_walk_type() -> MazeCrawl:
+func set_next_walk_type() -> Crawler:
 	ai_walk_type = EnumWalk.next(ai_walk_type)
 	return self
 func set_ai_walk_type(t :EnumWalk.Walk) -> void:
 	ai_walk_type = t
 
-func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> MazeCrawl:
+func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	ai_walk_type = walk_type
 	total_action_stats = EnumAction.new_stats()
 	dir_src = EnumDir.Dir.North
@@ -34,7 +34,7 @@ func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> MazeCrawl:
 	add_shape(n,LaneW,co)
 	return self
 
-func add_shape(n :int, LaneW:float,co :Color) -> MazeCrawl:
+func add_shape(n :int, LaneW:float,co :Color) -> Crawler:
 	serial = n
 	color = co
 	var mat = StandardMaterial3D.new()
@@ -175,7 +175,7 @@ func snap_90() -> void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func _to_string() -> String:
-	return "MazeCrawl[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
+	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
 		EnumWalk.walk2str(ai_walk_type), action_queue.action_per_second, roll_dir*90, rotation_degrees,
 		]
 

@@ -1,7 +1,7 @@
 extends Node3D
 
 var minimap_scene = preload("res://mini_map.tscn")
-var character_scene = preload("res://maze_crawl/maze_crawl.tscn")
+var character_scene = preload("res://crawler/crawler.tscn")
 var tower_scene = preload("res://tower.tscn")
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
@@ -11,7 +11,7 @@ var tower_scene = preload("res://tower.tscn")
 @onready var char_container = $CharacterContainer
 
 var minimap :MiniMap
-var player :MazeCrawl
+var player :Crawler
 var camera_move := false
 var current_tower :Tower
 var default_storey_setting :StoreySetting
@@ -124,7 +124,7 @@ func act_character(cur_storey :Storey) -> void:
 		if ch.action_current[0] != EnumAction.Action.None :
 			animate_action(ch, ani_dur)
 
-func 놓인것들줍기(ch :MazeCrawl) -> void:
+func 놓인것들줍기(ch :Crawler) -> void:
 	var cur_storey = current_tower.cur_storey
 	var ft = cur_storey.놓인것들.get_at(ch.pos_src)
 	if ft is Donut:
@@ -136,7 +136,7 @@ func 놓인것들줍기(ch :MazeCrawl) -> void:
 		cur_storey.놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 
-func animate_action(ch :MazeCrawl, dur :float) -> void:
+func animate_action(ch :Crawler, dur :float) -> void:
 	match ch.action_current[0]:
 		EnumAction.Action.Forward:
 			ch.animate_move_by_dur(dur, current_tower.cur_storey, current_tower.cur_storey)

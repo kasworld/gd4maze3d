@@ -36,7 +36,7 @@ var start :Label
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey, char_list :Array, player :MazeCrawl) -> MiniMap:
+func init(st :Storey, char_list :Array, player :Crawler) -> MiniMap:
 	map_mode_full = false
 	storey = st
 	walls_known = []
@@ -69,7 +69,7 @@ func update_size() -> void:
 	position.y = (vp_size.y - get_height())/2
 	position.x = (vp_size.x - get_width())/2
 
-func add_character(achar :MazeCrawl, outline :int) -> void:
+func add_character(achar :Crawler, outline :int) -> void:
 	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
 

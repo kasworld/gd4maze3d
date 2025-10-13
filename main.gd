@@ -119,9 +119,9 @@ func act_character(cur_storey :Storey) -> void:
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
-			if ch == player and ch.action_current[0] != Crawler.Action.EnterStorey: # player
+			if ch == player and ch.action_current.Action != Crawler.Action.EnterStorey: # player
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
-		if ch.action_current[0] != Crawler.Action.None :
+		if ch.action_current.Action != Crawler.Action.None :
 			animate_action(ch, ani_dur)
 
 func 놓인것들줍기(ch :Crawler) -> void:
@@ -137,7 +137,7 @@ func 놓인것들줍기(ch :Crawler) -> void:
 		ft.queue_free()
 
 func animate_action(ch :Crawler, dur :float) -> void:
-	match ch.action_current[0]:
+	match ch.action_current.Action:
 		Crawler.Action.Forward:
 			ch.animate_move_by_dur(dur, current_tower.cur_storey, current_tower.cur_storey)
 		Crawler.Action.TurnLeft, Crawler.Action.TurnRight:

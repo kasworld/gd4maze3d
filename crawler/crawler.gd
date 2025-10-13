@@ -20,7 +20,7 @@ static func stats2str(d:Dictionary) -> String:
 
 var action_queue :ActionQueue
 var action_start_time :float # unixtime sec
-var action_current : Array # [Action, action_per_second.value]
+var action_current : Dictionary # [Action, APS, Args]
 
 var serial :int
 var color :Color
@@ -46,7 +46,11 @@ func init(walk_type :EnumWalk.Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	ai_walk_type = walk_type
 	total_action_stats = Crawler.new_stats()
 	dir_src = EnumDir.Dir.North
-	action_current = [Crawler.Action.None, 0,[]]
+	action_current = {
+		"Action":Crawler.Action.None, 
+		"APS":0,
+		"Args":[],
+	}
 	action_queue = ActionQueue.new().init()
 	add_shape(n,LaneW,co)
 	return self
@@ -72,16 +76,20 @@ func add_shape(n :int, LaneW:float,co :Color) -> Crawler:
 
 # return true on new act
 func start_new_action() -> bool:
-	if action_current[0] != Crawler.Action.None || action_queue.is_empty():
+	if action_current.Action  != Crawler.Action.None || action_queue.is_empty():
 		return false
 	action_start_time = Time.get_unix_time_from_system()
 	action_current = action_queue.pop_front()
-	match action_current[0]:
+	match action_current.Action :
 		Crawler.Action.Forward:
 			if can_move(dir_src):
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 			else :
-				action_current = [Crawler.Action.None, 0,[]]
+				action_current = {
+					"Action":Crawler.Action.None, 
+					"APS":0,
+					"Args":[],
+				}
 		Crawler.Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
 		Crawler.Action.TurnRight:
@@ -91,30 +99,34 @@ func start_new_action() -> bool:
 		Crawler.Action.RollLeft:
 			roll_dir_dst = EnumRoll.roll_left(roll_dir)
 		Crawler.Action.EnterStorey:
-			var args = action_current[2]
+			var args = action_current.Args
 			storey = args[0]
 			pos_dst = args[1]
 			storey_action_stats = Crawler.new_stats()
 			action_queue.rand_act_speed()
 			animate_move_by_dur(0, storey, storey)
 			animate_turn_by_dur(0)
-	total_action_stats[action_current[0]] += 1
-	storey_action_stats[action_current[0]] += 1
+	total_action_stats[action_current.Action ] += 1
+	storey_action_stats[action_current.Action ] += 1
 	return true
 
 # return true on act end
 func is_action_ended(ani_dur :float) -> bool:
-	return action_current[0] != Crawler.Action.None && ani_dur > 1.0
+	return action_current.Action  != Crawler.Action.None && ani_dur > 1.0
 
 func end_action() -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
-	action_current = [Crawler.Action.None, 0,[]]
+	action_current = {
+		"Action":Crawler.Action.None, 
+		"APS":0,
+		"Args":[],
+	}
 	roll_dir = roll_dir_dst
 	snap_90()
 
 func ai_action() -> void:
-	if action_current[0] == Crawler.Action.None && action_queue.is_empty(): # add new ai action
+	if action_current.Action == Crawler.Action.None && action_queue.is_empty(): # add new ai action
 		match ai_walk_type:
 			EnumWalk.Walk.RightFirst:
 				walk_right_first()
@@ -174,7 +186,7 @@ func can_move(dir :EnumDir.Dir) -> bool:
 
 # return 0 - 1
 func get_animation_progress() -> float:
-	return (Time.get_unix_time_from_system() - action_start_time)*action_current[1]
+	return (Time.get_unix_time_from_system() - action_start_time)*action_current.APS
 
 func animate_move_by_dur(dur :float, from :Storey, to :Storey) -> void:
 	var p1 = from.mazepos2storeypos(pos_src, from.storey_setting.StoryH/2) + from.position 
@@ -200,7 +212,7 @@ func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
 		Crawler.stats2str(total_action_stats),
 		Crawler.stats2str(storey_action_stats),
-		Crawler.action2str(action_current[0]), action_queue,
+		Crawler.action2str(action_current.Action ), action_queue,
 		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]

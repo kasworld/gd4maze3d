@@ -21,12 +21,22 @@ func pop_front():
 	return queue.pop_front()
 
 func enqueue_action(a :Crawler.Action, args :=[]) -> ActionQueue:
-	queue.push_back([a,action_per_second.get_value(), args])
+	queue.push_back(
+		{
+			"Action":a,
+			"APS": action_per_second.get_value(), 
+			"Args":args,
+		})
 	crop_queue()
 	return self
 	
 func enqueue_action_with_speed(a :Crawler.Action,s :float, args :=[]) -> ActionQueue:
-	queue.push_back([a,s, args])
+	queue.push_back(
+		{
+			"Action":a,
+			"APS":s, 
+			"Args":args,
+		})
 	crop_queue()
 	return self
 	

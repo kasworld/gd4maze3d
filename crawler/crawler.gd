@@ -172,7 +172,44 @@ func end_action() -> void:
 	roll_dir = roll_dir_dst
 	snap_90()
 
-func ai_action() -> void:
+
+func can_move(dir :EnumDir.Dir) -> bool:
+	return storey.can_move(pos_src.x, pos_src.y, dir )
+
+# return 0 - 1
+func get_animation_progress() -> float:
+	return (Time.get_unix_time_from_system() - action_start_time)*action_current.APS
+
+func animate_move_by_dur(dur :float, from :Storey, to :Storey) -> void:
+	var p1 = from.mazepos2storeypos(pos_src, from.storey_setting.StoryH/2) + from.position 
+	var p2 = to.mazepos2storeypos(pos_dst, to.storey_setting.StoryH/2) + to.position 
+	position = p1.lerp(p2,dur)
+
+func animate_turn_by_dur(dur :float) -> void:
+	rotation.y = lerp_angle(EnumDir.dir2rad(dir_src), EnumDir.dir2rad(dir_dst), dur)
+
+func animate_roll_by_dur(dur :float) -> void:
+	rotation.z = lerp_angle(EnumRoll.dir2rad(roll_dir), EnumRoll.dir2rad(roll_dir_dst), dur)
+
+func snap_90() -> void:
+	for i in 3:
+		rotation[i] = snapped(rotation[i], PI/2)
+
+func _to_string() -> String:
+	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
+		walk2str(auto_walk_type), action_per_second, roll_dir*90, rotation_degrees,
+		]
+
+func debug_str() -> String:
+	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
+		stats2str(total_action_stats),
+		stats2str(storey_action_stats),
+		action2str(action_current.Action ), queue2str(),
+		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
+		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
+		]
+
+func try_auto_walk() -> void:
 	if action_current.Action == Action.None && is_queue_empty(): # add new ai action
 		match auto_walk_type:
 			Walk.RightFirst:
@@ -227,39 +264,3 @@ func walk_left_first() -> bool:
 		enqueue_action(Action.Forward)
 		return true
 	return false
-
-func can_move(dir :EnumDir.Dir) -> bool:
-	return storey.can_move(pos_src.x, pos_src.y, dir )
-
-# return 0 - 1
-func get_animation_progress() -> float:
-	return (Time.get_unix_time_from_system() - action_start_time)*action_current.APS
-
-func animate_move_by_dur(dur :float, from :Storey, to :Storey) -> void:
-	var p1 = from.mazepos2storeypos(pos_src, from.storey_setting.StoryH/2) + from.position 
-	var p2 = to.mazepos2storeypos(pos_dst, to.storey_setting.StoryH/2) + to.position 
-	position = p1.lerp(p2,dur)
-
-func animate_turn_by_dur(dur :float) -> void:
-	rotation.y = lerp_angle(EnumDir.dir2rad(dir_src), EnumDir.dir2rad(dir_dst), dur)
-
-func animate_roll_by_dur(dur :float) -> void:
-	rotation.z = lerp_angle(EnumRoll.dir2rad(roll_dir), EnumRoll.dir2rad(roll_dir_dst), dur)
-
-func snap_90() -> void:
-	for i in 3:
-		rotation[i] = snapped(rotation[i], PI/2)
-
-func _to_string() -> String:
-	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		walk2str(auto_walk_type), action_per_second, roll_dir*90, rotation_degrees,
-		]
-
-func debug_str() -> String:
-	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
-		stats2str(total_action_stats),
-		stats2str(storey_action_stats),
-		action2str(action_current.Action ), queue2str(),
-		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
-		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
-		]

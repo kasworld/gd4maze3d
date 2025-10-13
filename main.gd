@@ -116,7 +116,7 @@ func act_character(cur_storey :Storey) -> void:
 					return
 				놓인것들줍기(ch)
 			minimap.move_character(ch.serial, ch.pos_src)
-		ch.ai_action()
+		ch.try_auto_walk()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
 			if ch == player and ch.action_current.Action != Crawler.Action.EnterStorey: # player

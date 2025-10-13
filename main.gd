@@ -86,7 +86,7 @@ func enter_storey() -> void:
 		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
-		ch.action_queue.enqueue_action(EnumAction.Action.EnterStorey, [current_tower.cur_storey, stpos])
+		ch.action_queue.enqueue_action(Crawler.Action.EnterStorey, [current_tower.cur_storey, stpos])
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 
@@ -119,32 +119,32 @@ func act_character(cur_storey :Storey) -> void:
 		ch.ai_action()
 		if ch.start_new_action(): # new act start
 			ani_dur = 0
-			if ch == player and ch.action_current[0] != EnumAction.Action.EnterStorey: # player
+			if ch == player and ch.action_current[0] != Crawler.Action.EnterStorey: # player
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
-		if ch.action_current[0] != EnumAction.Action.None :
+		if ch.action_current[0] != Crawler.Action.None :
 			animate_action(ch, ani_dur)
 
 func 놓인것들줍기(ch :Crawler) -> void:
 	var cur_storey = current_tower.cur_storey
 	var ft = cur_storey.놓인것들.get_at(ch.pos_src)
 	if ft is Donut:
-		ch.action_queue.enqueue_action(EnumAction.Action.RollLeft)
+		ch.action_queue.enqueue_action(Crawler.Action.RollLeft)
 		cur_storey.놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 	elif ft is Capsule:
-		ch.action_queue.enqueue_action(EnumAction.Action.RollRight)
+		ch.action_queue.enqueue_action(Crawler.Action.RollRight)
 		cur_storey.놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 
 func animate_action(ch :Crawler, dur :float) -> void:
 	match ch.action_current[0]:
-		EnumAction.Action.Forward:
+		Crawler.Action.Forward:
 			ch.animate_move_by_dur(dur, current_tower.cur_storey, current_tower.cur_storey)
-		EnumAction.Action.TurnLeft, EnumAction.Action.TurnRight:
+		Crawler.Action.TurnLeft, Crawler.Action.TurnRight:
 			ch.animate_turn_by_dur(dur)
-		EnumAction.Action.RollRight,EnumAction.Action.RollLeft:
+		Crawler.Action.RollRight,Crawler.Action.RollLeft:
 			ch.animate_roll_by_dur(dur)
-		EnumAction.Action.EnterStorey:
+		Crawler.Action.EnterStorey:
 			var from_num := 0
 			if current_tower.cur_storey.storey_num > 0:
 				from_num = current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num -1)
@@ -228,22 +228,22 @@ func _on_button_info_pressed() -> void:
 	infolabel.visible = !infolabel.visible
 
 func _on_button_forward_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(EnumAction.Action.Forward, 10)
+	player.action_queue.enqueue_action_with_speed(Crawler.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
+	player.action_queue.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10).enqueue_action_with_speed(EnumAction.Action.TurnLeft, 10)
+	player.action_queue.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10).enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(EnumAction.Action.TurnRight, 10)
+	player.action_queue.enqueue_action_with_speed(Crawler.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(EnumAction.Action.RollRight, 10)
+	player.action_queue.enqueue_action_with_speed(Crawler.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	player.action_queue.enqueue_action_with_speed(EnumAction.Action.RollLeft, 10)
+	player.action_queue.enqueue_action_with_speed(Crawler.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	cameralight.fov_inc()

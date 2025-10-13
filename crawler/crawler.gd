@@ -35,35 +35,26 @@ func queue_init() -> Crawler:
 func rand_act_speed() -> void:
 	action_per_second.set_randfn()
 	
-func queue_clear() -> void:
+func clear_queue() -> void:
 	queue.resize(0)
 	
 func is_queue_empty() -> bool:
-	return queue.size() == 0
+	return queue.is_empty()
 	
-func action_pop_front():
+func action_pop_front() -> Dictionary:
 	return queue.pop_front()
 
 func enqueue_action(a :Action, args :={}) -> Crawler:
-	queue.push_back(
-		{
-			"Action":a,
-			"APS": action_per_second.get_value(), 
-			"Args":args,
-		})
-	crop_queue()
-	return self
-	
+	return enqueue_action_with_speed(a, action_per_second.get_value(), args)
+
 func enqueue_action_with_speed(a :Action,s :float, args :={}) -> Crawler:
-	queue.push_back(
-		{
-			"Action":a,
-			"APS":s, 
-			"Args":args,
-		})
-	crop_queue()
-	return self
-	
+	queue.push_back({
+		"Action":a,
+		"APS":s, 
+		"Args":args,
+	})
+	return crop_queue()
+
 func crop_queue() -> Crawler:
 	if queue.size() > QueueLimit:
 		queue = queue.slice(queue.size()-QueueLimit)

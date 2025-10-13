@@ -43,9 +43,9 @@ func calc_center() -> Vector3:
 	return Vector3(0, calc_height()/2, 0)
 
 func _to_string() -> String:
-	return "Tower total storey %s, view floor ceiling %s
+	return "Tower[total storey %s, view floor ceiling %s
 	%s
-	%s" % [storey_list.size(), view_floor_ceiling, 
+	%s]" % [storey_list.size(), view_floor_ceiling, 
 	tower_setting, cur_storey ]
 
 func init(ts :TowerSetting, ss :StoreySetting) -> Tower:

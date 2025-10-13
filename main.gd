@@ -82,7 +82,7 @@ func enter_storey() -> void:
 	minimap.minimap_mode = oldminimapviewmode
 	add_child(minimap)
 	for ch in char_container.get_children():
-		ch.queue_clear()
+		ch.clear_queue()
 		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos

@@ -86,9 +86,8 @@ func make_deco() -> StoreySetting:
 
 
 func _to_string() -> String:
-	return "StoreySetting
-	Maze size:%s height:%.1f lane width:%.1f wall thick:%.1f
-	Count ball trail:%d donnut capsule:%d tree:%d" % [
+	return "StoreySetting[Maze size:%s height:%.1f lane width:%.1f wall thick:%.1f
+	Count ball trail:%d donnut capsule:%d tree:%d]" % [
 		MazeSize, StoryH, LaneW, WallThick,
 		MeshTrailTypeList.size(), DonutCapsuleCount, TreeCount,
 	]

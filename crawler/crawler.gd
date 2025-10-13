@@ -44,7 +44,7 @@ func is_queue_empty() -> bool:
 func action_pop_front():
 	return queue.pop_front()
 
-func enqueue_action(a :Action, args :=[]) -> Crawler:
+func enqueue_action(a :Action, args :={}) -> Crawler:
 	queue.push_back(
 		{
 			"Action":a,
@@ -54,7 +54,7 @@ func enqueue_action(a :Action, args :=[]) -> Crawler:
 	crop_queue()
 	return self
 	
-func enqueue_action_with_speed(a :Action,s :float, args :=[]) -> Crawler:
+func enqueue_action_with_speed(a :Action,s :float, args :={}) -> Crawler:
 	queue.push_back(
 		{
 			"Action":a,
@@ -147,8 +147,8 @@ func start_new_action() -> bool:
 			roll_dir_dst = EnumRoll.roll_left(roll_dir)
 		Action.EnterStorey:
 			var args = action_current.Args
-			storey = args[0]
-			pos_dst = args[1]
+			storey = args.Storey
+			pos_dst = args.Pos
 			storey_action_stats = new_stats()
 			rand_act_speed()
 			animate_move_by_dur(0, storey, storey)

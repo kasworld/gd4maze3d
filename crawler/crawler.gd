@@ -93,15 +93,15 @@ var dir_dst : EnumDir.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
 
-var ai_walk_type := Walk.RightFirst
+var auto_walk_type := Walk.RightFirst
 func set_next_walk_type() -> Crawler:
-	ai_walk_type = walk_next(ai_walk_type)
+	auto_walk_type = walk_next(auto_walk_type)
 	return self
-func set_ai_walk_type(t :Walk) -> void:
-	ai_walk_type = t
+func set_auto_walk_type(t :Walk) -> void:
+	auto_walk_type = t
 
 func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
-	ai_walk_type = walk_type
+	auto_walk_type = walk_type
 	total_action_stats = new_stats()
 	dir_src = EnumDir.Dir.North
 	action_current = {
@@ -174,7 +174,7 @@ func end_action() -> void:
 
 func ai_action() -> void:
 	if action_current.Action == Action.None && is_queue_empty(): # add new ai action
-		match ai_walk_type:
+		match auto_walk_type:
 			Walk.RightFirst:
 				walk_right_first()
 			Walk.LeftFirst:
@@ -252,7 +252,7 @@ func snap_90() -> void:
 
 func _to_string() -> String:
 	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		walk2str(ai_walk_type), action_per_second, roll_dir*90, rotation_degrees,
+		walk2str(auto_walk_type), action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:

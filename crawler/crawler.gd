@@ -119,7 +119,8 @@ func start_new_action() -> bool:
 			if can_move_to_dir(dir_src):
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 			else :
-				current_action = {}
+				end_action()
+				return false
 		Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
 		Action.TurnRight:

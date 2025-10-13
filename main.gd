@@ -125,7 +125,7 @@ func act_character(cur_storey :Storey) -> void:
 			ani_dur = 0
 			if ch == player and ch.action_current.Action != Crawler.Action.EnterStorey: # player
 				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
-		if ch.action_current.Action != Crawler.Action.None :
+		if not ch.action_current.is_empty():
 			animate_action(ch, ani_dur)
 
 func 놓인것들줍기(ch :Crawler) -> void:

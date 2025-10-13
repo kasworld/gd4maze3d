@@ -1,7 +1,7 @@
 extends Node3D
 class_name Crawler
 
-enum Action {None, EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
+enum Action {EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action) -> String:
 	return Action.keys()[a]
 
@@ -95,11 +95,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	auto_walk_type = walk_type
 	total_action_stats = new_stats()
 	dir_src = EnumDir.Dir.North
-	action_current = {
-		"Action":Action.None, 
-		"APS":0,
-		"Args":[],
-	}
+	action_current = {}
 	queue_init()
 	serial = n
 	color = co
@@ -114,7 +110,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 
 # return true on new act
 func start_new_action() -> bool:
-	if action_current.Action  != Action.None || is_queue_empty():
+	if not action_current.is_empty() || is_queue_empty():
 		return false
 	action_start_time = Time.get_unix_time_from_system()
 	action_current = action_pop_front()
@@ -123,11 +119,7 @@ func start_new_action() -> bool:
 			if can_move(dir_src):
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 			else :
-				action_current = {
-					"Action":Action.None, 
-					"APS":0,
-					"Args":[],
-				}
+				action_current = {}
 		Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
 		Action.TurnRight:
@@ -150,16 +142,12 @@ func start_new_action() -> bool:
 
 # return true on act end
 func is_action_ended(ani_dur :float) -> bool:
-	return action_current.Action  != Action.None && ani_dur > 1.0
+	return not action_current.is_empty() && ani_dur > 1.0
 
 func end_action() -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
-	action_current = {
-		"Action":Action.None, 
-		"APS":0,
-		"Args":[],
-	}
+	action_current = {}
 	roll_dir = roll_dir_dst
 	snap_90()
 
@@ -168,6 +156,8 @@ func can_move(dir :EnumDir.Dir) -> bool:
 
 # return 0 - 1
 func get_animation_progress() -> float:
+	if action_current.is_empty():
+		return 0
 	return (Time.get_unix_time_from_system() - action_start_time)*action_current.APS
 
 func animate_move_by_dur(dur :float, from :Storey, to :Storey) -> void:
@@ -200,7 +190,7 @@ func debug_str() -> String:
 		]
 
 func try_auto_walk() -> void:
-	if action_current.Action == Action.None && is_queue_empty(): # add new ai action
+	if action_current.is_empty() && is_queue_empty(): # add new ai action
 		match auto_walk_type:
 			Walk.RightFirst:
 				walk_right_first()

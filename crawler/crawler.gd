@@ -116,7 +116,7 @@ func start_new_action() -> bool:
 	current_action = action_pop_front()
 	match current_action.Action :
 		Action.Forward:
-			if can_move(dir_src):
+			if can_move_to_dir(dir_src):
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 			else :
 				current_action = {}
@@ -150,9 +150,6 @@ func end_action() -> void:
 	current_action = {}
 	roll_dir = roll_dir_dst
 	snap_90()
-
-func can_move(dir :EnumDir.Dir) -> bool:
-	return storey.can_move(pos_src.x, pos_src.y, dir )
 
 # return 0 - 1
 func get_animation_progress() -> float:
@@ -202,23 +199,26 @@ func try_auto_walk() -> void:
 			Walk.Off:
 				pass
 
+func can_move_to_dir(dir :EnumDir.Dir) -> bool:
+	return storey.can_move(pos_src.x, pos_src.y, dir )
+
 func walk_right_first() -> bool:
 	# try right
-	if can_move(EnumDir.DirTurnRight[dir_src]):
+	if can_move_to_dir(EnumDir.DirTurnRight[dir_src]):
 		enqueue_action(Action.TurnRight)
 		enqueue_action(Action.Forward)
 		return true
 	# try forward
-	if can_move(dir_src):
+	if can_move_to_dir(dir_src):
 		enqueue_action(Action.Forward)
 		return true
 	# try left
-	if can_move(EnumDir.DirTurnLeft[dir_src]):
+	if can_move_to_dir(EnumDir.DirTurnLeft[dir_src]):
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.Forward)
 		return true
 	# try backward
-	if can_move(EnumDir.DirOpppsite[dir_src]):
+	if can_move_to_dir(EnumDir.DirOpppsite[dir_src]):
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.Forward)
@@ -227,21 +227,21 @@ func walk_right_first() -> bool:
 
 func walk_left_first() -> bool:
 	# try left
-	if can_move(EnumDir.DirTurnLeft[dir_src]):
+	if can_move_to_dir(EnumDir.DirTurnLeft[dir_src]):
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.Forward)
 		return true
 	# try forward
-	if can_move(dir_src):
+	if can_move_to_dir(dir_src):
 		enqueue_action(Action.Forward)
 		return true
 	# try right
-	if can_move(EnumDir.DirTurnRight[dir_src]):
+	if can_move_to_dir(EnumDir.DirTurnRight[dir_src]):
 		enqueue_action(Action.TurnRight)
 		enqueue_action(Action.Forward)
 		return true
 	# try backward
-	if can_move(EnumDir.DirOpppsite[dir_src]):
+	if can_move_to_dir(EnumDir.DirOpppsite[dir_src]):
 		enqueue_action(Action.TurnRight)
 		enqueue_action(Action.TurnRight)
 		enqueue_action(Action.Forward)

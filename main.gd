@@ -40,7 +40,7 @@ func _ready() -> void:
 	player = char_container.get_child(0)
 
 	var orbitr := default_storey_setting.CalcDiagonalLength() * 2
-	var n = 4
+	var n = 0
 	for i in n:
 		var rd = 2*PI/n *i
 		add_deco_tower(Vector3(sin(rd)*orbitr,0,cos(rd)*orbitr))
@@ -67,7 +67,6 @@ func _process(delta: float) -> void:
 
 func _on_vpsize_changed() -> void:
 	minimap.update_size()
-
 
 func storey_gap_changed(tw :Tower) -> void:
 	for ch in char_container.get_children():
@@ -101,11 +100,8 @@ func enter_storey() -> void:
 		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
-		ch.enqueue_action(
-			Crawler.Action.EnterStorey, {
-			"Storey": current_tower.cur_storey, 
-			"Pos": stpos,
-		})
+		ch.enter_storey(current_tower.cur_storey, stpos)
+		ch.enqueue_action(Crawler.Action.EnterStorey, {}) # for animation
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 

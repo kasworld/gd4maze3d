@@ -129,15 +129,22 @@ func start_new_action() -> bool:
 			roll_dir_dst = EnumRoll.roll_right(roll_dir)
 		Action.RollLeft:
 			roll_dir_dst = EnumRoll.roll_left(roll_dir)
-		Action.EnterStorey:
-			var args = current_action.Args
-			storey = args.Storey
-			pos_dst = args.Pos
-			storey_action_stats = new_stats()
-			rand_act_speed()
+		Action.EnterStorey: # for animation only
+			pass
+			#var args = current_action.Args
+			#storey = args.Storey
+			#pos_dst = args.Pos
+			#storey_action_stats = new_stats()
+			#rand_act_speed()
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
+	
+func enter_storey(st :Storey, pos :Vector2i) -> void:
+	storey = st
+	pos_dst = pos
+	storey_action_stats = new_stats()
+	rand_act_speed()
 
 # return true on act end
 func is_current_action_ended() -> bool:

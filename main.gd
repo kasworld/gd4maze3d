@@ -40,7 +40,7 @@ func _ready() -> void:
 	player = char_container.get_child(0)
 
 	var orbitr := default_storey_setting.CalcDiagonalLength() * 2
-	var n = 0
+	var n = 3
 	for i in n:
 		var rd = 2*PI/n *i
 		add_deco_tower(Vector3(sin(rd)*orbitr,0,cos(rd)*orbitr))

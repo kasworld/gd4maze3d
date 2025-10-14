@@ -65,7 +65,7 @@ func make_default() -> StoreySetting:
 	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
 	MeshTrailTypeList = ["♠","♣","♥","♦","★"]
 	MakeMeshTrailRate = 2.0/(MazeSize.x*MazeSize.y)
-	DonutCapsuleCount = max(1, MazeSize.x*MazeSize.y/20.0)
+	DonutCapsuleCount = max(2, MazeSize.x*MazeSize.y/20.0)
 	TreeCount = max(1, MazeSize.x*MazeSize.y/50.0)
 	return self 
 

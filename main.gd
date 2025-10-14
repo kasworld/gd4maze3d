@@ -68,6 +68,21 @@ func _process(delta: float) -> void:
 func _on_vpsize_changed() -> void:
 	minimap.update_size()
 
+
+func storey_gap_changed(tw :Tower) -> void:
+	for ch in char_container.get_children():
+		ch.position.y = tw.calc_storey_mid_y_pos( 
+			tw.find_storey_num_to_index(tw.cur_storey.storey_num) )
+		if ch == player:
+			if not camera_move:
+				cameralight.copy_position_rotation(ch)
+
+func move_camera(_delta: float) -> void:
+	var t = -Time.get_unix_time_from_system() /2.3
+	var r = default_storey_setting.CalcDiagonalLength() *1.0
+	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
+	cameralight.look_at(current_tower.calc_center())
+
 func enter_next_storey() -> void:
 	current_tower.enter_next_storey()
 	enter_storey()
@@ -93,20 +108,6 @@ func enter_storey() -> void:
 		})
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
-
-func storey_gap_changed(tw :Tower) -> void:
-	for ch in char_container.get_children():
-		ch.position.y = tw.calc_storey_mid_y_pos( 
-			tw.find_storey_num_to_index(tw.cur_storey.storey_num) )
-		if ch == player:
-			if not camera_move:
-				cameralight.copy_position_rotation(ch)
-
-func move_camera(_delta: float) -> void:
-	var t = -Time.get_unix_time_from_system() /2.3
-	var r = default_storey_setting.CalcDiagonalLength() *1.0
-	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
-	cameralight.look_at(current_tower.calc_center())
 
 func act_character(cur_storey :Storey) -> void:
 	for ch in char_container.get_children():

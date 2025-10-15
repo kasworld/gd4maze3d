@@ -207,18 +207,6 @@ func pos_multimesh(multimesh :MultiMesh, pos_list :Array) -> void:
 		var t = Transform3D(Basis(), pos_list[i])
 		multimesh.set_instance_transform(i,t)
 
-func set_wall_size(full :bool) -> void:
-	if full:
-		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Full()
-		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Full()
-		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Full()
-		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Full()
-	else:
-		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Reduced()
-		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Reduced()
-		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Reduced()
-		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Reduced()
-
 var wall_multi_inst_ew_main :MultiMeshInstance3D
 var wall_multi_inst_ns_main :MultiMeshInstance3D
 var wall_multi_inst_ew_sub :MultiMeshInstance3D
@@ -343,6 +331,18 @@ func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Floor.visible = f
 	$Ceiling.visible = c
+
+func set_wall_size(full :bool) -> void:
+	if full:
+		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Full()
+		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Full()
+		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Full()
+		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Full()
+	else:
+		wall_multi_inst_ns_main.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Reduced()
+		wall_multi_inst_ns_sub.multimesh.mesh.size = storey_setting.CalcWallSize_NS_Reduced()
+		wall_multi_inst_ew_main.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Reduced()
+		wall_multi_inst_ew_sub.multimesh.mesh.size = storey_setting.CalcWallSize_EW_Reduced()
 
 func view_walls(w :bool) -> void:
 	$WallContainer.visible = w

@@ -35,11 +35,9 @@ func _to_string() -> String:
 	return "Storey[%d mainwall:%s subwall:%s
 	%s]" % [storey_num, main_wall_mat_name, sub_wall_tex_name, storey_setting ]
 
-func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
+func init(ts :StoreySetting, stn :int) -> Storey:
 	storey_setting = ts
 	storey_num = stn
-	start_pos = stp
-	goal_pos = gp
 	놓인것들 = PlacedThings.new(storey_setting.MazeSize)
 	var tex_keys = Texmat.wall_tex_dict.keys()
 	tex_keys.shuffle()
@@ -74,14 +72,6 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 	make_wall_by_maze()
 	make_pillas()
 
-	var 크기기준 = storey_setting.LaneW
-	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
-		).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
-	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
-		).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
-	놓인것들.set_at(start_pos, $StartMark)
-	놓인것들.set_at(goal_pos, $EndMark)
-
 	wall_info_all = []
 	for y in storey_setting.MazeSize.y:
 		wall_info_all.append([])
@@ -89,6 +79,23 @@ func init(ts :StoreySetting, stn :int, stp :Vector2i, gp :Vector2i) -> Storey:
 			wall_info_all[y].append( make_cell_wallinfo(x,y) )
 			if maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
+
+	start_pos = 구석자리목록.pick_random()
+	var trycount := 100
+	while trycount > 0:
+		goal_pos = 구석자리목록.pick_random()
+		if goal_pos != start_pos:
+			break
+		trycount -=1
+	if goal_pos == start_pos:
+		print_debug("start, goal pos same %s" % start_pos)
+	var 크기기준 = storey_setting.LaneW
+	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
+		).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
+	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
+		).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
+	놓인것들.set_at(start_pos, $StartMark)
+	놓인것들.set_at(goal_pos, $EndMark)
 
 	add_donut_capsule(storey_setting.DonutCapsuleCount)
 	for i in storey_setting.TreeCount:

@@ -131,11 +131,6 @@ func start_new_action() -> bool:
 			roll_dir_dst = EnumRoll.roll_left(roll_dir)
 		Action.EnterStorey: # for animation only
 			pass
-			#var args = current_action.Args
-			#storey = args.Storey
-			#pos_dst = args.Pos
-			#storey_action_stats = new_stats()
-			#rand_act_speed()
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
@@ -168,6 +163,7 @@ func animate_move(from :Storey, to :Storey) -> void:
 	var p1 = from.mazepos2storeypos(pos_src, from.storey_setting.StoryH/2) + from.position 
 	var p2 = to.mazepos2storeypos(pos_dst, to.storey_setting.StoryH/2) + to.position 
 	position = p1.lerp(p2,dur)
+	#rotation += from.rotation.lerp(to.rotation,dur)
 
 func animate_turn() -> void:
 	var dur = get_animation_progress()

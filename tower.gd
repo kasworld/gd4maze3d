@@ -105,6 +105,7 @@ func add_new_storey(stnum :int) -> void:
 	ss.LaneW *= pow(2, randf()*2 -1 )
 	var st = storey_scene.instantiate().init(ss, stnum)
 	st.position -= ss.CalcMeshCenterV3()
+	#st.rotation.y = randf_range(0,2*PI)
 	storey_list.append(st)
 	apply_storey_gap_change()
 	$AddStoreyContainer.add_child(st)

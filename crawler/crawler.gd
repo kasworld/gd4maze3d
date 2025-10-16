@@ -74,12 +74,6 @@ func queue2str() -> String:
 var action_start_time :float # unixtime sec
 var current_action : Dictionary # [Action, APS, Args]
 
-func set_current_action(a :Action,args :={}) -> void:
-	enqueue_action(a,args)
-
-func set_current_action_with_speed(a :Action, s :float, args :={}) -> void:
-	enqueue_action_with_speed(a,s,args)
-
 var serial :int
 var color :Color
 
@@ -145,6 +139,9 @@ func start_new_action() -> bool:
 	return true
 	
 func enter_storey(st :Storey, pos :Vector2i) -> void:
+	clear_queue()
+	current_action = make_action_dictionary(Crawler.Action.EnterStorey ,action_per_second.get_value())
+	action_start_time = Time.get_unix_time_from_system()
 	storey = st
 	pos_dst = pos
 	storey_action_stats = new_stats()

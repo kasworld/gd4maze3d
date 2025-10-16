@@ -48,12 +48,15 @@ func enqueue_action(a :Action, args :={}) -> Crawler:
 	return enqueue_action_with_speed(a, action_per_second.get_value(), args)
 
 func enqueue_action_with_speed(a :Action,s :float, args :={}) -> Crawler:
-	queue.push_back({
+	queue.push_back(make_action_dictionary(a,s,args))
+	return crop_queue()
+
+func make_action_dictionary(a :Action,s :float, args :={}) -> Dictionary:
+	return {
 		"Action":a,
 		"APS":s, 
 		"Args":args,
-	})
-	return crop_queue()
+	}
 
 func crop_queue() -> Crawler:
 	if queue.size() > QueueLimit:
@@ -70,6 +73,12 @@ func queue2str() -> String:
 #var action_queue :ActionQueue
 var action_start_time :float # unixtime sec
 var current_action : Dictionary # [Action, APS, Args]
+
+func set_current_action(a :Action,args :={}) -> void:
+	enqueue_action(a,args)
+
+func set_current_action_with_speed(a :Action, s :float, args :={}) -> void:
+	enqueue_action_with_speed(a,s,args)
 
 var serial :int
 var color :Color

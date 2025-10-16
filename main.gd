@@ -96,12 +96,13 @@ func enter_storey() -> void:
 	minimap.minimap_mode = oldminimapviewmode
 	add_child(minimap)
 	for ch in char_container.get_children():
-		ch.clear_queue()
 		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
 		ch.enter_storey(current_tower.cur_storey, stpos)
-		ch.enqueue_action(Crawler.Action.EnterStorey, {}) # for animation
+		ch.clear_queue()
+		ch.set_current_action(Crawler.Action.EnterStorey)
+		#ch.enqueue_action(Crawler.Action.EnterStorey, {}) # for animation
 	minimap.init(current_tower.cur_storey, char_container.get_children(), player)
 	update_button_text()
 

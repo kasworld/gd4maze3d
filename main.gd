@@ -83,6 +83,9 @@ func move_camera(_delta: float) -> void:
 	cameralight.look_at(current_tower.calc_center())
 
 func enter_next_storey() -> void:
+	if player.current_action.get("Action") == Crawler.Action.EnterStorey:
+		print_debug("already in Action.EnterStorey")
+		return
 	current_tower.enter_next_storey()
 	enter_storey()
 

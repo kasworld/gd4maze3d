@@ -7,9 +7,9 @@ static func minimapview2str(vd :MiniMapView) -> String:
 static func minimapview_next(a :MiniMapView) -> MiniMapView:
 	return (a +1) % MiniMapView.keys().size() as MiniMapView
 
-func mode_next(playernum :int) -> void:
+func mode_next() -> void:
 	minimap_mode = minimapview_next(minimap_mode)
-	set_minimap_mode(playernum)
+	set_minimap_mode()
 
 var minimap_mode :MiniMapView = MiniMapView.Off
 var map_scale :float = 20
@@ -20,12 +20,14 @@ var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
 var goal :Label
 var start :Label
+var player_serial :int
 
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey, char_list :Array, player :Crawler, viewmode :MiniMapView) -> MiniMap:
+func init(st :Storey, char_list :Array, playernum :int, viewmode :MiniMapView) -> MiniMap:
 	minimap_mode = viewmode
+	player_serial = playernum
 	storey = st
 	walls_known = []
 	walls_known.resize(storey.storey_setting.MazeSize.y*2+1)
@@ -37,11 +39,11 @@ func init(st :Storey, char_list :Array, player :Crawler, viewmode :MiniMapView) 
 	add_child(start)
 
 	for ch in char_list:
-		if ch == player:
+		if ch.serial == player_serial:
 			add_character(ch, 8)
 		else:
 			add_character(ch, 0)
-	set_minimap_mode(player.serial)
+	set_minimap_mode()
 	return self
 
 func _ready() -> void:
@@ -185,13 +187,13 @@ func get_width() -> float:
 func get_height() -> float:
 	return storey.storey_setting.MazeSize.y * map_scale
 
-func set_minimap_mode(playernum :int) -> void:
+func set_minimap_mode() -> void:
 	match minimap_mode:
 		MiniMapView.Off:
 			hide()
 		MiniMapView.Known:
 			show()
-			view_known_map(playernum)
+			view_known_map()
 		MiniMapView.Full:
 			show()
 			view_full_map()
@@ -201,10 +203,10 @@ func view_full_map() -> void:
 		ch.visible = true
 	queue_redraw()
 
-func view_known_map(playernum :int) -> void:
+func view_known_map() -> void:
 	for ch in $CharacterContainer.get_children():
 		ch.visible = false
-	$CharacterContainer.get_child(playernum).visible = true
+	$CharacterContainer.get_child(player_serial).visible = true
 	queue_redraw()
 
 func _draw() -> void:

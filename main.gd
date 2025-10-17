@@ -100,7 +100,7 @@ func enter_storey() -> void:
 	if minimap != null:
 		oldminimapviewmode = minimap.minimap_mode
 		minimap.queue_free()
-	minimap = minimap_scene.instantiate().init(current_tower.cur_storey, char_container.get_children(), player, oldminimapviewmode)
+	minimap = minimap_scene.instantiate().init(current_tower.cur_storey, char_container.get_children(), player.serial, oldminimapviewmode)
 	add_child(minimap)
 	update_button_text()
 
@@ -196,7 +196,7 @@ func _on_button_help_pressed() -> void:
 	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
-	minimap.mode_next(player.serial)
+	minimap.mode_next()
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:

@@ -7,17 +7,6 @@ static func minimapview2str(vd :MiniMapView) -> String:
 static func minimapview_next(a :MiniMapView) -> MiniMapView:
 	return (a +1) % MiniMapView.keys().size() as MiniMapView
 
-func set_minimap_mode(playernum :int) -> void:
-	match minimap_mode:
-		MiniMapView.Off:
-			hide()
-		MiniMapView.Known:
-			show()
-			view_known_map(playernum)
-		MiniMapView.Full:
-			show()
-			view_full_map()
-
 func mode_next(playernum :int) -> void:
 	minimap_mode = minimapview_next(minimap_mode)
 	set_minimap_mode(playernum)
@@ -29,15 +18,14 @@ var storey :Storey
 var walllines_all :PackedVector2Array =[]
 var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
-var map_mode_full :bool
 var goal :Label
 var start :Label
 
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey, char_list :Array, player :Crawler) -> MiniMap:
-	map_mode_full = false
+func init(st :Storey, char_list :Array, player :Crawler, viewmode :MiniMapView) -> MiniMap:
+	minimap_mode = viewmode
 	storey = st
 	walls_known = []
 	walls_known.resize(storey.storey_setting.MazeSize.y*2+1)
@@ -54,8 +42,10 @@ func init(st :Storey, char_list :Array, player :Crawler) -> MiniMap:
 		else:
 			add_character(ch, 0)
 	set_minimap_mode(player.serial)
-	update_size()
 	return self
+
+func _ready() -> void:
+	update_size()
 
 func update_size() -> void:
 	var vp_size = get_viewport().get_visible_rect().size
@@ -179,32 +169,6 @@ func update_knonw_walls_by_pos(x:int,y :int) -> void:
 	for d in walldir:
 		add_known_wall_at(x,y,EnumDir.Flag2Dir[d])
 
-func get_width() -> float:
-	return storey.storey_setting.MazeSize.x * map_scale
-func get_height() -> float:
-	return storey.storey_setting.MazeSize.y * map_scale
-
-func view_full_map() -> void:
-	for ch in $CharacterContainer.get_children():
-		ch.visible = true
-	map_mode_full = true
-	queue_redraw()
-
-func view_known_map(playernum :int) -> void:
-	for ch in $CharacterContainer.get_children():
-		ch.visible = false
-	$CharacterContainer.get_child(playernum).visible = true
-	map_mode_full = false
-	queue_redraw()
-
-func _draw() -> void:
-	if map_mode_full:
-		draw_multiline(walllines_all,Color(Color.WHITE,0.5), WallThick)
-	else:
-		if walllines_known.size() == 0 :
-			return
-		draw_multiline(walllines_known,Color(Color.WHITE,0.5), WallThick)
-
 func add_wall_at_to_walllines(x:int,y :int, dir :EnumDir.Dir,wl :PackedVector2Array ) -> void:
 	match dir:
 		EnumDir.Dir.North:
@@ -215,3 +179,39 @@ func add_wall_at_to_walllines(x:int,y :int, dir :EnumDir.Dir,wl :PackedVector2Ar
 			wl.append_array([Vector2(x,y+1)*map_scale,Vector2(x+1,y+1)*map_scale])
 		EnumDir.Dir.East:
 			wl.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
+
+func get_width() -> float:
+	return storey.storey_setting.MazeSize.x * map_scale
+func get_height() -> float:
+	return storey.storey_setting.MazeSize.y * map_scale
+
+func set_minimap_mode(playernum :int) -> void:
+	match minimap_mode:
+		MiniMapView.Off:
+			hide()
+		MiniMapView.Known:
+			show()
+			view_known_map(playernum)
+		MiniMapView.Full:
+			show()
+			view_full_map()
+
+func view_full_map() -> void:
+	for ch in $CharacterContainer.get_children():
+		ch.visible = true
+	queue_redraw()
+
+func view_known_map(playernum :int) -> void:
+	for ch in $CharacterContainer.get_children():
+		ch.visible = false
+	$CharacterContainer.get_child(playernum).visible = true
+	queue_redraw()
+
+func _draw() -> void:
+	match minimap_mode:
+		MiniMapView.Full:
+			draw_multiline(walllines_all,Color(Color.WHITE,0.5), WallThick)
+		MiniMapView.Known:
+			if walllines_known.size() == 0 :
+				return
+			draw_multiline(walllines_known,Color(Color.WHITE,0.5), WallThick)

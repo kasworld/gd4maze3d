@@ -140,7 +140,7 @@ func start_new_action() -> bool:
 	
 func enter_storey(st :Storey, pos :Vector2i) -> void:
 	clear_queue()
-	current_action = make_action_dictionary(Crawler.Action.EnterStorey ,action_per_second.get_value())
+	current_action = make_action_dictionary(Crawler.Action.EnterStorey ,1.0/2)
 	action_start_time = Time.get_unix_time_from_system()
 	storey = st
 	pos_dst = pos

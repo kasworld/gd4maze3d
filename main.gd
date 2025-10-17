@@ -102,7 +102,7 @@ func act_character(cur_storey :Storey) -> void:
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_next_storey()
 					return
-				놓인것들줍기(ch)
+				current_tower.cur_storey.놓인것들줍기(ch)
 			current_tower.cur_storey.get_mini_map().move_character(ch.serial, ch.pos_src)
 		ch.try_auto_walk()
 		if ch.start_new_action(): # new act start
@@ -110,18 +110,6 @@ func act_character(cur_storey :Storey) -> void:
 				current_tower.cur_storey.get_mini_map().update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
 		if not ch.current_action.is_empty():
 			animate_action(ch)
-
-func 놓인것들줍기(ch :Crawler) -> void:
-	var cur_storey = current_tower.cur_storey
-	var ft = cur_storey.놓인것들.get_at(ch.pos_src)
-	if ft is Donut:
-		ch.enqueue_action(Crawler.Action.RollLeft)
-		cur_storey.놓인것들.del_at(ch.pos_src)
-		ft.queue_free()
-	elif ft is Capsule:
-		ch.enqueue_action(Crawler.Action.RollRight)
-		cur_storey.놓인것들.del_at(ch.pos_src)
-		ft.queue_free()
 
 func animate_action(ch :Crawler) -> void:
 	match ch.current_action.Action:

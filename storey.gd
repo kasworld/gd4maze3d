@@ -130,6 +130,17 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 func get_mini_map() -> MiniMap:
 	return $MiniMap
 
+func 놓인것들줍기(ch :Crawler) -> void:
+	var ft = 놓인것들.get_at(ch.pos_src)
+	if ft is Donut:
+		ch.enqueue_action(Crawler.Action.RollLeft)
+		놓인것들.del_at(ch.pos_src)
+		ft.queue_free()
+	elif ft is Capsule:
+		ch.enqueue_action(Crawler.Action.RollRight)
+		놓인것들.del_at(ch.pos_src)
+		ft.queue_free()
+
 func add_donut_capsule(n :int) -> void:
 	for i in n:
 		var p = 구석자리목록.pick_random()

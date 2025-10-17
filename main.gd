@@ -89,7 +89,7 @@ func enter_next_storey() -> void:
 	enter_storey(old_storey)
 
 func enter_storey(old_storey :Storey) -> void:
-	$DecoOrbit.position = current_tower.calc_center()
+	$DecoOrbit.position = current_tower.cur_storey.get_center_pos()
 	current_tower.cur_storey.chars_enter_storey(old_storey, char_container.get_children(),player.serial)
 	update_button_text()
 

@@ -10,7 +10,6 @@ var tower_scene = preload("res://tower.tscn")
 @onready var cameralight = $MovingCameraLight
 @onready var char_container = $CharacterContainer
 
-var minimap :MiniMap
 var player :Crawler
 var camera_move := false
 var current_tower :Tower
@@ -48,8 +47,8 @@ func _ready() -> void:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
 
+	enter_storey(null)
 	update_button_text()
-	enter_storey()
 
 func add_deco_tower(p :Vector3) -> void:
 	var deco_tower = tower_scene.instantiate().init(
@@ -66,7 +65,7 @@ func _process(delta: float) -> void:
 		move_camera(delta)
 
 func _on_vpsize_changed() -> void:
-	minimap.update_size()
+	current_tower.cur_storey.mini_map.update_size()
 
 func storey_gap_changed(tw :Tower) -> void:
 	for ch in char_container.get_children():
@@ -86,25 +85,21 @@ func enter_next_storey() -> void:
 	if player.current_action.get("Action") == Crawler.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")
 		return
-	current_tower.enter_next_storey()
-	enter_storey()
+	var old_storey = current_tower.enter_next_storey()
+	enter_storey(old_storey)
 
-func enter_storey() -> void:
+func enter_storey(old_storey :Storey) -> void:
 	$DecoOrbit.position = current_tower.calc_center()
 	for ch in char_container.get_children():
 		var stpos = current_tower.cur_storey.storey_setting.rand_pos_2i()
 		if ch == player:
 			stpos = current_tower.cur_storey.start_pos
 		ch.enter_storey(current_tower.cur_storey, stpos)
-	var oldminimapviewmode :MiniMap.MiniMapView
-	if minimap != null:
-		oldminimapviewmode = minimap.minimap_mode
-		minimap.queue_free()
-	minimap = minimap_scene.instantiate(
-		).init(current_tower.cur_storey
-		).add_chars(char_container.get_children(),player.serial)
-	minimap.set_minimap_mod(oldminimapviewmode)
-	add_child(minimap)
+	current_tower.cur_storey.mini_map.add_chars(char_container.get_children(),player.serial)
+	current_tower.cur_storey.mini_map.update_size()	
+	if old_storey != null:
+		current_tower.cur_storey.mini_map.set_minimap_mod(old_storey.mini_map.minimap_mode)
+		old_storey.mini_map.visible = false
 	update_button_text()
 
 func act_character(cur_storey :Storey) -> void:
@@ -117,11 +112,11 @@ func act_character(cur_storey :Storey) -> void:
 					enter_next_storey()
 					return
 				놓인것들줍기(ch)
-			minimap.move_character(ch.serial, ch.pos_src)
+			current_tower.cur_storey.mini_map.move_character(ch.serial, ch.pos_src)
 		ch.try_auto_walk()
 		if ch.start_new_action(): # new act start
 			if ch == player and ch.current_action.Action != Crawler.Action.EnterStorey: # player
-				minimap.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
+				current_tower.cur_storey.mini_map.update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
 		if not ch.current_action.is_empty():
 			animate_action(ch)
 
@@ -199,7 +194,7 @@ func _on_button_help_pressed() -> void:
 	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
-	minimap.mode_next()
+	current_tower.cur_storey.mini_map.mode_next()
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
@@ -291,9 +286,9 @@ Currently rendering: occlusion culling:%s
 		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 		]
 	if infolabel.visible:
-		infolabel.text = """%s\n%s\n%s\n%s""" % [current_tower, minimap, player, $MovingCameraLight ]
+		infolabel.text = """%s\n%s\n%s\n%s""" % [current_tower, current_tower.cur_storey.mini_map, player, $MovingCameraLight ]
 
 func update_button_text() -> void:
-	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % minimap
+	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % current_tower.cur_storey.mini_map
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
 	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Tower.wallview2str(current_tower.view_walls)

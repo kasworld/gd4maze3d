@@ -111,6 +111,8 @@ func init(ts :StoreySetting, stn :int) -> Storey:
 	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, storey_setting.StoryH/2, storey_setting.CalcMeshSize().y)
 	
 	mini_map = preload("res://mini_map.tscn").instantiate().init(self)
+	add_child(mini_map)
+	mini_map.visible = false
 	return self
 
 func add_donut_capsule(n :int) -> void:

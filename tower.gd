@@ -62,15 +62,18 @@ func init(ts :TowerSetting, ss :StoreySetting) -> Tower:
 	set_pillars_visible(view_pillars)
 	return self
 
-func enter_next_storey() -> void:
+# return old storey
+func enter_next_storey() -> Storey:
 	del_old_storey()
 	add_new_storey(storey_list[-1].storey_num +1)
+	var old_storey = cur_storey
 	var new_cur_storey_num = cur_storey.storey_num +1
-	cur_storey = storey_list[find_storey_num_to_index(new_cur_storey_num)]
+	cur_storey = find_storey_by_num(new_cur_storey_num)
 
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 	set_wallview_mode(view_walls)
 	set_pillars_visible(view_pillars)
+	return old_storey
 
 func _process(_delta: float) -> void:
 	var timenow := Time.get_unix_time_from_system()
@@ -91,6 +94,14 @@ func find_storey_num_to_index(num :int) -> int:
 			return i
 	assert(false)
 	return -1
+
+func find_storey_by_num(num :int) -> Storey:
+	for i in storey_list.size():
+		if storey_list[i].storey_num == num:
+			return storey_list[i]
+	assert(false)
+	return null
+
 
 func apply_storey_gap_change() -> void:
 	for i in storey_list.size():

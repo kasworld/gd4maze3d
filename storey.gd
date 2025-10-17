@@ -27,7 +27,6 @@ var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 var start_pos :Vector2i
 var goal_pos :Vector2i
-var mini_map :MiniMap
 
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
@@ -110,10 +109,23 @@ func init(ts :StoreySetting, stn :int) -> Storey:
 	$Label3D.position = Vector3(-storey_setting.WallThick, storey_setting.StoryH/2, -storey_setting.WallThick)
 	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, storey_setting.StoryH/2, storey_setting.CalcMeshSize().y)
 	
-	mini_map = preload("res://mini_map.tscn").instantiate().init(self)
-	add_child(mini_map)
-	mini_map.visible = false
+	$MiniMap.init(self)
 	return self
+
+func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
+	for ch in char_list:
+		var stpos = storey_setting.rand_pos_2i()
+		if ch.serial == playernum:
+			stpos = start_pos
+		ch.enter_storey(self, stpos)
+	$MiniMap.add_chars(char_list, playernum)
+	$MiniMap.update_size()
+	if old_storey != null:
+		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)
+		old_storey.get_mini_map().visible = false
+
+func get_mini_map() -> MiniMap:
+	return $MiniMap
 
 func add_donut_capsule(n :int) -> void:
 	for i in n:

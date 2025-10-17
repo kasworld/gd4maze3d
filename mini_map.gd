@@ -69,8 +69,8 @@ func apply_minimap_mode() -> void:
 				ch.visible = true
 			queue_redraw()
 
-func _ready() -> void:
-	update_size()
+#func _ready() -> void:
+	#update_size()
 
 func update_size() -> void:
 	var vp_size = get_viewport().get_visible_rect().size

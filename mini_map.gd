@@ -9,7 +9,11 @@ static func minimapview_next(a :MiniMapView) -> MiniMapView:
 
 func mode_next() -> void:
 	minimap_mode = minimapview_next(minimap_mode)
-	set_minimap_mode()
+	apply_minimap_mode()
+	
+func set_minimap_mod(m :MiniMapView) -> void:
+	minimap_mode = m
+	apply_minimap_mode()
 
 var minimap_mode :MiniMapView = MiniMapView.Off
 var map_scale :float = 20
@@ -25,8 +29,8 @@ var player_serial :int
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey,  viewmode :MiniMapView) -> MiniMap:
-	minimap_mode = viewmode
+func init(st :Storey) -> MiniMap:
+	#minimap_mode = viewmode
 	storey = st
 	walls_known = []
 	walls_known.resize(storey.storey_setting.MazeSize.y*2+1)
@@ -36,7 +40,7 @@ func init(st :Storey,  viewmode :MiniMapView) -> MiniMap:
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
 	add_child(start)
-	set_minimap_mode()
+	apply_minimap_mode()
 	return self
 
 func add_chars(char_list :Array, playernum :int) -> MiniMap:
@@ -46,10 +50,10 @@ func add_chars(char_list :Array, playernum :int) -> MiniMap:
 			add_character(ch, 8)
 		else:
 			add_character(ch, 0)
-	set_minimap_mode()
+	apply_minimap_mode()
 	return self
 
-func set_minimap_mode() -> void:
+func apply_minimap_mode() -> void:
 	match minimap_mode:
 		MiniMapView.Off:
 			hide()

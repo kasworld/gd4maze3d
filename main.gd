@@ -100,7 +100,9 @@ func enter_storey() -> void:
 	if minimap != null:
 		oldminimapviewmode = minimap.minimap_mode
 		minimap.queue_free()
-	minimap = minimap_scene.instantiate().init(current_tower.cur_storey, char_container.get_children(), player.serial, oldminimapviewmode)
+	minimap = minimap_scene.instantiate(
+		).init(current_tower.cur_storey, oldminimapviewmode,
+		).add_chars(char_container.get_children(),player.serial)
 	add_child(minimap)
 	update_button_text()
 

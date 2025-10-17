@@ -25,9 +25,8 @@ var player_serial :int
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey, char_list :Array, playernum :int, viewmode :MiniMapView) -> MiniMap:
+func init(st :Storey,  viewmode :MiniMapView) -> MiniMap:
 	minimap_mode = viewmode
-	player_serial = playernum
 	storey = st
 	walls_known = []
 	walls_known.resize(storey.storey_setting.MazeSize.y*2+1)
@@ -37,7 +36,11 @@ func init(st :Storey, char_list :Array, playernum :int, viewmode :MiniMapView) -
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
 	add_child(start)
+	set_minimap_mode()
+	return self
 
+func add_chars(char_list :Array, playernum :int) -> MiniMap:
+	player_serial = playernum
 	for ch in char_list:
 		if ch.serial == player_serial:
 			add_character(ch, 8)
@@ -45,6 +48,22 @@ func init(st :Storey, char_list :Array, playernum :int, viewmode :MiniMapView) -
 			add_character(ch, 0)
 	set_minimap_mode()
 	return self
+
+func set_minimap_mode() -> void:
+	match minimap_mode:
+		MiniMapView.Off:
+			hide()
+		MiniMapView.Known:
+			show()
+			for ch in $CharacterContainer.get_children():
+				ch.visible = false
+			$CharacterContainer.get_child(player_serial).visible = true
+			queue_redraw()
+		MiniMapView.Full:
+			show()
+			for ch in $CharacterContainer.get_children():
+				ch.visible = true
+			queue_redraw()
 
 func _ready() -> void:
 	update_size()
@@ -187,27 +206,6 @@ func get_width() -> float:
 func get_height() -> float:
 	return storey.storey_setting.MazeSize.y * map_scale
 
-func set_minimap_mode() -> void:
-	match minimap_mode:
-		MiniMapView.Off:
-			hide()
-		MiniMapView.Known:
-			show()
-			view_known_map()
-		MiniMapView.Full:
-			show()
-			view_full_map()
-
-func view_full_map() -> void:
-	for ch in $CharacterContainer.get_children():
-		ch.visible = true
-	queue_redraw()
-
-func view_known_map() -> void:
-	for ch in $CharacterContainer.get_children():
-		ch.visible = false
-	$CharacterContainer.get_child(player_serial).visible = true
-	queue_redraw()
 
 func _draw() -> void:
 	match minimap_mode:

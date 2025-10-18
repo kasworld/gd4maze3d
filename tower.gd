@@ -3,8 +3,6 @@ class_name Tower
 
 signal storey_gap_changed(t :Tower)
 
-var storey_scene = preload("res://storey.tscn")
-
 var tower_setting :TowerSetting
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
@@ -57,9 +55,6 @@ func enter_next_storey() -> Storey:
 	var old_storey = cur_storey
 	var new_cur_storey_num = cur_storey.storey_num +1
 	cur_storey = find_storey_by_num(new_cur_storey_num)
-	cur_storey.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
-	cur_storey.view_pillars(view_pillars)
-	cur_storey.set_wallview_mode(view_walls)
 	return old_storey
 
 func _process(_delta: float) -> void:
@@ -97,13 +92,16 @@ func add_new_storey(stnum :int) -> void:
 	ss.MazeSize.y += randi_range(-1,1)
 	ss.StoryH *= pow(2, randf()*2 -1 )
 	ss.LaneW *= pow(2, randf()*2 -1 )
-	var st = storey_scene.instantiate().init(ss, stnum)
+	var st = preload("res://storey.tscn").instantiate().init(ss, stnum)
 	st.position -= ss.CalcMeshCenterV3()
 	#st.rotation.y = randf_range(0,2*PI)
 	storey_list.append(st)
 	apply_storey_gap_change()
 	$AddStoreyContainer.add_child(st)
 	$AnimationPlayerAddStorey.play("new_animation")
+	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+	st.view_pillars(view_pillars)
+	st.set_wallview_mode(view_walls)
 
 func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) -> void:
 	for st in $AddStoreyContainer.get_children():

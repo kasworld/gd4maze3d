@@ -1,7 +1,5 @@
 extends Node3D
 
-var minimap_scene = preload("res://mini_map.tscn")
-var character_scene = preload("res://crawler/crawler.tscn")
 var tower_scene = preload("res://tower.tscn")
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
@@ -31,7 +29,7 @@ func _ready() -> void:
 	current_tower.storey_gap_changed.connect(storey_gap_changed)
 	
 	for i in current_tower.tower_setting.CharacterCount:
-		var pl = character_scene.instantiate()
+		var pl = preload("res://crawler/crawler.tscn").instantiate()
 		char_container.add_child(pl)
 		pl.init(
 			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2], 

@@ -1,6 +1,8 @@
 extends Node3D
 class_name Storey
 
+signal goal_reached(st :Storey, char_list :Array) # char will leave storey
+
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 

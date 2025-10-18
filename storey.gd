@@ -1,9 +1,14 @@
 extends Node3D
-
 class_name Storey
 
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
+
+enum WallView {Reduced, Full, Off}
+static func wallview2str(vd :WallView) -> String:
+	return WallView.keys()[vd]
+static func wallview_next(a :WallView) -> WallView:
+	return (a +1) % WallView.keys().size() as WallView
 
 var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
 var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
@@ -27,6 +32,8 @@ var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 var start_pos :Vector2i
 var goal_pos :Vector2i
+func is_goal_pos(p :Vector2i) -> bool:
+	return goal_pos == p
 
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
@@ -381,5 +388,13 @@ func view_walls(w :bool) -> void:
 func view_pillars(w :bool) -> void:
 	$PillarContainer.visible = w
 
-func is_goal_pos(p :Vector2i) -> bool:
-	return goal_pos == p
+func set_wallview_mode(w :WallView) -> void:
+	match w:
+		WallView.Full:
+			view_walls(true)
+			set_wall_size(true)
+		WallView.Reduced:
+			view_walls(true)
+			set_wall_size(false)
+		WallView.Off:
+			view_walls(false)

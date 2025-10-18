@@ -3,12 +3,6 @@ class_name Tower
 
 signal storey_gap_changed(t :Tower)
 
-enum WallView {Reduced, Full, Off}
-static func wallview2str(vd :WallView) -> String:
-	return WallView.keys()[vd]
-static func wallview_next(a :WallView) -> WallView:
-	return (a +1) % WallView.keys().size() as WallView
-
 var storey_scene = preload("res://storey.tscn")
 
 var tower_setting :TowerSetting
@@ -16,7 +10,7 @@ var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
 var view_floor_ceiling :bool = true
-var view_walls :WallView = WallView.Reduced
+var view_walls :Storey.WallView = Storey.WallView.Reduced
 var view_pillars :bool = true
 var gap_ani_dir_open : bool = true # true:open, false:close
 var animate_gap_start_time :float
@@ -51,15 +45,9 @@ func _to_string() -> String:
 func init(ts :TowerSetting, ss :StoreySetting) -> Tower:
 	tower_setting = ts
 	storey_setting = ss
-	
-	set_wallview_mode(view_walls)
-	set_pillars_visible(view_pillars)
 	for i in tower_setting.VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
-	
-	set_wallview_mode(view_walls)
-	set_pillars_visible(view_pillars)
 	return self
 
 # return old storey
@@ -69,10 +57,9 @@ func enter_next_storey() -> Storey:
 	var old_storey = cur_storey
 	var new_cur_storey_num = cur_storey.storey_num +1
 	cur_storey = find_storey_by_num(new_cur_storey_num)
-
-	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
-	set_wallview_mode(view_walls)
-	set_pillars_visible(view_pillars)
+	cur_storey.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+	cur_storey.view_pillars(view_pillars)
+	cur_storey.set_wallview_mode(view_walls)
 	return old_storey
 
 func _process(_delta: float) -> void:
@@ -85,9 +72,6 @@ func _process(_delta: float) -> void:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
 
-	#var r = cur_storey.storey_setting.CalcDiagonalLength()
-	#cur_storey.position.x = sin(timenow)*r
-	
 func find_storey_num_to_index(num :int) -> int:
 	for i in storey_list.size():
 		if storey_list[i].storey_num == num:
@@ -101,7 +85,6 @@ func find_storey_by_num(num :int) -> Storey:
 			return storey_list[i]
 	assert(false)
 	return null
-
 
 func apply_storey_gap_change() -> void:
 	for i in storey_list.size():
@@ -143,22 +126,12 @@ func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(f,c)
 
-func set_wallview_mode(w :WallView) -> void:
-	var st = 0
-	for i in range(st,storey_list.size()):
-		match w:
-			WallView.Full:
-				storey_list[i].view_walls(true)
-				storey_list[i].set_wall_size(true)
-			WallView.Reduced:
-				storey_list[i].view_walls(true)
-				storey_list[i].set_wall_size(false)
-			WallView.Off:
-				storey_list[i].view_walls(false)
+func set_wallview_mode(w :Storey.WallView) -> void:
+	for i in storey_list.size():
+		storey_list[i].set_wallview_mode(w)
 
 func set_pillars_visible(w :bool) -> void:
-	var st = 0
-	for i in range(st,storey_list.size()):
+	for i in storey_list.size():
 		storey_list[i].view_pillars(w)
 
 func toggle_visible_floor_ceiling() -> void:
@@ -166,7 +139,7 @@ func toggle_visible_floor_ceiling() -> void:
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 func view_wall_next() -> void:
-	view_walls = wallview_next(view_walls)
+	view_walls = Storey.wallview_next(view_walls)
 	set_wallview_mode(view_walls)
 
 func toggle_visible_pillars() -> void:

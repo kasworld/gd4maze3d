@@ -109,18 +109,7 @@ func act_character(cur_storey :Storey) -> void:
 			animate_action(ch)
 
 func animate_action(ch :Crawler) -> void:
-	match ch.current_action.Action:
-		Crawler.Action.Forward:
-			ch.animate_move(current_tower.cur_storey, current_tower.cur_storey)
-		Crawler.Action.TurnLeft, Crawler.Action.TurnRight:
-			ch.animate_turn()
-		Crawler.Action.RollRight,Crawler.Action.RollLeft:
-			ch.animate_roll()
-		Crawler.Action.EnterStorey:
-			var from_storey = current_tower.find_storey_by_num(current_tower.cur_storey.storey_num -1)
-			if from_storey == null:
-				from_storey = current_tower.storey_list[0]
-			ch.animate_move(from_storey, current_tower.cur_storey)
+	ch.animate_action()
 	if ch == player:
 		if not camera_move:
 			cameralight.copy_position_rotation(ch)

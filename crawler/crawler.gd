@@ -138,14 +138,28 @@ func start_new_action() -> bool:
 	storey_action_stats[current_action.Action ] += 1
 	return true
 	
-func enter_storey(st :Storey, pos :Vector2i) -> void:
+func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	clear_queue()
-	current_action = make_action_dictionary(Crawler.Action.EnterStorey ,1.0/2)
+	current_action = make_action_dictionary(Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
 	action_start_time = Time.get_unix_time_from_system()
 	storey = st
 	pos_dst = pos
 	storey_action_stats = new_stats()
 	rand_act_speed()
+
+func animate_action() -> void:
+	match current_action.Action:
+		Action.Forward:
+			animate_move(storey, storey)
+		Action.TurnLeft, Action.TurnRight:
+			animate_turn()
+		Action.RollRight,Action.RollLeft:
+			animate_roll()
+		Action.EnterStorey:
+			var from_storey = current_action.Args.FromStorey
+			if from_storey == null:
+				from_storey = storey
+			animate_move(from_storey, storey)
 
 # return true on act end
 func is_current_action_ended() -> bool:

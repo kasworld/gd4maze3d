@@ -90,6 +90,8 @@ func add_character(achar :Crawler, outline :int) -> void:
 
 func move_character(n :int, pos :Vector2) -> void:
 	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
+	if n == player_serial:
+		update_knonw_walls_by_pos(pos.x, pos.y)
 
 func new_label(co:Color, text :String, outline :int) -> Label:
 	var co_txt :Color

@@ -100,12 +100,11 @@ func act_character(cur_storey :Storey) -> void:
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_next_storey()
 					return
-				current_tower.cur_storey.놓인것들줍기(ch)
-			current_tower.cur_storey.get_mini_map().move_character(ch.serial, ch.pos_src)
+				cur_storey.놓인것들줍기(ch)
+			cur_storey.get_mini_map().move_character(ch.serial, ch.pos_src)
 		ch.try_auto_walk()
 		if ch.start_new_action(): # new act start
-			if ch == player and ch.current_action.Action != Crawler.Action.EnterStorey: # player
-				current_tower.cur_storey.get_mini_map().update_knonw_walls_by_pos(ch.pos_src.x,ch.pos_src.y)
+			pass
 		if not ch.current_action.is_empty():
 			animate_action(ch)
 

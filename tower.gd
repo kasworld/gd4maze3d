@@ -25,14 +25,8 @@ func calc_storey_base_y_pos(storey_index :int) -> float:
 		rtn += calc_current_storey_gap() + storey_list[i].storey_setting.StoryH
 	return rtn
 
-func calc_storey_mid_y_pos(storey_index :int) -> float:
-	return calc_storey_base_y_pos(storey_index) + storey_list[storey_index].storey_setting.StoryH/2
-
 func calc_height() -> float:
 	return calc_storey_base_y_pos(storey_list.size())
-
-func calc_center() -> Vector3:
-	return Vector3(0, calc_height()/2, 0)
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
@@ -67,18 +61,10 @@ func _process(_delta: float) -> void:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
 
-func find_storey_num_to_index(num :int) -> int:
-	for i in storey_list.size():
-		if storey_list[i].storey_num == num:
-			return i
-	assert(false)
-	return -1
-
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():
 		if storey_list[i].storey_num == num:
 			return storey_list[i]
-	assert(false)
 	return null
 
 func apply_storey_gap_change() -> void:

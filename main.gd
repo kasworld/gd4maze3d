@@ -67,8 +67,7 @@ func _on_vpsize_changed() -> void:
 
 func storey_gap_changed(tw :Tower) -> void:
 	for ch in char_container.get_children():
-		ch.position.y = tw.calc_storey_mid_y_pos( 
-			tw.find_storey_num_to_index(tw.cur_storey.storey_num) )
+		ch.position.y = tw.cur_storey.get_center_pos().y
 		if ch == player:
 			if not camera_move:
 				cameralight.copy_position_rotation(ch)
@@ -76,8 +75,9 @@ func storey_gap_changed(tw :Tower) -> void:
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
 	var r = default_storey_setting.CalcDiagonalLength() *1.0
-	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + current_tower.calc_center()
-	cameralight.look_at(current_tower.calc_center())
+	var to_pos := current_tower.cur_storey.get_center_pos()
+	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
+	cameralight.look_at(to_pos)
 
 func enter_next_storey() -> void:
 	if player.current_action.get("Action") == Crawler.Action.EnterStorey:
@@ -118,10 +118,9 @@ func animate_action(ch :Crawler) -> void:
 		Crawler.Action.RollRight,Crawler.Action.RollLeft:
 			ch.animate_roll()
 		Crawler.Action.EnterStorey:
-			var from_num := 0
-			if current_tower.cur_storey.storey_num > 0:
-				from_num = current_tower.find_storey_num_to_index(current_tower.cur_storey.storey_num -1)
-			var from_storey = current_tower.storey_list[from_num]
+			var from_storey = current_tower.find_storey_by_num(current_tower.cur_storey.storey_num -1)
+			if from_storey == null:
+				from_storey = current_tower.storey_list[0]
 			ch.animate_move(from_storey, current_tower.cur_storey)
 	if ch == player:
 		if not camera_move:

@@ -88,10 +88,10 @@ func add_character(achar :Crawler, outline :int) -> void:
 	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
 
-func move_character(n :int, pos :Vector2i) -> void:
-	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
-	if n == player_serial:
-		update_knonw_walls_by_pos(pos.x, pos.y)
+func update_char_pos(ch :Crawler) -> void:
+	$CharacterContainer.get_child(ch.serial).position = pos2mapscale( ch.pos_src )
+	if ch.serial == player_serial:
+		update_knonw_walls_by_pos(ch.pos_src.x, ch.pos_src.y)
 
 func new_label(co:Color, text :String, outline :int) -> Label:
 	var co_txt :Color

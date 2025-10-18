@@ -101,7 +101,7 @@ func act_character(cur_storey :Storey) -> void:
 					enter_next_storey()
 					return
 				cur_storey.놓인것들줍기(ch)
-			cur_storey.get_mini_map().move_character(ch.serial, ch.pos_src)
+			cur_storey.get_mini_map().update_char_pos(ch)
 		ch.try_auto_walk()
 		if ch.start_new_action(): # new act start
 			pass

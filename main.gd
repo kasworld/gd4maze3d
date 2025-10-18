@@ -102,11 +102,8 @@ func act_character(cur_storey :Storey) -> void:
 					return
 				cur_storey.놓인것들줍기(ch)
 			cur_storey.get_mini_map().update_char_pos(ch)
-		ch.try_auto_walk()
-		if ch.start_new_action(): # new act start
-			pass
+		ch.act_character()
 		if not ch.current_action.is_empty():
-			ch.animate_action()
 			if ch == player and not camera_move:
 					cameralight.copy_position_rotation(ch)
 

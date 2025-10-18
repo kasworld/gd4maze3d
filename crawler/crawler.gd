@@ -147,6 +147,12 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	storey_action_stats = new_stats()
 	rand_act_speed()
 
+func act_character() -> void:
+	try_auto_walk()
+	start_new_action()
+	if not current_action.is_empty():
+		animate_action()
+
 func animate_action() -> void:
 	match current_action.Action:
 		Action.Forward:

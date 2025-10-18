@@ -106,13 +106,9 @@ func act_character(cur_storey :Storey) -> void:
 		if ch.start_new_action(): # new act start
 			pass
 		if not ch.current_action.is_empty():
-			animate_action(ch)
-
-func animate_action(ch :Crawler) -> void:
-	ch.animate_action()
-	if ch == player:
-		if not camera_move:
-			cameralight.copy_position_rotation(ch)
+			ch.animate_action()
+			if ch == player and not camera_move:
+					cameralight.copy_position_rotation(ch)
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,

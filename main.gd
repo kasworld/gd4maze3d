@@ -61,6 +61,11 @@ func _process(delta: float) -> void:
 	update_info()
 	if camera_move:
 		move_camera(delta)
+	else:
+		if not player.current_action.is_empty():
+			cameralight.copy_position_rotation(player)
+		else:
+			cameralight.snap_90()
 
 func _on_vpsize_changed() -> void:
 	current_tower.cur_storey.get_mini_map().update_size()
@@ -96,16 +101,12 @@ func act_character(cur_storey :Storey) -> void:
 		if ch.is_current_action_ended(): # true on act end
 			ch.end_action()
 			if ch == player  : # player
-				cameralight.snap_90()
 				if cur_storey.is_goal_pos(ch.pos_src):
 					enter_next_storey()
 					return
 				cur_storey.놓인것들줍기(ch)
 			cur_storey.get_mini_map().update_char_pos(ch)
 		ch.act_character()
-		if not ch.current_action.is_empty():
-			if ch == player and not camera_move:
-					cameralight.copy_position_rotation(ch)
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,

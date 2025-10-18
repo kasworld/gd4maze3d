@@ -88,8 +88,7 @@ func apply_storey_gap_change() -> void:
 
 func add_new_storey(stnum :int) -> void:
 	var ss = storey_setting.duplicate()
-	ss.MazeSize.x += randi_range(-1,1)
-	ss.MazeSize.y += randi_range(-1,1)
+	ss.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
 	ss.StoryH *= pow(2, randf()*2 -1 )
 	ss.LaneW *= pow(2, randf()*2 -1 )
 	var st = preload("res://storey.tscn").instantiate().init(ss, stnum)

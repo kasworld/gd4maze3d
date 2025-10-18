@@ -88,7 +88,7 @@ func add_character(achar :Crawler, outline :int) -> void:
 	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
 
-func move_character(n :int, pos :Vector2) -> void:
+func move_character(n :int, pos :Vector2i) -> void:
 	$CharacterContainer.get_child(n).position = pos2mapscale( pos )
 	if n == player_serial:
 		update_knonw_walls_by_pos(pos.x, pos.y)
@@ -129,12 +129,12 @@ func update_labels() -> void:
 	for ch in $CharacterContainer.get_children():
 		update_label_pos_size(ch,storey.start_pos)
 
-func update_label_pos_size(nd :Label, pos :Vector2) -> void:
+func update_label_pos_size(nd :Label, pos :Vector2i) -> void:
 	nd.position = pos2mapscale(pos)
 	nd.size = Vector2(map_scale-WallThick*2, map_scale-WallThick*2)
-	nd.label_settings.font_size = map_scale/5
+	nd.label_settings.font_size = map_scale/5.0 as int
 
-func pos2mapscale(pos :Vector2) -> Vector2:
+func pos2mapscale(pos :Vector2i) -> Vector2:
 	return pos * map_scale + Vector2(WallThick,WallThick)
 
 # make wallline by maze

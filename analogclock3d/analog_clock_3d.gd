@@ -36,7 +36,7 @@ func new_cylinder(h :float, r1 :float, r2 :float, mat :Material) -> MeshInstance
 	mesh.height = h
 	mesh.top_radius = r1
 	mesh.bottom_radius = r2
-	mesh.radial_segments = clampi((r1+r2)*2 , 64, 360)
+	mesh.radial_segments = clampi( (r1+r2)*2 as int , 64, 360)
 	mesh.material = mat
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh

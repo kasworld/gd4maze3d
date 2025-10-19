@@ -1,7 +1,7 @@
 extends Node3D
 class_name Storey
 
-signal goal_reached(st :Storey, char_list :Array) # char will leave storey
+signal goal_reached(st :Storey) # char will leave storey
 
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
@@ -135,6 +135,18 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 	if old_storey != null:
 		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)
 		old_storey.get_mini_map().visible = false
+
+func act_character_list(char_list :Array, playernum :int) -> void:
+	for ch in char_list:
+		if ch.is_current_action_ended(): # true on act end
+			ch.end_action()
+			if ch.serial == playernum:
+				if is_goal_pos(ch.pos_src):
+					goal_reached.emit(self) #enter_next_storey()
+					return
+				놓인것들줍기(ch)
+			get_mini_map().update_char_pos(ch)
+		ch.act_character()
 
 func get_mini_map() -> MiniMap:
 	return $MiniMap

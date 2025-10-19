@@ -56,17 +56,6 @@ func add_deco_tower(p :Vector3) -> void:
 	deco_tower.position = p
 	deco_tower.start_demo_random()
 
-func _process(delta: float) -> void:
-	act_character(current_tower.cur_storey)
-	update_info()
-	if camera_move:
-		move_camera(delta)
-	else:
-		if not player.current_action.is_empty():
-			cameralight.copy_position_rotation(player)
-		else:
-			cameralight.snap_90()
-
 func _on_vpsize_changed() -> void:
 	current_tower.cur_storey.get_mini_map().update_size()
 
@@ -92,21 +81,31 @@ func enter_next_storey() -> void:
 	enter_storey(old_storey)
 
 func enter_storey(old_storey :Storey) -> void:
+	if old_storey != null:
+		old_storey.goal_reached.disconnect(goal_reached)
 	$DecoOrbit.position = current_tower.cur_storey.get_center_pos()
+	current_tower.cur_storey.goal_reached.connect(goal_reached)
 	current_tower.cur_storey.chars_enter_storey(old_storey, char_container.get_children(),player.serial)
 	update_button_text()
 
+# signal from storey
+func goal_reached(st :Storey) -> void:
+	enter_next_storey()
+
 func act_character(cur_storey :Storey) -> void:
-	for ch in char_container.get_children():
-		if ch.is_current_action_ended(): # true on act end
-			ch.end_action()
-			if ch == player  : # player
-				if cur_storey.is_goal_pos(ch.pos_src):
-					enter_next_storey()
-					return
-				cur_storey.놓인것들줍기(ch)
-			cur_storey.get_mini_map().update_char_pos(ch)
-		ch.act_character()
+	cur_storey.act_character_list(char_container.get_children(),player.serial)
+
+func _process(delta: float) -> void:
+	act_character(current_tower.cur_storey)
+	update_info()
+	if camera_move:
+		move_camera(delta)
+	else:
+		if not player.current_action.is_empty():
+			cameralight.copy_position_rotation(player)
+		else:
+			cameralight.snap_90()
+
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,

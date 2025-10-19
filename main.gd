@@ -92,11 +92,8 @@ func enter_storey(old_storey :Storey) -> void:
 func goal_reached(st :Storey) -> void:
 	enter_next_storey()
 
-func act_character(cur_storey :Storey) -> void:
-	cur_storey.act_character_list(char_container.get_children(),player.serial)
-
 func _process(delta: float) -> void:
-	act_character(current_tower.cur_storey)
+	current_tower.cur_storey.act_character_list(char_container.get_children(),player.serial)
 	update_info()
 	if camera_move:
 		move_camera(delta)

@@ -45,7 +45,7 @@ func _ready() -> void:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
 
-	enter_storey(null)
+	enter_next_storey(null)
 	update_button_text()
 
 func add_deco_tower(p :Vector3) -> void:
@@ -73,24 +73,18 @@ func move_camera(_delta: float) -> void:
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
 	cameralight.look_at(to_pos)
 
-func enter_next_storey() -> void:
+# also signal from storey
+func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == Crawler.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")
 		return
-	var old_storey = current_tower.enter_next_storey()
-	enter_storey(old_storey)
-
-func enter_storey(old_storey :Storey) -> void:
 	if old_storey != null:
-		old_storey.goal_reached.disconnect(goal_reached)
+		old_storey.goal_reached.disconnect(enter_next_storey)
+		current_tower.enter_next_storey()
 	$DecoOrbit.position = current_tower.cur_storey.get_center_pos()
-	current_tower.cur_storey.goal_reached.connect(goal_reached)
+	current_tower.cur_storey.goal_reached.connect(enter_next_storey)
 	current_tower.cur_storey.chars_enter_storey(old_storey, char_container.get_children(),player.serial)
 	update_button_text()
-
-# signal from storey
-func goal_reached(st :Storey) -> void:
-	enter_next_storey()
 
 func _process(delta: float) -> void:
 	current_tower.cur_storey.act_character_list(char_container.get_children(),player.serial)
@@ -102,7 +96,6 @@ func _process(delta: float) -> void:
 			cameralight.copy_position_rotation(player)
 		else:
 			cameralight.snap_90()
-
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,
@@ -214,7 +207,7 @@ func _on_button_aps_down_pressed() -> void:
 	player.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
-	enter_next_storey()
+	enter_next_storey(current_tower.cur_storey)
 	
 func _on_button_fire_pressed() -> void:
 	pass # Replace with function body.

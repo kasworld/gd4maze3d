@@ -43,13 +43,10 @@ func init(ts :TowerSetting, ss :StoreySetting) -> Tower:
 	return self
 
 # return old storey
-func enter_next_storey() -> Storey:
+func enter_next_storey() -> void:
 	del_old_storey()
 	add_new_storey(storey_list[-1].storey_num +1)
-	var old_storey = cur_storey
-	var new_cur_storey_num = cur_storey.storey_num +1
-	cur_storey = find_storey_by_num(new_cur_storey_num)
-	return old_storey
+	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
 func _process(_delta: float) -> void:
 	var timenow := Time.get_unix_time_from_system()

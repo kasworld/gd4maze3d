@@ -275,4 +275,5 @@ func walk_left_first() -> bool:
 		enqueue_action(Action.TurnRight)
 		enqueue_action(Action.Forward)
 		return true
+	assert(false)
 	return false

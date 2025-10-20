@@ -19,12 +19,6 @@ var StoreyGapRate := 1.0
 func calc_current_storey_gap() -> float:
 	return tower_setting.StoreyGap * StoreyGapRate
 
-func calc_storey_base_y_pos(storey_index :int) -> float:
-	var rtn := 0.0
-	for i in storey_index:
-		rtn += calc_current_storey_gap() + storey_list[i].storey_setting.StoryH
-	return rtn
-
 func calc_height() -> float:
 	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].storey_setting.StoryH
 
@@ -68,6 +62,12 @@ func apply_storey_gap_change() -> void:
 	for i in storey_list.size():
 		storey_list[i].position.y = calc_storey_base_y_pos(i)
 	storey_gap_changed.emit(self)
+
+func calc_storey_base_y_pos(storey_index :int) -> float:
+	var rtn := 0.0
+	for i in storey_index:
+		rtn += calc_current_storey_gap() + storey_list[i].storey_setting.StoryH
+	return rtn
 
 func add_new_storey(stnum :int) -> void:
 	var ss = storey_setting.duplicate()

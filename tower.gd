@@ -4,30 +4,20 @@ class_name Tower
 class Setting:
 	var VisibleStoreyUp :int
 	var VisibleStoreyDown :int
-	var CharacterCount :int
 	var StoreyGap :float
-	func duplicate() -> Setting:
-		var rtn := new()
-		rtn.VisibleStoreyUp = VisibleStoreyUp
-		rtn.VisibleStoreyDown = VisibleStoreyDown
-		rtn.StoreyGap = StoreyGap
-		rtn.CharacterCount = CharacterCount
-		return rtn
 	func make_default() -> Setting:
 		VisibleStoreyUp = 3
 		VisibleStoreyDown = 3
 		StoreyGap = 1
-		CharacterCount = 2 
 		return self
 	func make_deco() -> Setting:
 		VisibleStoreyUp = 3
 		VisibleStoreyDown = 3
 		StoreyGap = 3
-		CharacterCount = 1
 		return self
 	func _to_string() -> String:
-		return "Tower.Setting[upper:%d lower:%d Character count:%d]" % [
-			VisibleStoreyUp, VisibleStoreyDown, CharacterCount,
+		return "Tower.Setting[upper:%d lower:%d]" % [
+			VisibleStoreyUp, VisibleStoreyDown,
 		]
 
 signal storey_gap_changed(t :Tower)

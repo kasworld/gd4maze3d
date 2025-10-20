@@ -1,5 +1,7 @@
 extends Node3D
 
+const CharacterCount :int = 2
+
 var tower_scene = preload("res://tower.tscn")
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
@@ -28,7 +30,7 @@ func _ready() -> void:
 	add_child(current_tower)
 	current_tower.storey_gap_changed.connect(storey_gap_changed)
 	
-	for i in current_tower.tower_setting.CharacterCount:
+	for i in CharacterCount:
 		var pl = preload("res://crawler/crawler.tscn").instantiate()
 		char_container.add_child(pl)
 		pl.init(

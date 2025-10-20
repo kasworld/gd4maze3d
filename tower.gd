@@ -1,9 +1,38 @@
 extends Node3D
 class_name Tower
 
+class Setting:
+	var VisibleStoreyUp :int
+	var VisibleStoreyDown :int
+	var CharacterCount :int
+	var StoreyGap :float
+	func duplicate() -> Setting:
+		var rtn := new()
+		rtn.VisibleStoreyUp = VisibleStoreyUp
+		rtn.VisibleStoreyDown = VisibleStoreyDown
+		rtn.StoreyGap = StoreyGap
+		rtn.CharacterCount = CharacterCount
+		return rtn
+	func make_default() -> Setting:
+		VisibleStoreyUp = 3
+		VisibleStoreyDown = 3
+		StoreyGap = 1
+		CharacterCount = 2 
+		return self
+	func make_deco() -> Setting:
+		VisibleStoreyUp = 3
+		VisibleStoreyDown = 3
+		StoreyGap = 3
+		CharacterCount = 1
+		return self
+	func _to_string() -> String:
+		return "Tower.Setting[upper:%d lower:%d Character count:%d]" % [
+			VisibleStoreyUp, VisibleStoreyDown, CharacterCount,
+		]
+
 signal storey_gap_changed(t :Tower)
 
-var tower_setting :TowerSetting
+var tower_setting :Setting
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
@@ -28,7 +57,7 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling, 
 	tower_setting, cur_storey ]
 
-func init(ts :TowerSetting, ss :StoreySetting) -> Tower:
+func init(ts :Setting, ss :StoreySetting) -> Tower:
 	tower_setting = ts
 	storey_setting = ss
 	for i in tower_setting.VisibleStoreyUp:

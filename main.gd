@@ -23,7 +23,7 @@ func _ready() -> void:
 	
 	default_storey_setting = StoreySetting.new().make_default()
 	current_tower = tower_scene.instantiate().init(
-		TowerSetting.new().make_default(),default_storey_setting,
+		Tower.Setting.new().make_default(),default_storey_setting,
 		)
 	add_child(current_tower)
 	current_tower.storey_gap_changed.connect(storey_gap_changed)
@@ -50,7 +50,7 @@ func _ready() -> void:
 
 func add_deco_tower(p :Vector3) -> void:
 	var deco_tower = tower_scene.instantiate().init(
-		TowerSetting.new().make_deco(),StoreySetting.new().make_deco(),
+		Tower.Setting.new().make_deco(),StoreySetting.new().make_deco(),
 		)
 	add_child(deco_tower)
 	deco_tower.position = p

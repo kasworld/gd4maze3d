@@ -62,9 +62,8 @@ func _on_vpsize_changed() -> void:
 func storey_gap_changed(tw :Tower) -> void:
 	for ch in char_container.get_children():
 		ch.position.y = tw.cur_storey.get_center_pos().y
-		if ch == player:
-			if not camera_move:
-				cameralight.copy_position_rotation(ch)
+	if not camera_move:
+		cameralight.copy_position_rotation(player)
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3

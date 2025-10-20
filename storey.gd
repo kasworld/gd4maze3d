@@ -126,10 +126,11 @@ func init(ts :StoreySetting, stn :int) -> Storey:
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
 	for ch in char_list:
-		var stpos = storey_setting.rand_pos_2i()
 		if ch.serial == playernum:
-			stpos = start_pos
-		ch.enter_storey(old_storey, self, stpos)
+			ch.enter_storey(old_storey, self, start_pos)
+		else:
+			ch.enter_storey(old_storey, self, storey_setting.rand_pos_2i())
+		
 	$MiniMap.add_chars(char_list, playernum)
 	$MiniMap.update_size()
 	if old_storey != null:

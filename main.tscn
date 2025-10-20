@@ -111,26 +111,6 @@ text = "↓:Backward"
 layout_mode = 2
 text = "→:Right"
 
-[node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Enter:
-StoreyUp"
-
-[node name="ButtonFire" type="Button" parent="ButtonContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Space:
-Fire Bullet"
-
-[node name="ButtonCamera" type="Button" parent="ButtonContainer/HBoxContainer2"]
-layout_mode = 2
-text = "C:
-Camera"
-
-[node name="ButtonStoreyGap" type="Button" parent="ButtonContainer/HBoxContainer2"]
-layout_mode = 2
-text = "O: StoreyGap
-Open/Close"
-
 [node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
 layout_mode = 2
 columns = 3
@@ -158,6 +138,21 @@ text = "End:APSMin"
 [node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
 layout_mode = 2
 text = "PgDn:APSDown"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ButtonContainer"]
+layout_mode = 2
+
+[node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Enter: StoreyUp"
+
+[node name="ButtonCamera" type="Button" parent="ButtonContainer/HBoxContainer3"]
+layout_mode = 2
+text = "C: Camera"
+
+[node name="ButtonStoreyGap" type="Button" parent="ButtonContainer/HBoxContainer3"]
+layout_mode = 2
+text = "O: StoreyGap Open/Close"
 
 [node name="LabelContainer" type="VBoxContainer" parent="ButtonContainer"]
 z_index = 1
@@ -201,13 +196,12 @@ theme = SubResource("Theme_u7t45")
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonLeft" to="." method="_on_button_left_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonBackward" to="." method="_on_button_backward_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRight" to="." method="_on_button_right_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonFire" to="." method="_on_button_fire_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonCamera" to="." method="_on_button_camera_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonStoreyGap" to="." method="_on_button_storey_gap_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer3/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer3/ButtonCamera" to="." method="_on_button_camera_pressed"]
+[connection signal="pressed" from="ButtonContainer/HBoxContainer3/ButtonStoreyGap" to="." method="_on_button_storey_gap_pressed"]

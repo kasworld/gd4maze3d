@@ -85,7 +85,6 @@ func make_deco() -> StoreySetting:
 	TreeCount = 1
 	return self 
 
-
 func _to_string() -> String:
 	return "StoreySetting[Maze size:%s height:%.1f lane width:%.1f wall thick:%.1f
 	Count ball trail:%d donnut capsule:%d tree:%d]" % [

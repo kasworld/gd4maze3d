@@ -120,7 +120,6 @@ var key2fn = {
 	KEY_INSERT:_on_button_fov_up_pressed,
 	KEY_DELETE:_on_button_fov_down_pressed,
 	KEY_ENTER:_on_button_storey_up_pressed,
-	KEY_SPACE:_on_button_fire_pressed,
 	KEY_C: _on_button_camera_pressed,
 	KEY_O: _on_button_storey_gap_pressed,
 }
@@ -208,9 +207,6 @@ func _on_button_aps_down_pressed() -> void:
 func _on_button_storey_up_pressed() -> void:
 	enter_next_storey(current_tower.cur_storey)
 	
-func _on_button_fire_pressed() -> void:
-	pass # Replace with function body.
-
 func _on_button_camera_pressed() -> void:
 	camera_move = !camera_move
 	if camera_move == false:

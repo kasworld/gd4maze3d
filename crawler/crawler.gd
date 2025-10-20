@@ -204,7 +204,7 @@ func snap_90() -> void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func _to_string() -> String:
-	return "Crawler[aiwalk:%s act %s /sec view roll:%s° roll:%s]" % [
+	return "Crawler[autowalk:%s act %s /sec view roll:%s° roll:%s]" % [
 		walk2str(auto_walk_type), action_per_second, roll_dir*90, rotation_degrees,
 		]
 
@@ -251,6 +251,7 @@ func walk_right_first() -> bool:
 		enqueue_action(Action.TurnLeft)
 		enqueue_action(Action.Forward)
 		return true
+	assert(false)
 	return false
 
 func walk_left_first() -> bool:

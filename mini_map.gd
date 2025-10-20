@@ -212,7 +212,6 @@ func get_width() -> float:
 func get_height() -> float:
 	return storey.storey_setting.MazeSize.y * map_scale
 
-
 func _draw() -> void:
 	match minimap_mode:
 		MiniMapView.Full:

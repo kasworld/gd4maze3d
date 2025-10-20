@@ -12,15 +12,6 @@ static func wallview2str(vd :WallView) -> String:
 static func wallview_next(a :WallView) -> WallView:
 	return (a +1) % WallView.keys().size() as WallView
 
-var line2d_scene = preload("res://move_line2d/move_line_2d.tscn")
-var tree_scene = preload("res://bar_tree_2/bar_tree_2.tscn")
-var clock_scene = preload("res://analogclock3d/analog_clock_3d.tscn")
-var calendar_scene = preload("res://calendar3d/calendar_3d.tscn")
-var mesh_trail_scene = preload("res://mesh_trail/mesh_trail.tscn")
-var donut_scene = preload("res://donut.tscn")
-var capsule_scene = preload("res://capsule.tscn")
-var text_mark_scene = preload("res://text_mark.tscn")
-
 var storey_setting :StoreySetting
 var storey_num :int
 var maze_cells :Maze
@@ -172,9 +163,9 @@ func add_donut_capsule(n :int) -> void:
 		var pobj
 		var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
 		if randi()%2 ==0:
-			pobj = capsule_scene.instantiate().init(크기기준*0.3, 크기기준*0.05, co)
+			pobj = preload("res://capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
-			pobj = donut_scene.instantiate().init(크기기준*0.07, 크기기준*0.15,co)
+			pobj = preload("res://donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
 		pobj.position = mazepos2storeypos(p, storey_setting.StoryH/4.0)
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)
@@ -187,7 +178,7 @@ func add_tree(p :Vector2i) ->void:
 	var bar_count := randi_range(20,50)
 	var bar_rotation := randfn(0,PI/40)
 	var bar_rotation_begin := randf_range(0, 2*PI)
-	var t :BarTree2	= tree_scene.instantiate().init_common_params(
+	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate().init_common_params(
 		tree_width, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
 	).init_with_color(random_color(), random_color())
 	t.position = mazepos2storeypos(p, storey_setting.StoryH*0.1)
@@ -211,7 +202,7 @@ func add_ball_trails(mesh_type_list) ->void:
 			randf_range(ba.position.z, ba.end.z),
 		)
 		var tc := randi_range(20,50)
-		var bt = mesh_trail_scene.instantiate().init_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4,0.05)
+		var bt = preload("res://mesh_trail/mesh_trail.tscn").instantiate().init_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4,0.05)
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
@@ -332,10 +323,10 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		var depth = 0.1
 		clockcalendar_sel +=1
 		if clockcalendar_sel % 2 == 0:
-			n = calendar_scene.instantiate()
+			n = preload("res://calendar3d/calendar_3d.tscn").instantiate()
 			n.init(storey_setting.LaneW, storey_setting.StoryH,depth, 5, false)
 		else :
-			n = clock_scene.instantiate()
+			n = preload("res://analogclock3d/analog_clock_3d.tscn").instantiate()
 			n.init(min(storey_setting.LaneW,storey_setting.StoryH)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(EnumDir.dir2rad(1+EnumDir.Flag2Dir[dir]))
@@ -352,7 +343,7 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#print_debug(size_pixel)
-	var l2d = line2d_scene.instantiate().init_with_random(300,4,1.5,size_pixel)
+	var l2d = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
 	l2d.start()
 	var sv = SubViewport.new()
 	sv.size = size_pixel

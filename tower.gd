@@ -26,7 +26,7 @@ func calc_storey_base_y_pos(storey_index :int) -> float:
 	return rtn
 
 func calc_height() -> float:
-	return calc_storey_base_y_pos(storey_list.size())
+	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].storey_setting.StoryH
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s

@@ -1,28 +1,11 @@
 extends Node3D
 class_name Tower
 
-class Setting:
-	var VisibleStoreyUp :int
-	var VisibleStoreyDown :int
-	var StoreyGap :float
-	func make_default() -> Setting:
-		VisibleStoreyUp = 3
-		VisibleStoreyDown = 3
-		StoreyGap = 1
-		return self
-	func make_deco() -> Setting:
-		VisibleStoreyUp = 3
-		VisibleStoreyDown = 3
-		StoreyGap = 3
-		return self
-	func _to_string() -> String:
-		return "Tower.Setting[upper:%d lower:%d]" % [
-			VisibleStoreyUp, VisibleStoreyDown,
-		]
-
 signal storey_gap_changed(t :Tower)
 
-var tower_setting :Setting
+var VisibleStoreyUp :int
+var VisibleStoreyDown :int
+var StoreyGap :float
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
@@ -36,21 +19,23 @@ var animate_gap_start_time :float
 var StoreyGapRate := 1.0
 
 func calc_current_storey_gap() -> float:
-	return tower_setting.StoreyGap * StoreyGapRate
+	return StoreyGap * StoreyGapRate
 
 func calc_height() -> float:
 	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].storey_setting.StoryH
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
-	%s
+	upper:%d lower:%d
 	%s]" % [storey_list.size(), view_floor_ceiling, 
-	tower_setting, cur_storey ]
+	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(ts :Setting, ss :StoreySetting) -> Tower:
-	tower_setting = ts
+func init(StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting) -> Tower:
+	VisibleStoreyUp = StoreyUp
+	VisibleStoreyDown = StoreyDown
+	StoreyGap = Gap
 	storey_setting = ss
-	for i in tower_setting.VisibleStoreyUp:
+	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
 	return self
@@ -110,7 +95,7 @@ func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) 
 		add_child(st)
 
 func del_old_storey() -> void:
-	if cur_storey.storey_num > tower_setting.VisibleStoreyDown :
+	if cur_storey.storey_num > VisibleStoreyDown :
 		var todel = storey_list.pop_front()
 		remove_child(todel)
 		$DelStoreyContainer.add_child(todel)

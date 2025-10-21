@@ -5,21 +5,21 @@ signal storey_gap_changed(t :Tower)
 
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
+
 var StoreyGap :float
+# used to animate
+var StoreyGapRate := 1.0
+func calc_current_storey_gap() -> float:
+	return StoreyGap * StoreyGapRate
+var gap_ani_dir_open : bool = true # true:open, false:close
+var animate_gap_start_time :float
+
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
 var view_floor_ceiling :bool = true
 var view_walls :Storey.WallView = Storey.WallView.Reduced
 var view_pillars :bool = true
-var gap_ani_dir_open : bool = true # true:open, false:close
-var animate_gap_start_time :float
-
-# used to animate
-var StoreyGapRate := 1.0
-
-func calc_current_storey_gap() -> float:
-	return StoreyGap * StoreyGapRate
 
 func calc_height() -> float:
 	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].storey_setting.StoryH

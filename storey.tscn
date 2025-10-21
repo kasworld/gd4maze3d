@@ -1,9 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://c76t0bgq0j8ux"]
+[gd_scene load_steps=8 format=3 uid="uid://c76t0bgq0j8ux"]
 
 [ext_resource type="Script" uid="uid://dp0yfx2i1wsf4" path="res://storey.gd" id="1_vfl4n"]
 [ext_resource type="PackedScene" uid="uid://bg7pvk7ens3l8" path="res://text_mark.tscn" id="2_wtqod"]
 [ext_resource type="PackedScene" uid="uid://4ejo8cq5ugex" path="res://wire_net/wire_net.tscn" id="3_82pjb"]
 [ext_resource type="PackedScene" uid="uid://dauu5e87kykn" path="res://mini_map.tscn" id="4_16v43"]
+
+[sub_resource type="Animation" id="Animation_16v43"]
+resource_name = "move_animation"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_rbrve"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rbrve"]
+_data = {
+&"RESET": SubResource("Animation_rbrve"),
+&"move_animation": SubResource("Animation_16v43")
+}
 
 [node name="Storey" type="Node3D"]
 script = ExtResource("1_vfl4n")
@@ -24,3 +50,10 @@ billboard = 1
 [node name="Ceiling" parent="." instance=ExtResource("3_82pjb")]
 
 [node name="MiniMap" parent="." instance=ExtResource("4_16v43")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_rbrve")
+}
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

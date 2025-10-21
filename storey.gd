@@ -2,6 +2,7 @@ extends Node3D
 class_name Storey
 
 signal goal_reached(st :Storey) # char will leave storey
+signal move_ended(st :Storey) # end animation
 
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
@@ -404,3 +405,14 @@ func set_wallview_mode(w :WallView) -> void:
 			set_wall_size(false)
 		WallView.Off:
 			view_walls(false)
+
+func start_move(dst_pos: Vector3, dur_sec :float) -> void:
+	$AnimationPlayer.get_animation("move_animation").track_set_key_value(0,0, position)
+	$AnimationPlayer.get_animation("move_animation").track_set_key_value(0,1, dst_pos)
+	$AnimationPlayer.get_animation("move_animation").track_set_key_time(0,1, dur_sec)
+	$AnimationPlayer.get_animation("move_animation").length = dur_sec
+	$AnimationPlayer.play("move_animation")
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	if anim_name == "move_animation":
+		move_ended.emit(self)

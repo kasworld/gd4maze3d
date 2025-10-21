@@ -406,13 +406,12 @@ func set_wallview_mode(w :WallView) -> void:
 		WallView.Off:
 			view_walls(false)
 
-func start_move(dst_pos: Vector3, dur_sec :float) -> void:
-	$AnimationPlayer.get_animation("move_animation").track_set_key_value(0,0, position)
-	$AnimationPlayer.get_animation("move_animation").track_set_key_value(0,1, dst_pos)
-	$AnimationPlayer.get_animation("move_animation").track_set_key_time(0,1, dur_sec)
-	$AnimationPlayer.get_animation("move_animation").length = dur_sec
-	$AnimationPlayer.play("move_animation")
+func _process(delta: float) -> void:
+	pass
 
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	if anim_name == "move_animation":
-		move_ended.emit(self)
+func start_move(src_pos :Vector3, dst_pos: Vector3, dur_sec :float) -> void:
+	pass
+
+func end_move() -> void:
+	move_ended.emit(self)
+	

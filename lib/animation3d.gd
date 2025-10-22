@@ -3,11 +3,11 @@ class_name Animation3D
 signal animation_ended(st :Node3D, ani :Dictionary)
 
 var animation_list :Array[Dictionary]
-# {ID,  Node3d, Field(position, rotation) , StartValue, EndValue , StartTick, DurSec } 
+# {Name,  Node3d, Field(position, rotation) , StartValue, EndValue , StartTick, DurSec } 
 
-func start_move(node :Node3D, src_pos :Vector3, dst_pos: Vector3, dur_sec :float) -> Dictionary:
+func start_move(name :String, node :Node3D, src_pos :Vector3, dst_pos: Vector3, dur_sec :float) -> Dictionary:
 	var ani = {
-		"ID" : animation_list.size(),
+		"Name" : name, # for end signal
 		"Node3d" : node, 
 		"Field" : "position",
 		"StartValue" : src_pos, 
@@ -31,4 +31,3 @@ func handle_animation() -> void:
 			"position":
 				ani.Node3d.position = lerp(ani.StartValue, ani.EndValue, rate)
 	animation_list = new_list
-	

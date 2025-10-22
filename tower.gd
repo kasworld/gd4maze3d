@@ -97,7 +97,7 @@ func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) 
 		add_child(st)
 		var dst = st.position 
 		dst.x += 50
-		animate_storey.start_move(st, st.position, dst, 2)
+		animate_storey.start_move("ani_add", st, st.position, dst, 2)
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown :

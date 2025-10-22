@@ -46,6 +46,7 @@ func _ready() -> void:
 	if n != 0:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
+	$AxisArrow3D.set_size(5)
 
 	enter_next_storey(null)
 	update_button_text()

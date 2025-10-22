@@ -46,6 +46,7 @@ func enter_next_storey() -> void:
 	add_new_storey(storey_list[-1].storey_num +1)
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
+var animate_storey := Animation3D.new()
 func _process(_delta: float) -> void:
 	var timenow := Time.get_unix_time_from_system()
 	var rate :=  timenow - animate_gap_start_time
@@ -55,6 +56,7 @@ func _process(_delta: float) -> void:
 		else:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
+	animate_storey.handle_animation()
 
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():
@@ -95,7 +97,7 @@ func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) 
 		add_child(st)
 		var dst = st.position 
 		dst.x += 50
-		st.start_move(st.position, dst, 2)
+		animate_storey.start_move(st, st.position, dst, 2)
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown :

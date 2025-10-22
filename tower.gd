@@ -93,6 +93,9 @@ func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) 
 	for st in $AddStoreyContainer.get_children():
 		$AddStoreyContainer.remove_child(st)
 		add_child(st)
+		var dst = st.position 
+		dst.x += 50
+		st.start_move(st.position, dst, 2)
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown :

@@ -2,7 +2,7 @@ extends Node3D
 class_name Storey
 
 signal goal_reached(st :Storey) # char will leave storey
-signal move_ended(st :Storey) # end animation
+signal animation_ended(st :Storey, ani :Dictionary) # end animation
 
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
@@ -406,12 +406,32 @@ func set_wallview_mode(w :WallView) -> void:
 		WallView.Off:
 			view_walls(false)
 
-func _process(delta: float) -> void:
-	pass
+var animation_list :Array[Dictionary]
+# {ID,  Node3d, Field(position, rotation) , StartValue, EndValue , StartTick, DurSec } 
 
-func start_move(src_pos :Vector3, dst_pos: Vector3, dur_sec :float) -> void:
-	pass
-
-func end_move() -> void:
-	move_ended.emit(self)
+func _process(_delta: float) -> void:
+	var timenow = Time.get_unix_time_from_system()
+	var new_list :Array[Dictionary]
+	for ani in animation_list:
+		var rate = (timenow - ani.StartTick) / ani.DurSec
+		if rate >= 1.0:
+			animation_ended.emit(self, ani)
+			continue
+		new_list.append(ani)
+		match ani.Field:
+			"position":
+				ani.Node3d.position = lerp(ani.StartValue, ani.EndValue, rate)
+	animation_list = new_list
 	
+func start_move(src_pos :Vector3, dst_pos: Vector3, dur_sec :float) -> void:
+	var ani = {
+		"ID" : animation_list.size(),
+		"Node3d" : self, 
+		"Field" : "position",
+		"StartValue" : src_pos, 
+		"EndValue" : dst_pos, 
+		"StartTick" : Time.get_unix_time_from_system(),
+		"DurSec" : dur_sec,
+	}
+	animation_list.append(ani)
+	pass

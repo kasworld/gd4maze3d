@@ -186,8 +186,8 @@ func get_animation_progress() -> float:
 
 func animate_move(from :Storey, to :Storey) -> void:
 	var dur = get_animation_progress()
-	var p1 = from.mazepos2storeypos(pos_src, from.storey_setting.StoryH/2) + from.position 
-	var p2 = to.mazepos2storeypos(pos_dst, to.storey_setting.StoryH/2) + to.position 
+	var p1 = from.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position 
+	var p2 = to.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position 
 	position = p1.lerp(p2,dur)
 	#rotation += from.rotation.lerp(to.rotation,dur)
 

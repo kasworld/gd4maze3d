@@ -13,6 +13,7 @@ var tower_scene = preload("res://tower.tscn")
 var player :Crawler
 var camera_move := false
 var current_tower :Tower
+var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
 
 func _ready() -> void:
@@ -23,9 +24,10 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
-	default_storey_setting = StoreySetting.new().make_default()
+	default_maze3d_setting = Maze3DSetting.new().make_default()
+	default_storey_setting = StoreySetting.new().make_default(default_maze3d_setting.MazeSize)
 	current_tower = tower_scene.instantiate().init(
-		3,3,1,default_storey_setting,
+		3,3,1,default_storey_setting, default_maze3d_setting,
 		)
 	add_child(current_tower)
 	current_tower.storey_gap_changed.connect(storey_gap_changed)
@@ -35,10 +37,10 @@ func _ready() -> void:
 		char_container.add_child(pl)
 		pl.init(
 			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2], 
-			i, default_storey_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
-	var orbitr := default_storey_setting.CalcDiagonalLength() * 2
+	var orbitr := default_maze3d_setting.CalcDiagonalLength() * 2
 	var n = 3
 	for i in n:
 		var rd = 2*PI/n *i
@@ -53,7 +55,7 @@ func _ready() -> void:
 
 func add_deco_tower(p :Vector3) -> void:
 	var deco_tower = tower_scene.instantiate().init(
-		3,3,3,StoreySetting.new().make_deco(),
+		3,3,3,StoreySetting.new().make_deco(), Maze3DSetting.new().make_deco(),
 		)
 	add_child(deco_tower)
 	deco_tower.position = p
@@ -71,7 +73,7 @@ func storey_gap_changed(tw :Tower) -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = default_storey_setting.CalcDiagonalLength() *1.0
+	var r = default_maze3d_setting.CalcDiagonalLength() *1.0
 	var to_pos := current_tower.cur_storey.get_center_pos()
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
 	cameralight.look_at(to_pos)

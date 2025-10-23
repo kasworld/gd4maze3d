@@ -14,6 +14,7 @@ func calc_current_storey_gap() -> float:
 var gap_ani_dir_open : bool = true # true:open, false:close
 var animate_gap_start_time :float
 
+var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
@@ -22,7 +23,7 @@ var view_walls :Maze3D.WallView = Maze3D.WallView.Reduced
 var view_pillars :bool = true
 
 func calc_height() -> float:
-	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].storey_setting.StoryH
+	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].maze3d_setting.StoryH
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
@@ -30,11 +31,12 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling, 
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting) -> Tower:
+func init(StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting ,ms :Maze3DSetting) -> Tower:
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap
 	storey_setting = ss
+	maze3d_setting = ms
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
@@ -72,16 +74,16 @@ func apply_storey_gap_change() -> void:
 func calc_storey_base_y_pos(storey_index :int) -> float:
 	var rtn := 0.0
 	for i in storey_index:
-		rtn += calc_current_storey_gap() + storey_list[i].storey_setting.StoryH
+		rtn += calc_current_storey_gap() + storey_list[i].maze3d_setting.StoryH
 	return rtn
 
 func add_new_storey(stnum :int) -> void:
-	var ss = storey_setting.duplicate()
-	ss.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
-	ss.StoryH *= pow(2, randf()*2 -1 )
-	ss.LaneW *= pow(2, randf()*2 -1 )
-	var st = preload("res://storey.tscn").instantiate().init(ss, stnum)
-	st.position -= ss.CalcMeshCenterV3()
+	var ms = maze3d_setting.duplicate()
+	ms.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
+	ms.StoryH *= pow(2, randf()*2 -1 )
+	ms.LaneW *= pow(2, randf()*2 -1 )
+	var st = preload("res://storey.tscn").instantiate().init(stnum, storey_setting, ms)
+	st.position -= ms.CalcMeshCenterV3()
 	#st.rotation.y = randf_range(0,2*PI)
 	storey_list.append(st)
 	apply_storey_gap_change()

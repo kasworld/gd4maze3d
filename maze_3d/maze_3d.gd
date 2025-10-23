@@ -10,7 +10,7 @@ static func wallview2str(vd :WallView) -> String:
 static func wallview_next(a :WallView) -> WallView:
 	return (a +1) % WallView.keys().size() as WallView
 
-var maze3d_setting :StoreySetting
+var maze3d_setting :Maze3DSetting
 var maze_cells :Maze
 var main_wall_mat :StandardMaterial3D
 var main_wall_mat_name :String
@@ -24,7 +24,7 @@ func _to_string() -> String:
 	return "Maze3D[mainwall:%s subwall:%s
 	%s]" % [main_wall_mat_name, sub_wall_tex_name]
 
-func init(ts :StoreySetting) -> Maze3D:
+func init(ts :Maze3DSetting) -> Maze3D:
 	maze3d_setting = ts
 	var tex_keys = Texmat.wall_tex_dict.keys()
 	tex_keys.shuffle()

@@ -6,6 +6,7 @@ signal goal_reached(st :Storey) # char will leave storey
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 
+var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_num :int
 var start_pos :Vector2i
@@ -18,21 +19,22 @@ var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
 func get_center_pos() -> Vector3:
-	return position + storey_setting.CalcCenterV3()
+	return position + maze3d_setting.CalcCenterV3()
 
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting ]
 
-func init(ts :StoreySetting, stn :int) -> Storey:
-	$Maze3D.init(ts)
-	storey_setting = ts
-	storey_num = stn
-	놓인것들 = PlacedThings.new(storey_setting.MazeSize)
+func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
+	maze3d_setting = ms
+	$Maze3D.init(maze3d_setting)
+	storey_setting = ss
+	storey_num = num
+	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
 
 	wall_info_all = []
-	for y in storey_setting.MazeSize.y:
+	for y in maze3d_setting.MazeSize.y:
 		wall_info_all.append([])
-		for x in storey_setting.MazeSize.x:
+		for x in maze3d_setting.MazeSize.x:
 			wall_info_all[y].append( make_cell_wallinfo(x,y) )
 			if $Maze3D.maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
@@ -46,25 +48,25 @@ func init(ts :StoreySetting, stn :int) -> Storey:
 		trycount -=1
 	if goal_pos == start_pos:
 		print_debug("start, goal pos same %s" % start_pos)
-	var 크기기준 = storey_setting.LaneW
+	var 크기기준 = maze3d_setting.LaneW
 	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
-		).position = mazepos2storeypos(start_pos, storey_setting.StoryH/2.0)
+		).position = mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
 	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
-		).position = mazepos2storeypos(goal_pos, storey_setting.StoryH/2.0)
+		).position = mazepos2storeypos(goal_pos, maze3d_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
 
 	add_donut_capsule(storey_setting.DonutCapsuleCount)
 	for i in storey_setting.TreeCount:
-		var p = storey_setting.rand_pos_2i()
+		var p = maze3d_setting.rand_pos_2i()
 		if 놓인것들.get_at(p) != null:
 			continue
 		add_tree(p)
 	add_ball_trails(storey_setting.MeshTrailTypeList)
-	$Label3D.pixel_size = storey_setting.StoryH/50
+	$Label3D.pixel_size = maze3d_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-storey_setting.WallThick, storey_setting.StoryH/2, -storey_setting.WallThick)
-	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, storey_setting.StoryH/2, storey_setting.CalcMeshSize().y)
+	$Label3D.position = Vector3(-maze3d_setting.WallThick, maze3d_setting.StoryH/2, -maze3d_setting.WallThick)
+	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, maze3d_setting.StoryH/2, storey_setting.CalcMeshSize().y)
 	
 	$MiniMap.init(self)
 	return self
@@ -74,7 +76,7 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 		if ch.serial == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
-			ch.enter_storey(old_storey, self, storey_setting.rand_pos_2i())
+			ch.enter_storey(old_storey, self, maze3d_setting.rand_pos_2i())
 		
 	$MiniMap.add_chars(char_list, playernum)
 	$MiniMap.update_size()
@@ -115,17 +117,17 @@ func add_donut_capsule(n :int) -> void:
 			continue
 		var co = NamedColorList.color_list.pick_random()[0]
 		var pobj
-		var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
+		var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 		if randi()%2 ==0:
 			pobj = preload("res://capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
 			pobj = preload("res://donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
-		pobj.position = mazepos2storeypos(p, storey_setting.StoryH/4.0)
+		pobj.position = mazepos2storeypos(p, maze3d_setting.StoryH/4.0)
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)
 
 func add_tree(p :Vector2i) ->void:
-	var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
+	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 	var tree_width := randf_range(크기기준*0.5, 크기기준*0.9)
 	var tree_height := randf_range(크기기준*0.5, 크기기준*0.9)
 	var bar_width = randf_range(크기기준*0.5, 크기기준*0.9)/10
@@ -135,7 +137,7 @@ func add_tree(p :Vector2i) ->void:
 	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate().init_common_params(
 		tree_width, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
 	).init_with_color(random_color(), random_color())
-	t.position = mazepos2storeypos(p, storey_setting.StoryH*0.1)
+	t.position = mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
 	add_child(t)
 	놓인것들.set_at(p,t)
 
@@ -144,9 +146,9 @@ func random_color()->Color:
 	return NamedColorList.color_list.pick_random()[0]
 
 func add_ball_trails(mesh_type_list) ->void:
-	var 크기기준 = min(storey_setting.LaneW, storey_setting.StoryH)
-	var ba = AABB( Vector3(storey_setting.WallThick/2,0, storey_setting.WallThick/2),
-		Vector3(storey_setting.CalcStoreySize().x -storey_setting.WallThick, storey_setting.StoryH, storey_setting.CalcStoreySize().y -storey_setting.WallThick) )
+	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
+	var ba = AABB( Vector3(maze3d_setting.WallThick/2,0, maze3d_setting.WallThick/2),
+		Vector3(maze3d_setting.CalcStoreySize().x -maze3d_setting.WallThick, maze3d_setting.StoryH, maze3d_setting.CalcStoreySize().y -maze3d_setting.WallThick) )
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
@@ -165,14 +167,14 @@ func make_cell_wallinfo(x:int, y:int) -> Array:
 		[true,true],
 		[$Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.North), $Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.South)],
 	]
-	var aabb = AABB( Vector3(storey_setting.LaneW*x +storey_setting.WallThick/2, 0, storey_setting.LaneW*y +storey_setting.WallThick/2),
-		Vector3(storey_setting.LaneW -storey_setting.WallThick, storey_setting.StoryH, storey_setting.LaneW -storey_setting.WallThick) )
+	var aabb = AABB( Vector3(maze3d_setting.LaneW*x +maze3d_setting.WallThick/2, 0, maze3d_setting.LaneW*y +maze3d_setting.WallThick/2),
+		Vector3(maze3d_setting.LaneW -maze3d_setting.WallThick, maze3d_setting.StoryH, maze3d_setting.LaneW -maze3d_setting.WallThick) )
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
-	var x = clampi(int(oldpos.x/storey_setting.LaneW),0, storey_setting.MazeSize.x-1)
-	var y = clampi(int(oldpos.z/storey_setting.LaneW),0, storey_setting.MazeSize.y-1)
+	var x = clampi(int(oldpos.x/maze3d_setting.LaneW),0, maze3d_setting.MazeSize.x-1)
+	var y = clampi(int(oldpos.z/maze3d_setting.LaneW),0, maze3d_setting.MazeSize.y-1)
 	var wallinfo = wall_info_all[y][x]
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
@@ -197,4 +199,4 @@ func get_maze_cells() -> Maze:
 	return $Maze3D.maze_cells
 
 func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
-	return Vector3(storey_setting.LaneW/2+ mp.x*storey_setting.LaneW, y, storey_setting.LaneW/2+ mp.y*storey_setting.LaneW)
+	return Vector3(maze3d_setting.LaneW/2+ mp.x*maze3d_setting.LaneW, y, maze3d_setting.LaneW/2+ mp.y*maze3d_setting.LaneW)

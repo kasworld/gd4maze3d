@@ -24,7 +24,7 @@ func handle_animation() -> void:
 	for ani in animation_list:
 		var rate = (timenow - ani.StartTick) / ani.DurSec
 		if rate >= 1.0:
-			animation_ended.emit(self, ani)
+			animation_ended.emit(ani.Node3d, ani)
 			continue
 		new_list.append(ani)
 		match ani.Field:

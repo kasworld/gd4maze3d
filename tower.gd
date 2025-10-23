@@ -48,7 +48,6 @@ func enter_next_storey() -> void:
 	add_new_storey(storey_list[-1].storey_num +1)
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
-var animate_storey := Animation3D.new()
 func _process(_delta: float) -> void:
 	var timenow := Time.get_unix_time_from_system()
 	var rate :=  timenow - animate_gap_start_time
@@ -58,7 +57,6 @@ func _process(_delta: float) -> void:
 		else:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
-	animate_storey.handle_animation()
 
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():
@@ -83,23 +81,23 @@ func add_new_storey(stnum :int) -> void:
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
 	var st = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
-	st.position -= ms.CalcMeshCenterV3()
-	#st.rotation.y = randf_range(0,2*PI)
-	storey_list.append(st)
-	apply_storey_gap_change()
-	$AddStoreyContainer.add_child(st)
-	$AnimationPlayerAddStorey.play("new_animation")
 	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 	st.view_pillars(view_pillars)
 	st.set_wallview_mode(view_walls)
-
-func _on_animation_player_add_storey_animation_finished(_anim_name: StringName) -> void:
-	for st in $AddStoreyContainer.get_children():
-		$AddStoreyContainer.remove_child(st)
-		add_child(st)
-		var dst = st.position 
-		dst.x += 50
-		animate_storey.start_move("ani_add", st, st.position, dst, 2)
+	st.position -= ms.CalcMeshCenterV3()
+	#st.rotation.y = randf_range(0,2*PI)
+	storey_list.append(st)
+	add_child(st)
+	apply_storey_gap_change()
+	var dst = st.position 
+	st.position.y += 50
+	st.add_animation.animation_ended.connect(animation_ended)
+	st.add_animation.start_move("ani_add", st, st.position, dst, 1)
+	
+func animation_ended(n :Node3D, ani :Dictionary) -> void:
+	if ani.Name == "ani_add":
+		n.add_animation.animation_ended.disconnect(animation_ended)
+		apply_storey_gap_change()
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown :

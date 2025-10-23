@@ -77,10 +77,14 @@ func init(ts :Maze3DSetting) -> Maze3D:
 
 	$Floor.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
 		0.01, darkcolorlist.pick_random()[0])
-	$Floor.position = Vector3(0, 0 ,0)
+	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
+	#$Floor.position = Vector3(0, 0 ,0)
 	$Ceiling.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
 		0.01, lightcolorlist.pick_random()[0])
-	$Ceiling.position = Vector3(0, maze3d_setting.StoryH  ,0)
+	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/20)
+	#$Ceiling.position = Vector3(0, maze3d_setting.StoryH ,0)
+	#$WallContainer.position = Vector3(maze3d_setting.WallThick/2,0,maze3d_setting.WallThick/2)
+	#$PillarContainer.position = Vector3(maze3d_setting.WallThick/2,0,maze3d_setting.WallThick/2)
 
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()

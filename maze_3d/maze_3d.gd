@@ -55,6 +55,24 @@ func _to_string() -> String:
 
 func init(ts :Maze3DSetting) -> Maze3D:
 	maze3d_setting = ts
+	make_subwall_tex()
+	make_mainwall_mat()
+	pillar_mat = main_wall_mat.duplicate()
+	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
+
+	$Floor.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
+		0.01, darkcolorlist.pick_random()[0])
+	$Floor.position = Vector3(0, 0 ,0)
+	$Ceiling.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
+		0.01, lightcolorlist.pick_random()[0])
+	$Ceiling.position = Vector3(0, maze3d_setting.StoryH  ,0)
+
+	maze_cells = Maze.new(maze3d_setting.MazeSize)
+	make_wall_by_maze()
+	make_pillas()
+	return self
+	
+func make_subwall_tex() -> void:
 	var tex_keys = wall_tex_dict.keys()
 	tex_keys.shuffle()
 	sub_wall_tex_name = tex_keys[0]
@@ -63,32 +81,16 @@ func init(ts :Maze3DSetting) -> Maze3D:
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
 	#sub_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
-
+	
+	
+func make_mainwall_mat() -> void:
 	var mat_keys = wall_mat_dict.keys()
 	mat_keys.shuffle()
 	main_wall_mat_name = mat_keys[0]
 	main_wall_mat = wall_mat_dict[main_wall_mat_name]
 	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
 	#main_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
-
-	pillar_mat = main_wall_mat.duplicate()
-	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
-
-	var wire_w = [0.01]
-	$Floor.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
-		wire_w.pick_random(), darkcolorlist.pick_random()[0],
-		).rotate_x(PI/2)
-	$Floor.position = Vector3(0, 0 ,0)
-	$Ceiling.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
-		wire_w.pick_random(), lightcolorlist.pick_random()[0],
-		).rotate_x(PI/2)
-	$Ceiling.position = Vector3(0, maze3d_setting.StoryH  ,0)
-
-	maze_cells = Maze.new(maze3d_setting.MazeSize)
-	make_wall_by_maze()
-	make_pillas()
-
-	return self
+	
 
 func make_pillas() -> void:
 	var multi_inst = make_box_multi_inst(pillar_mat, Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick) )

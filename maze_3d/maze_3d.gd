@@ -4,6 +4,35 @@ class_name Maze3D
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 
+var wall_tex_dict = {
+	brownbrick = preload("res://image/brownbrick50.png"),
+	bluestone = preload("res://image/bluestone50.png"),
+	drymud = preload("res://image/drymud50.png"),
+	graystone = preload("res://image/graystone50.png"),
+	pinkstone = preload("res://image/pinkstone50.png"),
+	greenstone = preload("res://image/greenstone50.png"),
+	ice50 = preload("res://image/ice50.png")
+}
+
+var wall_mat_dict = {
+	aluminium = preload("res://test_materials/aluminium.tres"),
+	#blue = preload("res://test_materials/blue.tres"),
+	brick = preload("res://test_materials/brick.tres"),
+	cheese = preload("res://test_materials/cheese.tres"),
+	darkwood = preload("res://test_materials/dark_wood.tres"),
+	#gray = preload("res://test_materials/gray.tres"),
+	#ice = preload("res://test_materials/ice.tres"),
+	marble = preload("res://test_materials/marble.tres"),
+	#mirror = preload("res://test_materials/mirror.tres"),
+	rock = preload("res://test_materials/rock.tres"),
+	stones = preload("res://test_materials/stones.tres"),
+	#toon = preload("res://test_materials/toon.tres"),
+	wetsand = preload("res://test_materials/wet_sand.tres"),
+	#white = preload("res://test_materials/white.tres"),
+	#whiteplastic = preload("res://test_materials/white_plastic.tres"),
+	wool = preload("res://test_materials/wool.tres"),
+}
+
 enum WallView {Reduced, Full, Off}
 static func wallview2str(vd :WallView) -> String:
 	return WallView.keys()[vd]
@@ -26,19 +55,19 @@ func _to_string() -> String:
 
 func init(ts :Maze3DSetting) -> Maze3D:
 	maze3d_setting = ts
-	var tex_keys = Texmat.wall_tex_dict.keys()
+	var tex_keys = wall_tex_dict.keys()
 	tex_keys.shuffle()
 	sub_wall_tex_name = tex_keys[0]
 	sub_wall_mat = StandardMaterial3D.new()
-	sub_wall_mat.albedo_texture = Texmat.wall_tex_dict[sub_wall_tex_name]
+	sub_wall_mat.albedo_texture = wall_tex_dict[sub_wall_tex_name]
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
 	#sub_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
 
-	var mat_keys = Texmat.wall_mat_dict.keys()
+	var mat_keys = wall_mat_dict.keys()
 	mat_keys.shuffle()
 	main_wall_mat_name = mat_keys[0]
-	main_wall_mat = Texmat.wall_mat_dict[main_wall_mat_name]
+	main_wall_mat = wall_mat_dict[main_wall_mat_name]
 	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
 	#main_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
 

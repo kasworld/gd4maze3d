@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 NamedColorList="*res://global/named_color_list.gd"
-Texmat="*res://global/texmat.gd"
 
 [display]
 

@@ -74,11 +74,11 @@ func init(ts :Maze3DSetting) -> Maze3D:
 
 func make_wall_color_texmat() -> void:
 	sub_wall_mat = StandardMaterial3D.new()
-	sub_wall_mat.albedo_color = Color( darkcolorlist.pick_random()[0], 0.5)
+	sub_wall_mat.albedo_color = Color( lightcolorlist.pick_random()[0], 0.5)
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 
 	main_wall_mat = StandardMaterial3D.new()
-	main_wall_mat.albedo_color = lightcolorlist.pick_random()[0]
+	main_wall_mat.albedo_color = darkcolorlist.pick_random()[0]
 	
 	
 func make_wall_texmat() -> void:

@@ -33,6 +33,26 @@ var wall_mat_dict = {
 	wool = preload("res://test_materials/wool.tres"),
 }
 
+func make_wall_texmat() -> void:
+	var tex_keys = wall_tex_dict.keys()
+	tex_keys.shuffle()
+	var sub_wall_tex_name = tex_keys[0]
+	sub_wall_mat = StandardMaterial3D.new()
+	sub_wall_mat.albedo_texture = wall_tex_dict[sub_wall_tex_name]
+	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
+	#sub_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
+	
+	var mat_keys = wall_mat_dict.keys()
+	mat_keys.shuffle()
+	var main_wall_mat_name = mat_keys[0]
+	main_wall_mat = wall_mat_dict[main_wall_mat_name]
+	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
+	#main_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
+
+	pillar_mat = main_wall_mat.duplicate()
+	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
+
 enum WallView {Reduced, Full, Off}
 static func wallview2str(vd :WallView) -> String:
 	return WallView.keys()[vd]
@@ -42,23 +62,18 @@ static func wallview_next(a :WallView) -> WallView:
 var maze3d_setting :Maze3DSetting
 var maze_cells :Maze
 var main_wall_mat :StandardMaterial3D
-var main_wall_mat_name :String
 var sub_wall_mat :StandardMaterial3D
-var sub_wall_tex_name :String
 var pillar_mat :StandardMaterial3D
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 
 func _to_string() -> String:
-	return "Maze3D[mainwall:%s subwall:%s
-	%s]" % [main_wall_mat_name, sub_wall_tex_name]
+	return "Maze3D[%s]" % [maze3d_setting]
 
 func init(ts :Maze3DSetting) -> Maze3D:
 	maze3d_setting = ts
 	#make_wall_texmat()
 	make_wall_color_texmat()
-	pillar_mat = main_wall_mat.duplicate()
-	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
 	$Floor.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
 		0.01, darkcolorlist.pick_random()[0])
@@ -79,26 +94,9 @@ func make_wall_color_texmat() -> void:
 
 	main_wall_mat = StandardMaterial3D.new()
 	main_wall_mat.albedo_color = darkcolorlist.pick_random()[0]
-	
-	
-func make_wall_texmat() -> void:
-	var tex_keys = wall_tex_dict.keys()
-	tex_keys.shuffle()
-	sub_wall_tex_name = tex_keys[0]
-	sub_wall_mat = StandardMaterial3D.new()
-	sub_wall_mat.albedo_texture = wall_tex_dict[sub_wall_tex_name]
-	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
-	#sub_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
-	
-	var mat_keys = wall_mat_dict.keys()
-	mat_keys.shuffle()
-	main_wall_mat_name = mat_keys[0]
-	main_wall_mat = wall_mat_dict[main_wall_mat_name]
-	main_wall_mat.uv1_scale = Vector3(3, 2, 1)
-	#main_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
-	
 
+	pillar_mat = main_wall_mat.duplicate()
+	
 func make_pillas() -> void:
 	var multi_inst = make_box_multi_inst(pillar_mat, Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick) )
 	$PillarContainer.add_child(multi_inst)

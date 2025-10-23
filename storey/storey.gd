@@ -24,7 +24,7 @@ func get_center_pos() -> Vector3:
 	return position + maze3d_setting.CalcCenterV3()
 
 func _to_string() -> String:
-	return "Storey[%d %s]" % [storey_num, storey_setting ]
+	return "Storey[%d %s]" % [storey_num, storey_setting]
 
 func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	maze3d_setting = ms

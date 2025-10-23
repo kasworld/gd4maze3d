@@ -1,45 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://brywee43bqjex"]
+[gd_scene load_steps=2 format=3 uid="uid://brywee43bqjex"]
 
 [ext_resource type="Script" uid="uid://bqo1fk2lfpr8d" path="res://tower.gd" id="1_k1sas"]
-
-[sub_resource type="Animation" id="Animation_lquwl"]
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("DelStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
-
-[sub_resource type="Animation" id="Animation_1bvp3"]
-resource_name = "new_animation"
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("DelStoreyContainer")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 1, 0, -50, 0)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_7mycd"]
-_data = {
-&"RESET": SubResource("Animation_lquwl"),
-&"new_animation": SubResource("Animation_1bvp3")
-}
 
 [node name="Tower" type="Node3D"]
 script = ExtResource("1_k1sas")
 
-[node name="AnimationPlayerDelStorey" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_7mycd")
-}
-
-[node name="DelStoreyContainer" type="Node3D" parent="."]
-
 [node name="TimerDemoRandom" type="Timer" parent="."]
 wait_time = 2.0
 
-[connection signal="animation_finished" from="AnimationPlayerDelStorey" to="." method="_on_animation_player_del_storey_animation_finished"]
 [connection signal="timeout" from="TimerDemoRandom" to="." method="_on_timer_demo_random_timeout"]

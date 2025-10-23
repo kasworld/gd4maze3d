@@ -6,7 +6,7 @@ signal goal_reached(st :Storey) # char will leave storey
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 
-var add_animation := Animation3D.new()
+var move_animation := Animation3D.new()
 
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
@@ -204,5 +204,5 @@ func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 	return Vector3(maze3d_setting.LaneW/2+ mp.x*maze3d_setting.LaneW, y, maze3d_setting.LaneW/2+ mp.y*maze3d_setting.LaneW)
 
 func _process(_delta: float) -> void:
-	add_animation.handle_animation()
+	move_animation.handle_animation()
 	

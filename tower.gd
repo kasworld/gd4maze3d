@@ -91,26 +91,25 @@ func add_new_storey(stnum :int) -> void:
 	apply_storey_gap_change()
 	var dst = st.position 
 	st.position.y += 50
-	st.add_animation.animation_ended.connect(animation_ended)
-	st.add_animation.start_move("ani_add", st, st.position, dst, 1)
+	st.move_animation.animation_ended.connect(move_animation_ended)
+	st.move_animation.start_move("ani_add", st, st.position, dst, 1)
 	
-func animation_ended(n :Node3D, ani :Dictionary) -> void:
+func move_animation_ended(st :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_add":
-		n.add_animation.animation_ended.disconnect(animation_ended)
+		apply_storey_gap_change()
+	elif ani.Name == "ani_del":
+		st.move_animation.animation_ended.disconnect(move_animation_ended)
+		remove_child(st)
+		st.queue_free() 
 		apply_storey_gap_change()
 
 func del_old_storey() -> void:
-	if cur_storey.storey_num > VisibleStoreyDown :
-		var todel = storey_list.pop_front()
-		remove_child(todel)
-		$DelStoreyContainer.add_child(todel)
-		$AnimationPlayerDelStorey.play("new_animation")
-
-func _on_animation_player_del_storey_animation_finished(_anim_name: StringName) -> void:
-	for todel in $DelStoreyContainer.get_children():
-		$DelStoreyContainer.remove_child(todel)
-		todel.queue_free()
-
+	if cur_storey.storey_num > VisibleStoreyDown:
+		var st = storey_list.pop_front()
+		var dst = st.position 
+		dst.y -= 50
+		st.move_animation.start_move("ani_del", st, st.position, dst, 1)
+		
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(f,c)

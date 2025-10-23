@@ -82,7 +82,7 @@ func add_new_storey(stnum :int) -> void:
 	ms.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
-	var st = preload("res://storey.tscn").instantiate().init(stnum, storey_setting, ms)
+	var st = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
 	st.position -= ms.CalcMeshCenterV3()
 	#st.rotation.y = randf_range(0,2*PI)
 	storey_list.append(st)

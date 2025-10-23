@@ -55,8 +55,8 @@ func _to_string() -> String:
 
 func init(ts :Maze3DSetting) -> Maze3D:
 	maze3d_setting = ts
-	make_subwall_tex()
-	make_mainwall_mat()
+	#make_wall_texmat()
+	make_wall_color_texmat()
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
@@ -71,8 +71,17 @@ func init(ts :Maze3DSetting) -> Maze3D:
 	make_wall_by_maze()
 	make_pillas()
 	return self
+
+func make_wall_color_texmat() -> void:
+	sub_wall_mat = StandardMaterial3D.new()
+	sub_wall_mat.albedo_color = Color( darkcolorlist.pick_random()[0], 0.5)
+	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+
+	main_wall_mat = StandardMaterial3D.new()
+	main_wall_mat.albedo_color = lightcolorlist.pick_random()[0]
 	
-func make_subwall_tex() -> void:
+	
+func make_wall_texmat() -> void:
 	var tex_keys = wall_tex_dict.keys()
 	tex_keys.shuffle()
 	sub_wall_tex_name = tex_keys[0]
@@ -82,8 +91,6 @@ func make_subwall_tex() -> void:
 	sub_wall_mat.uv1_scale = Vector3(3, 2, 1)
 	#sub_wall_mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
 	
-	
-func make_mainwall_mat() -> void:
 	var mat_keys = wall_mat_dict.keys()
 	mat_keys.shuffle()
 	main_wall_mat_name = mat_keys[0]

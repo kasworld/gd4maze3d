@@ -18,7 +18,7 @@ var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey 
 var view_floor_ceiling :bool = true
-var view_walls :Storey.WallView = Storey.WallView.Reduced
+var view_walls :Maze3D.WallView = Maze3D.WallView.Reduced
 var view_pillars :bool = true
 
 func calc_height() -> float:
@@ -115,7 +115,7 @@ func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(f,c)
 
-func set_wallview_mode(w :Storey.WallView) -> void:
+func set_wallview_mode(w :Maze3D.WallView) -> void:
 	for i in storey_list.size():
 		storey_list[i].set_wallview_mode(w)
 
@@ -128,7 +128,7 @@ func toggle_visible_floor_ceiling() -> void:
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
 func view_wall_next() -> void:
-	view_walls = Storey.wallview_next(view_walls)
+	view_walls = Maze3D.wallview_next(view_walls)
 	set_wallview_mode(view_walls)
 
 func toggle_visible_pillars() -> void:

@@ -143,17 +143,17 @@ func make_walllines_all() -> void:
 	var MazeSize = storey.storey_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
-			if not storey.maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
+			if not storey.get_maze_cells().is_open_dir_at(x,y,EnumDir.Flag.North):
 				add_wall_at_to_walllines( x , y , EnumDir.Dir.North, walllines_all)
-			if not storey.maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
+			if not storey.get_maze_cells().is_open_dir_at(x,y,EnumDir.Flag.West):
 				add_wall_at_to_walllines( x , y , EnumDir.Dir.West, walllines_all)
 
 	for x in MazeSize.x :
-		if not storey.maze_cells.is_open_dir_at(x,MazeSize.y-1,EnumDir.Flag.South):
+		if not storey.get_maze_cells().is_open_dir_at(x,MazeSize.y-1,EnumDir.Flag.South):
 			add_wall_at_to_walllines( x , MazeSize.y-1 , EnumDir.Dir.South, walllines_all)
 
 	for y in MazeSize.y:
-		if not storey.maze_cells.is_open_dir_at(MazeSize.x-1,y,EnumDir.Flag.East):
+		if not storey.get_maze_cells().is_open_dir_at(MazeSize.x-1,y,EnumDir.Flag.East):
 			add_wall_at_to_walllines( MazeSize.x-1 , y , EnumDir.Dir.East, walllines_all)
 
 # make wallline by walls_known
@@ -192,7 +192,7 @@ func add_known_wall_at(x:int,y :int, dir :EnumDir.Dir) -> void:
 	add_wall_at_to_walllines(x,y,dir,walllines_known)
 	queue_redraw()
 func update_knonw_walls_by_pos(x:int,y :int) -> void:
-	var walldir = storey.maze_cells.get_wall_dir_at(x,y)
+	var walldir = storey.get_maze_cells().get_wall_dir_at(x,y)
 	for d in walldir:
 		add_known_wall_at(x,y,EnumDir.Flag2Dir[d])
 

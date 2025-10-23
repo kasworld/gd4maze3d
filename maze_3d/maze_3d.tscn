@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdycgvb1g25w"]
+
+[ext_resource type="Script" uid="uid://dcw2hfmbwc2pm" path="res://maze_3d/maze_3d.gd" id="1_0k1os"]
+[ext_resource type="PackedScene" uid="uid://4ejo8cq5ugex" path="res://wire_net/wire_net.tscn" id="2_2b0r0"]
+
+[node name="Maze3D" type="Node3D"]
+script = ExtResource("1_0k1os")
+
+[node name="WallContainer" type="Node3D" parent="."]
+
+[node name="PillarContainer" type="Node3D" parent="."]
+
+[node name="Floor" parent="." instance=ExtResource("2_2b0r0")]
+
+[node name="Ceiling" parent="." instance=ExtResource("2_2b0r0")]

@@ -237,4 +237,4 @@ Currently rendering: occlusion culling:%s
 func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % current_tower.cur_storey.get_mini_map()
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
-	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Storey.wallview2str(current_tower.view_walls)
+	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(current_tower.view_walls)

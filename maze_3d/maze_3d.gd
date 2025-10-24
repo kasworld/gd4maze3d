@@ -27,11 +27,7 @@ func init_with_mat(ts :Maze3DSetting, matmain :StandardMaterial3D, matsub :Stand
 	main_wall_mat = matmain
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
-
-	maze_cells = Maze.new(maze3d_setting.MazeSize)
-	make_wall_by_maze()
-	make_pillas()
-	init_floor_ceiling()
+	make_maze3d()
 	return self
 
 func init_with_color(ts :Maze3DSetting, comain :Color, cosub :Color) -> Maze3D:
@@ -42,14 +38,13 @@ func init_with_color(ts :Maze3DSetting, comain :Color, cosub :Color) -> Maze3D:
 	main_wall_mat = StandardMaterial3D.new()
 	main_wall_mat.albedo_color = comain
 	pillar_mat = main_wall_mat.duplicate()
+	make_maze3d()
+	return self
 
+func make_maze3d() -> void:
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
 	make_pillas()
-	init_floor_ceiling()
-	return self
-
-func init_floor_ceiling() -> void:
 	var sz := maze3d_setting.CalcSizeWithWallV2()
 	$Floor.init_with_color(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
 	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
@@ -174,7 +169,6 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 				n.position = pos_face_ns - Vector3(0,0,maze3d_setting.WallThick)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
-	#print_debug(size_pixel)
 	var l2d = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
 	l2d.start()
 	var sv = SubViewport.new()

@@ -149,16 +149,11 @@ func random_color()->Color:
 
 func add_ball_trails(mesh_type_list) ->void:
 	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
-	var ba = AABB( Vector3(maze3d_setting.WallThick/2,0, maze3d_setting.WallThick/2),
-		Vector3(maze3d_setting.CalcSizeV2().x -maze3d_setting.WallThick, maze3d_setting.StoryH, maze3d_setting.CalcSizeV2().y -maze3d_setting.WallThick) )
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
-		var pos = Vector3(
-			randf_range(ba.position.x, ba.end.x),
-			randf_range(ba.position.y, ba.end.y),
-			randf_range(ba.position.z, ba.end.z),
-		)
+		var pos2d := maze3d_setting.rand_pos_2i()
+		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH)
 		var tc := randi_range(20,50)
 		var bt = preload("res://mesh_trail/mesh_trail.tscn").instantiate().init_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4,0.05)
 		add_child(bt)

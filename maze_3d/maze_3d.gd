@@ -4,12 +4,6 @@ class_name Maze3D
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 
-func make_wall_texmat() -> void:
-	sub_wall_mat = TexMat.make_subwall_mat()
-	main_wall_mat = TexMat.make_mainwall_mat()
-	pillar_mat = main_wall_mat.duplicate()
-	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
-
 enum WallView {Reduced, Full, Off}
 static func wallview2str(vd :WallView) -> String:
 	return WallView.keys()[vd]
@@ -27,10 +21,12 @@ var clockcalendar_sel :int
 func _to_string() -> String:
 	return "Maze3D[%s]" % [maze3d_setting]
 
-func init(ts :Maze3DSetting) -> Maze3D:
+func init_with_mat(ts :Maze3DSetting, matmain :StandardMaterial3D, matsub :StandardMaterial3D) -> Maze3D:
 	maze3d_setting = ts
-	#make_wall_texmat()
-	make_wall_color_texmat()
+	sub_wall_mat = matsub
+	main_wall_mat = matmain
+	pillar_mat = main_wall_mat.duplicate()
+	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
@@ -38,13 +34,20 @@ func init(ts :Maze3DSetting) -> Maze3D:
 	init_floor_ceiling()
 	return self
 
-func make_wall_color_texmat() -> void:
+func init_with_color(ts :Maze3DSetting, comain :Color, cosub :Color) -> Maze3D:
+	maze3d_setting = ts
 	sub_wall_mat = StandardMaterial3D.new()
-	sub_wall_mat.albedo_color = Color( lightcolorlist.pick_random()[0], 0.5)
+	sub_wall_mat.albedo_color = Color( cosub, 0.5)
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 	main_wall_mat = StandardMaterial3D.new()
-	main_wall_mat.albedo_color = darkcolorlist.pick_random()[0]
+	main_wall_mat.albedo_color = comain
 	pillar_mat = main_wall_mat.duplicate()
+
+	maze_cells = Maze.new(maze3d_setting.MazeSize)
+	make_wall_by_maze()
+	make_pillas()
+	init_floor_ceiling()
+	return self
 
 func init_floor_ceiling() -> void:
 	var sz := maze3d_setting.CalcSizeWithWallV2()

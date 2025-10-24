@@ -27,7 +27,9 @@ func _to_string() -> String:
 
 func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	maze3d_setting = ms
-	$Maze3D.init(maze3d_setting)
+	
+	#$Maze3D.init_with_mat(maze3d_setting, TexMat.make_mainwall_mat(), TexMat.make_subwall_mat())
+	$Maze3D.init_with_color(maze3d_setting, darkcolorlist.pick_random()[0], lightcolorlist.pick_random()[0])
 	storey_setting = ss
 	storey_num = num
 

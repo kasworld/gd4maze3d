@@ -84,7 +84,7 @@ func add_new_storey(stnum :int) -> void:
 	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 	st.view_pillars(view_pillars)
 	st.set_wallview_mode(view_walls)
-	st.position -= ms.CalcSizeWithWallV3()/2
+	#st.position -= ms.CalcSizeWithWallV3()/2
 	#st.rotation.y = randf_range(0,2*PI)
 	storey_list.append(st)
 	add_child(st)

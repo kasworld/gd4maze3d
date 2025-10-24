@@ -72,6 +72,9 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, maze3d_setting.StoryH/2, storey_setting.CalcMeshSize().y)
 	
 	$MiniMap.init(self)
+	
+	var shiftsize := maze3d_setting.CalcSizeV3()/2
+	$Label3D.position += -shiftsize
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:

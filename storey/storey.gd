@@ -153,7 +153,7 @@ func add_ball_trails(mesh_type_list) ->void:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
 		var pos2d := maze3d_setting.rand_pos_2i()
-		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH)
+		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH/2)
 		var tc := randi_range(20,50)
 		var bt = preload("res://mesh_trail/mesh_trail.tscn").instantiate().init_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4,0.05)
 		add_child(bt)

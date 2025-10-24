@@ -159,11 +159,7 @@ func add_ball_trails(mesh_type_list) ->void:
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
-	var axis_wall = [
-		[$Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.West), $Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.East)],
-		[true,true],
-		[$Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.North), $Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.South)],
-	]
+	var axis_wall = $Maze3D.maze_cells.make_wallinfo_for_bounce(x,y)
 	var aabb = maze3d_setting.CalcCellBox(Vector2i(x,y))
 	return [aabb, axis_wall]
 

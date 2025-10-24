@@ -51,15 +51,11 @@ func make_mainwall_mat() -> StandardMaterial3D:
 	#mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
 	return mat
 
-func make_pillar_mat(m_mat :StandardMaterial3D) -> StandardMaterial3D:
-	var mat = m_mat.duplicate()
-	mat.uv1_scale = Vector3( 3.0/20, 2, 1)
-	return mat
-
 func make_wall_texmat() -> void:
 	sub_wall_mat = make_subwall_mat()
 	main_wall_mat = make_mainwall_mat()
-	pillar_mat = make_pillar_mat(main_wall_mat)
+	pillar_mat = main_wall_mat.duplicate()
+	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
 enum WallView {Reduced, Full, Off}
 static func wallview2str(vd :WallView) -> String:
@@ -83,16 +79,11 @@ func init(ts :Maze3DSetting) -> Maze3D:
 	#make_wall_texmat()
 	make_wall_color_texmat()
 
-	$Floor.init_with_color(maze3d_setting.CalcSizeWithWallV2(), maze3d_setting.CalcSizeWithWallV2()*2, 
-		0.01, darkcolorlist.pick_random()[0])
-	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
-	$Ceiling.init_with_color(maze3d_setting.CalcSizeWithWallV2(), maze3d_setting.CalcSizeWithWallV2()*2, 
-		0.01, lightcolorlist.pick_random()[0])
-	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/2)
-
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
 	make_pillas()
+	
+	init_floor_ceiling()
 	return self
 
 func make_wall_color_texmat() -> void:
@@ -104,7 +95,14 @@ func make_wall_color_texmat() -> void:
 	main_wall_mat.albedo_color = darkcolorlist.pick_random()[0]
 
 	pillar_mat = main_wall_mat.duplicate()
-	
+
+func init_floor_ceiling() -> void:
+	var sz := maze3d_setting.CalcSizeWithWallV2()
+	$Floor.init_with_color(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
+	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
+	$Ceiling.init_with_color(sz, sz*2, 0.01, lightcolorlist.pick_random()[0])
+	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/2)
+
 func make_pillas() -> void:
 	var multi_inst = make_box_multi_inst(pillar_mat, Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick) )
 	$PillarContainer.add_child(multi_inst)

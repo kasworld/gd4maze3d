@@ -57,6 +57,18 @@ func CalcWallSize_EW_Reduced() -> Vector3:
 func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 	return Vector3(LaneW/2+ mp.x*LaneW, y, LaneW/2+ mp.y*LaneW)
 
+func storeypos2mazepos(pos :Vector3) -> Vector2i:
+	var x = clampi(int(pos.x/LaneW),0, MazeSize.x-1)
+	var y = clampi(int(pos.z/LaneW),0, MazeSize.y-1)
+	return Vector2i(x,y)	
+
+func CalcCellBox(pos :Vector2i) -> AABB:
+	var rtn = AABB( 
+		Vector3(LaneW*pos.x +WallThick/2, 0, LaneW*pos.y +WallThick/2),
+		Vector3(LaneW -WallThick, StoryH, LaneW -WallThick) 
+		)
+	return rtn
+
 func make_default() -> Maze3DSetting:
 	MazeSize = Vector2i(4,4)
 	StoryH = 3.0

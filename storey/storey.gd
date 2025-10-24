@@ -164,15 +164,13 @@ func make_cell_wallinfo(x:int, y:int) -> Array:
 		[true,true],
 		[$Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.North), $Maze3D.maze_cells.is_wall_dir_at(x,y, EnumDir.Flag.South)],
 	]
-	var aabb = AABB( Vector3(maze3d_setting.LaneW*x +maze3d_setting.WallThick/2, 0, maze3d_setting.LaneW*y +maze3d_setting.WallThick/2),
-		Vector3(maze3d_setting.LaneW -maze3d_setting.WallThick, maze3d_setting.StoryH, maze3d_setting.LaneW -maze3d_setting.WallThick) )
+	var aabb = maze3d_setting.CalcCellBox(Vector2i(x,y))
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
-	var x = clampi(int(oldpos.x/maze3d_setting.LaneW),0, maze3d_setting.MazeSize.x-1)
-	var y = clampi(int(oldpos.z/maze3d_setting.LaneW),0, maze3d_setting.MazeSize.y-1)
-	var wallinfo = wall_info_all[y][x]
+	var pos2d := maze3d_setting.storeypos2mazepos(oldpos)
+	var wallinfo = wall_info_all[pos2d.y][pos2d.x]
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)

@@ -211,7 +211,7 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			n.init(min(maze3d_setting.LaneW,maze3d_setting.StoryH)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(EnumDir.dir2rad(1+EnumDir.Flag2Dir[dir]))
-		add_child(n)
+		$WallDeco.add_child(n)
 		match dir:
 			EnumDir.Flag.West:
 				n.position = pos_face_ew + Vector3(maze3d_setting.WallThick,0,0)
@@ -232,7 +232,7 @@ func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
 	sv.transparent_bg = true
 	sv.add_child(l2d)
-	add_child(sv)
+	$WallDeco.add_child(sv)
 	return sv
 
 func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
@@ -244,7 +244,7 @@ func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
 	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	sp.material_override.albedo_texture = sv.get_texture()
 	sp.material_override.uv1_scale = Vector3(3, 2, 1) # same tex to all 6 plane
-	add_child(sp)
+	$WallDeco.add_child(sp)
 	return sp
 
 func view_floor_ceiling(f :bool,c :bool) -> void:

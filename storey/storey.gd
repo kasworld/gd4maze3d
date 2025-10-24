@@ -7,7 +7,6 @@ static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 
 var move_animation := Animation3D.new()
-
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_num :int
@@ -31,8 +30,8 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	$Maze3D.init(maze3d_setting)
 	storey_setting = ss
 	storey_num = num
-	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
 
+	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
 	wall_info_all = []
 	for y in maze3d_setting.MazeSize.y:
 		wall_info_all.append([])
@@ -67,7 +66,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	add_ball_trails(storey_setting.MeshTrailTypeList)
 	$Label3D.pixel_size = maze3d_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-maze3d_setting.WallThick, maze3d_setting.StoryH/2, -maze3d_setting.WallThick)
+	$Label3D.position = Vector3(-maze3d_setting.WallThick*2, maze3d_setting.StoryH/2, -maze3d_setting.WallThick*2)
 	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, maze3d_setting.StoryH/2, storey_setting.CalcMeshSize().y)
 	
 	$MiniMap.init(self)
@@ -188,7 +187,6 @@ func set_wallview_mode(w :Maze3D.WallView) -> void:
 	
 func get_maze_cells() -> Maze:
 	return $Maze3D.maze_cells
-
 
 func _process(_delta: float) -> void:
 	move_animation.handle_animation()

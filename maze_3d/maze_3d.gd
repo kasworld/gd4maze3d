@@ -4,56 +4,9 @@ class_name Maze3D
 static var darkcolorlist = NamedColorList.make_dark_color_list()
 static var lightcolorlist = NamedColorList.make_light_color_list()
 
-func make_subwall_mat() -> StandardMaterial3D:
-	var wall_tex_dict = {
-		brownbrick = preload("res://image/brownbrick50.png"),
-		bluestone = preload("res://image/bluestone50.png"),
-		drymud = preload("res://image/drymud50.png"),
-		graystone = preload("res://image/graystone50.png"),
-		pinkstone = preload("res://image/pinkstone50.png"),
-		greenstone = preload("res://image/greenstone50.png"),
-		ice50 = preload("res://image/ice50.png")
-	}
-	var tex_keys = wall_tex_dict.keys()
-	tex_keys.shuffle()
-	var tex_name = tex_keys[0]
-	var mat = StandardMaterial3D.new()
-	mat.albedo_texture = wall_tex_dict[tex_name]
-	mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-	mat.uv1_scale = Vector3(3, 2, 1)
-	#mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
-	return mat
-	
-func make_mainwall_mat() -> StandardMaterial3D:
-	var wall_mat_dict = {
-		aluminium = preload("res://test_materials/aluminium.tres"),
-		#blue = preload("res://test_materials/blue.tres"),
-		brick = preload("res://test_materials/brick.tres"),
-		cheese = preload("res://test_materials/cheese.tres"),
-		darkwood = preload("res://test_materials/dark_wood.tres"),
-		#gray = preload("res://test_materials/gray.tres"),
-		#ice = preload("res://test_materials/ice.tres"),
-		marble = preload("res://test_materials/marble.tres"),
-		#mirror = preload("res://test_materials/mirror.tres"),
-		rock = preload("res://test_materials/rock.tres"),
-		stones = preload("res://test_materials/stones.tres"),
-		#toon = preload("res://test_materials/toon.tres"),
-		wetsand = preload("res://test_materials/wet_sand.tres"),
-		#white = preload("res://test_materials/white.tres"),
-		#whiteplastic = preload("res://test_materials/white_plastic.tres"),
-		wool = preload("res://test_materials/wool.tres"),
-	}
-	var mat_keys = wall_mat_dict.keys()
-	mat_keys.shuffle()
-	var mat_name = mat_keys[0]
-	var mat = wall_mat_dict[mat_name]
-	mat.uv1_scale = Vector3(3, 2, 1)
-	#mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
-	return mat
-
 func make_wall_texmat() -> void:
-	sub_wall_mat = make_subwall_mat()
-	main_wall_mat = make_mainwall_mat()
+	sub_wall_mat = TexMat.make_subwall_mat()
+	main_wall_mat = TexMat.make_mainwall_mat()
 	pillar_mat = main_wall_mat.duplicate()
 	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 
@@ -82,7 +35,6 @@ func init(ts :Maze3DSetting) -> Maze3D:
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
 	make_pillas()
-	
 	init_floor_ceiling()
 	return self
 
@@ -90,10 +42,8 @@ func make_wall_color_texmat() -> void:
 	sub_wall_mat = StandardMaterial3D.new()
 	sub_wall_mat.albedo_color = Color( lightcolorlist.pick_random()[0], 0.5)
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-
 	main_wall_mat = StandardMaterial3D.new()
 	main_wall_mat.albedo_color = darkcolorlist.pick_random()[0]
-
 	pillar_mat = main_wall_mat.duplicate()
 
 func init_floor_ceiling() -> void:

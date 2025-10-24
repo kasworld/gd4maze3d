@@ -52,9 +52,9 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 		print_debug("start, goal pos same %s" % start_pos)
 	var 크기기준 = maze3d_setting.LaneW
 	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
-		).position = mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
+		).position = maze3d_setting.mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
 	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
-		).position = mazepos2storeypos(goal_pos, maze3d_setting.StoryH/2.0)
+		).position = maze3d_setting.mazepos2storeypos(goal_pos, maze3d_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
 
@@ -124,7 +124,7 @@ func add_donut_capsule(n :int) -> void:
 			pobj = preload("res://capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
 			pobj = preload("res://donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
-		pobj.position = mazepos2storeypos(p, maze3d_setting.StoryH/4.0)
+		pobj.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH/4.0)
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)
 
@@ -139,7 +139,7 @@ func add_tree(p :Vector2i) ->void:
 	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate().init_common_params(
 		tree_width, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
 	).init_with_color(random_color(), random_color())
-	t.position = mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
+	t.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
 	add_child(t)
 	놓인것들.set_at(p,t)
 
@@ -200,8 +200,6 @@ func set_wallview_mode(w :Maze3D.WallView) -> void:
 func get_maze_cells() -> Maze:
 	return $Maze3D.maze_cells
 
-func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
-	return Vector3(maze3d_setting.LaneW/2+ mp.x*maze3d_setting.LaneW, y, maze3d_setting.LaneW/2+ mp.y*maze3d_setting.LaneW)
 
 func _process(_delta: float) -> void:
 	move_animation.handle_animation()

@@ -54,6 +54,9 @@ func CalcWallSize_EW_Full() -> Vector3:
 func CalcWallSize_EW_Reduced() -> Vector3:
 	return Vector3(WallThick, StoryH, LaneW-WallThick)
 
+func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
+	return Vector3(LaneW/2+ mp.x*LaneW, y, LaneW/2+ mp.y*LaneW)
+
 func make_default() -> Maze3DSetting:
 	MazeSize = Vector2i(4,4)
 	StoryH = 3.0

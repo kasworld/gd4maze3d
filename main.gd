@@ -40,7 +40,7 @@ func _ready() -> void:
 			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
-	var orbitr := default_maze3d_setting.CalcDiagonalLength() * 2
+	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
 	var n = 3
 	for i in n:
 		var rd = 2*PI/n *i
@@ -73,7 +73,7 @@ func storey_gap_changed(tw :Tower) -> void:
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
-	var r = default_maze3d_setting.CalcDiagonalLength() *1.0
+	var r = default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
 	var to_pos := current_tower.cur_storey.get_center_pos()
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
 	cameralight.look_at(to_pos)

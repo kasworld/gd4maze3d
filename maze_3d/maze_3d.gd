@@ -75,13 +75,13 @@ func init(ts :Maze3DSetting) -> Maze3D:
 	#make_wall_texmat()
 	make_wall_color_texmat()
 
-	$Floor.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
+	$Floor.init_with_color(maze3d_setting.CalcSizeWithWallV2(), maze3d_setting.CalcSizeWithWallV2()*2, 
 		0.01, darkcolorlist.pick_random()[0])
 	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
 	#$Floor.position = Vector3(0, 0 ,0)
-	$Ceiling.init_with_color(maze3d_setting.CalcMeshSize(), maze3d_setting.CalcMeshSize()*2, 
+	$Ceiling.init_with_color(maze3d_setting.CalcSizeWithWallV2(), maze3d_setting.CalcSizeWithWallV2()*2, 
 		0.01, lightcolorlist.pick_random()[0])
-	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/20)
+	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/2)
 	#$Ceiling.position = Vector3(0, maze3d_setting.StoryH ,0)
 	#$WallContainer.position = Vector3(maze3d_setting.WallThick/2,0,maze3d_setting.WallThick/2)
 	#$PillarContainer.position = Vector3(maze3d_setting.WallThick/2,0,maze3d_setting.WallThick/2)

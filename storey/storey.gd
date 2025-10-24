@@ -21,7 +21,7 @@ var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
 func get_center_pos() -> Vector3:
-	return position + maze3d_setting.CalcCenterV3()
+	return position + maze3d_setting.CalcSizeWithWallV3()/2
 
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
@@ -150,7 +150,7 @@ func random_color()->Color:
 func add_ball_trails(mesh_type_list) ->void:
 	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 	var ba = AABB( Vector3(maze3d_setting.WallThick/2,0, maze3d_setting.WallThick/2),
-		Vector3(maze3d_setting.CalcStoreySize().x -maze3d_setting.WallThick, maze3d_setting.StoryH, maze3d_setting.CalcStoreySize().y -maze3d_setting.WallThick) )
+		Vector3(maze3d_setting.CalcSizeV2().x -maze3d_setting.WallThick, maze3d_setting.StoryH, maze3d_setting.CalcSizeV2().y -maze3d_setting.WallThick) )
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue

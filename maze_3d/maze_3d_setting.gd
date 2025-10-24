@@ -23,18 +23,28 @@ func duplicate() -> Maze3DSetting:
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
 
-func CalcStoreySize() -> Vector2:
+# without wall
+func CalcSizeV2() -> Vector2:
 	return MazeSize*LaneW
-func CalcDiagonalLength() -> float:
-	return (MazeSize*LaneW).length()
-func CalcMeshSize() -> Vector2:
+func CalcDiagonalLengthV2() -> float:
+	return CalcSizeV2().length()
+func CalcSizeV3() -> Vector3:
+	var sz := CalcSizeV2()
+	return Vector3(sz.x,StoryH,sz.y)
+func CalcDiagonalLengthV3() -> float:
+	return CalcSizeV3().length()
+
+# with wall
+func CalcSizeWithWallV2() -> Vector2:
 	return MazeSize*LaneW + Vector2(WallThick, WallThick)
-func CalcMeshCenter() -> Vector2:
-	return MazeSize*LaneW/2
-func CalcMeshCenterV3() -> Vector3:
-	return Vector3(MazeSize.x*LaneW/2,0,MazeSize.y*LaneW/2)
-func CalcCenterV3() ->Vector3:
-	return Vector3(MazeSize.x*LaneW/2,StoryH/2,MazeSize.y*LaneW/2)
+func CalcDiagonalLengthWithWallV2() -> float:
+	return CalcSizeWithWallV2().length()
+func CalcSizeWithWallV3() -> Vector3:
+	var sz := CalcSizeWithWallV2()
+	return Vector3(sz.x,StoryH,sz.y)
+func CalcDiagonalLengthWithWallV3() -> float:
+	return CalcSizeWithWallV3().length()
+
 func CalcWallSize_NS_Full() -> Vector3:
 	return Vector3(LaneW, StoryH, WallThick)
 func CalcWallSize_NS_Reduced() -> Vector3:

@@ -23,6 +23,9 @@ func duplicate() -> Maze3DSetting:
 func rand_pos_2i() -> Vector2i:
 	return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
 
+func CalcCellCount() -> int:
+	return MazeSize.x * MazeSize.y
+
 # without wall
 func CalcSizeV2() -> Vector2:
 	return MazeSize*LaneW
@@ -76,9 +79,9 @@ func make_default() -> Maze3DSetting:
 	LaneW = 4.0
 	WallThick = LaneW *0.05
 
-	MakeLine2DWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
+	MakeLine2DWallRate = 1.0/CalcCellCount()
+	MakeSubWallRate = 1.0/CalcCellCount()
+	MakeClockCalWallRate = 1.0/CalcCellCount()
 	return self 
 
 func make_deco() -> Maze3DSetting:
@@ -87,9 +90,9 @@ func make_deco() -> Maze3DSetting:
 	LaneW = 4.0
 	WallThick = LaneW *0.05
 
-	MakeLine2DWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MakeSubWallRate = 1.0/(MazeSize.x*MazeSize.y)
-	MakeClockCalWallRate = 1.0/(MazeSize.x*MazeSize.y)
+	MakeLine2DWallRate = 1.0/CalcCellCount()
+	MakeSubWallRate = 1.0/CalcCellCount()
+	MakeClockCalWallRate = 1.0/CalcCellCount()
 	return self 
 
 func _to_string() -> String:

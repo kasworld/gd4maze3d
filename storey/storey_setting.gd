@@ -1,5 +1,26 @@
 class_name StoreySetting
 
+static func new_default(maze_size :Vector2i) -> StoreySetting:
+	var rtn := new()
+	rtn.MeshTrailTypeList = ["♠","♣","♥","♦","★"]
+	rtn.MakeMeshTrailRate = 2.0/(maze_size.x*maze_size.y)
+	rtn.DonutCapsuleCount = max(2, maze_size.x*maze_size.y/20.0)
+	rtn.TreeCount = max(1, maze_size.x*maze_size.y/50.0)
+	return rtn
+
+static func new_deco() -> StoreySetting:
+	var rtn := new()
+	rtn.MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
+	rtn.MakeMeshTrailRate = 0.5
+	rtn.DonutCapsuleCount = 1
+	rtn.TreeCount = 1
+	return rtn
+
+func _to_string() -> String:
+	return "StoreySetting[ball trail:%d donnut capsule:%d tree:%d]" % [
+		MeshTrailTypeList.size(), DonutCapsuleCount, TreeCount,
+	]
+
 var MeshTrailTypeList :Array
 var MakeMeshTrailRate :float
 var DonutCapsuleCount :int
@@ -15,22 +36,3 @@ func duplicate(deep :bool = false) -> StoreySetting:
 	rtn.DonutCapsuleCount = DonutCapsuleCount
 	rtn.TreeCount = TreeCount
 	return rtn
-
-func make_default(maze_size :Vector2i) -> StoreySetting:
-	MeshTrailTypeList = ["♠","♣","♥","♦","★"]
-	MakeMeshTrailRate = 2.0/(maze_size.x*maze_size.y)
-	DonutCapsuleCount = max(2, maze_size.x*maze_size.y/20.0)
-	TreeCount = max(1, maze_size.x*maze_size.y/50.0)
-	return self 
-
-func make_deco() -> StoreySetting:
-	MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
-	MakeMeshTrailRate = 0.5
-	DonutCapsuleCount = 1
-	TreeCount = 1
-	return self 
-
-func _to_string() -> String:
-	return "StoreySetting[ball trail:%d donnut capsule:%d tree:%d]" % [
-		MeshTrailTypeList.size(), DonutCapsuleCount, TreeCount,
-	]

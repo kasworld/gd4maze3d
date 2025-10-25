@@ -45,6 +45,7 @@ func make_maze3d() -> void:
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
 	make_pillas()
+	make_wall_deco_by_maze()
 	var sz := maze3d_setting.CalcSizeWithWallV2()
 	$Floor.init_with_color(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
 	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
@@ -151,7 +152,26 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			else:
 				pos_list_ns_main.append(pos_face_ns)
 
-	# add clock or calendar
+func make_wall_deco_by_maze() -> void:
+	for y in maze3d_setting.MazeSize.y:
+		for x in maze3d_setting.MazeSize.x:
+			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
+				add_wall_deco_at( x , y , EnumDir.Flag.North)
+			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
+				add_wall_deco_at( x , y , EnumDir.Flag.West)
+
+	for x in maze3d_setting.MazeSize.x :
+		if not maze_cells.is_open_dir_at(x,maze3d_setting.MazeSize.y-1,EnumDir.Flag.South):
+			add_wall_deco_at( x , maze3d_setting.MazeSize.y , EnumDir.Flag.South)
+
+	for y in maze3d_setting.MazeSize.y:
+		if not maze_cells.is_open_dir_at(maze3d_setting.MazeSize.x-1,y,EnumDir.Flag.East):
+			add_wall_deco_at( maze3d_setting.MazeSize.x , y , EnumDir.Flag.East)
+
+# add clock or calendar
+func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
+	var pos_face_ew = Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
+	var pos_face_ns = Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
 	if randf() < maze3d_setting.MakeClockCalWallRate:
 		var n :Node3D
 		var depth = 0.1

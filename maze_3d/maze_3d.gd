@@ -138,7 +138,7 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 				pos_list_ns_main.append(pos_face_ns)
 
 func make_wall_deco_by_maze(makedeco :Callable) -> void:
-	if makedeco == null:
+	if not makedeco.is_valid():
 		return
 	for y in maze3d_setting.MazeSize.y:
 		for x in maze3d_setting.MazeSize.x:

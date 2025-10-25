@@ -18,3 +18,5 @@ billboard = 1
 [node name="MiniMap" parent="." instance=ExtResource("4_16v43")]
 
 [node name="Maze3D" parent="." instance=ExtResource("4_rbrve")]
+
+[node name="WallDeco" type="Node3D" parent="."]

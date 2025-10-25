@@ -6,12 +6,7 @@ static func new_default() -> Maze3DSetting:
 	rtn.StoryH = 3.0
 	rtn.LaneW = 4.0
 	rtn.WallThick = rtn.LaneW *0.05
-
 	rtn.MakeSubWallRate = 1.0/rtn.CalcCellCount()
-	#rtn.MakeLine2DWallRate = 0
-	#rtn.MakeClockCalWallRate = 0
-	rtn.MakeLine2DWallRate = 1.0/rtn.CalcCellCount()
-	rtn.MakeClockCalWallRate = 1.0/rtn.CalcCellCount()
 	return rtn 
 
 func _to_string() -> String:
@@ -23,10 +18,7 @@ var MazeSize :Vector2i
 var StoryH :float
 var LaneW :float
 var WallThick :float
-
-var MakeLine2DWallRate :float
 var MakeSubWallRate :float
-var MakeClockCalWallRate :float
 
 func duplicate() -> Maze3DSetting:
 	var rtn := new()
@@ -34,9 +26,7 @@ func duplicate() -> Maze3DSetting:
 	rtn.StoryH = StoryH
 	rtn.LaneW = LaneW
 	rtn.WallThick = WallThick
-	rtn.MakeLine2DWallRate = MakeLine2DWallRate
 	rtn.MakeSubWallRate = MakeSubWallRate
-	rtn.MakeClockCalWallRate = MakeClockCalWallRate
 	return rtn
 
 func rand_pos_2i() -> Vector2i:

@@ -24,10 +24,10 @@ func _to_string() -> String:
 
 func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	maze3d_setting = ms
-	
-	#$Maze3D.init_with_mat(maze3d_setting, TexMat.make_mainwall_mat(), TexMat.make_subwall_mat())
-	$Maze3D.init_with_color(maze3d_setting, darkcolorlist.pick_random()[0], lightcolorlist.pick_random()[0])
 	storey_setting = ss
+	
+	#$Maze3D.init_with_mat(maze3d_setting, add_wall_deco_at, TexMat.make_mainwall_mat(), TexMat.make_subwall_mat())
+	$Maze3D.init_with_color(maze3d_setting, add_wall_deco_at, darkcolorlist.pick_random()[0], lightcolorlist.pick_random()[0])
 	storey_num = num
 
 	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
@@ -72,6 +72,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
 	$Label3D.position += -shiftsize
+	$WallDeco.position += -shiftsize
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
@@ -171,6 +172,59 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var aabb = wallinfo[0]
 	var axis_wall = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
+
+var line2d_subviewport :SubViewport
+var clockcalendar_sel :int
+# add clock or calendar
+func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
+	if randf() < storey_setting.MakeLine2DWallRate:
+		if line2d_subviewport == null:
+			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
+		var b = make_plane_from_subviewport(line2d_subviewport)
+		b.position = $Maze3D.deco_pos_by_dir(x,y,dir)
+		b.rotate_y(EnumDir.dir2rad(EnumDir.Flag2Dir[dir]))
+		return
+
+	if randf() < storey_setting.MakeClockCalWallRate:
+		var n :Node3D
+		var depth = 0.1
+		clockcalendar_sel +=1
+		if clockcalendar_sel % 2 == 0:
+			n = preload("res://calendar3d/calendar_3d.tscn").instantiate()
+			n.init(maze3d_setting.LaneW, maze3d_setting.StoryH,depth, 5, false)
+		else :
+			n = preload("res://analogclock3d/analog_clock_3d.tscn").instantiate()
+			n.init(min(maze3d_setting.LaneW,maze3d_setting.StoryH)/2,depth, 4, 9.0, false)
+		n.rotate_z(PI/2)
+		n.rotate_y(EnumDir.dir2rad(1+EnumDir.Flag2Dir[dir]))
+		n.position = $Maze3D.deco_pos_by_dir(x,y,dir)
+		$WallDeco.add_child(n)
+
+func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
+	var l2d = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
+	l2d.start()
+	var sv = SubViewport.new()
+	sv.size = size_pixel
+	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	sv.transparent_bg = true
+	sv.add_child(l2d)
+	$WallDeco.add_child(sv)
+	return sv
+
+func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
+	var mesh = PlaneMesh.new()
+	mesh.size = Vector2(maze3d_setting.LaneW, maze3d_setting.StoryH)
+	mesh.orientation = PlaneMesh.FACE_Z
+	var sp = MeshInstance3D.new()
+	sp.mesh = mesh
+	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
+	sp.material_override.albedo_texture = sv.get_texture()
+	#sp.material_override.uv1_scale = Vector3(3, 2, 1) # same tex to all 6 plane
+	$WallDeco.add_child(sp)
+	return sp
+
 
 func can_move(x :int , y :int, dir :EnumDir.Dir) -> bool:
 	return $Maze3D.maze_cells.is_open_dir_at(x,y, EnumDir.Dir2Flag[dir] )

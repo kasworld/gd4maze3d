@@ -1,5 +1,22 @@
 class_name Maze3DSetting
 
+static func new_default() -> Maze3DSetting:
+	var rtn := new()
+	rtn.MazeSize = Vector2i(4,4)
+	rtn.StoryH = 3.0
+	rtn.LaneW = 4.0
+	rtn.WallThick = rtn.LaneW *0.05
+
+	rtn.MakeLine2DWallRate = 1.0/rtn.CalcCellCount()
+	rtn.MakeSubWallRate = 1.0/rtn.CalcCellCount()
+	rtn.MakeClockCalWallRate = 1.0/rtn.CalcCellCount()
+	return rtn 
+
+func _to_string() -> String:
+	return "Maze3DSetting[size:%s height:%.1f lane width:%.1f wall thick:%.1f]" % [
+		MazeSize, StoryH, LaneW, WallThick,
+	]
+
 var MazeSize :Vector2i
 var StoryH :float
 var LaneW :float
@@ -72,30 +89,3 @@ func CalcCellBox(pos :Vector2i) -> AABB:
 		Vector3(LaneW -WallThick, StoryH, LaneW -WallThick) 
 		)
 	return rtn
-
-func make_default() -> Maze3DSetting:
-	MazeSize = Vector2i(4,4)
-	StoryH = 3.0
-	LaneW = 4.0
-	WallThick = LaneW *0.05
-
-	MakeLine2DWallRate = 1.0/CalcCellCount()
-	MakeSubWallRate = 1.0/CalcCellCount()
-	MakeClockCalWallRate = 1.0/CalcCellCount()
-	return self 
-
-func make_deco() -> Maze3DSetting:
-	MazeSize = Vector2i(4,4)
-	StoryH = 3.0
-	LaneW = 4.0
-	WallThick = LaneW *0.05
-
-	MakeLine2DWallRate = 1.0/CalcCellCount()
-	MakeSubWallRate = 1.0/CalcCellCount()
-	MakeClockCalWallRate = 1.0/CalcCellCount()
-	return self 
-
-func _to_string() -> String:
-	return "Maze3DSetting[size:%s height:%.1f lane width:%.1f wall thick:%.1f]" % [
-		MazeSize, StoryH, LaneW, WallThick,
-	]

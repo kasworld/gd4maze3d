@@ -24,7 +24,7 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 	
-	default_maze3d_setting = Maze3DSetting.new().make_default()
+	default_maze3d_setting = Maze3DSetting.new_default()
 	default_storey_setting = StoreySetting.new().make_default(default_maze3d_setting.MazeSize)
 	current_tower = tower_scene.instantiate().init(
 		3,3,1,default_storey_setting, default_maze3d_setting,
@@ -55,7 +55,7 @@ func _ready() -> void:
 
 func add_deco_tower(p :Vector3) -> void:
 	var deco_tower = tower_scene.instantiate().init(
-		3,3,3,StoreySetting.new().make_deco(), Maze3DSetting.new().make_deco(),
+		3,3,3,StoreySetting.new().make_deco(), Maze3DSetting.new_default(),
 		)
 	add_child(deco_tower)
 	deco_tower.position = p

@@ -67,14 +67,14 @@ func _on_vpsize_changed() -> void:
 func storey_gap_changed(tw :Tower) -> void:
 	if tw == current_tower:
 		for ch in char_container.get_children():
-			ch.position.y = tw.cur_storey.get_center_pos().y
+			ch.position.y = tw.cur_storey.position.y
 		if not camera_move:
 			cameralight.copy_position_rotation(player)
 
 func move_camera(_delta: float) -> void:
 	var t = -Time.get_unix_time_from_system() /2.3
 	var r = default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
-	var to_pos := current_tower.cur_storey.get_center_pos()
+	var to_pos := current_tower.cur_storey.position
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
 	cameralight.look_at(to_pos)
 
@@ -86,7 +86,7 @@ func enter_next_storey(old_storey :Storey) -> void:
 	if old_storey != null:
 		old_storey.goal_reached.disconnect(enter_next_storey)
 		current_tower.enter_next_storey()
-	$DecoOrbit.position = current_tower.cur_storey.get_center_pos()
+	$DecoOrbit.position = current_tower.cur_storey.position
 	current_tower.cur_storey.goal_reached.connect(enter_next_storey)
 	current_tower.cur_storey.chars_enter_storey(old_storey, char_container.get_children(),player.serial)
 	update_button_text()

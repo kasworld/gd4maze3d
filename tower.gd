@@ -70,9 +70,9 @@ func apply_storey_gap_change() -> void:
 	storey_gap_changed.emit(self)
 
 func calc_storey_base_y_pos(storey_index :int) -> float:
-	var rtn := 0.0
+	var rtn := storey_list[0].maze3d_setting.StoryH/2
 	for i in storey_index:
-		rtn += calc_current_storey_gap() + storey_list[i].maze3d_setting.StoryH
+		rtn += calc_current_storey_gap() + storey_list[i].maze3d_setting.StoryH/2 + storey_list[i+1].maze3d_setting.StoryH/2
 	return rtn
 
 func add_new_storey(stnum :int) -> void:

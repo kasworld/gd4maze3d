@@ -19,9 +19,6 @@ var wall_info_all :Array
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
-func get_center_pos() -> Vector3:
-	return position + maze3d_setting.CalcSizeWithWallV3()/2
-
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
 

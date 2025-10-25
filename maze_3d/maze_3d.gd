@@ -128,18 +128,6 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	var pos_face_ew = Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
 	var pos_face_ns = Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
 
-	if randf() < maze3d_setting.MakeLine2DWallRate:
-		if line2d_subviewport == null:
-			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
-		match dir:
-			EnumDir.Flag.West, EnumDir.Flag.East:
-				var b = make_box_from_subviewport(line2d_subviewport, maze3d_setting.CalcWallSize_EW_Reduced())
-				b.position = pos_face_ew
-			EnumDir.Flag.North, EnumDir.Flag.South:
-				var b = make_box_from_subviewport(line2d_subviewport, maze3d_setting.CalcWallSize_NS_Reduced())
-				b.position = pos_face_ns
-		return
-
 	match dir:
 		EnumDir.Flag.West, EnumDir.Flag.East:
 			if randf() < maze3d_setting.MakeSubWallRate:
@@ -172,6 +160,25 @@ func make_wall_deco_by_maze() -> void:
 func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	var pos_face_ew = Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
 	var pos_face_ns = Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
+
+	if randf() < maze3d_setting.MakeLine2DWallRate:
+		if line2d_subviewport == null:
+			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
+		var b = make_plane_from_subviewport(line2d_subviewport)
+		match dir:
+			EnumDir.Flag.West:
+				b.position = pos_face_ew + Vector3(maze3d_setting.WallThick,0,0)
+				b.rotate_y(PI/2)
+			EnumDir.Flag.East:
+				b.position = pos_face_ew - Vector3(maze3d_setting.WallThick,0,0)
+				b.rotate_y(-PI/2)
+			EnumDir.Flag.North:
+				b.position = pos_face_ns + Vector3(0,0,maze3d_setting.WallThick)
+			EnumDir.Flag.South:
+				b.position = pos_face_ns - Vector3(0,0,maze3d_setting.WallThick)
+				b.rotate_y(PI)
+		return
+
 	if randf() < maze3d_setting.MakeClockCalWallRate:
 		var n :Node3D
 		var depth = 0.1
@@ -207,15 +214,16 @@ func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	$WallDeco.add_child(sv)
 	return sv
 
-func make_box_from_subviewport(sv :SubViewport, sz :Vector3) -> MeshInstance3D:
-	var mesh = BoxMesh.new()
-	mesh.size = sz
+func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
+	var mesh = PlaneMesh.new()
+	mesh.size = Vector2(maze3d_setting.LaneW, maze3d_setting.StoryH)
+	mesh.orientation = PlaneMesh.FACE_Z
 	var sp = MeshInstance3D.new()
 	sp.mesh = mesh
 	sp.material_override = StandardMaterial3D.new()
 	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	sp.material_override.albedo_texture = sv.get_texture()
-	sp.material_override.uv1_scale = Vector3(3, 2, 1) # same tex to all 6 plane
+	#sp.material_override.uv1_scale = Vector3(3, 2, 1) # same tex to all 6 plane
 	$WallDeco.add_child(sp)
 	return sp
 

@@ -156,27 +156,29 @@ func make_wall_deco_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(maze3d_setting.MazeSize.x-1,y,EnumDir.Flag.East):
 			add_wall_deco_at( maze3d_setting.MazeSize.x , y , EnumDir.Flag.East)
 
-# add clock or calendar
-func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
+func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
 	var pos_face_ew = Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
 	var pos_face_ns = Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
+	var pos :Vector3
+	match dir:
+		EnumDir.Flag.West:
+			pos =  pos_face_ew + Vector3(maze3d_setting.WallThick,0,0)
+		EnumDir.Flag.East:
+			pos =  pos_face_ew - Vector3(maze3d_setting.WallThick,0,0)
+		EnumDir.Flag.North:
+			pos =  pos_face_ns + Vector3(0,0,maze3d_setting.WallThick)
+		EnumDir.Flag.South:
+			pos =  pos_face_ns - Vector3(0,0,maze3d_setting.WallThick)
+	return pos
 
+# add clock or calendar
+func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	if randf() < maze3d_setting.MakeLine2DWallRate:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 		var b = make_plane_from_subviewport(line2d_subviewport)
-		match dir:
-			EnumDir.Flag.West:
-				b.position = pos_face_ew + Vector3(maze3d_setting.WallThick,0,0)
-				b.rotate_y(PI/2)
-			EnumDir.Flag.East:
-				b.position = pos_face_ew - Vector3(maze3d_setting.WallThick,0,0)
-				b.rotate_y(-PI/2)
-			EnumDir.Flag.North:
-				b.position = pos_face_ns + Vector3(0,0,maze3d_setting.WallThick)
-			EnumDir.Flag.South:
-				b.position = pos_face_ns - Vector3(0,0,maze3d_setting.WallThick)
-				b.rotate_y(PI)
+		b.position = deco_pos_by_dir(x,y,dir)
+		b.rotate_y(EnumDir.dir2rad(EnumDir.Flag2Dir[dir]))
 		return
 
 	if randf() < maze3d_setting.MakeClockCalWallRate:
@@ -191,16 +193,8 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			n.init(min(maze3d_setting.LaneW,maze3d_setting.StoryH)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(EnumDir.dir2rad(1+EnumDir.Flag2Dir[dir]))
+		n.position = deco_pos_by_dir(x,y,dir)
 		$WallDeco.add_child(n)
-		match dir:
-			EnumDir.Flag.West:
-				n.position = pos_face_ew + Vector3(maze3d_setting.WallThick,0,0)
-			EnumDir.Flag.East:
-				n.position = pos_face_ew - Vector3(maze3d_setting.WallThick,0,0)
-			EnumDir.Flag.North:
-				n.position = pos_face_ns + Vector3(0,0,maze3d_setting.WallThick)
-			EnumDir.Flag.South:
-				n.position = pos_face_ns - Vector3(0,0,maze3d_setting.WallThick)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var l2d = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)

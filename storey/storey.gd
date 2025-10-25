@@ -180,7 +180,9 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	if randf() < storey_setting.MakeLine2DWallRate:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
+			$WallDeco.add_child(line2d_subviewport)
 		var b = make_plane_from_subviewport(line2d_subviewport)
+		$WallDeco.add_child(b)
 		b.position = $Maze3D.deco_pos_by_dir(x,y,dir)
 		b.rotate_y(EnumDir.dir2rad(EnumDir.Flag2Dir[dir]))
 		return
@@ -209,7 +211,6 @@ func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
 	sv.transparent_bg = true
 	sv.add_child(l2d)
-	$WallDeco.add_child(sv)
 	return sv
 
 func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
@@ -221,10 +222,7 @@ func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
 	sp.material_override = StandardMaterial3D.new()
 	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	sp.material_override.albedo_texture = sv.get_texture()
-	#sp.material_override.uv1_scale = Vector3(3, 2, 1) # same tex to all 6 plane
-	$WallDeco.add_child(sp)
 	return sp
-
 
 func can_move(x :int , y :int, dir :EnumDir.Dir) -> bool:
 	return $Maze3D.maze_cells.is_open_dir_at(x,y, EnumDir.Dir2Flag[dir] )

@@ -14,10 +14,10 @@ static func new_deco() -> StoreySetting:
 	var rtn := new()
 	rtn.MeshTrailTypeList = [ [0,1,2,3,4,5,"♠","♣","♥","♦","★","☆","♩","♪","♬"].pick_random() ]
 	rtn.MakeMeshTrailRate = 0.5
-	rtn.DonutCapsuleCount = 1
+	rtn.DonutCapsuleCount = 0
 	rtn.TreeCount = 1
-	rtn.MakeLine2DWallRate = 1
-	rtn.MakeClockCalWallRate = 1
+	rtn.MakeLine2DWallRate = 0
+	rtn.MakeClockCalWallRate = 0
 	return rtn
 
 func _to_string() -> String:

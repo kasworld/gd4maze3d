@@ -1,12 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bdycgvb1g25w"]
+[gd_scene load_steps=3 format=3 uid="uid://bdycgvb1g25w"]
 
 [ext_resource type="Script" uid="uid://dcw2hfmbwc2pm" path="res://maze_3d/maze_3d.gd" id="1_0k1os"]
 [ext_resource type="PackedScene" uid="uid://4ejo8cq5ugex" path="res://wire_net/wire_net.tscn" id="2_2b0r0"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2b0r0"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_7je7j"]
-material = SubResource("StandardMaterial3D_2b0r0")
 
 [node name="Maze3D" type="Node3D"]
 script = ExtResource("1_0k1os")
@@ -22,7 +17,3 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 
 [node name="WallDeco" type="Node3D" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-visible = false
-mesh = SubResource("PlaneMesh_7je7j")

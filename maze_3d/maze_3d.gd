@@ -29,7 +29,7 @@ func init_with_mat(ts :Maze3DSetting, makedecofn :Callable, matmain :StandardMat
 	make_wall_by_maze()
 	make_box_pillas()
 	make_wall_deco_by_maze(makedecofn)
-	init_floor_ceiling(makedecofn)
+	init_floor_ceiling()
 	return self
 
 func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cosub :Color, copillar :Color) -> Maze3D:
@@ -45,10 +45,10 @@ func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cos
 	make_wall_by_maze()
 	make_capsule_pillas()
 	make_wall_deco_by_maze(makedecofn)
-	init_floor_ceiling(makedecofn)
+	init_floor_ceiling()
 	return self
 
-func init_floor_ceiling(makedecofn :Callable) -> void:
+func init_floor_ceiling() -> void:
 	var sz := maze3d_setting.CalcSizeWithWallV2()
 	$Floor.init_with_color(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
 	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)

@@ -35,7 +35,9 @@ func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cos
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 	main_wall_mat = StandardMaterial3D.new()
 	main_wall_mat.albedo_color = comain
-	pillar_mat = main_wall_mat.duplicate()
+
+	pillar_mat = StandardMaterial3D.new()
+	pillar_mat.albedo_color = cosub
 	make_maze3d(makedecofn)
 	return self
 
@@ -56,18 +58,37 @@ func make_maze3d(makedecofn :Callable) -> void:
 	$WallContainer.position = -shiftsize
 	$PillarContainer.position = -shiftsize
 
+#func make_pillas() -> void:
+	#var multi_inst = make_box_multi_inst(pillar_mat, Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick) )
+	#$PillarContainer.add_child(multi_inst)
+	#var pos_list :Array = []
+	#for y in maze3d_setting.MazeSize.y+1:
+		#for x in maze3d_setting.MazeSize.x+1:
+			#pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
+	#pos_multimesh(multi_inst.multimesh, pos_list)
+func make_box_multi_inst(mat :Material, sz :Vector3) -> MultiMeshInstance3D:
+	var mesh = BoxMesh.new()
+	mesh.size = sz
+	mesh.material = mat
+	var multimesh = MultiMesh.new()
+	multimesh.mesh = mesh
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	var multi_inst = MultiMeshInstance3D.new()
+	multi_inst.multimesh = multimesh
+	return multi_inst
+
 func make_pillas() -> void:
-	var multi_inst = make_box_multi_inst(pillar_mat, Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick) )
+	var multi_inst = make_capsule_multi_inst(pillar_mat, maze3d_setting.WallThick/2 , maze3d_setting.StoryH )
 	$PillarContainer.add_child(multi_inst)
 	var pos_list :Array = []
 	for y in maze3d_setting.MazeSize.y+1:
 		for x in maze3d_setting.MazeSize.x+1:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
 	pos_multimesh(multi_inst.multimesh, pos_list)
-
-func make_box_multi_inst(mat :Material, sz :Vector3) -> MultiMeshInstance3D:
-	var mesh = BoxMesh.new()
-	mesh.size = sz
+func make_capsule_multi_inst(mat :Material, radius :float, height :float) -> MultiMeshInstance3D:
+	var mesh = CapsuleMesh.new()
+	mesh.radius = radius
+	mesh.height = height
 	mesh.material = mat
 	var multimesh = MultiMesh.new()
 	multimesh.mesh = mesh
@@ -140,6 +161,7 @@ func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 func make_wall_deco_by_maze(makedeco :Callable) -> void:
 	if not makedeco.is_valid():
 		return
+
 	for y in maze3d_setting.MazeSize.y:
 		for x in maze3d_setting.MazeSize.x:
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):

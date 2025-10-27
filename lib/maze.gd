@@ -37,7 +37,8 @@ func _init(msize :Vector2i) -> void:
 				break
 		if delpos:
 			visted_pos.remove_at(posidx)
-
+	#make_move_graph()
+	
 func is_in(x:int,y:int) -> bool:
 	return x >=0 && y>=0 && x < _maze_size.x && y < _maze_size.y
 
@@ -47,8 +48,8 @@ func get_cell(x :int, y:int) -> int:
 func is_open_dir_at(x :int, y :int, dir :EnumDir.Flag) -> bool:
 	return (_cells[y][x] & dir) != 0
 
-func get_open_dir_at(x :int, y :int) -> Array:
-	var rtn = []
+func get_open_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
+	var rtn :Array[EnumDir.Flag] = []
 	for d in EnumDir.FlagList:
 		if is_open_dir_at(x,y,d):
 			rtn.append(d)
@@ -57,8 +58,8 @@ func get_open_dir_at(x :int, y :int) -> Array:
 func is_wall_dir_at(x :int, y :int, dir :EnumDir.Flag) -> bool:
 	return (_cells[y][x] & dir) == 0
 
-func get_wall_dir_at(x :int, y :int) -> Array:
-	var rtn = []
+func get_wall_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
+	var rtn :Array[EnumDir.Flag] = []
 	for d in EnumDir.FlagList:
 		if is_wall_dir_at(x,y,d):
 			rtn.append(d)
@@ -77,3 +78,17 @@ func make_wallinfo_for_bounce(x:int, y:int) -> Array:
 		[true,true],
 		[is_wall_dir_at(x,y, EnumDir.Flag.North), is_wall_dir_at(x,y, EnumDir.Flag.South)],
 	]
+
+# from_pos -> [ {"pos" : to_pos, "dir" : dir} ] 
+func make_move_graph() -> Dictionary:
+	var rtn := {}
+	for y in _cells.size():
+		for x in _cells[y].size():
+			var val := []
+			var srcpos := Vector2i(x,y)
+			for fdir in get_open_dir_at(x,y):
+				var topos = srcpos + EnumDir.Flag2Vt[fdir]
+				val.append({"pos":topos, "dir": EnumDir.Flag2Str[fdir] })
+			rtn[srcpos] = val
+	print_debug(rtn)
+	return rtn

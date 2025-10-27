@@ -8,13 +8,13 @@ enum Dir {
 }
 const DirList = [Dir.North,Dir.West,Dir.South,Dir.East]
 
-const DirToStr = {
+const Dir2Str = {
 	Dir.North : "North",
 	Dir.West : "West",
 	Dir.South : "South",
 	Dir.East : "East",
 }
-const StrToDir = {
+const Str2Dir = {
 	 "North" : Dir.North ,
 	 "West" : Dir.West ,
 	 "South" : Dir.South ,

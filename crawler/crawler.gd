@@ -213,7 +213,7 @@ func debug_str() -> String:
 		stats2str(total_action_stats),
 		stats2str(storey_action_stats),
 		action2str(current_action.Action ), queue2str(),
-		EnumDir.DirToStr[dir_src], EnumDir.DirToStr[dir_dst],
+		EnumDir.Dir2Str[dir_src], EnumDir.Dir2Str[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
 

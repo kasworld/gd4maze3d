@@ -37,8 +37,7 @@ func _init(msize :Vector2i) -> void:
 				break
 		if delpos:
 			visted_pos.remove_at(posidx)
-	#make_move_graph()
-	
+
 func is_in(x:int,y:int) -> bool:
 	return x >=0 && y>=0 && x < _maze_size.x && y < _maze_size.y
 
@@ -90,5 +89,4 @@ func make_move_graph() -> Dictionary:
 				var topos = srcpos + EnumDir.Flag2Vt[fdir]
 				val.append({"pos":topos, "dir": EnumDir.Flag2Str[fdir] })
 			rtn[srcpos] = val
-	print_debug(rtn)
 	return rtn

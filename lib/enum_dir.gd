@@ -14,6 +14,13 @@ const DirToStr = {
 	Dir.South : "South",
 	Dir.East : "East",
 }
+const StrToDir = {
+	 "North" : Dir.North ,
+	 "West" : Dir.West ,
+	 "South" : Dir.South ,
+	 "East" : Dir.East ,
+}
+
 const DirOpppsite = {
 	Dir.North : Dir.South,
 	Dir.West : Dir.East,
@@ -68,6 +75,13 @@ const Flag2Str = {
 	Flag.West : "West",
 	Flag.South : "South",
 	Flag.East : "East",
+}
+
+const Str2Flag = {
+	 "North" : Flag.North ,
+	 "West" : Flag.West ,
+	 "South" : Flag.South ,
+	 "East" : Flag.East ,
 }
 
 const FlagOpppsite = {

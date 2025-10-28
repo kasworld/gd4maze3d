@@ -87,7 +87,7 @@ var dir_dst : EnumDir.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
 
-var auto_walk_type := Walk.RightFirst
+var auto_walk_type : Walk
 func set_next_walk_type() -> Crawler:
 	auto_walk_type = walk_next(auto_walk_type)
 	return self

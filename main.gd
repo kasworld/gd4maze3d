@@ -18,8 +18,8 @@ var default_storey_setting :StoreySetting
 
 func _ready() -> void:
 	cameralight.init()
-	var vp_size = get_viewport().get_visible_rect().size
-	var msgrect = Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
+	var vp_size := get_viewport().get_visible_rect().size
+	var msgrect := Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 25.1.0"))
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
@@ -33,7 +33,7 @@ func _ready() -> void:
 	current_tower.storey_gap_changed.connect(storey_gap_changed)
 	
 	for i in CharacterCount:
-		var pl = preload("res://crawler/crawler.tscn").instantiate()
+		var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
 		char_container.add_child(pl)
 		pl.init(
 			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2], 
@@ -41,7 +41,7 @@ func _ready() -> void:
 	player = char_container.get_child(0)
 
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
-	var n = 3
+	var n := 3
 	for i in n:
 		var rd = 2*PI/n *i
 		add_deco_tower(Vector3(sin(rd)*orbitr,0,cos(rd)*orbitr))
@@ -54,7 +54,7 @@ func _ready() -> void:
 	update_button_text()
 
 func add_deco_tower(p :Vector3) -> void:
-	var deco_tower = tower_scene.instantiate().init(
+	var deco_tower :Tower = tower_scene.instantiate().init(
 		3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(),
 		)
 	add_child(deco_tower)
@@ -72,8 +72,8 @@ func storey_gap_changed(tw :Tower) -> void:
 			cameralight.copy_position_rotation(player)
 
 func move_camera(_delta: float) -> void:
-	var t = -Time.get_unix_time_from_system() /2.3
-	var r = default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
+	var t := -Time.get_unix_time_from_system() /2.3
+	var r := default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
 	var to_pos := current_tower.cur_storey.position
 	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
 	cameralight.look_at(to_pos)

@@ -66,7 +66,7 @@ func get_sphere() -> MeshInstance3D:
 	return $Sphere
 
 func _process(delta: float) -> void:
-	var t = Time.get_unix_time_from_system() *공전속도 + 공전시작각도
-	var r = 궤도반지름
+	var t := Time.get_unix_time_from_system() *공전속도 + 공전시작각도
+	var r := 궤도반지름
 	$Sphere.position = Vector3( sin(t)*r, 0, cos(t)*r )
 	$Sphere.rotate(자전축, delta*자전속도)

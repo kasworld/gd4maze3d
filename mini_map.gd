@@ -73,7 +73,7 @@ func apply_minimap_mode() -> void:
 	#update_size()
 
 func update_size() -> void:
-	var vp_size = get_viewport().get_visible_rect().size
+	var vp_size := get_viewport().get_visible_rect().size
 	map_scale = min( vp_size.x / storey.maze3d_setting.MazeSize.x , vp_size.y / storey.maze3d_setting.MazeSize.y )
 	WallThick = map_scale*0.1
 	if WallThick < 1 :
@@ -85,7 +85,7 @@ func update_size() -> void:
 	position.x = (vp_size.x - get_width())/2
 
 func add_character(achar :Crawler, outline :int) -> void:
-	var ch = new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
+	var ch := new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
 	$CharacterContainer.add_child(ch)
 
 func update_char_pos(ch :Crawler) -> void:
@@ -96,7 +96,7 @@ func update_char_pos(ch :Crawler) -> void:
 func new_label(co:Color, text :String, outline :int) -> Label:
 	var co_txt :Color
 	var co_bdr :Color
-	var lum = co.get_luminance()
+	var lum := co.get_luminance()
 	if lum > 0.5:
 		co_txt = co.inverted().darkened(0.5)
 	else:
@@ -111,7 +111,7 @@ func new_label(co:Color, text :String, outline :int) -> Label:
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lb.text = text
-	var stb = StyleBoxFlat.new()
+	var stb := StyleBoxFlat.new()
 	stb.bg_color = Color(co, 0.5)
 	if outline != 0:
 		stb.border_color = Color(co_bdr,0.5)
@@ -140,7 +140,7 @@ func pos2mapscale(pos :Vector2i) -> Vector2:
 # make wallline by maze
 func make_walllines_all() -> void:
 	walllines_all = []
-	var MazeSize = storey.maze3d_setting.MazeSize
+	var MazeSize := storey.maze3d_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if not storey.get_maze_cells().is_open_dir_at(x,y,EnumDir.Flag.North):
@@ -159,7 +159,7 @@ func make_walllines_all() -> void:
 # make wallline by walls_known
 func make_walllines_known() -> void:
 	walllines_known = []
-	var MazeSize = storey.maze3d_setting.MazeSize
+	var MazeSize := storey.maze3d_setting.MazeSize
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if is_known_wall_at(x,y,EnumDir.Dir.North):
@@ -180,10 +180,10 @@ func make_walllines_known() -> void:
 func calc_wall_pos(x :int, y:int, dir :EnumDir.Dir) -> Vector2i:
 	return Vector2i(x*2+1,y*2+1) + EnumDir.Dir2Vt[dir]
 func is_known_wall_at(x :int, y:int, dir :EnumDir.Dir) -> bool:
-	var wpos = calc_wall_pos(x,y,dir)
+	var wpos := calc_wall_pos(x,y,dir)
 	return walls_known[wpos.y][wpos.x] != 0
 func set_known_wall_at(x :int, y:int, dir :EnumDir.Dir):
-	var wpos = calc_wall_pos(x,y,dir)
+	var wpos := calc_wall_pos(x,y,dir)
 	walls_known[wpos.y][wpos.x] = 1
 func add_known_wall_at(x:int,y :int, dir :EnumDir.Dir) -> void:
 	if is_known_wall_at(x,y,dir):
@@ -192,7 +192,7 @@ func add_known_wall_at(x:int,y :int, dir :EnumDir.Dir) -> void:
 	add_wall_at_to_walllines(x,y,dir,walllines_known)
 	queue_redraw()
 func update_knonw_walls_by_pos(x:int,y :int) -> void:
-	var walldir = storey.get_maze_cells().get_wall_dir_at(x,y)
+	var walldir := storey.get_maze_cells().get_wall_dir_at(x,y)
 	for d in walldir:
 		add_known_wall_at(x,y,EnumDir.Flag2Dir[d])
 

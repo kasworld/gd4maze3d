@@ -38,7 +38,7 @@ func init_with_color(co1 :Color, co2:Color) -> BarTree2:
 	color_from = co1
 	color_to = co2
 	
-	var mat = StandardMaterial3D.new()
+	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color.WHITE
 	mat.vertex_color_use_as_albedo = true
 	init_mesh_multi1(mat)
@@ -66,15 +66,15 @@ func init_mesh_multi2() -> void:
 # also reset bar rotation
 func update_bar_transform() -> void:
 	# Set the transform of the instances.
-	var bar_height = tree_height/bar_count
+	var bar_height := tree_height/bar_count
 	for i in $MultiMeshInstance3D.multimesh.visible_instance_count:
-		var rate = float(i)/bar_count
-		var rev_rate = 1 - rate
-		var bar_position = Vector3(0, i *bar_height +bar_height/2, tree_width * rev_rate /2 * bar_shift_rate)
+		var rate := float(i)/bar_count
+		var rev_rate := 1 - rate
+		var bar_position := Vector3(0, i *bar_height +bar_height/2, tree_width * rev_rate /2 * bar_shift_rate)
 		#var bar_position = Vector3(bar_width*rev_rate/2, i *bar_height +bar_height/2, tree_width * rev_rate /2 * bar_shift_rate)
-		var bar_size = Vector3(bar_width * rev_rate, bar_height, tree_width * rev_rate )
-		var bar_rot = bar_rotation * rate + bar_rotation_begin
-		var t = Transform3D(Basis(), bar_position)
+		var bar_size := Vector3(bar_width * rev_rate, bar_height, tree_width * rev_rate )
+		var bar_rot := bar_rotation * rate + bar_rotation_begin
+		var t := Transform3D(Basis(), bar_position)
 		t = t.rotated(Vector3(0,1,0), bar_rot)
 		t = t.scaled_local( bar_size )
 		$MultiMeshInstance3D.multimesh.set_instance_transform(i,t )
@@ -107,8 +107,8 @@ func _process(_delta: float) -> void:
 
 func bar_rotation_y() -> void:
 	for i in $MultiMeshInstance3D.multimesh.visible_instance_count:
-		var t = $MultiMeshInstance3D.multimesh.get_instance_transform(i)
-		var rate = float(i)/bar_count
-		var bar_rot = rate * bar_rotation 
+		var t :Transform3D = $MultiMeshInstance3D.multimesh.get_instance_transform(i)
+		var rate := float(i)/bar_count
+		var bar_rot := rate * bar_rotation 
 		t = t.rotated(Vector3(0,1,0), bar_rot)
 		$MultiMeshInstance3D.multimesh.set_instance_transform(i,t )

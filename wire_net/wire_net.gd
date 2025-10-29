@@ -16,13 +16,13 @@ func init_with_color(net_sizea :Vector2, wire_counta :Vector2i, wire_r :float, c
 		$MultiMeshInstance3D.multimesh.set_instance_color(i,co)
 		if i < wire_count.x:
 			var pos := Vector3( net_size.x/(wire_count.x-1)* i, net_size.y/2, 0)
-			var t = Transform3D(Basis(), pos)
+			var t := Transform3D(Basis(), pos)
 			#t = t.rotated(Vector3(0,1,0), bar_rot)
 			t = t.scaled_local( Vector3(wire_radius,net_size.y,wire_radius) )
 			$MultiMeshInstance3D.multimesh.set_instance_transform(i,t)
 		else:
 			var pos := Vector3(net_size.x/2, net_size.y/(wire_count.y-1)* (i-wire_count.x), 0)
-			var t = Transform3D(Basis(), pos)
+			var t := Transform3D(Basis(), pos)
 			#t = t.rotated(Vector3(0,1,0), bar_rot)
 			t = t.scaled_local( Vector3(net_size.x,wire_radius,wire_radius) )
 			$MultiMeshInstance3D.multimesh.set_instance_transform(i,t)

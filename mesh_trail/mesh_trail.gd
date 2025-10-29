@@ -105,18 +105,18 @@ func set_color_by_mode(mesh_index :int, pos :Vector3) -> void:
 	$MultiMeshInstance3D.multimesh.set_instance_color(mesh_index, co)
 	
 func set_multi_pos_rot(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:
-	var t = Transform3D(Basis(), pos)
+	var t := Transform3D(Basis(), pos)
 	t = t.rotated_local(axis, rot)
 	$MultiMeshInstance3D.multimesh.set_instance_transform(i,t )
 
 var old_tick :float
 func _on_timer_timeout() -> void:
-	var new_tick = Time.get_unix_time_from_system()
+	var new_tick := Time.get_unix_time_from_system()
 	move(new_tick - old_tick)
 	old_tick = new_tick
 
 func move(delta :float) -> void:
-	var old_cursor = obj_cursor
+	var old_cursor := obj_cursor
 	obj_cursor +=1
 	obj_cursor %= $MultiMeshInstance3D.multimesh.instance_count
 	move_trail(delta, old_cursor, obj_cursor)

@@ -70,18 +70,18 @@ func make_box_pillas() -> void:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
 	pos_multimesh(multi_inst.multimesh, pos_list)
 func make_box_multi_inst(mat :Material, sz :Vector3) -> MultiMeshInstance3D:
-	var mesh = BoxMesh.new()
+	var mesh := BoxMesh.new()
 	mesh.size = sz
 	mesh.material = mat
-	var multimesh = MultiMesh.new()
+	var multimesh := MultiMesh.new()
 	multimesh.mesh = mesh
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	var multi_inst = MultiMeshInstance3D.new()
+	var multi_inst := MultiMeshInstance3D.new()
 	multi_inst.multimesh = multimesh
 	return multi_inst
 
 func make_capsule_pillas() -> void:
-	var multi_inst = make_capsule_multi_inst(pillar_mat, maze3d_setting.WallThick/2 , maze3d_setting.StoryH )
+	var multi_inst := make_capsule_multi_inst(pillar_mat, maze3d_setting.WallThick/2 , maze3d_setting.StoryH )
 	$PillarContainer.add_child(multi_inst)
 	var pos_list :Array = []
 	for y in maze3d_setting.MazeSize.y+1:
@@ -89,14 +89,14 @@ func make_capsule_pillas() -> void:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
 	pos_multimesh(multi_inst.multimesh, pos_list)
 func make_capsule_multi_inst(mat :Material, radius :float, height :float) -> MultiMeshInstance3D:
-	var mesh = CapsuleMesh.new()
+	var mesh := CapsuleMesh.new()
 	mesh.radius = radius
 	mesh.height = height
 	mesh.material = mat
-	var multimesh = MultiMesh.new()
+	var multimesh := MultiMesh.new()
 	multimesh.mesh = mesh
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	var multi_inst = MultiMeshInstance3D.new()
+	var multi_inst := MultiMeshInstance3D.new()
 	multi_inst.multimesh = multimesh
 	return multi_inst
 
@@ -104,7 +104,7 @@ func pos_multimesh(multimesh :MultiMesh, pos_list :Array) -> void:
 	multimesh.instance_count = pos_list.size()
 	multimesh.visible_instance_count = pos_list.size()
 	for i in pos_list.size():
-		var t = Transform3D(Basis(), pos_list[i])
+		var t := Transform3D(Basis(), pos_list[i])
 		multimesh.set_instance_transform(i,t)
 
 var wall_multi_inst_ew_main :MultiMeshInstance3D
@@ -146,8 +146,8 @@ func make_wall_by_maze() -> void:
 	pos_multimesh(wall_multi_inst_ns_sub.multimesh, pos_list_ns_sub)
 
 func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
-	var pos_face_ew = Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
-	var pos_face_ns = Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
+	var pos_face_ew := Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
+	var pos_face_ns := Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
 
 	match dir:
 		EnumDir.Flag.West, EnumDir.Flag.East:
@@ -181,8 +181,8 @@ func make_wall_deco_by_maze(makedeco :Callable) -> void:
 			makedeco.call( maze3d_setting.MazeSize.x , y , EnumDir.Flag.East)
 
 func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
-	var pos_face_ew = Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
-	var pos_face_ns = Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
+	var pos_face_ew := Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)
+	var pos_face_ns := Vector3( x *maze3d_setting.LaneW +maze3d_setting.LaneW/2, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW)
 	var pos :Vector3
 	match dir:
 		EnumDir.Flag.West:

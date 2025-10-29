@@ -19,16 +19,16 @@ func _init(msize :Vector2i) -> void:
 	for cl in _cells:
 		cl.resize(_maze_size.x)
 	var visted_pos := []
-	var pos = Vector2i( randi_range(0,_maze_size.x-1),randi_range(0,_maze_size.y-1),)
+	var pos := Vector2i( randi_range(0,_maze_size.x-1),randi_range(0,_maze_size.y-1),)
 	visted_pos.append(pos)
 	while visted_pos.size() > 0:
-		var posidx = _select_visited(visted_pos)
+		var posidx := _select_visited(visted_pos)
 		pos = visted_pos[posidx]
-		var delpos = true
-		var rnddir = [EnumDir.Flag.North,EnumDir.Flag.South,EnumDir.Flag.East,EnumDir.Flag.West]
+		var delpos := true
+		var rnddir := [EnumDir.Flag.North,EnumDir.Flag.South,EnumDir.Flag.East,EnumDir.Flag.West]
 		rnddir.shuffle()
 		for dir in rnddir:
-			var npos = pos + EnumDir.Flag2Vt[dir]
+			var npos :Vector2i = pos + EnumDir.Flag2Vt[dir]
 			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
 				_open_dir_at(pos.x,pos.y, dir)
 				_open_dir_at(npos.x,npos.y, EnumDir.FlagOpppsite[dir])
@@ -65,7 +65,7 @@ func get_wall_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
 	return rtn
 
 func open_dir_str(x :int , y :int) -> String:
-	var rtn = ""
+	var rtn := ""
 	for d in get_open_dir_at(x,y):
 		rtn += "%s " %[EnumDir.Flag2Str[d]]
 	return rtn

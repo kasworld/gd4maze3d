@@ -7,12 +7,12 @@ static func action2str(a :Action) -> String:
 
 # action stats == Dictionary
 static func new_stats() -> Dictionary:
-	var rtn = {}
+	var rtn := {}
 	for k in Action.values():
 		rtn[k]=0
 	return rtn
 static func stats2str(d:Dictionary) -> String:
-	var rtn = ""
+	var rtn := ""
 	for i in Action.values():
 		rtn += " %s:%d" % [action2str(i), d[i]]
 	return rtn
@@ -64,7 +64,7 @@ func crop_queue() -> Crawler:
 	return self
 
 func queue2str() -> String:
-	var rtn = "ActionQueue["
+	var rtn := "ActionQueue["
 	for a in queue:
 		rtn += "%s(%.1f)%s " % [ action2str(a.Action), a.APS, a.Args ]
 	rtn += "]"
@@ -162,7 +162,7 @@ func animate_action() -> void:
 		Action.RollRight,Action.RollLeft:
 			animate_roll()
 		Action.EnterStorey:
-			var from_storey = current_action.Args.FromStorey
+			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
 				from_storey = storey
 			animate_move(from_storey, storey)
@@ -185,18 +185,18 @@ func get_animation_progress() -> float:
 	return (Time.get_unix_time_from_system() - action_start_time)*current_action.APS
 
 func animate_move(from :Storey, to :Storey) -> void:
-	var dur = get_animation_progress()
-	var p1 = from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position 
-	var p2 = to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position 
+	var dur := get_animation_progress()
+	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position 
+	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position 
 	position = p1.lerp(p2,dur)
 	#rotation += from.rotation.lerp(to.rotation,dur)
 
 func animate_turn() -> void:
-	var dur = get_animation_progress()
+	var dur := get_animation_progress()
 	rotation.y = lerp_angle(EnumDir.dir2rad(dir_src), EnumDir.dir2rad(dir_dst), dur)
 
 func animate_roll() -> void:
-	var dur = get_animation_progress()
+	var dur := get_animation_progress()
 	rotation.z = lerp_angle(EnumRoll.dir2rad(roll_dir), EnumRoll.dir2rad(roll_dir_dst), dur)
 
 func snap_90() -> void:

@@ -45,7 +45,7 @@ func init_with_copy(other :MoveLine2D) -> MoveLine2D:
 	color_list = other.color_list.duplicate()
 	init_point_list = other.init_point_list.duplicate()
 	for i in line_count:
-		var ln = Line2D.new()
+		var ln := Line2D.new()
 		ln.points = init_point_list
 		ln.gradient = Gradient.new()
 		ln.gradient.colors = color_list
@@ -63,7 +63,7 @@ func _process(_delta: float) -> void:
 	if auto_move:
 		move_1_step()
 
-func move_1_step()->void:
+func move_1_step() -> void:
 	var old_line_points = $LineContainer.get_child(line_cursor).points.duplicate()
 	line_cursor +=1
 	line_cursor %= $LineContainer.get_child_count()
@@ -71,8 +71,8 @@ func move_1_step()->void:
 	move_line(move_speed, $LineContainer.get_child(line_cursor))
 
 func move_line(delta: float, ln :Line2D) -> void:
-	var bounced = false
-	var rt = Rect2(Vector2.ZERO, draw_area_size)
+	var bounced := false
+	var rt := Rect2(Vector2.ZERO, draw_area_size)
 	for i in velocity_list.size():
 		ln.points[i] += velocity_list[i] *delta
 		var bn = bounce2d(rt,ln.points[i],ln.width/2)
@@ -89,8 +89,8 @@ func move_line(delta: float, ln :Line2D) -> void:
 
 # util functions
 
-func bounce2d(rt :Rect2, pos :Vector2, radius :float)->Dictionary:
-	var bounced = Vector3i.ZERO
+func bounce2d(rt :Rect2, pos :Vector2, radius :float) -> Dictionary:
+	var bounced := Vector3i.ZERO
 	for i in 2:
 		if pos[i] < rt.position[i] + radius :
 			pos[i] = rt.position[i] + radius
@@ -103,26 +103,26 @@ func bounce2d(rt :Rect2, pos :Vector2, radius :float)->Dictionary:
 		pos = pos,
 	}
 
-func make_point_list(count :int, rt :Vector2)->PackedVector2Array:
-	var rtn = []
+func make_point_list(count :int, rt :Vector2) -> PackedVector2Array:
+	var rtn :PackedVector2Array = []
 	for j in count:
 		rtn.append(random_pos_vector2d(rt))
 	return rtn
 
-func random_pos_vector2d(rt :Vector2)->Vector2:
+func random_pos_vector2d(rt :Vector2) -> Vector2:
 	return Vector2( rng.randf_range(0,rt.x), rng.randf_range(0,rt.y) )
 
-func make_vel_list(count :int, rt :Vector2)->PackedVector2Array:
-	var rtn = []
+func make_vel_list(count :int, rt :Vector2) -> PackedVector2Array:
+	var rtn :PackedVector2Array = []
 	for i in  count:
 		rtn.append(random_vel_vector2d(rt))
 	return rtn
 
-func random_vel_vector2d(rt :Vector2)->Vector2:
+func random_vel_vector2d(rt :Vector2) -> Vector2:
 	return Vector2(random_no_zero(rt.x),random_no_zero(rt.y))
 
-func random_no_zero(w :float)->float:
-	var v = random_positive(w/2)
+func random_no_zero(w :float) -> float:
+	var v := random_positive(w/2)
 	match rng.randi_range(1,2):
 		1:
 			pass
@@ -130,14 +130,14 @@ func random_no_zero(w :float)->float:
 			v = -v
 	return v
 
-func random_positive(w :float)->float:
+func random_positive(w :float) -> float:
 	return rng.randf_range(w/10,w)
 
-func make_color_list(count :int)->PackedColorArray:
-	var rtn = []
+func make_color_list(count :int) -> PackedColorArray:
+	var rtn :PackedColorArray = []
 	for j in count:
 		rtn.append(random_color())
 	return rtn
 
-func random_color()->Color:
+func random_color() -> Color:
 	return Color(rng.randf(),rng.randf(),rng.randf())

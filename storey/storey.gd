@@ -55,7 +55,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 		trycount -=1
 	if goal_pos == start_pos:
 		print_debug("start, goal pos same %s" % start_pos)
-	var 크기기준 = maze3d_setting.LaneW
+	var 크기기준 := maze3d_setting.LaneW
 	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
 		).position = maze3d_setting.mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
 	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
@@ -126,9 +126,9 @@ func add_donut_capsule(n :int) -> void:
 		var p = 구석자리목록.pick_random()
 		if 놓인것들.get_at(p) != null:
 			continue
-		var co = NamedColorList.color_list.pick_random()[0]
+		var co :Color = NamedColorList.color_list.pick_random()[0]
 		var pobj
-		var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
+		var 크기기준 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 		if randi()%2 ==0:
 			pobj = preload("res://capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
@@ -168,16 +168,16 @@ func add_ball_trails(mesh_type_list) ->void:
 		add_child(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
-	var axis_wall = $Maze3D.maze_cells.make_wallinfo_for_bounce(x,y)
-	var aabb = maze3d_setting.CalcCellBox(Vector2i(x,y))
+	var axis_wall :Array = $Maze3D.maze_cells.make_wallinfo_for_bounce(x,y)
+	var aabb := maze3d_setting.CalcCellBox(Vector2i(x,y))
 	return [aabb, axis_wall]
 
 # wallinfo [aabb , axis_wall [3][2]bool ]
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var pos2d := maze3d_setting.storeypos2mazepos(oldpos)
-	var wallinfo = wall_info_all[pos2d.y][pos2d.x]
-	var aabb = wallinfo[0]
-	var axis_wall = wallinfo[1]
+	var wallinfo :Array = wall_info_all[pos2d.y][pos2d.x]
+	var aabb :AABB= wallinfo[0]
+	var axis_wall :Array = wallinfo[1]
 	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
 
 var line2d_subviewport :SubViewport
@@ -188,7 +188,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 			$WallDeco.add_child(line2d_subviewport)
-		var b = make_plane_from_subviewport(line2d_subviewport)
+		var b := make_plane_from_subviewport(line2d_subviewport)
 		$WallDeco.add_child(b)
 		b.position = $Maze3D.deco_pos_by_dir(x,y,dir)
 		b.rotate_y(EnumDir.dir2rad(EnumDir.Flag2Dir[dir]))
@@ -196,7 +196,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 
 	if randf() < storey_setting.MakeClockCalWallRate:
 		var n :Node3D
-		var depth = 0.1
+		var depth := 0.1
 		clockcalendar_sel +=1
 		if clockcalendar_sel % 2 == 0:
 			n = preload("res://calendar3d/calendar_3d.tscn").instantiate()
@@ -210,9 +210,9 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		$WallDeco.add_child(n)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
-	var l2d = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
+	var l2d :MoveLine2D = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
 	l2d.start()
-	var sv = SubViewport.new()
+	var sv := SubViewport.new()
 	sv.size = size_pixel
 	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
@@ -221,10 +221,10 @@ func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	return sv
 
 func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
-	var mesh = PlaneMesh.new()
+	var mesh := PlaneMesh.new()
 	mesh.size = Vector2(maze3d_setting.LaneW, maze3d_setting.StoryH)
 	mesh.orientation = PlaneMesh.FACE_Z
-	var sp = MeshInstance3D.new()
+	var sp := MeshInstance3D.new()
 	sp.mesh = mesh
 	sp.material_override = StandardMaterial3D.new()
 	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA

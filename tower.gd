@@ -76,11 +76,11 @@ func calc_storey_base_y_pos(storey_index :int) -> float:
 	return rtn
 
 func add_new_storey(stnum :int) -> void:
-	var ms = maze3d_setting.duplicate()
+	var ms := maze3d_setting.duplicate()
 	ms.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
-	var st = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
+	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
 	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 	st.view_pillars(view_pillars)
 	st.set_wallview_mode(view_walls)
@@ -88,7 +88,7 @@ func add_new_storey(stnum :int) -> void:
 	storey_list.append(st)
 	add_child(st)
 	apply_storey_gap_change()
-	var dst = st.position 
+	var dst := st.position 
 	st.position.y += 50
 	st.move_animation.animation_ended.connect(move_animation_ended)
 	st.move_animation.start_move("ani_add", st, st.position, dst, 1)
@@ -104,8 +104,8 @@ func move_animation_ended(st :Node3D, ani :Dictionary) -> void:
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:
-		var st = storey_list.pop_front()
-		var dst = st.position 
+		var st :Storey = storey_list.pop_front()
+		var dst := st.position 
 		dst.y -= 50
 		st.move_animation.start_move("ani_del", st, st.position, dst, 1)
 		

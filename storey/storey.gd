@@ -3,8 +3,16 @@ class_name Storey
 
 signal goal_reached(st :Storey) # char will leave storey
 
-static var darkcolorlist = NamedColorList.make_dark_color_list()
-static var lightcolorlist = NamedColorList.make_light_color_list()
+static var themecolorlist = [
+	NamedColorList.make_red_color_list(),
+	NamedColorList.make_green_color_list(),
+	NamedColorList.make_blue_color_list(),
+	NamedColorList.make_cyan_color_list(),
+	NamedColorList.make_magenta_color_list(),
+	NamedColorList.make_yellow_color_list(),
+]
+func random_color()->Color:
+	return themecolorlist.pick_random().pick_random()[0]
 
 var move_animation := Animation3D.new()
 var maze3d_setting :Maze3DSetting
@@ -32,9 +40,8 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 			TexMat.make_subwall_mat() )
 	else:
 		$Maze3D.init_with_color(maze3d_setting, add_wall_deco_at, 
-			darkcolorlist.pick_random()[0], 
-			lightcolorlist.pick_random()[0],
-			NamedColorList.color_list.pick_random()[0] )
+			random_color(), random_color(), random_color(),
+		)
 	storey_num = num
 
 	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
@@ -56,9 +63,9 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	if goal_pos == start_pos:
 		print_debug("start, goal pos same %s" % start_pos)
 	var 크기기준 := maze3d_setting.LaneW
-	$StartMark.init(크기기준*1.5, 크기기준/100, darkcolorlist.pick_random()[0], "Start %d" % storey_num
+	$StartMark.init(크기기준*1.5, 크기기준/100, random_color(), "Start %d" % storey_num
 		).position = maze3d_setting.mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
-	$EndMark.init(크기기준*1.5, 크기기준/100, lightcolorlist.pick_random()[0], "Goal %d" % storey_num
+	$EndMark.init(크기기준*1.5, 크기기준/100, random_color(), "Goal %d" % storey_num
 		).position = maze3d_setting.mazepos2storeypos(goal_pos, maze3d_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
@@ -73,10 +80,8 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	$Label3D.pixel_size = maze3d_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d_setting.WallThick*2, maze3d_setting.StoryH/2, -maze3d_setting.WallThick*2)
-	#$Label3D.position = Vector3(storey_setting.CalcMeshSize().x, maze3d_setting.StoryH/2, storey_setting.CalcMeshSize().y)
-	
 	$MiniMap.init(self)
-	
+
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
 	$Label3D.position += -shiftsize
 	$WallDeco.position += -shiftsize
@@ -151,10 +156,6 @@ func add_tree(p :Vector2i) ->void:
 	t.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
 	add_child(t)
 	놓인것들.set_at(p,t)
-
-func random_color()->Color:
-	#return Color(randf(),randf(),randf())
-	return NamedColorList.color_list.pick_random()[0]
 
 func add_ball_trails(mesh_type_list) ->void:
 	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)

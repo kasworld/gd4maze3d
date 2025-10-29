@@ -3,6 +3,7 @@ class_name Tower
 
 signal storey_gap_changed(t :Tower)
 
+var tower_num :int
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
 
@@ -31,7 +32,8 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling, 
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting ,ms :Maze3DSetting) -> Tower:
+func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting ,ms :Maze3DSetting) -> Tower:
+	tower_num = num
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap

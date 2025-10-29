@@ -8,11 +8,9 @@ var tower_scene = preload("res://tower.tscn")
 @onready var performancelabel = $ButtonContainer/LabelContainer/Performance
 @onready var infolabel = $ButtonContainer/LabelContainer/Info
 @onready var cameralight = $MovingCameraLight
-@onready var char_container = $CharacterContainer
 
 var player :Crawler
 var camera_move_around := false
-var current_tower :Tower
 var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
 
@@ -26,28 +24,28 @@ func _ready() -> void:
 	
 	default_maze3d_setting = Maze3DSetting.new_default()
 	default_storey_setting = StoreySetting.new_default(default_maze3d_setting.MazeSize)
-	current_tower = tower_scene.instantiate().init(
-		3,3,1,default_storey_setting, default_maze3d_setting,
+	var tw :Tower = tower_scene.instantiate().init(
+		0, 3,3,1,default_storey_setting, default_maze3d_setting,
 		)
-	add_child(current_tower)
-	current_tower.storey_gap_changed.connect(storey_gap_changed)
+	$TowerContainer.add_child(tw)
+	tw.storey_gap_changed.connect(storey_gap_changed)
 	
 	for i in CharacterCount:
 		var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
-		char_container.add_child(pl)
+		$CharacterContainer.add_child(pl)
 		pl.init(
 			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2], 
 			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
-	player = char_container.get_child(0)
+	player = $CharacterContainer.get_child(0)
 
-	var n := 30
+	var n := 12
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
 	for i in n:
 		var rd := 2*PI/n *i
 		var h := randfn(0, n)
-		var tw := add_deco_tower(Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
+		tw = add_deco_tower(i+1, Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
 		tw.rotate_x(randf_range(0,2*PI))
-		tw.rotate_y(randf_range(0,2*PI))
+		#tw.rotate_y(randf_range(0,2*PI))
 		
 	if n != 0:
 		orbitr *= 2
@@ -57,21 +55,24 @@ func _ready() -> void:
 	enter_next_storey(null)
 	update_button_text()
 
-func add_deco_tower(p :Vector3) -> Tower:
+func get_current_tower() -> Tower:
+	return $TowerContainer.get_child(0)
+
+func add_deco_tower(i :int, p :Vector3) -> Tower:
 	var deco_tower :Tower = tower_scene.instantiate().init(
-		3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(),
+		i, 3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(),
 		)
-	add_child(deco_tower)
+	$TowerContainer.add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()
 	return deco_tower
 
 func _on_vpsize_changed() -> void:
-	current_tower.cur_storey.get_mini_map().update_size()
+	get_current_tower().cur_storey.get_mini_map().update_size()
 
 func storey_gap_changed(tw :Tower) -> void:
-	if tw == current_tower:
-		for ch in char_container.get_children():
+	if tw == get_current_tower():
+		for ch in $CharacterContainer.get_children():
 			ch.position.y = tw.cur_storey.position.y
 		if not camera_move_around:
 			cameralight.copy_position_rotation(player)
@@ -79,8 +80,8 @@ func storey_gap_changed(tw :Tower) -> void:
 func move_camera_around(_delta: float) -> void:
 	var t := -Time.get_unix_time_from_system() /2.3
 	var r := default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
-	var to_pos := current_tower.cur_storey.position
-	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*current_tower.calc_height() *2, cos(t)*r ) + to_pos
+	var to_pos := get_current_tower().cur_storey.position
+	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*get_current_tower().calc_height() *2, cos(t)*r ) + to_pos
 	cameralight.look_at(to_pos)
 
 # also signal from storey
@@ -90,14 +91,14 @@ func enter_next_storey(old_storey :Storey) -> void:
 		return
 	if old_storey != null:
 		old_storey.goal_reached.disconnect(enter_next_storey)
-		current_tower.enter_next_storey()
-	$DecoOrbit.position = current_tower.cur_storey.position
-	current_tower.cur_storey.goal_reached.connect(enter_next_storey)
-	current_tower.cur_storey.chars_enter_storey(old_storey, char_container.get_children(),player.serial)
+		get_current_tower().enter_next_storey()
+	$DecoOrbit.position = get_current_tower().cur_storey.position
+	get_current_tower().cur_storey.goal_reached.connect(enter_next_storey)
+	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children(),player.serial)
 	update_button_text()
 
 func _process(delta: float) -> void:
-	current_tower.cur_storey.act_character_list(char_container.get_children(),player.serial)
+	get_current_tower().cur_storey.act_character_list($CharacterContainer.get_children(),player.serial)
 	update_info()
 	if camera_move_around:
 		move_camera_around(delta)
@@ -106,7 +107,15 @@ func _process(delta: float) -> void:
 			cameralight.copy_position_rotation(player)
 		else:
 			cameralight.snap_90()
-
+	for tw :Tower in $TowerContainer.get_children():
+		if tw == get_current_tower():
+			continue
+		match tw.tower_num % 2 :
+			0:
+				tw.rotation.y -= delta
+			1:
+				tw.rotation.y += delta
+	
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,
 	KEY_1:_on_button_help_pressed,
@@ -150,21 +159,21 @@ func _on_button_help_pressed() -> void:
 	$ButtonContainer.visible = not $ButtonContainer.visible
 
 func _on_button_minimap_pressed() -> void:
-	current_tower.cur_storey.get_mini_map().mode_next()
+	get_current_tower().cur_storey.get_mini_map().mode_next()
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
-	current_tower.view_wall_next()
+	get_current_tower().view_wall_next()
 	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
-	current_tower.toggle_visible_floor_ceiling()
+	get_current_tower().toggle_visible_floor_ceiling()
 
 func _on_button_pillars_pressed() -> void:
-	current_tower.toggle_visible_pillars()
+	get_current_tower().toggle_visible_pillars()
 	
 func _on_button_storey_gap_pressed() -> void:
-	current_tower.start_storey_gap_animation()
+	get_current_tower().start_storey_gap_animation()
 
 func _on_button_auto_move_pressed() -> void:
 	player.set_next_walk_type()
@@ -216,7 +225,7 @@ func _on_button_aps_down_pressed() -> void:
 	player.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
-	enter_next_storey(current_tower.cur_storey)
+	enter_next_storey(get_current_tower().cur_storey)
 	
 func _on_button_camera_pressed() -> void:
 	camera_move_around = !camera_move_around
@@ -239,9 +248,9 @@ Currently rendering: occlusion culling:%s
 		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 		]
 	if infolabel.visible:
-		infolabel.text = """%s\n%s\n%s\n%s""" % [current_tower, current_tower.cur_storey.get_mini_map(), player, $MovingCameraLight ]
+		infolabel.text = """%s\n%s\n%s\n%s""" % [get_current_tower(), get_current_tower().cur_storey.get_mini_map(), player, $MovingCameraLight ]
 
 func update_button_text() -> void:
-	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % current_tower.cur_storey.get_mini_map()
+	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % get_current_tower().cur_storey.get_mini_map()
 	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
-	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(current_tower.view_walls)
+	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(get_current_tower().view_walls)

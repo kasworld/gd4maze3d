@@ -183,6 +183,8 @@ theme = SubResource("Theme_u7t45")
 
 [node name="AxisArrow3D" parent="." instance=ExtResource("6_7mycd")]
 
+[node name="TowerContainer" type="Node3D" parent="."]
+
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonMinimap" to="." method="_on_button_minimap_pressed"]

@@ -40,11 +40,15 @@ func _ready() -> void:
 			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = char_container.get_child(0)
 
+	var n := 30
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
-	var n := 3
 	for i in n:
-		var rd = 2*PI/n *i
-		add_deco_tower(Vector3(sin(rd)*orbitr,0,cos(rd)*orbitr))
+		var rd := 2*PI/n *i
+		var h := randfn(0, n)
+		var tw := add_deco_tower(Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
+		tw.rotate_x(randf_range(0,2*PI))
+		tw.rotate_y(randf_range(0,2*PI))
+		
 	if n != 0:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
@@ -53,13 +57,14 @@ func _ready() -> void:
 	enter_next_storey(null)
 	update_button_text()
 
-func add_deco_tower(p :Vector3) -> void:
+func add_deco_tower(p :Vector3) -> Tower:
 	var deco_tower :Tower = tower_scene.instantiate().init(
 		3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(),
 		)
 	add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()
+	return deco_tower
 
 func _on_vpsize_changed() -> void:
 	current_tower.cur_storey.get_mini_map().update_size()

@@ -12,7 +12,7 @@ func init(fsize :float, fdepth :float, co:Color, atext :String) -> TextMark:
 	mesh.font = font
 	mesh.depth = fdepth
 	mesh.pixel_size = fsize / 100
-	mesh.font_size = fsize
+	mesh.font_size = fsize as int
 	mesh.text = text
 	mesh.material = mat
 	var sp := MeshInstance3D.new()

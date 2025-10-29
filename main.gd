@@ -11,7 +11,7 @@ var tower_scene = preload("res://tower.tscn")
 @onready var char_container = $CharacterContainer
 
 var player :Crawler
-var camera_move := false
+var camera_move_around := false
 var current_tower :Tower
 var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
@@ -68,10 +68,10 @@ func storey_gap_changed(tw :Tower) -> void:
 	if tw == current_tower:
 		for ch in char_container.get_children():
 			ch.position.y = tw.cur_storey.position.y
-		if not camera_move:
+		if not camera_move_around:
 			cameralight.copy_position_rotation(player)
 
-func move_camera(_delta: float) -> void:
+func move_camera_around(_delta: float) -> void:
 	var t := -Time.get_unix_time_from_system() /2.3
 	var r := default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
 	var to_pos := current_tower.cur_storey.position
@@ -94,8 +94,8 @@ func enter_next_storey(old_storey :Storey) -> void:
 func _process(delta: float) -> void:
 	current_tower.cur_storey.act_character_list(char_container.get_children(),player.serial)
 	update_info()
-	if camera_move:
-		move_camera(delta)
+	if camera_move_around:
+		move_camera_around(delta)
 	else:
 		if not player.current_action.is_empty():
 			cameralight.copy_position_rotation(player)
@@ -214,8 +214,8 @@ func _on_button_storey_up_pressed() -> void:
 	enter_next_storey(current_tower.cur_storey)
 	
 func _on_button_camera_pressed() -> void:
-	camera_move = !camera_move
-	if camera_move == false:
+	camera_move_around = !camera_move_around
+	if camera_move_around == false:
 		cameralight.snap_90()
 
 func update_info() -> void:

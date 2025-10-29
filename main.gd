@@ -38,14 +38,12 @@ func _ready() -> void:
 			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = $CharacterContainer.get_child(0)
 
-	var n := 12
+	var n := 6
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
 	for i in n:
 		var rd := 2*PI/n *i
 		var h := randfn(0, n)
 		tw = add_deco_tower(i+1, Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
-		tw.rotate_x(randf_range(0,2*PI))
-		#tw.rotate_y(randf_range(0,2*PI))
 		
 	if n != 0:
 		orbitr *= 2
@@ -110,11 +108,12 @@ func _process(delta: float) -> void:
 	for tw :Tower in $TowerContainer.get_children():
 		if tw == get_current_tower():
 			continue
-		match tw.tower_num % 2 :
-			0:
-				tw.rotation.y -= delta
-			1:
-				tw.rotation.y += delta
+		var idx := tw.tower_num % 6
+		match idx :
+			0,1,2:
+				tw.rotation[idx] -= delta
+			3,4,5:
+				tw.rotation[idx-3] += delta
 	
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,

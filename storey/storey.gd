@@ -89,7 +89,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
 	for ch in char_list:
-		if ch.serial == playernum:
+		if ch.crawler_num == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
 			ch.enter_storey(old_storey, self, maze3d_setting.rand_pos_2i())
@@ -104,7 +104,7 @@ func act_character_list(char_list :Array, playernum :int) -> void:
 	for ch in char_list:
 		if ch.is_current_action_ended(): # true on act end
 			ch.end_action()
-			if ch.serial == playernum:
+			if ch.crawler_num == playernum:
 				if is_goal_pos(ch.pos_src):
 					goal_reached.emit(self) #enter_next_storey()
 					return

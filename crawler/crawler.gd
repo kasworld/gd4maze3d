@@ -76,7 +76,7 @@ func queue2str() -> String:
 var action_start_time :float # unixtime sec
 var current_action : Dictionary # [Action, APS, Args]
 
-var serial :int
+var crawler_num :int
 var color :Color
 
 var roll_dir :EnumRoll.Dir
@@ -102,7 +102,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	dir_src = EnumDir.Dir.North
 	current_action = {}
 	queue_init()
-	serial = n
+	crawler_num = n
 	color = co
 	$MeshInstance3D.mesh.material.albedo_color = co
 	$MeshInstance3D.mesh.height = 0.2*LaneW

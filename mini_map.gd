@@ -46,7 +46,7 @@ func init(st :Storey) -> MiniMap:
 func add_chars(char_list :Array, playernum :int) -> MiniMap:
 	player_serial = playernum
 	for ch in char_list:
-		if ch.serial == player_serial:
+		if ch.crawler_num == player_serial:
 			add_character(ch, 8)
 		else:
 			add_character(ch, 0)
@@ -85,12 +85,12 @@ func update_size() -> void:
 	position.x = (vp_size.x - get_width())/2
 
 func add_character(achar :Crawler, outline :int) -> void:
-	var ch := new_label(achar.color, "Char\n%d" %[achar.serial] , outline)
+	var ch := new_label(achar.color, "Char\n%d" %[achar.crawler_num] , outline)
 	$CharacterContainer.add_child(ch)
 
 func update_char_pos(ch :Crawler) -> void:
-	$CharacterContainer.get_child(ch.serial).position = pos2mapscale( ch.pos_src )
-	if ch.serial == player_serial:
+	$CharacterContainer.get_child(ch.crawler_num).position = pos2mapscale( ch.pos_src )
+	if ch.crawler_num == player_serial:
 		update_knonw_walls_by_pos(ch.pos_src.x, ch.pos_src.y)
 
 func new_label(co:Color, text :String, outline :int) -> Label:

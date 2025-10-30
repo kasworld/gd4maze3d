@@ -103,11 +103,11 @@ func enter_next_storey(old_storey :Storey) -> void:
 		get_current_tower().enter_next_storey()
 	$DecoOrbit.position = get_current_tower().cur_storey.position
 	get_current_tower().cur_storey.goal_reached.connect(enter_next_storey)
-	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children(),player.serial)
+	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children(),player.crawler_num)
 	update_button_text()
 
 func _process(delta: float) -> void:
-	get_current_tower().cur_storey.act_character_list($CharacterContainer.get_children(),player.serial)
+	get_current_tower().cur_storey.act_character_list($CharacterContainer.get_children(),player.crawler_num)
 	update_info()
 	if camera_move_around:
 		move_camera_around(delta)

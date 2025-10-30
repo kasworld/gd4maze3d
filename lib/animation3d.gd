@@ -5,19 +5,32 @@ signal animation_ended(st :Node3D, ani :Dictionary)
 var animation_list :Array[Dictionary]
 # {Name,  Node3d, Field(position, rotation) , StartValue, EndValue , StartTick, DurSec } 
 
-func start_move(name :String, node :Node3D, src_pos :Vector3, dst_pos: Vector3, dur_sec :float) -> Dictionary:
+func start_move(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
 		"Node3d" : node, 
 		"Field" : "position",
-		"StartValue" : src_pos, 
-		"EndValue" : dst_pos, 
+		"StartValue" : src_val, 
+		"EndValue" : dst_val, 
 		"StartTick" : Time.get_unix_time_from_system(),
 		"DurSec" : dur_sec,
 	}
 	animation_list.append(ani)
 	return ani
-	
+
+func start_rotate(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
+	var ani := {
+		"Name" : name, # for end signal
+		"Node3d" : node, 
+		"Field" : "rotation",
+		"StartValue" : src_val, 
+		"EndValue" : dst_val, 
+		"StartTick" : Time.get_unix_time_from_system(),
+		"DurSec" : dur_sec,
+	}
+	animation_list.append(ani)
+	return ani
+
 func handle_animation() -> void:
 	var timenow := Time.get_unix_time_from_system()
 	var new_list :Array[Dictionary]
@@ -29,5 +42,7 @@ func handle_animation() -> void:
 		new_list.append(ani)
 		match ani.Field:
 			"position":
-				ani.Node3d.position = lerp(ani.StartValue, ani.EndValue, rate)
+				ani.Node3d.position = ani.StartValue.lerp(ani.EndValue, rate)
+			"rotation":
+				ani.Node3d.rotation = lerp_angle(ani.StartValue, ani.EndValue, rate)
 	animation_list = new_list

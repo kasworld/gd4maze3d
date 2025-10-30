@@ -3,6 +3,8 @@ class_name Tower
 
 signal storey_gap_changed(t :Tower)
 
+var rotate_tower := Animation3D.new()
+
 var tower_num :int
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
@@ -59,7 +61,8 @@ func _process(_delta: float) -> void:
 		else:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
-
+	rotate_tower.handle_animation()
+	
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():
 		if storey_list[i].storey_num == num:
@@ -92,14 +95,14 @@ func add_new_storey(stnum :int) -> void:
 	apply_storey_gap_change()
 	var dst := st.position 
 	st.position.y += 50
-	st.move_animation.animation_ended.connect(move_animation_ended)
+	st.move_animation.animation_ended.connect(storey_move_animation_ended)
 	st.move_animation.start_move("ani_add", st, st.position, dst, 1)
 	
-func move_animation_ended(st :Node3D, ani :Dictionary) -> void:
+func storey_move_animation_ended(st :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_add":
 		apply_storey_gap_change()
 	elif ani.Name == "ani_del":
-		st.move_animation.animation_ended.disconnect(move_animation_ended)
+		st.move_animation.animation_ended.disconnect(storey_move_animation_ended)
 		remove_child(st)
 		st.queue_free() 
 		apply_storey_gap_change()

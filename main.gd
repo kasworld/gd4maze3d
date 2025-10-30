@@ -63,7 +63,15 @@ func add_deco_tower(i :int, p :Vector3) -> Tower:
 	$TowerContainer.add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()
+	deco_tower.rotate_tower.animation_ended.connect(tower_rotate_animation_ended)
+	deco_tower.rotate_tower.start_rotate("ani_rot", deco_tower, deco_tower.rotation, deco_tower.rotation + Vector3(0,PI/2,0), 1.0)
 	return deco_tower
+
+func tower_rotate_animation_ended(st :Node3D, ani :Dictionary) -> void:
+	if ani.Name == "ani_rot":
+		var diff := Vector3.ZERO
+		diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
+		st.rotate_tower.start_rotate("ani_rot", st, st.rotation, st.rotation + diff, 1.0)
 
 func _on_vpsize_changed() -> void:
 	get_current_tower().cur_storey.get_mini_map().update_size()
@@ -105,16 +113,8 @@ func _process(delta: float) -> void:
 			cameralight.copy_position_rotation(player)
 		else:
 			cameralight.snap_90()
-	for tw :Tower in $TowerContainer.get_children():
-		if tw == get_current_tower():
-			continue
-		var idx := tw.tower_num % 6
-		match idx :
-			0,1,2:
-				tw.rotation[idx] -= delta
-			3,4,5:
-				tw.rotation[idx-3] += delta
-	
+
+
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,
 	KEY_1:_on_button_help_pressed,

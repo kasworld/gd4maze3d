@@ -44,5 +44,5 @@ func handle_animation() -> void:
 			"position":
 				ani.Node3d.position = ani.StartValue.lerp(ani.EndValue, rate)
 			"rotation":
-				ani.Node3d.rotation = lerp_angle(ani.StartValue, ani.EndValue, rate)
+				ani.Node3d.rotation = ani.StartValue.lerp(ani.EndValue, rate)
 	animation_list = new_list

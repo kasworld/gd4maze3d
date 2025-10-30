@@ -64,15 +64,18 @@ func add_deco_tower(i :int, p :Vector3) -> Tower:
 	deco_tower.position = p
 	deco_tower.start_demo_random()
 	deco_tower.rotate_tower.animation_ended.connect(tower_rotate_animation_ended)
-	deco_tower.rotate_tower.start_rotate("ani_rot", deco_tower, deco_tower.rotation, deco_tower.rotation + Vector3(0,PI/2,0), 1.0)
+	start_tower_rotate_animation(deco_tower)
 	return deco_tower
 
-func tower_rotate_animation_ended(st :Node3D, ani :Dictionary) -> void:
-	if ani.Name == "ani_rot":
-		var diff := Vector3.ZERO
-		diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
-		st.rotate_tower.start_rotate("ani_rot", st, st.rotation, st.rotation + diff, 1.0)
+func start_tower_rotate_animation(tw :Tower) -> void:
+	var diff := Vector3.ZERO
+	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
+	tw.rotate_tower.start_rotate("ani_rot", tw, tw.rotation, tw.rotation + diff, randf_range(1,3))
 
+func tower_rotate_animation_ended(tw :Node3D, ani :Dictionary) -> void:
+	if ani.Name == "ani_rot":
+		start_tower_rotate_animation(tw)
+		
 func _on_vpsize_changed() -> void:
 	get_current_tower().cur_storey.get_mini_map().update_size()
 

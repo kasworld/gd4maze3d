@@ -21,7 +21,7 @@ func _ready() -> void:
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 25.1.0"))
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
-	
+
 	default_maze3d_setting = Maze3DSetting.new_default()
 	default_storey_setting = StoreySetting.new_default(default_maze3d_setting.MazeSize)
 	var tw :Tower = tower_scene.instantiate().init(
@@ -29,12 +29,12 @@ func _ready() -> void:
 		)
 	$TowerContainer.add_child(tw)
 	tw.storey_gap_changed.connect(storey_gap_changed)
-	
+
 	for i in CharacterCount:
 		var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
 		$CharacterContainer.add_child(pl)
 		pl.init(
-			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2], 
+			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
 			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
 	player = $CharacterContainer.get_child(0)
 
@@ -44,7 +44,7 @@ func _ready() -> void:
 		var rd := 2*PI/n *i
 		var h := randfn(0, n)
 		tw = add_deco_tower(i+1, Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
-		
+
 	if n != 0:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
@@ -75,7 +75,7 @@ func start_tower_rotate_animation(tw :Tower) -> void:
 func tower_rotate_animation_ended(tw :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_rot":
 		start_tower_rotate_animation(tw)
-		
+
 func _on_vpsize_changed() -> void:
 	get_current_tower().cur_storey.get_mini_map().update_size()
 
@@ -173,7 +173,7 @@ func _on_button_floor_ceiling_pressed() -> void:
 
 func _on_button_pillars_pressed() -> void:
 	get_current_tower().toggle_visible_pillars()
-	
+
 func _on_button_storey_gap_pressed() -> void:
 	get_current_tower().start_storey_gap_animation()
 
@@ -228,7 +228,7 @@ func _on_button_aps_down_pressed() -> void:
 
 func _on_button_storey_up_pressed() -> void:
 	enter_next_storey(get_current_tower().cur_storey)
-	
+
 func _on_button_camera_pressed() -> void:
 	camera_move_around = !camera_move_around
 	if camera_move_around == false:

@@ -33,13 +33,13 @@ func _to_string() -> String:
 func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	maze3d_setting = ms
 	storey_setting = ss
-	
+
 	if num % 2 ==0 :
-		$Maze3D.init_with_mat(maze3d_setting, add_wall_deco_at, 
-			TexMat.make_mainwall_mat(), 
+		$Maze3D.init_with_mat(maze3d_setting, add_wall_deco_at,
+			TexMat.make_mainwall_mat(),
 			TexMat.make_subwall_mat() )
 	else:
-		$Maze3D.init_with_color(maze3d_setting, add_wall_deco_at, 
+		$Maze3D.init_with_color(maze3d_setting, add_wall_deco_at,
 			random_color(), random_color(), random_color(),
 		)
 	storey_num = num
@@ -93,7 +93,7 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
 			ch.enter_storey(old_storey, self, maze3d_setting.rand_pos_2i())
-		
+
 	$MiniMap.add_chars(char_list, playernum)
 	$MiniMap.update_size()
 	if old_storey != null:
@@ -246,10 +246,9 @@ func view_pillars(w :bool) -> void:
 
 func set_wallview_mode(w :Maze3D.WallView) -> void:
 	$Maze3D.set_wallview_mode(w)
-	
+
 func get_maze_cells() -> Maze:
 	return $Maze3D.maze_cells
 
 func _process(_delta: float) -> void:
 	move_animation.handle_animation()
-	

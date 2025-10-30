@@ -1,6 +1,8 @@
 extends Node3D
 class_name Crawler
 
+var animate_crawler := Animation3D.new()
+
 enum Action {EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action) -> String:
 	return Action.keys()[a]
@@ -34,13 +36,13 @@ func queue_init() -> Crawler:
 
 func rand_act_speed() -> void:
 	action_per_second.set_randfn()
-	
+
 func clear_queue() -> void:
 	queue.resize(0)
-	
+
 func is_queue_empty() -> bool:
 	return queue.is_empty()
-	
+
 func action_pop_front() -> Dictionary:
 	return queue.pop_front()
 
@@ -54,7 +56,7 @@ func enqueue_action_with_speed(a :Action,s :float, args :={}) -> Crawler:
 func make_action_dictionary(a :Action,s :float, args :={}) -> Dictionary:
 	return {
 		"Action":a,
-		"APS":s, 
+		"APS":s,
 		"Args":args,
 	}
 
@@ -137,7 +139,7 @@ func start_new_action() -> bool:
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
-	
+
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	clear_queue()
 	current_action = make_action_dictionary(Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
@@ -186,8 +188,8 @@ func get_animation_progress() -> float:
 
 func animate_move(from :Storey, to :Storey) -> void:
 	var dur := get_animation_progress()
-	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position 
-	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position 
+	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
+	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position
 	position = p1.lerp(p2,dur)
 	#rotation += from.rotation.lerp(to.rotation,dur)
 
@@ -198,6 +200,9 @@ func animate_turn() -> void:
 func animate_roll() -> void:
 	var dur := get_animation_progress()
 	rotation.z = lerp_angle(EnumRoll.dir2rad(roll_dir), EnumRoll.dir2rad(roll_dir_dst), dur)
+
+func _process(_delta: float) -> void:
+	animate_crawler.handle_animation()
 
 func snap_90() -> void:
 	for i in 3:

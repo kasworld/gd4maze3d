@@ -3,15 +3,18 @@ class_name Animation3D
 signal animation_ended(st :Node3D, ani :Dictionary)
 
 var animation_list :Array[Dictionary]
-# {Name,  Node3d, Field(position, rotation) , StartValue, EndValue , StartTick, DurSec } 
+# {Name,  Node3d, Field(position, rotation) , StartValue, EndValue , StartTick, DurSec }
+
+func get_animation_count() -> int:
+	return animation_list.size()
 
 func start_move(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node, 
+		"Node3d" : node,
 		"Field" : "position",
-		"StartValue" : src_val, 
-		"EndValue" : dst_val, 
+		"StartValue" : src_val,
+		"EndValue" : dst_val,
 		"StartTick" : Time.get_unix_time_from_system(),
 		"DurSec" : dur_sec,
 	}
@@ -21,10 +24,10 @@ func start_move(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, 
 func start_rotate(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node, 
+		"Node3d" : node,
 		"Field" : "rotation",
-		"StartValue" : src_val, 
-		"EndValue" : dst_val, 
+		"StartValue" : src_val,
+		"EndValue" : dst_val,
 		"StartTick" : Time.get_unix_time_from_system(),
 		"DurSec" : dur_sec,
 	}

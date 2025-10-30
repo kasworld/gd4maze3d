@@ -20,7 +20,7 @@ var animate_gap_start_time :float
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
-var cur_storey :Storey 
+var cur_storey :Storey
 var view_floor_ceiling :bool = true
 var view_walls :Maze3D.WallView = Maze3D.WallView.Reduced
 var view_pillars :bool = true
@@ -31,7 +31,7 @@ func calc_height() -> float:
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
 	upper:%d lower:%d
-	%s]" % [storey_list.size(), view_floor_ceiling, 
+	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
 func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting ,ms :Maze3DSetting) -> Tower:
@@ -62,7 +62,7 @@ func _process(_delta: float) -> void:
 			StoreyGapRate = lerp(1.0, 0.0, rate)
 		apply_storey_gap_change()
 	rotate_tower.handle_animation()
-	
+
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():
 		if storey_list[i].storey_num == num:
@@ -93,27 +93,27 @@ func add_new_storey(stnum :int) -> void:
 	storey_list.append(st)
 	add_child(st)
 	apply_storey_gap_change()
-	var dst := st.position 
+	var dst := st.position
 	st.position.y += 50
 	st.move_animation.animation_ended.connect(storey_move_animation_ended)
 	st.move_animation.start_move("ani_add", st, st.position, dst, 1)
-	
+
 func storey_move_animation_ended(st :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_add":
 		apply_storey_gap_change()
 	elif ani.Name == "ani_del":
 		st.move_animation.animation_ended.disconnect(storey_move_animation_ended)
 		remove_child(st)
-		st.queue_free() 
+		st.queue_free()
 		apply_storey_gap_change()
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:
 		var st :Storey = storey_list.pop_front()
-		var dst := st.position 
+		var dst := st.position
 		dst.y -= 50
 		st.move_animation.start_move("ani_del", st, st.position, dst, 1)
-		
+
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():
 		storey_list[i].view_floor_ceiling(f,c)

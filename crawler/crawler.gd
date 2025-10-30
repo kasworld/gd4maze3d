@@ -2,6 +2,7 @@ extends Node3D
 class_name Crawler
 
 var animate_crawler := Animation3D.new()
+signal crawler_animation_ended(cr :Crawler, ani :Dictionary)
 
 enum Action {EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action) -> String:
@@ -182,7 +183,7 @@ func end_action() -> void:
 	snap_90()
 
 func animation_ended(st :Node3D, ani :Dictionary) -> void:
-	pass
+	crawler_animation_ended.emit(st as Crawler, ani)
 
 func start_move_animation(from :Storey, to :Storey) -> void:
 	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
@@ -191,18 +192,17 @@ func start_move_animation(from :Storey, to :Storey) -> void:
 		p1, p2,
 		1.0/current_action.APS)
 
-func start_turn_animation() -> void:
+func start_turn_animation(from :EnumDir.Dir, to :EnumDir.Dir) -> void:
 	animate_crawler.start_rotate("ani_turn", self,
-		Vector3(0, EnumDir.dir2rad(dir_src), 0),
-		Vector3(0, EnumDir.dir2rad(dir_dst), 0),
+		Vector3(0, EnumDir.dir2rad(from), 0),
+		Vector3(0, EnumDir.dir2rad(to), 0),
 		1.0/current_action.APS)
 
-func start_roll_animation() -> void:
+func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
 	animate_crawler.start_rotate("ani_roll", self,
-		Vector3(0, EnumRoll.dir2rad(roll_dir), 0),
-		Vector3(0, EnumRoll.dir2rad(roll_dir_dst), 0),
+		Vector3(0, EnumRoll.dir2rad(from), 0),
+		Vector3(0, EnumRoll.dir2rad(to), 0),
 		1.0/current_action.APS)
-
 
 # return 0 - 1
 func get_animation_progress() -> float:

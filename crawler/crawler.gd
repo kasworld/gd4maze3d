@@ -111,6 +111,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	$MeshInstance3D.rotation.x = -PI/2
 	$MeshInstance3D.scale.x = 0.5
 	$MeshInstance3D.position.x = LaneW*0.2
+	animate_crawler.animation_ended.connect(animation_ended)
 	return self
 
 # return true on new act
@@ -179,6 +180,29 @@ func end_action() -> void:
 	current_action = {}
 	roll_dir = roll_dir_dst
 	snap_90()
+
+func animation_ended(st :Node3D, ani :Dictionary) -> void:
+	pass
+
+func start_move_animation(from :Storey, to :Storey) -> void:
+	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
+	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position
+	animate_crawler.start_move("ani_move", self,
+		p1, p2,
+		1.0/current_action.APS)
+
+func start_turn_animation() -> void:
+	animate_crawler.start_rotate("ani_turn", self,
+		Vector3(0, EnumDir.dir2rad(dir_src), 0),
+		Vector3(0, EnumDir.dir2rad(dir_dst), 0),
+		1.0/current_action.APS)
+
+func start_roll_animation() -> void:
+	animate_crawler.start_rotate("ani_roll", self,
+		Vector3(0, EnumRoll.dir2rad(roll_dir), 0),
+		Vector3(0, EnumRoll.dir2rad(roll_dir_dst), 0),
+		1.0/current_action.APS)
+
 
 # return 0 - 1
 func get_animation_progress() -> float:

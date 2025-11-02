@@ -73,8 +73,6 @@ func queue2str() -> String:
 	rtn += "]"
 	return rtn
 
-#var action_queue :ActionQueue
-var action_start_time :float # unixtime sec
 var current_action : Dictionary # [Action, APS, Args]
 
 var crawler_num :int
@@ -115,37 +113,9 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	animate_crawler.animation_ended.connect(animation_ended)
 	return self
 
-# return true on new act
-func start_new_action() -> bool:
-	if not current_action.is_empty() || is_queue_empty():
-		return false
-	action_start_time = Time.get_unix_time_from_system()
-	current_action = action_pop_front()
-	match current_action.Action :
-		Action.Forward:
-			if can_move_to_dir(dir_src):
-				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
-			else :
-				end_action()
-				return false
-		Action.TurnLeft:
-			dir_dst = EnumDir.DirTurnLeft[dir_src]
-		Action.TurnRight:
-			dir_dst = EnumDir.DirTurnRight[dir_src]
-		Action.RollRight:
-			roll_dir_dst = EnumRoll.roll_right(roll_dir)
-		Action.RollLeft:
-			roll_dir_dst = EnumRoll.roll_left(roll_dir)
-		Action.EnterStorey: # for animation only
-			pass
-	total_action_stats[current_action.Action ] += 1
-	storey_action_stats[current_action.Action ] += 1
-	return true
-
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	clear_queue()
 	current_action = make_action_dictionary(Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
-	action_start_time = Time.get_unix_time_from_system()
 	storey = st
 	pos_dst = pos
 	storey_action_stats = new_stats()
@@ -154,35 +124,59 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 func act_character() -> void:
 	try_auto_walk()
 	start_new_action()
-	if not current_action.is_empty():
-		animate_action()
 
-func animate_action() -> void:
-	match current_action.Action:
+func try_auto_walk() -> void:
+	if current_action.is_empty() && is_queue_empty(): # add new ai action
+		match auto_walk_type:
+			Walk.RightFirst:
+				walk_right_first()
+			Walk.LeftFirst:
+				walk_left_first()
+			Walk.Off:
+				pass
+
+# return true on new act
+func start_new_action() -> bool:
+	if not current_action.is_empty() || is_queue_empty():
+		return false
+	#action_start_time = Time.get_unix_time_from_system()
+	current_action = action_pop_front()
+	match current_action.Action :
 		Action.Forward:
-			animate_move(storey, storey)
-		Action.TurnLeft, Action.TurnRight:
-			animate_turn()
-		Action.RollRight,Action.RollLeft:
-			animate_roll()
-		Action.EnterStorey:
+			if can_move_to_dir(dir_src):
+				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
+				start_move_animation(storey,storey)
+			else :
+				#end_action()
+				return false
+		Action.TurnLeft:
+			dir_dst = EnumDir.DirTurnLeft[dir_src]
+			start_turn_animation(dir_src, dir_dst)
+		Action.TurnRight:
+			dir_dst = EnumDir.DirTurnRight[dir_src]
+			start_turn_animation(dir_src, dir_dst)
+		Action.RollRight:
+			roll_dir_dst = EnumRoll.roll_right(roll_dir)
+			start_roll_animation(roll_dir, roll_dir_dst)
+		Action.RollLeft:
+			roll_dir_dst = EnumRoll.roll_left(roll_dir)
+			start_roll_animation(roll_dir, roll_dir_dst)
+		Action.EnterStorey: # for animation only
 			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
 				from_storey = storey
-			animate_move(from_storey, storey)
+			start_move_animation(from_storey,storey)
 
-# return true on act end
-func is_current_action_ended() -> bool:
-	return not current_action.is_empty() && get_animation_progress() > 1.0
+	total_action_stats[current_action.Action ] += 1
+	storey_action_stats[current_action.Action ] += 1
+	return true
 
-func end_action() -> void:
+func animation_ended(st :Node3D, ani :Dictionary) -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
 	current_action = {}
 	roll_dir = roll_dir_dst
 	snap_90()
-
-func animation_ended(st :Node3D, ani :Dictionary) -> void:
 	crawler_animation_ended.emit(st as Crawler, ani)
 
 func start_move_animation(from :Storey, to :Storey) -> void:
@@ -203,27 +197,6 @@ func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
 		Vector3(0, EnumRoll.dir2rad(from), 0),
 		Vector3(0, EnumRoll.dir2rad(to), 0),
 		1.0/current_action.APS)
-
-# return 0 - 1
-func get_animation_progress() -> float:
-	if current_action.is_empty():
-		return 0
-	return (Time.get_unix_time_from_system() - action_start_time)*current_action.APS
-
-func animate_move(from :Storey, to :Storey) -> void:
-	var dur := get_animation_progress()
-	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
-	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position
-	position = p1.lerp(p2,dur)
-	#rotation += from.rotation.lerp(to.rotation,dur)
-
-func animate_turn() -> void:
-	var dur := get_animation_progress()
-	rotation.y = lerp_angle(EnumDir.dir2rad(dir_src), EnumDir.dir2rad(dir_dst), dur)
-
-func animate_roll() -> void:
-	var dur := get_animation_progress()
-	rotation.z = lerp_angle(EnumRoll.dir2rad(roll_dir), EnumRoll.dir2rad(roll_dir_dst), dur)
 
 func _process(_delta: float) -> void:
 	animate_crawler.handle_animation()
@@ -246,15 +219,6 @@ func debug_str() -> String:
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
 
-func try_auto_walk() -> void:
-	if current_action.is_empty() && is_queue_empty(): # add new ai action
-		match auto_walk_type:
-			Walk.RightFirst:
-				walk_right_first()
-			Walk.LeftFirst:
-				walk_left_first()
-			Walk.Off:
-				pass
 
 func can_move_to_dir(dir :EnumDir.Dir) -> bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )

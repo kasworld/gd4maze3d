@@ -31,11 +31,7 @@ func _ready() -> void:
 	tw.storey_gap_changed.connect(storey_gap_changed)
 
 	for i in CharacterCount:
-		var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
-		$CharacterContainer.add_child(pl)
-		pl.init(
-			[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
-			i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+		add_crawler(i)
 	player = $CharacterContainer.get_child(0)
 
 	var n := 6
@@ -107,7 +103,7 @@ func enter_next_storey(old_storey :Storey) -> void:
 	update_button_text()
 
 func _process(delta: float) -> void:
-	get_current_tower().cur_storey.act_character_list($CharacterContainer.get_children(),player.crawler_num)
+	#act_character_list($CharacterContainer.get_children(),player.crawler_num)
 	update_info()
 	if camera_move_around:
 		move_camera_around(delta)
@@ -117,6 +113,23 @@ func _process(delta: float) -> void:
 		else:
 			cameralight.snap_90()
 
+func add_crawler(i :int) -> Crawler:
+	var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
+	$CharacterContainer.add_child(pl)
+	pl.init(
+		[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
+		i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+	pl.crawler_animation_ended.connect(crawler_animation_ended)
+	return pl
+
+func crawler_animation_ended(cr :Crawler, _ani :Dictionary) -> void:
+	var st := get_current_tower().cur_storey
+	if cr.crawler_num == player.crawler_num:
+		if st.is_goal_pos(cr.pos_src):
+			st.goal_reached.emit(self) #enter_next_storey()
+			return
+		st.놓인것들줍기(cr)
+	st.get_mini_map().update_char_pos(cr)
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,

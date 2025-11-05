@@ -34,7 +34,7 @@ func _ready() -> void:
 		add_crawler(i)
 	player = $CharacterContainer.get_child(0)
 
-	var n := 6
+	var n := 0
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
 	for i in n:
 		var rd := 2*PI/n *i
@@ -82,13 +82,6 @@ func storey_gap_changed(tw :Tower) -> void:
 		if not camera_move_around:
 			cameralight.copy_position_rotation(player)
 
-func move_camera_around(_delta: float) -> void:
-	var t := -Time.get_unix_time_from_system() /2.3
-	var r := default_maze3d_setting.CalcDiagonalLengthWithWallV3() *1.0
-	var to_pos := get_current_tower().cur_storey.position
-	cameralight.position = Vector3( sin(t)*r, sin(t*1.3)*get_current_tower().calc_height() *2, cos(t)*r ) + to_pos
-	cameralight.look_at(to_pos)
-
 # also signal from storey
 func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == Crawler.Action.EnterStorey:
@@ -102,12 +95,18 @@ func enter_next_storey(old_storey :Storey) -> void:
 	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children(),player.crawler_num)
 	update_button_text()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	#act_character_list($CharacterContainer.get_children(),player.crawler_num)
 	update_info()
 	if camera_move_around:
-		move_camera_around(delta)
+		$MovingCameraLight.make_current()
+		$MovingCameraLight.move_camera_around(
+			get_current_tower().cur_storey.position,
+			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
+			get_current_tower().calc_height() *2,
+			)
 	else:
+		player.getCameraLight().make_current()
 		if not player.current_action.is_empty():
 			cameralight.copy_position_rotation(player)
 		else:

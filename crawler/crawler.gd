@@ -95,6 +95,9 @@ func set_next_walk_type() -> Crawler:
 func set_auto_walk_type(t :Walk) -> void:
 	auto_walk_type = t
 
+func getCameraLight() -> MovingCameraLight:
+	return $MovingCameraLight
+
 func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	auto_walk_type = walk_type
 	total_action_stats = new_stats()
@@ -103,6 +106,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	queue_init()
 	crawler_num = n
 	color = co
+	$MovingCameraLight.init()
 	$MeshInstance3D.mesh.material.albedo_color = co
 	$MeshInstance3D.mesh.height = 0.2*LaneW
 	$MeshInstance3D.mesh.top_radius = 0.01*LaneW
@@ -218,7 +222,6 @@ func debug_str() -> String:
 		EnumDir.Dir2Str[dir_src], EnumDir.Dir2Str[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
-
 
 func can_move_to_dir(dir :EnumDir.Dir) -> bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )

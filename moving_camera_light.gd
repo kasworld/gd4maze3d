@@ -26,3 +26,11 @@ func fov_dec() -> void:
 
 func fov_reset() -> void:
 	$Camera3D.fov = fov.reset()
+
+func move_camera_around(center :Vector3, radius :float, height :float) -> void:
+	var t := -Time.get_unix_time_from_system() /2.3
+	position = Vector3( sin(t)*radius, sin(t*1.3)*height, cos(t)*radius ) + center
+	look_at(center)
+
+func make_current() -> void:
+	$Camera3D.current = true

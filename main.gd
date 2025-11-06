@@ -31,6 +31,7 @@ func _ready() -> void:
 	for i in CharacterCount:
 		add_crawler(i)
 	player = $CharacterContainer.get_child(0)
+	MovingCameraLight.SetCurrentCamera(0)
 
 	var n := 0
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
@@ -87,7 +88,7 @@ func enter_next_storey(old_storey :Storey) -> void:
 		old_storey.goal_reached.disconnect(enter_next_storey)
 		get_current_tower().enter_next_storey()
 	$DecoOrbit.position = get_current_tower().cur_storey.position
-	get_current_tower().cur_storey.goal_reached.connect(enter_next_storey)
+	#get_current_tower().cur_storey.goal_reached.connect(enter_next_storey)
 	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children(),player.crawler_num)
 	update_button_text()
 
@@ -114,7 +115,8 @@ func crawler_animation_ended(cr :Crawler, _ani :Dictionary) -> void:
 	var st := get_current_tower().cur_storey
 	if cr.crawler_num == player.crawler_num:
 		if st.is_goal_pos(cr.pos_src):
-			st.goal_reached.emit(self) #enter_next_storey()
+			enter_next_storey.call_deferred(st)
+			#st.goal_reached.emit(self) #enter_next_storey()
 			return
 		st.놓인것들줍기(cr)
 	st.get_mini_map().update_char_pos(cr)

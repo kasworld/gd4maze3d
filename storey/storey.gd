@@ -1,7 +1,7 @@
 extends Node3D
 class_name Storey
 
-signal goal_reached(st :Storey) # char will leave storey
+#signal goal_reached(st :Storey) # char will leave storey
 
 static var themecolorlist = [
 	NamedColorList.make_red_color_list(),

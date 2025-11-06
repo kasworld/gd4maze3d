@@ -10,6 +10,10 @@ static func NextCamera() -> void:
 	SelfList[CurrentNumber].make_current()
 static func GetCurrentCamera() -> MovingCameraLight:
 	return SelfList[CurrentNumber]
+static func SetCurrentCamera(i :int) -> void:
+	CurrentNumber = i
+	CurrentNumber %= SelfList.size()
+	SelfList[CurrentNumber].make_current()
 
 var number :int
 var fov = ClampedFloat.new(75,1,179)

@@ -1,13 +1,9 @@
 extends Node3D
 
 const CharacterCount :int = 2
+const DecoTowerCount :int = 0
 
 var tower_scene = preload("res://tower.tscn")
-
-@onready var debuglabel = $ButtonContainer/LabelContainer/Debug
-@onready var performancelabel = $ButtonContainer/LabelContainer/Performance
-@onready var infolabel = $ButtonContainer/LabelContainer/Info
-
 var player :Crawler
 var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
@@ -33,14 +29,13 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(0)
 	MovingCameraLight.SetCurrentCamera(0)
 
-	var n := 0
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
-	for i in n:
-		var rd := 2*PI/n *i
-		var h := randfn(0, n)
+	for i in DecoTowerCount:
+		var rd := 2*PI/DecoTowerCount *i
+		var h := randfn(0, DecoTowerCount)
 		tw = add_deco_tower(i+1, Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
 
-	if n != 0:
+	if DecoTowerCount != 0:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
 	$AxisArrow3D.set_size(5)
@@ -184,15 +179,6 @@ func _on_button_auto_move_pressed() -> void:
 	player.set_next_walk_type()
 	update_button_text()
 
-func _on_button_debug_pressed() -> void:
-	debuglabel.visible = !debuglabel.visible
-
-func _on_button_performance_pressed() -> void:
-	performancelabel.visible = !performancelabel.visible
-
-func _on_button_info_pressed() -> void:
-	infolabel.visible = !infolabel.visible
-
 func _on_button_forward_pressed() -> void:
 	player.enqueue_action_with_speed(Crawler.Action.Forward, 10)
 
@@ -234,9 +220,19 @@ func _on_button_storey_up_pressed() -> void:
 
 func _on_button_camera_pressed() -> void:
 	MovingCameraLight.NextCamera()
-	#camera_move_around = !camera_move_around
-	#if camera_move_around == false:
-		#$MovingCameraLight.snap_90()
+
+@onready var debuglabel = $ButtonContainer/LabelContainer/Debug
+@onready var performancelabel = $ButtonContainer/LabelContainer/Performance
+@onready var infolabel = $ButtonContainer/LabelContainer/Info
+
+func _on_button_debug_pressed() -> void:
+	debuglabel.visible = !debuglabel.visible
+
+func _on_button_performance_pressed() -> void:
+	performancelabel.visible = !performancelabel.visible
+
+func _on_button_info_pressed() -> void:
+	infolabel.visible = !infolabel.visible
 
 func update_info() -> void:
 	if debuglabel.visible:

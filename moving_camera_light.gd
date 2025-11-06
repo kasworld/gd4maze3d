@@ -2,9 +2,21 @@ extends Node3D
 
 class_name MovingCameraLight
 
+static var SelfList :Array[MovingCameraLight]
+static var CurrentNumber :int
+static func NextCamera() -> void:
+	CurrentNumber +=1
+	CurrentNumber %= SelfList.size()
+	SelfList[CurrentNumber].make_current()
+static func GetCurrentCamera() -> MovingCameraLight:
+	return SelfList[CurrentNumber]
+
+var number :int
 var fov = ClampedFloat.new(75,1,179)
 
-func init() -> void:
+func init(n :int) -> void:
+	number = n
+	SelfList.append(self)
 	fov_reset()
 
 func copy_position_rotation(n :Node3D) -> void:
@@ -16,7 +28,7 @@ func snap_90() -> void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func _to_string() -> String:
-	return "MovingCameraLight[FOV:%s, rotation:%s]" % [ fov, rotation_degrees ]
+	return "MovingCameraLight%d[FOV:%s, rotation:%s]" % [number, fov, rotation_degrees ]
 
 func fov_inc() -> void:
 	$Camera3D.fov = fov.set_up()

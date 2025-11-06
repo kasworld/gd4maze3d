@@ -7,15 +7,13 @@ var tower_scene = preload("res://tower.tscn")
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
 @onready var performancelabel = $ButtonContainer/LabelContainer/Performance
 @onready var infolabel = $ButtonContainer/LabelContainer/Info
-@onready var cameralight = $MovingCameraLight
 
 var player :Crawler
-var camera_move_around := false
 var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
 
 func _ready() -> void:
-	cameralight.init()
+	$MovingCameraLight.init(0)
 	var vp_size := get_viewport().get_visible_rect().size
 	var msgrect := Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 25.1.0"))
@@ -79,8 +77,6 @@ func storey_gap_changed(tw :Tower) -> void:
 	if tw == get_current_tower():
 		for ch in $CharacterContainer.get_children():
 			ch.position.y = tw.cur_storey.position.y
-		if not camera_move_around:
-			cameralight.copy_position_rotation(player)
 
 # also signal from storey
 func enter_next_storey(old_storey :Storey) -> void:
@@ -98,19 +94,12 @@ func enter_next_storey(old_storey :Storey) -> void:
 func _process(_delta: float) -> void:
 	#act_character_list($CharacterContainer.get_children(),player.crawler_num)
 	update_info()
-	if camera_move_around:
-		$MovingCameraLight.make_current()
+	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
 		$MovingCameraLight.move_camera_around(
 			get_current_tower().cur_storey.position,
 			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
 			get_current_tower().calc_height() *2,
 			)
-	else:
-		player.getCameraLight().make_current()
-		if not player.current_action.is_empty():
-			cameralight.copy_position_rotation(player)
-		else:
-			cameralight.snap_90()
 
 func add_crawler(i :int) -> Crawler:
 	var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
@@ -221,10 +210,10 @@ func _on_button_roll_left_pressed() -> void:
 	player.enqueue_action_with_speed(Crawler.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
-	cameralight.fov_inc()
+	MovingCameraLight.GetCurrentCamera().fov_inc()
 
 func _on_button_fov_down_pressed() -> void:
-	cameralight.fov_dec()
+	MovingCameraLight.GetCurrentCamera().fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
 	player.action_per_second.set_max()
@@ -242,9 +231,10 @@ func _on_button_storey_up_pressed() -> void:
 	enter_next_storey(get_current_tower().cur_storey)
 
 func _on_button_camera_pressed() -> void:
-	camera_move_around = !camera_move_around
-	if camera_move_around == false:
-		cameralight.snap_90()
+	MovingCameraLight.NextCamera()
+	#camera_move_around = !camera_move_around
+	#if camera_move_around == false:
+		#$MovingCameraLight.snap_90()
 
 func update_info() -> void:
 	if debuglabel.visible:
@@ -262,7 +252,11 @@ Currently rendering: occlusion culling:%s
 		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 		]
 	if infolabel.visible:
-		infolabel.text = """%s\n%s\n%s\n%s""" % [get_current_tower(), get_current_tower().cur_storey.get_mini_map(), player, $MovingCameraLight ]
+		infolabel.text = """%s\n%s\n%s\n%s""" % [
+			get_current_tower(),
+			get_current_tower().cur_storey.get_mini_map(),
+			player,
+			MovingCameraLight.GetCurrentCamera() ]
 
 func update_button_text() -> void:
 	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % get_current_tower().cur_storey.get_mini_map()

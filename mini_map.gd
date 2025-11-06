@@ -10,7 +10,7 @@ static func minimapview_next(a :MiniMapView) -> MiniMapView:
 func mode_next() -> void:
 	minimap_mode = minimapview_next(minimap_mode)
 	apply_minimap_mode()
-	
+
 func set_minimap_mod(m :MiniMapView) -> void:
 	minimap_mode = m
 	apply_minimap_mode()
@@ -43,9 +43,9 @@ func init(st :Storey) -> MiniMap:
 	apply_minimap_mode()
 	return self
 
-func add_chars(char_list :Array, playernum :int) -> MiniMap:
+func add_chars(char_container :Node3D, playernum :int) -> MiniMap:
 	player_serial = playernum
-	for ch in char_list:
+	for ch in char_container.get_children():
 		if ch.crawler_num == player_serial:
 			add_character(ch, 8)
 		else:

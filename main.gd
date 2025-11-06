@@ -83,8 +83,8 @@ func enter_next_storey(old_storey :Storey) -> void:
 		old_storey.goal_reached.disconnect(enter_next_storey)
 		get_current_tower().enter_next_storey()
 	$DecoOrbit.position = get_current_tower().cur_storey.position
-	#get_current_tower().cur_storey.goal_reached.connect(enter_next_storey)
-	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children(),player.crawler_num)
+	#$CharacterContainer.reparent(get_current_tower().cur_storey)
+	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer, player.crawler_num)
 	update_button_text()
 
 func _process(_delta: float) -> void:
@@ -111,7 +111,6 @@ func crawler_animation_ended(cr :Crawler, _ani :Dictionary) -> void:
 	if cr.crawler_num == player.crawler_num:
 		if st.is_goal_pos(cr.pos_src):
 			enter_next_storey.call_deferred(st)
-			#st.goal_reached.emit(self) #enter_next_storey()
 			return
 		st.놓인것들줍기(cr)
 	st.get_mini_map().update_char_pos(cr)

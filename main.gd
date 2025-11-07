@@ -22,7 +22,6 @@ func _ready() -> void:
 		0, 3,3,1,default_storey_setting, default_maze3d_setting,
 		)
 	$TowerContainer.add_child(tw)
-	tw.storey_gap_changed.connect(storey_gap_changed)
 
 	for i in CharacterCount:
 		add_crawler(i)
@@ -53,26 +52,11 @@ func add_deco_tower(i :int, p :Vector3) -> Tower:
 	$TowerContainer.add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()
-	deco_tower.rotate_tower.animation_ended.connect(tower_rotate_animation_ended)
-	start_tower_rotate_animation(deco_tower)
+	deco_tower.init_rotate_animaion()
 	return deco_tower
-
-func start_tower_rotate_animation(tw :Tower) -> void:
-	var diff := Vector3.ZERO
-	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
-	tw.rotate_tower.start_rotate("ani_rot", tw, tw.rotation, tw.rotation + diff, randf_range(1,3))
-
-func tower_rotate_animation_ended(tw :Node3D, ani :Dictionary) -> void:
-	if ani.Name == "ani_rot":
-		start_tower_rotate_animation(tw)
 
 func _on_vpsize_changed() -> void:
 	get_current_tower().cur_storey.get_mini_map().update_size()
-
-func storey_gap_changed(tw :Tower) -> void:
-	if tw == get_current_tower():
-		for ch in $CharacterContainer.get_children():
-			ch.position.y = tw.cur_storey.position.y
 
 # also signal from storey
 func enter_next_storey(old_storey :Storey) -> void:

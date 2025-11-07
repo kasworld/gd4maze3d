@@ -89,6 +89,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
 	for ch in char_list:
+		ch.reparent($CharacterContainer)
 		if ch.crawler_num == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
@@ -99,6 +100,9 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 	if old_storey != null:
 		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)
 		old_storey.get_mini_map().visible = false
+
+func get_char_list() -> Array:
+	return $CharacterContainer.get_children()
 
 func get_mini_map() -> MiniMap:
 	return $MiniMap

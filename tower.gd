@@ -107,21 +107,21 @@ func add_new_storey(stnum :int) -> void:
 	st.move_animation.animation_ended.connect(storey_move_animation_ended)
 	st.move_animation.start_move("ani_add", st, st.position, dst, 1)
 
-func storey_move_animation_ended(st :Node3D, ani :Dictionary) -> void:
-	if ani.Name == "ani_add":
-		apply_storey_gap_change()
-	elif ani.Name == "ani_del":
-		st.move_animation.animation_ended.disconnect(storey_move_animation_ended)
-		remove_child(st)
-		st.queue_free()
-		apply_storey_gap_change()
-
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:
 		var st :Storey = storey_list.pop_front()
 		var dst := st.position
 		dst.y -= 50
 		st.move_animation.start_move("ani_del", st, st.position, dst, 1)
+
+func storey_move_animation_ended(st :Node3D, ani :Dictionary) -> void:
+	match ani.Name:
+		"ani_add":
+			apply_storey_gap_change()
+		"ani_del":
+			remove_child(st)
+			st.queue_free()
+			apply_storey_gap_change()
 
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():

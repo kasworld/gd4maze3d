@@ -143,6 +143,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	$MeshInstance3D.rotation.x = -PI/2
 	$MeshInstance3D.scale.x = 0.5
 	$MeshInstance3D.position.x = LaneW*0.2
+	$Label3D.text = "%d" % [ crawler_num ] # for debug
 	animate_crawler.animation_ended.connect(animation_ended)
 	return self
 

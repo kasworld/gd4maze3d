@@ -18,3 +18,7 @@ script = ExtResource("1_rofni")
 mesh = SubResource("CylinderMesh_b2ixb")
 
 [node name="MovingCameraLight" parent="." instance=ExtResource("2_b2ixb")]
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+text = "0"

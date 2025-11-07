@@ -7,7 +7,7 @@ static func new_default() -> Maze3DSetting:
 	rtn.LaneW = 4.0
 	rtn.WallThick = rtn.LaneW *0.05
 	rtn.MakeSubWallRate = 1.0/rtn.CalcCellCount()
-	return rtn 
+	return rtn
 
 func _to_string() -> String:
 	return "Maze3DSetting[size:%s height:%.1f lane width:%.1f wall thick:%.1f]" % [
@@ -73,11 +73,11 @@ func storeypos2mazepos(pos :Vector3) -> Vector2i:
 	pos += CalcSizeV3()/2
 	var x = clampi(int(pos.x/LaneW),0, MazeSize.x-1)
 	var y = clampi(int(pos.z/LaneW),0, MazeSize.y-1)
-	return Vector2i(x,y)	
+	return Vector2i(x,y)
 
 func CalcCellBox(pos :Vector2i) -> AABB:
-	var rtn = AABB( 
+	var rtn = AABB(
 		Vector3(LaneW*pos.x +WallThick/2, 0, LaneW*pos.y +WallThick/2) -CalcSizeV3()/2,
-		Vector3(LaneW -WallThick, StoryH, LaneW -WallThick) 
+		Vector3(LaneW -WallThick, StoryH, LaneW -WallThick)
 		)
 	return rtn

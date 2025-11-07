@@ -1,7 +1,7 @@
 extends Node3D
 
 const CharacterCount :int = 2
-const DecoTowerCount :int = 0
+const DecoTowerCount :int = 6
 
 var tower_scene = preload("res://tower.tscn")
 var player :Crawler

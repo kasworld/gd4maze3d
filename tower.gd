@@ -102,19 +102,19 @@ func add_new_storey(stnum :int) -> void:
 	storey_list.append(st)
 	add_child(st)
 	apply_storey_gap_change()
-	var dst := st.position
-	st.position.y += 50
-	st.move_animation.animation_ended.connect(storey_move_animation_ended)
-	st.move_animation.start_move("ani_add", st, st.position, dst, 1)
+	#var dst := st.position
+	#st.position.y += 50
+	st.storey_animation.animation_ended.connect(storey_animation_ended)
+	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), 1)
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:
 		var st :Storey = storey_list.pop_front()
-		var dst := st.position
-		dst.y -= 50
-		st.move_animation.start_move("ani_del", st, st.position, dst, 1)
+		#var dst := st.position
+		#dst.y -= 50
+		st.storey_animation.start_scale("ani_del", st, Vector3(1,1,1), Vector3(0.1,0.1,0.1), 1)
 
-func storey_move_animation_ended(st :Node3D, ani :Dictionary) -> void:
+func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_add":
 			apply_storey_gap_change()

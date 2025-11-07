@@ -12,9 +12,9 @@ static var themecolorlist = [
 func random_color()->Color:
 	return themecolorlist.pick_random().pick_random()[0]
 
-var move_animation := Animation3D.new()
+var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
-	move_animation.handle_animation()
+	storey_animation.handle_animation()
 
 
 var maze3d_setting :Maze3DSetting

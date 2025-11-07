@@ -34,6 +34,20 @@ func start_rotate(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3
 	animation_list.append(ani)
 	return ani
 
+func start_scale(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
+	var ani := {
+		"Name" : name, # for end signal
+		"Node3d" : node,
+		"Field" : "scale",
+		"StartValue" : src_val,
+		"EndValue" : dst_val,
+		"StartTick" : Time.get_unix_time_from_system(),
+		"DurSec" : dur_sec,
+	}
+	animation_list.append(ani)
+	return ani
+
+
 func handle_animation() -> void:
 	var timenow := Time.get_unix_time_from_system()
 	var new_list :Array[Dictionary]
@@ -48,4 +62,6 @@ func handle_animation() -> void:
 				ani.Node3d.position = ani.StartValue.lerp(ani.EndValue, rate)
 			"rotation":
 				ani.Node3d.rotation = ani.StartValue.lerp(ani.EndValue, rate)
+			"scale":
+				ani.Node3d.scale = ani.StartValue.lerp(ani.EndValue, rate)
 	animation_list = new_list

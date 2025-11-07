@@ -3,6 +3,35 @@ class_name Crawler
 
 var animate_crawler := Animation3D.new()
 signal crawler_animation_ended(cr :Crawler, ani :Dictionary)
+func animation_ended(st :Node3D, ani :Dictionary) -> void:
+	dir_src = dir_dst
+	pos_src = pos_dst
+	current_action = {}
+	roll_dir = roll_dir_dst
+	snap_90()
+	crawler_animation_ended.emit(st as Crawler, ani)
+
+func start_move_animation(from :Storey, to :Storey) -> void:
+	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
+	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position
+	animate_crawler.start_move("ani_move", self,
+		p1, p2,
+		1.0/current_action.APS)
+
+func start_turn_animation(from :EnumDir.Dir, to :EnumDir.Dir) -> void:
+	animate_crawler.start_rotate("ani_turn", self,
+		Vector3(0, EnumDir.dir2rad(from), 0),
+		Vector3(0, EnumDir.dir2rad(to), 0),
+		1.0/current_action.APS)
+
+func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
+	animate_crawler.start_rotate("ani_roll", self,
+		Vector3(0, EnumRoll.dir2rad(from), 0),
+		Vector3(0, EnumRoll.dir2rad(to), 0),
+		1.0/current_action.APS)
+
+func _process(_delta: float) -> void:
+	animate_crawler.handle_animation()
 
 enum Action {EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
 static func action2str(a :Action) -> String:
@@ -174,36 +203,6 @@ func start_new_action() -> bool:
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
-
-func animation_ended(st :Node3D, ani :Dictionary) -> void:
-	dir_src = dir_dst
-	pos_src = pos_dst
-	current_action = {}
-	roll_dir = roll_dir_dst
-	snap_90()
-	crawler_animation_ended.emit(st as Crawler, ani)
-
-func start_move_animation(from :Storey, to :Storey) -> void:
-	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
-	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position
-	animate_crawler.start_move("ani_move", self,
-		p1, p2,
-		1.0/current_action.APS)
-
-func start_turn_animation(from :EnumDir.Dir, to :EnumDir.Dir) -> void:
-	animate_crawler.start_rotate("ani_turn", self,
-		Vector3(0, EnumDir.dir2rad(from), 0),
-		Vector3(0, EnumDir.dir2rad(to), 0),
-		1.0/current_action.APS)
-
-func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
-	animate_crawler.start_rotate("ani_roll", self,
-		Vector3(0, EnumRoll.dir2rad(from), 0),
-		Vector3(0, EnumRoll.dir2rad(to), 0),
-		1.0/current_action.APS)
-
-func _process(_delta: float) -> void:
-	animate_crawler.handle_animation()
 
 func snap_90() -> void:
 	for i in 3:

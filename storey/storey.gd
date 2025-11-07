@@ -1,8 +1,6 @@
 extends Node3D
 class_name Storey
 
-#signal goal_reached(st :Storey) # char will leave storey
-
 static var themecolorlist = [
 	NamedColorList.make_red_color_list(),
 	NamedColorList.make_green_color_list(),
@@ -15,6 +13,10 @@ func random_color()->Color:
 	return themecolorlist.pick_random().pick_random()[0]
 
 var move_animation := Animation3D.new()
+func _process(_delta: float) -> void:
+	move_animation.handle_animation()
+
+
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_num :int
@@ -241,6 +243,3 @@ func set_wallview_mode(w :Maze3D.WallView) -> void:
 
 func get_maze_cells() -> Maze:
 	return $Maze3D.maze_cells
-
-func _process(_delta: float) -> void:
-	move_animation.handle_animation()

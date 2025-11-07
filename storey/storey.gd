@@ -87,14 +87,14 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	$WallDeco.position += -shiftsize
 	return self
 
-func chars_enter_storey(old_storey :Storey, char_container :Node3D, playernum :int) -> void:
-	for ch in char_container.get_children():
+func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
+	for ch in char_list:
 		if ch.crawler_num == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
 			ch.enter_storey(old_storey, self, maze3d_setting.rand_pos_2i())
 
-	$MiniMap.add_chars(char_container, playernum)
+	$MiniMap.add_chars(char_list, playernum)
 	$MiniMap.update_size()
 	if old_storey != null:
 		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)

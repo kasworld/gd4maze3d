@@ -83,8 +83,7 @@ func enter_next_storey(old_storey :Storey) -> void:
 		old_storey.goal_reached.disconnect(enter_next_storey)
 		get_current_tower().enter_next_storey()
 	$DecoOrbit.position = get_current_tower().cur_storey.position
-	#$CharacterContainer.reparent(get_current_tower().cur_storey)
-	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer, player.crawler_num)
+	get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children() , player.crawler_num)
 	update_button_text()
 
 func _process(_delta: float) -> void:

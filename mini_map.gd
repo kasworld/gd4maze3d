@@ -43,9 +43,9 @@ func init(st :Storey) -> MiniMap:
 	apply_minimap_mode()
 	return self
 
-func add_chars(char_container :Node3D, playernum :int) -> MiniMap:
+func add_chars(char_list :Array, playernum :int) -> MiniMap:
 	player_serial = playernum
-	for ch in char_container.get_children():
+	for ch in char_list:
 		if ch.crawler_num == player_serial:
 			add_character(ch, 8)
 		else:

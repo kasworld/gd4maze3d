@@ -20,3 +20,5 @@ billboard = 1
 [node name="Maze3D" parent="." instance=ExtResource("4_rbrve")]
 
 [node name="WallDeco" type="Node3D" parent="."]
+
+[node name="CharacterContainer" type="Node3D" parent="."]

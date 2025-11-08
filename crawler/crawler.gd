@@ -33,75 +33,7 @@ func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
 func _process(_delta: float) -> void:
 	crawler_animation.handle_animation()
 
-enum Action {EnterStorey, Forward, TurnRight , TurnLeft, RollRight, RollLeft}
-static func action2str(a :Action) -> String:
-	return Action.keys()[a]
-
-# action stats == Dictionary
-static func new_stats() -> Dictionary:
-	var rtn := {}
-	for k in Action.values():
-		rtn[k]=0
-	return rtn
-static func stats2str(d:Dictionary) -> String:
-	var rtn := ""
-	for i in Action.values():
-		rtn += " %s:%d" % [action2str(i), d[i]]
-	return rtn
-
-enum Walk {Off, RightFirst, LeftFirst}
-static func walk2str(a :Walk) -> String:
-	return Walk.keys()[a]
-
-static func walk_next(a :Walk) -> Walk:
-	return (a +1) % Walk.keys().size() as Walk
-
-const QueueLimit = 10
-var queue :Array
-var action_per_second := ClampedFloat.new(1,0.5,3.0) # sec
-
-func queue_init() -> Crawler:
-	rand_act_speed()
-	return self
-
-func rand_act_speed() -> void:
-	action_per_second.set_randfn()
-
-func clear_queue() -> void:
-	queue.resize(0)
-
-func is_queue_empty() -> bool:
-	return queue.is_empty()
-
-func action_pop_front() -> Dictionary:
-	return queue.pop_front()
-
-func enqueue_action(a :Action, args :={}) -> Crawler:
-	return enqueue_action_with_speed(a, action_per_second.get_value(), args)
-
-func enqueue_action_with_speed(a :Action,s :float, args :={}) -> Crawler:
-	queue.push_back(make_action_dictionary(a,s,args))
-	return crop_queue()
-
-func make_action_dictionary(a :Action,s :float, args :={}) -> Dictionary:
-	return {
-		"Action":a,
-		"APS":s,
-		"Args":args,
-	}
-
-func crop_queue() -> Crawler:
-	if queue.size() > QueueLimit:
-		queue = queue.slice(queue.size()-QueueLimit)
-	return self
-
-func queue2str() -> String:
-	var rtn := "ActionQueue["
-	for a in queue:
-		rtn += "%s(%.1f)%s " % [ action2str(a.Action), a.APS, a.Args ]
-	rtn += "]"
-	return rtn
-
+var action_queue := ActionQueue.new()
 var current_action : Dictionary # [Action, APS, Args]
 
 var crawler_num :int
@@ -117,6 +49,7 @@ var dir_dst : EnumDir.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
 
+
 var auto_walk_type : Walk
 func set_next_walk_type() -> Crawler:
 	auto_walk_type = walk_next(auto_walk_type)
@@ -129,10 +62,10 @@ func getCameraLight() -> MovingCameraLight:
 
 func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	auto_walk_type = walk_type
-	total_action_stats = new_stats()
+	total_action_stats = ActionQueue.new_stats()
 	dir_src = EnumDir.Dir.North
 	current_action = {}
-	queue_init()
+	action_queue.queue_init()
 	crawler_num = n
 	color = co
 	$MovingCameraLight.init(n+1)
@@ -148,19 +81,19 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
 	return self
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
-	clear_queue()
-	current_action = make_action_dictionary(Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
+	action_queue.clear_queue()
+	current_action = ActionQueue.make_action_dictionary(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
 	storey = st
 	pos_dst = pos
-	storey_action_stats = new_stats()
-	rand_act_speed()
+	storey_action_stats = ActionQueue.new_stats()
+	action_queue.rand_act_speed()
 
 func act_character() -> void:
 	try_auto_walk()
 	start_new_action()
 
 func try_auto_walk() -> void:
-	if current_action.is_empty() && is_queue_empty(): # add new ai action
+	if current_action.is_empty() && action_queue.is_queue_empty(): # add new ai action
 		match auto_walk_type:
 			Walk.RightFirst:
 				walk_right_first()
@@ -171,31 +104,31 @@ func try_auto_walk() -> void:
 
 # return true on new act
 func start_new_action() -> bool:
-	if not current_action.is_empty() || is_queue_empty():
+	if not current_action.is_empty() || action_queue.is_queue_empty():
 		return false
 	#action_start_time = Time.get_unix_time_from_system()
-	current_action = action_pop_front()
+	current_action = action_queue.action_pop_front()
 	match current_action.Action :
-		Action.Forward:
+		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 				start_move_animation(storey,storey)
 			else :
 				#end_action()
 				return false
-		Action.TurnLeft:
+		ActionQueue.Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
 			start_turn_animation(dir_src, dir_dst)
-		Action.TurnRight:
+		ActionQueue.Action.TurnRight:
 			dir_dst = EnumDir.DirTurnRight[dir_src]
 			start_turn_animation(dir_src, dir_dst)
-		Action.RollRight:
+		ActionQueue.Action.RollRight:
 			roll_dir_dst = EnumRoll.roll_right(roll_dir)
 			start_roll_animation(roll_dir, roll_dir_dst)
-		Action.RollLeft:
+		ActionQueue.Action.RollLeft:
 			roll_dir_dst = EnumRoll.roll_left(roll_dir)
 			start_roll_animation(roll_dir, roll_dir_dst)
-		Action.EnterStorey: # for animation only
+		ActionQueue.Action.EnterStorey: # for animation only
 			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
 				from_storey = storey
@@ -211,14 +144,14 @@ func snap_90() -> void:
 
 func _to_string() -> String:
 	return "Crawler[autowalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		walk2str(auto_walk_type), action_per_second, roll_dir*90, rotation_degrees,
+		walk2str(auto_walk_type), action_queue.action_per_second, roll_dir*90, rotation_degrees,
 		]
 
 func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
-		stats2str(total_action_stats),
-		stats2str(storey_action_stats),
-		action2str(current_action.Action ), queue2str(),
+		ActionQueue.stats2str(total_action_stats),
+		ActionQueue.stats2str(storey_action_stats),
+		ActionQueue.action2str(current_action.Action), action_queue.queue2str(),
 		EnumDir.Dir2Str[dir_src], EnumDir.Dir2Str[dir_dst],
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
@@ -226,26 +159,32 @@ func debug_str() -> String:
 func can_move_to_dir(dir :EnumDir.Dir) -> bool:
 	return storey.can_move(pos_src.x, pos_src.y, dir )
 
+enum Walk {Off, RightFirst, LeftFirst}
+static func walk2str(a :Walk) -> String:
+	return Walk.keys()[a]
+static func walk_next(a :Walk) -> Walk:
+	return (a +1) % Walk.keys().size() as Walk
+
 func walk_right_first() -> bool:
 	# try right
 	if can_move_to_dir(EnumDir.DirTurnRight[dir_src]):
-		enqueue_action(Action.TurnRight)
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.TurnRight)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	# try forward
 	if can_move_to_dir(dir_src):
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	# try left
 	if can_move_to_dir(EnumDir.DirTurnLeft[dir_src]):
-		enqueue_action(Action.TurnLeft)
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.TurnLeft)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	# try backward
 	if can_move_to_dir(EnumDir.DirOpppsite[dir_src]):
-		enqueue_action(Action.TurnLeft)
-		enqueue_action(Action.TurnLeft)
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.TurnLeft)
+		action_queue.enqueue_action(ActionQueue.Action.TurnLeft)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	assert(false)
 	return false
@@ -253,23 +192,23 @@ func walk_right_first() -> bool:
 func walk_left_first() -> bool:
 	# try left
 	if can_move_to_dir(EnumDir.DirTurnLeft[dir_src]):
-		enqueue_action(Action.TurnLeft)
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.TurnLeft)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	# try forward
 	if can_move_to_dir(dir_src):
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	# try right
 	if can_move_to_dir(EnumDir.DirTurnRight[dir_src]):
-		enqueue_action(Action.TurnRight)
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.TurnRight)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	# try backward
 	if can_move_to_dir(EnumDir.DirOpppsite[dir_src]):
-		enqueue_action(Action.TurnRight)
-		enqueue_action(Action.TurnRight)
-		enqueue_action(Action.Forward)
+		action_queue.enqueue_action(ActionQueue.Action.TurnRight)
+		action_queue.enqueue_action(ActionQueue.Action.TurnRight)
+		action_queue.enqueue_action(ActionQueue.Action.Forward)
 		return true
 	assert(false)
 	return false

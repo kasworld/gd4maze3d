@@ -60,7 +60,7 @@ func _on_vpsize_changed() -> void:
 
 # also signal from storey
 func enter_next_storey(old_storey :Storey) -> void:
-	if player.current_action.get("Action") == Crawler.Action.EnterStorey:
+	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")
 		return
 	if old_storey == null:
@@ -163,22 +163,22 @@ func _on_button_auto_move_pressed() -> void:
 	update_button_text()
 
 func _on_button_forward_pressed() -> void:
-	player.enqueue_action_with_speed(Crawler.Action.Forward, 10)
+	player.enqueue_action_with_speed(ActionQueue.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	player.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(ActionQueue.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	player.enqueue_action_with_speed(Crawler.Action.TurnLeft, 10).enqueue_action_with_speed(Crawler.Action.TurnLeft, 10)
+	player.enqueue_action_with_speed(ActionQueue.Action.TurnLeft, 10).enqueue_action_with_speed(ActionQueue.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	player.enqueue_action_with_speed(Crawler.Action.TurnRight, 10)
+	player.enqueue_action_with_speed(ActionQueue.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	player.enqueue_action_with_speed(Crawler.Action.RollRight, 10)
+	player.enqueue_action_with_speed(ActionQueue.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	player.enqueue_action_with_speed(Crawler.Action.RollLeft, 10)
+	player.enqueue_action_with_speed(ActionQueue.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().fov_inc()

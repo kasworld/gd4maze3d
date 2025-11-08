@@ -16,7 +16,6 @@ var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	storey_animation.handle_animation()
 
-
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_num :int

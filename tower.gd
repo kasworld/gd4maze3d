@@ -1,18 +1,18 @@
 extends Node3D
 class_name Tower
 
-var rotate_tower := Animation3D.new()
+var tower_animation := Animation3D.new()
 func start_rotate_animation() -> void:
 	var diff := Vector3.ZERO
 	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
-	rotate_tower.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
+	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
 
 func tower_rotate_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_rot":
 		start_rotate_animation()
 
 func init_rotate_animaion() -> void:
-	rotate_tower.animation_ended.connect(tower_rotate_animation_ended)
+	tower_animation.animation_ended.connect(tower_rotate_animation_ended)
 	start_rotate_animation()
 
 var tower_num :int
@@ -58,7 +58,7 @@ func enter_next_storey() -> void:
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
 func _process(_delta: float) -> void:
-	rotate_tower.handle_animation()
+	tower_animation.handle_animation()
 
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():

@@ -2,6 +2,9 @@ extends Node3D
 class_name Tower
 
 var tower_animation := Animation3D.new()
+func _process(_delta: float) -> void:
+	tower_animation.handle_animation()
+
 func start_rotate_animation() -> void:
 	var diff := Vector3.ZERO
 	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
@@ -57,9 +60,6 @@ func enter_next_storey() -> void:
 	add_new_storey(storey_list[-1].storey_num +1)
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
-func _process(_delta: float) -> void:
-	tower_animation.handle_animation()
-
 func find_storey_by_num(num :int) -> Storey:
 	for i in storey_list.size():
 		if storey_list[i].storey_num == num:
@@ -68,11 +68,10 @@ func find_storey_by_num(num :int) -> Storey:
 
 func calc_storey_base_y_pos(storey_index :int) -> float:
 	var rtn := storey_list[0].maze3d_setting.StoryH/2
-	var cur_gap := 0.0
 	if gap_ani_dir_open:
-		cur_gap = StoreyGap
+		rtn += StoreyGap * storey_index
 	for i in storey_index:
-		rtn += cur_gap + storey_list[i].maze3d_setting.StoryH/2 + storey_list[i+1].maze3d_setting.StoryH/2
+		rtn += storey_list[i].maze3d_setting.StoryH/2 + storey_list[i+1].maze3d_setting.StoryH/2
 	return rtn
 
 func start_storey_gap_animation() -> void:

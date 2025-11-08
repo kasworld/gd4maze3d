@@ -20,13 +20,7 @@ var VisibleStoreyUp :int
 var VisibleStoreyDown :int
 
 var StoreyGap :float
-# used to animate
-var StoreyGapRate := 1.0
-func calc_current_storey_gap() -> float:
-	return StoreyGap * StoreyGapRate
 var gap_ani_dir_open : bool = true # true:open, false:close
-var animate_gap_start_time :float
-
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
@@ -54,6 +48,7 @@ func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySettin
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
+	start_storey_gap_animation()
 	return self
 
 # return old storey
@@ -63,14 +58,6 @@ func enter_next_storey() -> void:
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
 func _process(_delta: float) -> void:
-	var timenow := Time.get_unix_time_from_system()
-	var rate :=  timenow - animate_gap_start_time
-	if rate <= 1.0 :
-		if gap_ani_dir_open:
-			StoreyGapRate = lerp(0.0, 1.0, rate)
-		else:
-			StoreyGapRate = lerp(1.0, 0.0, rate)
-		apply_storey_gap_change()
 	rotate_tower.handle_animation()
 
 func find_storey_by_num(num :int) -> Storey:
@@ -79,15 +66,22 @@ func find_storey_by_num(num :int) -> Storey:
 			return storey_list[i]
 	return null
 
-func apply_storey_gap_change() -> void:
-	for i in storey_list.size():
-		storey_list[i].position.y = calc_storey_base_y_pos(i)
-
 func calc_storey_base_y_pos(storey_index :int) -> float:
 	var rtn := storey_list[0].maze3d_setting.StoryH/2
+	var cur_gap := 0.0
+	if gap_ani_dir_open:
+		cur_gap = StoreyGap
 	for i in storey_index:
-		rtn += calc_current_storey_gap() + storey_list[i].maze3d_setting.StoryH/2 + storey_list[i+1].maze3d_setting.StoryH/2
+		rtn += cur_gap + storey_list[i].maze3d_setting.StoryH/2 + storey_list[i+1].maze3d_setting.StoryH/2
 	return rtn
+
+func start_storey_gap_animation() -> void:
+	gap_ani_dir_open = not gap_ani_dir_open
+	for i in storey_list.size():
+		var st := storey_list[i]
+		var new_pos := st.position
+		new_pos.y = calc_storey_base_y_pos(i)
+		st.storey_animation.start_move("ani_gap", st, st.position, new_pos, 1)
 
 func add_new_storey(stnum :int) -> void:
 	var ms := maze3d_setting.duplicate()
@@ -98,30 +92,26 @@ func add_new_storey(stnum :int) -> void:
 	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 	st.view_pillars(view_pillars)
 	st.set_wallview_mode(view_walls)
-	#st.rotation.y = randf_range(0,2*PI)
 	storey_list.append(st)
 	add_child(st)
-	apply_storey_gap_change()
-	#var dst := st.position
-	#st.position.y += 50
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), 1)
+	start_storey_gap_animation()
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:
 		var st :Storey = storey_list.pop_front()
-		#var dst := st.position
-		#dst.y -= 50
 		st.storey_animation.start_scale("ani_del", st, Vector3(1,1,1), Vector3(0.1,0.1,0.1), 1)
 
 func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_add":
-			apply_storey_gap_change()
+			pass
 		"ani_del":
 			remove_child(st)
 			st.queue_free()
-			apply_storey_gap_change()
+		"ani_gap":
+			pass
 
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():
@@ -146,10 +136,6 @@ func view_wall_next() -> void:
 func toggle_visible_pillars() -> void:
 	view_pillars = not view_pillars
 	set_pillars_visible(view_pillars)
-
-func start_storey_gap_animation() -> void:
-	animate_gap_start_time = Time.get_unix_time_from_system()
-	gap_ani_dir_open = not gap_ani_dir_open
 
 var demo_random_list = [
 	enter_next_storey,

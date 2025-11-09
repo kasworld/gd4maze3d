@@ -3,13 +3,13 @@ class_name Crawler
 
 var crawler_animation := Animation3D.new()
 signal crawler_animation_ended(cr :Crawler, ani :Dictionary)
-func animation_ended(st :Node3D, ani :Dictionary) -> void:
+func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
 	current_action = {}
 	roll_dir = roll_dir_dst
 	snap_90()
-	crawler_animation_ended.emit(st as Crawler, ani)
+	crawler_animation_ended.emit(cr as Crawler, ani)
 
 func start_move_animation(from :Storey, to :Storey) -> void:
 	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
@@ -80,24 +80,13 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.rand_act_speed()
 
 func act_character() -> void:
-	try_auto_walk()
-	start_new_action()
-
-func try_auto_walk() -> void:
-	if current_action.is_empty() && action_queue.is_empty(): # add new ai action
-		match auto_walk_type:
-			Walk.RightFirst:
-				walk_right_first()
-			Walk.LeftFirst:
-				walk_left_first()
-			Walk.Off:
-				pass
+	if current_action.is_empty() && action_queue.is_empty():
+		enqueue_auto_walk_action_by_type()
+	if current_action.is_empty() && not action_queue.is_empty():
+		start_new_action()
 
 # return true on new act
 func start_new_action() -> bool:
-	if not current_action.is_empty() || action_queue.is_empty():
-		return false
-	#action_start_time = Time.get_unix_time_from_system()
 	current_action = action_queue.action_pop_front()
 	match current_action.Action :
 		ActionQueue.Action.Forward:
@@ -105,8 +94,7 @@ func start_new_action() -> bool:
 				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
 				start_move_animation(storey,storey)
 			else :
-				#end_action()
-				return false
+				return false # action ignored
 		ActionQueue.Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
 			start_turn_animation(dir_src, dir_dst)
@@ -125,6 +113,7 @@ func start_new_action() -> bool:
 				from_storey = storey
 			start_move_animation(from_storey,storey)
 
+	# update action stats
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
@@ -162,6 +151,15 @@ static func walk2str(a :Walk) -> String:
 	return Walk.keys()[a]
 static func walk_next(a :Walk) -> Walk:
 	return (a +1) % Walk.keys().size() as Walk
+
+func enqueue_auto_walk_action_by_type() -> void:
+	match auto_walk_type:
+		Walk.RightFirst:
+			walk_right_first()
+		Walk.LeftFirst:
+			walk_left_first()
+		Walk.Off:
+			pass
 
 func walk_right_first() -> bool:
 	# try right

@@ -58,7 +58,15 @@ func add_deco_tower(i :int, p :Vector3) -> Tower:
 func _on_vpsize_changed() -> void:
 	get_current_tower().cur_storey.get_mini_map().update_size()
 
-# also signal from storey
+func _process(_delta: float) -> void:
+	update_info()
+	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
+		$MovingCameraLight.move_camera_around(
+			get_current_tower().cur_storey.position,
+			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
+			get_current_tower().calc_height() *2,
+			)
+
 func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")
@@ -70,15 +78,6 @@ func enter_next_storey(old_storey :Storey) -> void:
 		get_current_tower().cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
 	$DecoOrbit.position = get_current_tower().cur_storey.position
 	update_button_text()
-
-func _process(_delta: float) -> void:
-	update_info()
-	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
-		$MovingCameraLight.move_camera_around(
-			get_current_tower().cur_storey.position,
-			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
-			get_current_tower().calc_height() *2,
-			)
 
 func add_crawler(i :int) -> Crawler:
 	var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()

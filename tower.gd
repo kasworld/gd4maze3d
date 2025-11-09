@@ -54,8 +54,7 @@ func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySettin
 	start_storey_gap_animation()
 	return self
 
-# return old storey
-func enter_next_storey() -> void:
+func move_to_upper_storey() -> void:
 	del_old_storey()
 	add_new_storey(storey_list[-1].storey_num +1)
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
@@ -137,7 +136,7 @@ func toggle_visible_pillars() -> void:
 	set_pillars_visible(view_pillars)
 
 var demo_random_list = [
-	enter_next_storey,
+	move_to_upper_storey,
 	toggle_visible_floor_ceiling,
 	view_wall_next,
 	toggle_visible_pillars,

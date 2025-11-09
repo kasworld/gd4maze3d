@@ -66,13 +66,12 @@ func enter_next_storey(old_storey :Storey) -> void:
 	if old_storey == null:
 		get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children() , player.crawler_num)
 	else:
-		get_current_tower().enter_next_storey()
+		get_current_tower().move_to_upper_storey()
 		get_current_tower().cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
 	$DecoOrbit.position = get_current_tower().cur_storey.position
 	update_button_text()
 
 func _process(_delta: float) -> void:
-	#act_character_list($CharacterContainer.get_children(),player.crawler_num)
 	update_info()
 	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
 		$MovingCameraLight.move_camera_around(

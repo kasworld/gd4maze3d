@@ -111,11 +111,11 @@ func get_mini_map() -> MiniMap:
 func 놓인것들줍기(ch :Crawler) -> void:
 	var ft = 놓인것들.get_at(ch.pos_src)
 	if ft is Donut:
-		ch.action_queue.enqueue_action(ActionQueue.Action.RollLeft)
+		ch.action_queue.enqueue(ActionQueue.Action.RollLeft)
 		놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 	elif ft is Capsule:
-		ch.action_queue.enqueue_action(ActionQueue.Action.RollRight)
+		ch.action_queue.enqueue(ActionQueue.Action.RollRight)
 		놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 

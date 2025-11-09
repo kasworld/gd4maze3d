@@ -163,22 +163,22 @@ func _on_button_auto_move_pressed() -> void:
 	update_button_text()
 
 func _on_button_forward_pressed() -> void:
-	player.enqueue_action_with_speed(ActionQueue.Action.Forward, 10)
+	player.action_queue.enqueue_with_speed(ActionQueue.Action.Forward, 10)
 
 func _on_button_left_pressed() -> void:
-	player.enqueue_action_with_speed(ActionQueue.Action.TurnLeft, 10)
+	player.action_queue.enqueue_with_speed(ActionQueue.Action.TurnLeft, 10)
 
 func _on_button_backward_pressed() -> void:
-	player.enqueue_action_with_speed(ActionQueue.Action.TurnLeft, 10).enqueue_action_with_speed(ActionQueue.Action.TurnLeft, 10)
+	player.action_queue.enqueue_with_speed(ActionQueue.Action.TurnLeft, 10).enqueue_with_speed(ActionQueue.Action.TurnLeft, 10)
 
 func _on_button_right_pressed() -> void:
-	player.enqueue_action_with_speed(ActionQueue.Action.TurnRight, 10)
+	player.action_queue.enqueue_with_speed(ActionQueue.Action.TurnRight, 10)
 
 func _on_button_roll_right_pressed() -> void:
-	player.enqueue_action_with_speed(ActionQueue.Action.RollRight, 10)
+	player.action_queue.enqueue_with_speed(ActionQueue.Action.RollRight, 10)
 
 func _on_button_roll_left_pressed() -> void:
-	player.enqueue_action_with_speed(ActionQueue.Action.RollLeft, 10)
+	player.action_queue.enqueue_with_speed(ActionQueue.Action.RollLeft, 10)
 
 func _on_button_fov_up_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().fov_inc()
@@ -187,7 +187,7 @@ func _on_button_fov_down_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().fov_dec()
 
 func _on_button_aps_max_pressed() -> void:
-	player.action_per_second.set_max()
+	player.action_queue.action_per_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
 	player.action_per_second.set_up()

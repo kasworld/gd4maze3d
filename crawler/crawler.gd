@@ -13,7 +13,7 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_move":
 		if cr.crawler_num == player_num:
 			if storey.is_goal_pos(cr.pos_src):
-				crawler_goal_reached.emit(cr, storey)
+				crawler_goal_reached.emit(storey, cr)
 				return
 			storey.놓인것들줍기(cr)
 		storey.get_mini_map().update_char_pos(cr)

@@ -85,17 +85,11 @@ func add_crawler(i :int) -> Crawler:
 	pl.init(
 		[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
 		i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
-	pl.crawler_animation_ended.connect(crawler_animation_ended)
+	pl.crawler_goal_reached.connect(crawler_goal_reached)
 	return pl
 
-func crawler_animation_ended(cr :Crawler, _ani :Dictionary) -> void:
-	var st := get_current_tower().cur_storey
-	if cr.crawler_num == player.crawler_num:
-		if st.is_goal_pos(cr.pos_src):
-			enter_next_storey.call_deferred(st)
-			return
-		st.놓인것들줍기(cr)
-	st.get_mini_map().update_char_pos(cr)
+func crawler_goal_reached(st :Storey, _cr :Crawler) -> void:
+	enter_next_storey.call_deferred(st)
 
 var key2fn = {
 	KEY_ESCAPE:_on_button_esc_pressed,

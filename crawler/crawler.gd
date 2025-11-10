@@ -1,15 +1,22 @@
 extends Node3D
 class_name Crawler
 
+signal crawler_goal_reached(st :Storey, cr :Crawler)
+
 var crawler_animation := Animation3D.new()
-signal crawler_animation_ended(cr :Crawler, ani :Dictionary)
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
 	current_action = {}
 	roll_dir = roll_dir_dst
 	snap_90()
-	crawler_animation_ended.emit(cr as Crawler, ani)
+	if ani.Name == "ani_move":
+		if cr.crawler_num == player_num:
+			if storey.is_goal_pos(cr.pos_src):
+				crawler_goal_reached.emit(cr, storey)
+				return
+			storey.놓인것들줍기(cr)
+		storey.get_mini_map().update_char_pos(cr)
 
 func start_move_animation(from :Storey, to :Storey) -> void:
 	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
@@ -37,6 +44,7 @@ var action_queue := ActionQueue.new()
 var current_action : Dictionary # [Action, APS, Args]
 
 var crawler_num :int
+var player_num :int
 var color :Color
 
 var roll_dir :EnumRoll.Dir
@@ -52,12 +60,13 @@ var pos_dst :Vector2i
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
 
-func init(walk_type :Walk, n :int, LaneW:float,co :Color) -> Crawler:
+func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
 	auto_walk_type = walk_type
 	total_action_stats = ActionQueue.new_stats()
 	dir_src = EnumDir.Dir.North
 	current_action = {}
 	crawler_num = n
+	player_num = p_num
 	color = co
 	$MovingCameraLight.init(n+1)
 	$MeshInstance3D.mesh.material.albedo_color = co

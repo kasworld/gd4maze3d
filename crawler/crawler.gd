@@ -20,8 +20,10 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	act_character()
 
 func start_move_animation(from :Storey, to :Storey) -> void:
-	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
-	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, to.maze3d_setting.StoryH/2) + to.position
+	var ydiff := to.global_position.y - from.global_position.y
+	var y := to.maze3d_setting.StoryH/2
+	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, y - ydiff)
+	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, y)
 	crawler_animation.start_move("ani_move", self,
 		p1, p2,
 		1.0/current_action.APS)

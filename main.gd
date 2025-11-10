@@ -1,5 +1,6 @@
 extends Node3D
 
+const PlayerNumber :int = 0
 const CharacterCount :int = 2
 const DecoTowerCount :int = 6
 
@@ -25,7 +26,7 @@ func _ready() -> void:
 
 	for i in CharacterCount:
 		add_crawler(i)
-	player = $CharacterContainer.get_child(0)
+	player = $CharacterContainer.get_child(PlayerNumber)
 	MovingCameraLight.SetCurrentCamera(0)
 
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
@@ -80,13 +81,14 @@ func enter_next_storey(old_storey :Storey) -> void:
 	update_button_text()
 
 func add_crawler(i :int) -> Crawler:
-	var pl :Crawler = preload("res://crawler/crawler.tscn").instantiate()
-	$CharacterContainer.add_child(pl)
-	pl.init(
+	var cr :Crawler = preload("res://crawler/crawler.tscn").instantiate()
+	$CharacterContainer.add_child(cr)
+	cr.init(
 		[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
 		i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
-	pl.crawler_goal_reached.connect(crawler_goal_reached)
-	return pl
+	if cr.crawler_num == PlayerNumber:
+		cr.crawler_goal_reached.connect(crawler_goal_reached)
+	return cr
 
 func crawler_goal_reached(st :Storey, _cr :Crawler) -> void:
 	enter_next_storey.call_deferred(st)

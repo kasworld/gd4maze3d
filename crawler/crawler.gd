@@ -17,6 +17,7 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 				return
 			storey.놓인것들줍기(cr)
 		storey.get_mini_map().update_char_pos(cr)
+	act_character()
 
 func start_move_animation(from :Storey, to :Storey) -> void:
 	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, from.maze3d_setting.StoryH/2) + from.position
@@ -82,21 +83,22 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.clear()
-	current_action = ActionQueue.make_action_dictionary(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
+	action_queue.enqueue_with_speed(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
 	storey = st
 	pos_dst = pos
 	storey_action_stats = ActionQueue.new_stats()
 	action_queue.rand_act_speed()
+	act_character()
 
 func act_character() -> void:
 	if current_action.is_empty() && action_queue.is_empty():
 		enqueue_auto_walk_action_by_type()
 	if current_action.is_empty() && not action_queue.is_empty():
-		start_new_action()
+		handle_action_in_queue()
 
 # return true on new act
-func start_new_action() -> bool:
-	current_action = action_queue.action_pop_front()
+func handle_action_in_queue() -> bool:
+	current_action = action_queue.pop_front()
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):

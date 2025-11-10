@@ -92,6 +92,7 @@ func add_new_storey(stnum :int) -> void:
 	st.set_wallview_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
+	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), 1)
 	start_storey_gap_animation()

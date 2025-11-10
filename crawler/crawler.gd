@@ -36,8 +36,8 @@ func start_turn_animation(from :EnumDir.Dir, to :EnumDir.Dir) -> void:
 
 func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
 	crawler_animation.start_rotate("ani_roll", self,
-		Vector3(0, EnumRoll.dir2rad(from), 0),
-		Vector3(0, EnumRoll.dir2rad(to), 0),
+		Vector3(0, 0, -EnumRoll.dir2rad(from) ),
+		Vector3(0, 0, -EnumRoll.dir2rad(to) ),
 		1.0/current_action.APS)
 
 func _process(_delta: float) -> void:

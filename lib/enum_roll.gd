@@ -6,7 +6,6 @@ static func dir2str(vd :Dir) -> String:
 static func dir2rad(d:Dir) -> float:
 	return deg_to_rad(d*90.0)
 
-
 static func roll_left(d:Dir) -> Dir:
 	return (d+1)%4 as Dir
 static func roll_right(d:Dir) -> Dir:

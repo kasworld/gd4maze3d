@@ -8,6 +8,35 @@ var animation_list :Array[Dictionary]
 func get_animation_count() -> int:
 	return animation_list.size()
 
+func is_empty() -> bool:
+	return animation_list.is_empty()
+
+func is_Name_exist(name :String) -> bool:
+	for d in animation_list:
+		if d.Name == name:
+			return true
+	return false
+
+func find_by_Name(name :String) -> Array[Dictionary]:
+	var rtn :Array[Dictionary]
+	for d in animation_list:
+		if d.Name == name:
+			rtn.append(d)
+	return rtn
+
+func is_Field_exist(field :String) -> bool:
+	for d in animation_list:
+		if d.Field == field:
+			return true
+	return false
+
+func find_by_Field(field :String) -> Array[Dictionary]:
+	var rtn :Array[Dictionary]
+	for d in animation_list:
+		if d.Field == field:
+			rtn.append(d)
+	return rtn
+
 func start_move(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal

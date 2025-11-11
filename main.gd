@@ -155,24 +155,31 @@ func _on_button_storey_gap_pressed() -> void:
 func _on_button_auto_move_pressed() -> void:
 	player.set_next_walk_type()
 	update_button_text()
+	player.act_character()
 
 func _on_button_forward_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.Forward, 10)
+	player.act_character()
 
 func _on_button_left_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.TurnLeft, 10)
+	player.act_character()
 
 func _on_button_backward_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.TurnLeft, 10).enqueue_with_speed(ActionQueue.Action.TurnLeft, 10)
+	player.act_character()
 
 func _on_button_right_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.TurnRight, 10)
+	player.act_character()
 
 func _on_button_roll_right_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.RollRight, 10)
+	player.act_character()
 
 func _on_button_roll_left_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.RollLeft, 10)
+	player.act_character()
 
 func _on_button_fov_up_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().fov_inc()

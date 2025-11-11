@@ -127,8 +127,17 @@ func handle_action_in_queue() -> bool:
 	return true
 
 func snap_90() -> void:
-	for i in 3:
-		rotation[i] = snapped(rotation[i], PI/2)
+	rotation = rotation.snappedf(PI/2)
+
+func rotation_y_to_vt2() -> Vector2i:
+	var dir := snappedi(rotation.y *2/PI, 1)
+	var dir2vt2 := [
+		Vector2i(1,0),
+		Vector2i(0,-1),
+		Vector2i(-1,0),
+		Vector2i(0,1),
+	]
+	return dir2vt2[dir]
 
 func _to_string() -> String:
 	return "Crawler[autowalk:%s act %s /sec view roll:%s]" % [

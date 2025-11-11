@@ -54,7 +54,7 @@ func init_floor_ceiling() -> void:
 	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
 	$Ceiling.init_with_color(sz, sz*2, 0.01, lightcolorlist.pick_random()[0])
 	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/2)
-	
+
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
 	$Floor.position += -shiftsize
 	$Ceiling.position += -shiftsize

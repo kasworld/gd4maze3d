@@ -78,7 +78,7 @@ func make_wallinfo_for_bounce(x:int, y:int) -> Array[Array]:
 		[is_wall_dir_at(x,y, EnumDir.Flag.North), is_wall_dir_at(x,y, EnumDir.Flag.South)],
 	]
 
-# from_pos -> [ {"pos" : to_pos, "dir" : dir} ] 
+# from_pos -> [ {"pos" : to_pos, "dir" : dir} ]
 func make_move_graph() -> Dictionary:
 	var rtn := {}
 	for y in _cells.size():

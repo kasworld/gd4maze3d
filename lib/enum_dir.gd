@@ -1,5 +1,15 @@
 class_name EnumDir
 
+static func RadianToVt2(rad :float) -> Vector2i:
+	var dir := snappedi(rad *2/PI, 1)
+	var dir2vt2 := [
+		Vector2i(1,0),
+		Vector2i(0,-1),
+		Vector2i(-1,0),
+		Vector2i(0,1),
+	]
+	return dir2vt2[dir]
+
 enum Dir {
 	North = 0,
 	West = 1,
@@ -46,6 +56,12 @@ const Dir2Vt = {
 	Dir.South : Vector2i(0, 1),
 	Dir.East : Vector2i(1,0),
 }
+const Vt2ToDir = {
+	 Vector2i(0,-1) : Dir.North,
+	 Vector2i(-1,0) : Dir.West,
+	 Vector2i(0, 1) : Dir.South,
+	 Vector2i(1,0) : Dir.East,
+}
 
 static func dir2rad(d:Dir) -> float:
 	return deg_to_rad(d *90.0)
@@ -76,7 +92,6 @@ const Flag2Str = {
 	Flag.South : "South",
 	Flag.East : "East",
 }
-
 const Str2Flag = {
 	 "North" : Flag.North ,
 	 "West" : Flag.West ,
@@ -107,4 +122,10 @@ const Flag2Vt = {
 	Flag.West : Vector2i(-1,0),
 	Flag.South : Vector2i(0, 1),
 	Flag.East : Vector2i(1,0),
+}
+const Vt2ToFlag = {
+	 Vector2i(0,-1) : Flag.North,
+	 Vector2i(-1,0) : Flag.West,
+	 Vector2i(0, 1) : Flag.South,
+	 Vector2i(1,0) : Flag.East,
 }

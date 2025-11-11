@@ -51,7 +51,6 @@ func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySettin
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
-	start_storey_gap_animation()
 	return self
 
 func move_to_upper_storey() -> void:
@@ -95,7 +94,6 @@ func add_new_storey(stnum :int) -> void:
 	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), 1)
-	start_storey_gap_animation()
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:

@@ -2,6 +2,7 @@ class_name EnumDir
 
 static func RadianToVt2(rad :float) -> Vector2i:
 	var dir := snappedi(rad *2/PI, 1)
+	dir = (dir+4)%4
 	var dir2vt2 := [
 		Vector2i(1,0),
 		Vector2i(0,-1),

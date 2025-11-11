@@ -5,17 +5,19 @@ signal crawler_goal_reached(st :Storey, cr :Crawler)
 
 var crawler_animation := Animation3D.new()
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
-	dir_src = dir_dst
-	pos_src = pos_dst
 	current_action = {}
-	snap_90()
-	if ani.Name == "ani_move":
-		if cr.crawler_num == player_num:
-			if storey.is_goal_pos(cr.pos_src):
-				crawler_goal_reached.emit(storey, cr)
-				return
-			storey.놓인것들줍기(cr)
-		storey.get_mini_map().update_char_pos(cr)
+	rotation = rotation.snappedf(PI/2)
+	match ani.Name:
+		"ani_move":
+			pos_src = pos_dst
+			if cr.crawler_num == player_num:
+				if storey.is_goal_pos(cr.pos_src):
+					crawler_goal_reached.emit(storey, cr)
+					return
+				storey.놓인것들줍기(cr)
+			storey.get_mini_map().update_char_pos(cr)
+		"ani_turn":
+			dir_src = dir_dst
 	act_character()
 
 func start_move_animation(from :Storey, to :Storey) -> void:
@@ -125,10 +127,6 @@ func handle_action_in_queue() -> bool:
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
-
-func snap_90() -> void:
-	rotation = rotation.snappedf(PI/2)
-
 
 func _to_string() -> String:
 	return "Crawler[autowalk:%s act %s /sec view roll:%s]" % [

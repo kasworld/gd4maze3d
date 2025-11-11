@@ -8,7 +8,6 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	dir_src = dir_dst
 	pos_src = pos_dst
 	current_action = {}
-	roll_dir = roll_dir_dst
 	snap_90()
 	if ani.Name == "ani_move":
 		if cr.crawler_num == player_num:
@@ -28,16 +27,18 @@ func start_move_animation(from :Storey, to :Storey) -> void:
 		p1, p2,
 		1.0/current_action.APS)
 
-func start_turn_animation(from :EnumDir.Dir, to :EnumDir.Dir) -> void:
+# rotate y
+func start_turn_animation(rad :float) -> void:
 	crawler_animation.start_rotate("ani_turn", self,
-		Vector3(0, EnumDir.dir2rad(from), 0),
-		Vector3(0, EnumDir.dir2rad(to), 0),
+		rotation,
+		rotation + Vector3(0, rad, 0),
 		1.0/current_action.APS)
 
-func start_roll_animation(from :EnumRoll.Dir, to :EnumRoll.Dir) -> void:
+# rotate z
+func start_roll_animation(rad :float) -> void:
 	crawler_animation.start_rotate("ani_roll", self,
-		Vector3(0, 0, -EnumRoll.dir2rad(from) ),
-		Vector3(0, 0, -EnumRoll.dir2rad(to) ),
+		rotation,
+		rotation + Vector3(0, 0, rad),
 		1.0/current_action.APS)
 
 func _process(_delta: float) -> void:
@@ -50,15 +51,13 @@ var crawler_num :int
 var player_num :int
 var color :Color
 
-var roll_dir :EnumRoll.Dir
-var roll_dir_dst :EnumRoll.Dir
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
 var storey :Storey
-var dir_src : EnumDir.Dir
-var dir_dst : EnumDir.Dir
 var pos_src :Vector2i
 var pos_dst :Vector2i
+var dir_src : EnumDir.Dir
+var dir_dst : EnumDir.Dir
 
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
@@ -110,16 +109,14 @@ func handle_action_in_queue() -> bool:
 				return false # action ignored
 		ActionQueue.Action.TurnLeft:
 			dir_dst = EnumDir.DirTurnLeft[dir_src]
-			start_turn_animation(dir_src, dir_dst)
+			start_turn_animation(PI/2)
 		ActionQueue.Action.TurnRight:
 			dir_dst = EnumDir.DirTurnRight[dir_src]
-			start_turn_animation(dir_src, dir_dst)
+			start_turn_animation(-PI/2)
 		ActionQueue.Action.RollRight:
-			roll_dir_dst = EnumRoll.roll_right(roll_dir)
-			start_roll_animation(roll_dir, roll_dir_dst)
+			start_roll_animation(PI/2)
 		ActionQueue.Action.RollLeft:
-			roll_dir_dst = EnumRoll.roll_left(roll_dir)
-			start_roll_animation(roll_dir, roll_dir_dst)
+			start_roll_animation(-PI/2)
 		ActionQueue.Action.EnterStorey: # for animation only
 			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
@@ -136,16 +133,16 @@ func snap_90() -> void:
 		rotation[i] = snapped(rotation[i], PI/2)
 
 func _to_string() -> String:
-	return "Crawler[autowalk:%s act %s /sec view roll:%s° roll:%s]" % [
-		walk2str(auto_walk_type), action_queue.action_per_second, roll_dir*90, rotation_degrees,
+	return "Crawler[autowalk:%s act %s /sec view roll:%s]" % [
+		walk2str(auto_walk_type), action_queue.action_per_second, rotation_degrees,
 		]
 
 func debug_str() -> String:
-	return "total:%s\nin storey:%s\n%s [%s]\n%s->%s (%d, %d) -> (%d, %d)" % [
+	return "total:%s\nin storey:%s\n%s [%s]\n%s (%d, %d) -> (%d, %d)" % [
 		ActionQueue.stats2str(total_action_stats),
 		ActionQueue.stats2str(storey_action_stats),
 		ActionQueue.action2str(current_action.Action), action_queue,
-		EnumDir.Dir2Str[dir_src], EnumDir.Dir2Str[dir_dst],
+		rotation_degrees,
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
 

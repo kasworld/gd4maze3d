@@ -25,7 +25,7 @@ func _init(msize :Vector2i) -> void:
 		var posidx := _select_visited(visted_pos)
 		pos = visted_pos[posidx]
 		var delpos := true
-		var rnddir := [EnumDir.Flag.North,EnumDir.Flag.South,EnumDir.Flag.East,EnumDir.Flag.West]
+		var rnddir := EnumDir.FlagList.duplicate()
 		rnddir.shuffle()
 		for dir in rnddir:
 			var npos :Vector2i = pos + EnumDir.FlagToVt2[dir]

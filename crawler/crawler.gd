@@ -30,15 +30,13 @@ func start_move_animation(from :Storey, to :Storey) -> void:
 # rotate y
 func start_turn_animation(rad :float) -> void:
 	crawler_animation.start_rotate("ani_turn", self,
-		rotation,
-		rotation + Vector3(0, rad, 0),
+		rotation, rotation + Vector3(0, rad, 0),
 		1.0/current_action.APS)
 
 # rotate z
 func start_roll_animation(rad :float) -> void:
 	crawler_animation.start_rotate("ani_roll", self,
-		rotation,
-		rotation + Vector3(0, 0, rad),
+		rotation, rotation + Vector3(0, 0, rad),
 		1.0/current_action.APS)
 
 func _process(_delta: float) -> void:

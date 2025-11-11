@@ -27,10 +27,6 @@ func copy_position_rotation(n :Node3D) -> void:
 	position = n.position
 	rotation = n.rotation
 
-func snap_90() -> void:
-	for i in 3:
-		rotation[i] = snapped(rotation[i], PI/2)
-
 func _to_string() -> String:
 	return "MovingCameraLight%d[FOV:%s, rotation:%s]" % [number, fov, rotation_degrees ]
 

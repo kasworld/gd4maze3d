@@ -185,7 +185,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		var b := make_plane_from_subviewport(line2d_subviewport)
 		$WallDeco.add_child(b)
 		b.position = $Maze3D.deco_pos_by_dir(x,y,dir)
-		b.rotate_y(EnumDir.dir2rad(EnumDir.Flag2Dir[dir]))
+		b.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
 		return
 
 	if randf() < storey_setting.MakeClockCalWallRate:
@@ -199,7 +199,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			n = preload("res://analogclock3d/analog_clock_3d.tscn").instantiate()
 			n.init(min(maze3d_setting.LaneW,maze3d_setting.StoryH)/2,depth, 4, 9.0, false)
 		n.rotate_z(PI/2)
-		n.rotate_y(EnumDir.dir2rad(1+EnumDir.Flag2Dir[dir]))
+		n.rotate_y(EnumDir.DirToRadian(1+EnumDir.FlagToDir[dir]))
 		n.position = $Maze3D.deco_pos_by_dir(x,y,dir)
 		$WallDeco.add_child(n)
 
@@ -226,7 +226,7 @@ func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
 	return sp
 
 func can_move(x :int , y :int, dir :EnumDir.Dir) -> bool:
-	return $Maze3D.maze_cells.is_open_dir_at(x,y, EnumDir.Dir2Flag[dir] )
+	return $Maze3D.maze_cells.is_open_dir_at(x,y, EnumDir.DirToFlag[dir] )
 
 func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Maze3D.view_floor_ceiling(f,c)

@@ -178,7 +178,7 @@ func make_walllines_known() -> void:
 # cell wall[y*2+1][x*2+1]
 # wall wall[y*2][x*2]
 func calc_wall_pos(x :int, y:int, dir :EnumDir.Dir) -> Vector2i:
-	return Vector2i(x*2+1,y*2+1) + EnumDir.Dir2Vt[dir]
+	return Vector2i(x*2+1,y*2+1) + EnumDir.DirToVt2[dir]
 func is_known_wall_at(x :int, y:int, dir :EnumDir.Dir) -> bool:
 	var wpos := calc_wall_pos(x,y,dir)
 	return walls_known[wpos.y][wpos.x] != 0
@@ -194,7 +194,7 @@ func add_known_wall_at(x:int,y :int, dir :EnumDir.Dir) -> void:
 func update_knonw_walls_by_pos(x:int,y :int) -> void:
 	var walldir := storey.get_maze_cells().get_wall_dir_at(x,y)
 	for d in walldir:
-		add_known_wall_at(x,y,EnumDir.Flag2Dir[d])
+		add_known_wall_at(x,y,EnumDir.FlagToDir[d])
 
 func add_wall_at_to_walllines(x:int,y :int, dir :EnumDir.Dir,wl :PackedVector2Array ) -> void:
 	match dir:

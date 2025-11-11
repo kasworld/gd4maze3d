@@ -101,7 +101,7 @@ func handle_action_in_queue() -> bool:
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				pos_dst = pos_src + EnumDir.Dir2Vt[dir_src]
+				pos_dst = pos_src + EnumDir.DirToVt2[dir_src]
 				start_move_animation(storey,storey)
 			else :
 				return false # action ignored

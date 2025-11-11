@@ -28,7 +28,7 @@ func _init(msize :Vector2i) -> void:
 		var rnddir := [EnumDir.Flag.North,EnumDir.Flag.South,EnumDir.Flag.East,EnumDir.Flag.West]
 		rnddir.shuffle()
 		for dir in rnddir:
-			var npos :Vector2i = pos + EnumDir.Flag2Vt[dir]
+			var npos :Vector2i = pos + EnumDir.FlagToVt2[dir]
 			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
 				_open_dir_at(pos.x,pos.y, dir)
 				_open_dir_at(npos.x,npos.y, EnumDir.FlagOpppsite[dir])
@@ -67,7 +67,7 @@ func get_wall_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
 func open_dir_str(x :int , y :int) -> String:
 	var rtn := ""
 	for d in get_open_dir_at(x,y):
-		rtn += "%s " %[EnumDir.Flag2Str[d]]
+		rtn += "%s " %[EnumDir.FlagToStr[d]]
 	return rtn
 
 # wall [axis:3][2]bool : [ [-x,+x], [-y,+y], [-z,+z] ]
@@ -86,7 +86,7 @@ func make_move_graph() -> Dictionary:
 			var val := []
 			var srcpos := Vector2i(x,y)
 			for fdir in get_open_dir_at(x,y):
-				var topos :Vector2i = srcpos + EnumDir.Flag2Vt[fdir]
-				val.append({"pos":topos, "dir": EnumDir.Flag2Str[fdir] })
+				var topos :Vector2i = srcpos + EnumDir.FlagToVt2[fdir]
+				val.append({"pos":topos, "dir": EnumDir.FlagToStr[fdir] })
 			rtn[srcpos] = val
 	return rtn

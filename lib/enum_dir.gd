@@ -18,13 +18,13 @@ enum Dir {
 }
 const DirList = [Dir.North,Dir.West,Dir.South,Dir.East]
 
-const Dir2Str = {
+const DirToStr = {
 	Dir.North : "North",
 	Dir.West : "West",
 	Dir.South : "South",
 	Dir.East : "East",
 }
-const Str2Dir = {
+const StrToDir = {
 	 "North" : Dir.North ,
 	 "West" : Dir.West ,
 	 "South" : Dir.South ,
@@ -50,7 +50,7 @@ const DirTurnRight = {
 	Dir.West : Dir.North,
 }
 
-const Dir2Vt = {
+const DirToVt2 = {
 	Dir.North : Vector2i(0,-1),
 	Dir.West : Vector2i(-1,0),
 	Dir.South : Vector2i(0, 1),
@@ -63,7 +63,7 @@ const Vt2ToDir = {
 	 Vector2i(1,0) : Dir.East,
 }
 
-static func dir2rad(d:Dir) -> float:
+static func DirToRadian(d:Dir) -> float:
 	return deg_to_rad(d *90.0)
 
 enum Flag {
@@ -74,25 +74,25 @@ enum Flag {
 }
 const FlagList = [Flag.North,Flag.West,Flag.South,Flag.East]
 
-const Flag2Dir = {
+const FlagToDir = {
 	Flag.North : Dir.North,
 	Flag.West : Dir.West,
 	Flag.South : Dir.South,
 	Flag.East : Dir.East,
 }
-const Dir2Flag = {
+const DirToFlag = {
 	Dir.North : Flag.North,
 	Dir.West : Flag.West,
 	Dir.South : Flag.South,
 	Dir.East : Flag.East,
 }
-const Flag2Str = {
+const FlagToStr = {
 	Flag.North : "North",
 	Flag.West : "West",
 	Flag.South : "South",
 	Flag.East : "East",
 }
-const Str2Flag = {
+const StrToFlag = {
 	 "North" : Flag.North ,
 	 "West" : Flag.West ,
 	 "South" : Flag.South ,
@@ -117,7 +117,7 @@ const FlagTurnRight = {
 	Flag.South : Flag.West,
 	Flag.West : Flag.North,
 }
-const Flag2Vt = {
+const FlagToVt2 = {
 	Flag.North : Vector2i(0,-1),
 	Flag.West : Vector2i(-1,0),
 	Flag.South : Vector2i(0, 1),

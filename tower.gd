@@ -10,12 +10,12 @@ func start_rotate_animation() -> void:
 	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
 	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
 
-func tower_rotate_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
+func tower_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_rot":
 		start_rotate_animation()
 
-func init_rotate_animaion() -> void:
-	tower_animation.animation_ended.connect(tower_rotate_animation_ended)
+func init_tower_animaion() -> void:
+	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_rotate_animation()
 
 var tower_num :int
@@ -54,7 +54,7 @@ func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySettin
 		add_new_storey(i)
 	cur_storey = storey_list[0]
 	if deco_ani:
-		init_rotate_animaion()
+		init_tower_animaion()
 	return self
 
 func move_to_upper_storey() -> void:

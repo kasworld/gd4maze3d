@@ -21,12 +21,12 @@ func start_rotate_animation() -> void:
 	diff.y = [PI/2,-PI/2].pick_random()
 	storey_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
 
-func storey_rotate_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
+func storey_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	if ani.Name == "ani_rot":
 		start_rotate_animation()
 
-func init_rotate_animaion() -> void:
-	storey_animation.animation_ended.connect(storey_rotate_animation_ended)
+func init_storey_animaion() -> void:
+	storey_animation.animation_ended.connect(storey_animation_ended)
 	start_rotate_animation()
 
 var deco_ani :bool
@@ -102,7 +102,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting, deco_ania :bool=false)
 	$Label3D.position += -shiftsize
 	$WallDeco.position += -shiftsize
 	if deco_ani:
-		init_rotate_animaion()
+		init_storey_animaion()
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:

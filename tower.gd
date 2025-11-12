@@ -80,6 +80,10 @@ func start_storey_gap_animation() -> void:
 		new_pos.y = calc_storey_base_y_pos(i)
 		st.storey_animation.start_move("ani_gap", st, st.position, new_pos, 1)
 
+func set_all_storey_position() -> void:
+	for i in storey_list.size():
+		storey_list[i].position.y = calc_storey_base_y_pos(i)
+
 func add_new_storey(stnum :int) -> void:
 	var ms := maze3d_setting.duplicate()
 	ms.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
@@ -91,7 +95,7 @@ func add_new_storey(stnum :int) -> void:
 	st.set_wallview_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
-	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
+	set_all_storey_position()
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), 1)
 

@@ -29,7 +29,7 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(PlayerNumber)
 	MovingCameraLight.SetCurrentCamera(0)
 
-	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 2
+	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 3
 	for i in DecoTowerCount:
 		var rd := 2*PI/DecoTowerCount *i
 		var h := randfn(0, DecoTowerCount)

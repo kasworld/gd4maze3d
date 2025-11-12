@@ -22,29 +22,26 @@ func start_rotate_animation() -> void:
 	storey_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
 
 func start_shift_out_animation() -> void:
-	var diff := Vector3.ZERO
-	diff[[0,2].pick_random()] = maze3d_setting.CalcDiagonalLengthV2()
-	storey_animation.start_move("ani_shift_out", self, position, position + diff, randf_range(1,3))
+	var subfield :int = [0,2].pick_random()
+	var diff = maze3d_setting.CalcDiagonalLengthV2() /2
+	storey_animation.start_move_subfield("ani_shift_out", self, subfield,  position[subfield], position[subfield] + diff, randf_range(1,3))
 
-func start_shift_in_animation() -> void:
-	var dst := position
-	dst.x = 0
-	dst.z = 0
-	storey_animation.start_move("ani_shift_in", self, position, dst, randf_range(1,3))
+func start_shift_in_animation(subfield :int) -> void:
+	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, randf_range(1,3) )
 
 func storey_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_rot":
 			start_rotate_animation()
 		"ani_shift_out":
-			start_shift_in_animation()
+			start_shift_in_animation(ani.SubField)
 		"ani_shift_in":
 			start_shift_out_animation()
 
 func init_storey_animaion() -> void:
 	storey_animation.animation_ended.connect(storey_animation_ended)
 	start_rotate_animation()
-	#start_shift_out_animation()
+	start_shift_out_animation()
 
 var deco_ani :bool
 var maze3d_setting :Maze3DSetting

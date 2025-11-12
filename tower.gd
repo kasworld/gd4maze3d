@@ -11,8 +11,9 @@ func start_rotate_animation() -> void:
 	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
 
 func tower_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
-	if ani.Name == "ani_rot":
-		start_rotate_animation()
+	match ani.Name:
+		"ani_rot":
+			start_rotate_animation()
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)

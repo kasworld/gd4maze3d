@@ -87,8 +87,12 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.enqueue_with_speed(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
 	storey = st
 	pos_dst = pos
+	dir_src = EnumDir.Dir.North
+	dir_dst = dir_src
+	rotation.y = 0
 	storey_action_stats = ActionQueue.new_stats()
 	action_queue.rand_act_speed()
+	rotation = rotation.snappedf(PI/2)
 	act_character()
 
 func act_character() -> void:

@@ -20,7 +20,7 @@ func _ready() -> void:
 	default_maze3d_setting = Maze3DSetting.new_default()
 	default_storey_setting = StoreySetting.new_default(default_maze3d_setting.MazeSize)
 	var tw :Tower = tower_scene.instantiate().init(
-		0, 3,3,1,default_storey_setting, default_maze3d_setting, false,
+		0, 3,3,1,default_storey_setting, default_maze3d_setting, true,
 		)
 	$TowerContainer.add_child(tw)
 

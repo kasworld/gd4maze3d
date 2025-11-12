@@ -16,6 +16,20 @@ var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	storey_animation.handle_animation()
 
+func start_rotate_animation() -> void:
+	var diff := Vector3.ZERO
+	diff.y = [PI/2,-PI/2].pick_random()
+	storey_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
+
+func storey_rotate_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
+	if ani.Name == "ani_rot":
+		start_rotate_animation()
+
+func init_rotate_animaion() -> void:
+	storey_animation.animation_ended.connect(storey_rotate_animation_ended)
+	start_rotate_animation()
+
+var deco_ani :bool
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_num :int
@@ -31,9 +45,10 @@ var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 �
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
 
-func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
+func init(num :int, ss :StoreySetting, ms :Maze3DSetting, deco_ania :bool=false) -> Storey:
 	maze3d_setting = ms
 	storey_setting = ss
+	deco_ani = deco_ania
 
 	if num % 2 ==0 :
 		$Maze3D.init_with_mat(maze3d_setting, add_wall_deco_at,
@@ -86,6 +101,8 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting ) -> Storey:
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
 	$Label3D.position += -shiftsize
 	$WallDeco.position += -shiftsize
+	if deco_ani:
+		init_rotate_animaion()
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:

@@ -20,7 +20,7 @@ func _ready() -> void:
 	default_maze3d_setting = Maze3DSetting.new_default()
 	default_storey_setting = StoreySetting.new_default(default_maze3d_setting.MazeSize)
 	var tw :Tower = tower_scene.instantiate().init(
-		0, 3,3,1,default_storey_setting, default_maze3d_setting,
+		0, 3,3,1,default_storey_setting, default_maze3d_setting, false,
 		)
 	$TowerContainer.add_child(tw)
 
@@ -48,12 +48,11 @@ func get_current_tower() -> Tower:
 
 func add_deco_tower(i :int, p :Vector3) -> Tower:
 	var deco_tower :Tower = tower_scene.instantiate().init(
-		i, 3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(),
+		i, 3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(), true,
 		)
 	$TowerContainer.add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()
-	deco_tower.init_rotate_animaion()
 	return deco_tower
 
 func _on_vpsize_changed() -> void:

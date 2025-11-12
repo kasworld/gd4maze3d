@@ -19,6 +19,7 @@ func init_rotate_animaion() -> void:
 	start_rotate_animation()
 
 var tower_num :int
+var deco_ani :bool
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
 
@@ -41,16 +42,19 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting ,ms :Maze3DSetting) -> Tower:
+func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting ,ms :Maze3DSetting, deco_ania :bool=false) -> Tower:
 	tower_num = num
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap
 	storey_setting = ss
 	maze3d_setting = ms
+	deco_ani = deco_ania
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
+	if deco_ani:
+		init_rotate_animaion()
 	return self
 
 func move_to_upper_storey() -> void:
@@ -89,7 +93,7 @@ func add_new_storey(stnum :int) -> void:
 	ms.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
-	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
+	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms, deco_ani)
 	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 	st.view_pillars(view_pillars)
 	st.set_wallview_mode(view_walls)

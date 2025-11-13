@@ -10,10 +10,16 @@ func start_rotate_animation() -> void:
 	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
 	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
 
+func start_reset_rotate_animation() -> void:
+	tower_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, 1)
+
 func tower_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_rot":
-			start_rotate_animation()
+			if randi_range(0,5) == 0:
+				start_reset_rotate_animation()
+			else:
+				start_rotate_animation()
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)

@@ -62,7 +62,7 @@ func _process(_delta: float) -> void:
 	update_info()
 	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
 		$MovingCameraLight.move_camera_around(
-			get_current_tower().cur_storey.position,
+			Vector3.ZERO,
 			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
 			get_current_tower().calc_height() *2,
 			)

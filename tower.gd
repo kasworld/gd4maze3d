@@ -5,28 +5,28 @@ var tower_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	tower_animation.handle_animation()
 
-func start_rotate_animation() -> void:
+func start_rotate_animation(ani_dur :float) -> void:
 	var diff := Vector3.ZERO
 	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
-	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
+	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, ani_dur)
 
-func start_reset_rotate_animation() -> void:
-	tower_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, 1)
+func start_reset_rotate_animation(ani_dur :float) -> void:
+	tower_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, ani_dur)
 
 func tower_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_rot":
 			if need_reset_rotation_animation:
 				need_reset_rotation_animation = false
-				start_reset_rotate_animation()
+				start_reset_rotate_animation(2)
 			else:
-				start_rotate_animation()
+				start_rotate_animation(2)
 				if randi_range(0,5) == 0:
 					set_need_reset_animation()
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)
-	start_rotate_animation()
+	start_rotate_animation(2)
 
 func set_need_reset_animation() -> void:
 	for st in storey_list:

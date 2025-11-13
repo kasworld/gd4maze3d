@@ -16,24 +16,23 @@ var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	storey_animation.handle_animation()
 
-func start_rotate_animation() -> void:
+func start_rotate_animation(ani_dur :float) -> void:
 	var diff := Vector3.ZERO
 	diff.y = [PI/2,-PI/2].pick_random()
-	storey_animation.start_rotate("ani_rot", self, rotation, rotation + diff, randf_range(1,3))
+	storey_animation.start_rotate("ani_rot", self, rotation, rotation + diff, ani_dur)
 
-func start_shift_out_animation() -> void:
+func start_shift_out_animation(ani_dur :float) -> void:
 	var subfield :int = [0,2].pick_random()
 	var diff = maze3d_setting.CalcDiagonalLengthV2() /2
-	storey_animation.start_move_subfield("ani_shift_out", self, subfield,  position[subfield], position[subfield] + diff, randf_range(1,3))
+	storey_animation.start_move_subfield("ani_shift_out", self, subfield,  position[subfield], position[subfield] + diff, ani_dur)
 
-func start_shift_in_animation(subfield :int) -> void:
-	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, randf_range(1,3) )
+func start_shift_in_animation(subfield :int, ani_dur :float) -> void:
+	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, ani_dur )
 
-func start_reset_rotate_animation() -> void:
-	storey_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, randf_range(1,3))
+func start_reset_rotate_animation(ani_dur :float) -> void:
+	storey_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, ani_dur)
 
-func start_reset_position_animation() -> void:
-	var ani_dur := 1.0
+func start_reset_position_animation(ani_dur :float) -> void:
 	var subfield := 0
 	# prevent double call ani_shift_in end signal
 	storey_animation.start_move_subfield( "_ani_shift_in", self, subfield, position[subfield], 0, ani_dur)
@@ -45,28 +44,28 @@ func storey_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 		"ani_rot":
 			if need_reset_rotation_animation:
 				need_reset_rotation_animation = false
-				start_reset_rotate_animation()
+				start_reset_rotate_animation(2)
 			else:
-				start_rotate_animation()
+				start_rotate_animation(2)
 		"ani_shift_out":
 			if need_reset_position_animation:
 				need_reset_position_animation = false
-				start_reset_position_animation()
+				start_reset_position_animation(2)
 			else:
-				start_shift_in_animation(ani.SubField)
+				start_shift_in_animation(ani.SubField,2)
 		"ani_shift_in":
 			if need_reset_position_animation:
 				need_reset_position_animation = false
-				start_reset_position_animation()
+				start_reset_position_animation(3)
 			else:
-				start_shift_out_animation()
+				start_shift_out_animation(2)
 		_ :
 			pass
 
 func init_storey_animaion() -> void:
 	storey_animation.animation_ended.connect(storey_animation_ended)
-	start_rotate_animation()
-	start_shift_out_animation()
+	start_rotate_animation(2)
+	start_shift_out_animation(2)
 
 func set_need_reset_animation() -> void:
 	need_reset_rotation_animation = true

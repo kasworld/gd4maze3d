@@ -35,26 +35,45 @@ func start_reset_rotate_animation() -> void:
 func start_reset_position_animation() -> void:
 	var ani_dur := 1.0
 	var subfield := 0
-	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, ani_dur)
+	# prevent double call ani_shift_in end signal
+	storey_animation.start_move_subfield( "_ani_shift_in", self, subfield, position[subfield], 0, ani_dur)
 	subfield = 2
 	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, ani_dur)
 
 func storey_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_rot":
-			if randi_range(0,5) == 0:
+			if need_reset_rotation_animation:
+				need_reset_rotation_animation = false
 				start_reset_rotate_animation()
 			else:
 				start_rotate_animation()
 		"ani_shift_out":
-			start_shift_in_animation(ani.SubField)
+			if need_reset_position_animation:
+				need_reset_position_animation = false
+				start_reset_position_animation()
+			else:
+				start_shift_in_animation(ani.SubField)
 		"ani_shift_in":
-			start_shift_out_animation()
+			if need_reset_position_animation:
+				need_reset_position_animation = false
+				start_reset_position_animation()
+			else:
+				start_shift_out_animation()
+		_ :
+			pass
 
 func init_storey_animaion() -> void:
 	storey_animation.animation_ended.connect(storey_animation_ended)
 	start_rotate_animation()
 	start_shift_out_animation()
+
+func set_need_reset_animation() -> void:
+	need_reset_rotation_animation = true
+	need_reset_position_animation = true
+
+var need_reset_rotation_animation :bool
+var need_reset_position_animation :bool
 
 var deco_ani :bool
 var maze3d_setting :Maze3DSetting

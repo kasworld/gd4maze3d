@@ -16,14 +16,24 @@ func start_reset_rotate_animation() -> void:
 func tower_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
 		"ani_rot":
-			if randi_range(0,5) == 0:
+			if need_reset_rotation_animation:
+				need_reset_rotation_animation = false
 				start_reset_rotate_animation()
 			else:
 				start_rotate_animation()
+				if randi_range(0,5) == 0:
+					set_need_reset_animation()
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_rotate_animation()
+
+func set_need_reset_animation() -> void:
+	for st in storey_list:
+		st.set_need_reset_animation()
+	need_reset_rotation_animation = true
+
+var need_reset_rotation_animation :bool
 
 var tower_num :int
 var deco_ani :bool

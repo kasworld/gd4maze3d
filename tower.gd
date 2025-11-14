@@ -7,38 +7,25 @@ var tower_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	tower_animation.handle_animation()
 
-func start_rotate_animation(ani_dur :float) -> void:
-	var subfield :int = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y, Vector3.Axis.AXIS_Z].pick_random()
+func start_rotate_animation(nd :Node3D, subfield :int, ani_dur :float) -> void:
 	var diff :float = [PI/2,-PI/2].pick_random()
-	tower_animation.start_rotate_subfield("ani_rot", self, subfield, rotation[subfield], rotation[subfield] + diff, ani_dur)
+	tower_animation.start_rotate_subfield("ani_rot", nd, subfield , nd.rotation[subfield], nd.rotation[subfield] + diff, ani_dur)
 
-func start_storey_rotate_animation(st :Storey, ani_dur :float) -> void:
-	var diff :float = [PI/2,-PI/2].pick_random()
-	tower_animation.start_rotate_subfield("ani_rot", st, Vector3.Axis.AXIS_Y , st.rotation.y, st.rotation.y + diff, ani_dur)
+func start_reset_rotate_animation(nd :Node3D, ani_dur :float) -> void:
+	tower_animation.start_rotate("ani_rot", nd, nd.rotation, Vector3.ZERO, ani_dur)
 
-func start_reset_rotate_animation(ani_dur :float) -> void:
-	tower_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, ani_dur)
+func start_shift_out_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
+	var diff := maze3d_setting.CalcDiagonalLengthV2() /2
+	tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, ani_dur)
 
-func start_reset_storey_rotate_animation(st :Storey, ani_dur :float) -> void:
-	tower_animation.start_rotate("ani_rot", st, st.rotation, Vector3.ZERO, ani_dur)
-
-func start_storey_shift_out_animation(st :Storey, ani_dur :float) -> void:
-	var subfield :int = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random()
-	var diff := st.maze3d_setting.CalcDiagonalLengthV2() /2
-	tower_animation.start_move_subfield("ani_shift_out", st, subfield,  st.position[subfield], st.position[subfield] + diff, ani_dur)
-
-func start_storey_shift_in_animation(st :Storey, subfield :int, ani_dur :float) -> void:
+func start_shift_in_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
 	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur )
 
-func start_reset_storey_position_animation(st :Storey, ani_dur :float) -> void:
-	var subfield := Vector3.Axis.AXIS_X
-	# prevent double call ani_shift_in end signal
-	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur)
-	subfield = Vector3.Axis.AXIS_Z
-	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur)
+func start_reset_position_animation(st :Node3D, ani_dur :float) -> void:
+	start_shift_in_animation(st, Vector3.Axis.AXIS_X, ani_dur)
+	start_shift_in_animation(st, Vector3.Axis.AXIS_Z, ani_dur)
 
 func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
-	#print_debug(node , " ", ani, " ", tower_animation.get_animation_count())
 	if tower_animation.is_empty():
 		if randi_range(0,5) == 0:
 			start_reset_all_animation()
@@ -47,24 +34,24 @@ func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
 
 func start_reset_all_animation() -> void:
 	shift_count = 0
-	start_reset_rotate_animation(AnimationDuration)
+	start_reset_rotate_animation(self, AnimationDuration)
 	for st in storey_list:
-		start_reset_storey_rotate_animation(st, AnimationDuration)
-		start_reset_storey_position_animation(st, AnimationDuration)
+		start_reset_rotate_animation(st, AnimationDuration)
+		start_reset_position_animation(st, AnimationDuration)
 
 var shift_count := 0
 func start_all_animation() -> void:
 	shift_count += 1
-	start_rotate_animation(AnimationDuration)
+	start_rotate_animation(self, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y, Vector3.Axis.AXIS_Z].pick_random(), AnimationDuration)
 	for st in storey_list:
-		start_storey_rotate_animation(st, AnimationDuration)
+		start_rotate_animation(st, Vector3.Axis.AXIS_Y, AnimationDuration)
 		if shift_count % 2 == 0 :
 			if is_zero_approx(st.position.x):
-				start_storey_shift_in_animation(st, 2, AnimationDuration)
+				start_shift_in_animation(st, Vector3.Axis.AXIS_Z, AnimationDuration)
 			else:
-				start_storey_shift_in_animation(st, 0, AnimationDuration)
+				start_shift_in_animation(st, Vector3.Axis.AXIS_X, AnimationDuration)
 		else:
-			start_storey_shift_out_animation(st, AnimationDuration)
+			start_shift_out_animation(st, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random(), AnimationDuration)
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)

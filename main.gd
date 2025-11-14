@@ -38,7 +38,7 @@ func _ready() -> void:
 	if DecoTowerCount != 0:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
-	$AxisArrow3D.set_size(5)
+	$AxisArrow3D.set_size(default_maze3d_setting.CalcDiagonalLengthV2()/2)
 
 	enter_next_storey(null)
 	update_button_text()

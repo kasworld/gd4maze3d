@@ -121,16 +121,13 @@ func start_scale_subfield(name :String, node :Node3D, sub_index :int, src_val :f
 
 func handle_animation() -> void:
 	var timenow := Time.get_unix_time_from_system()
-	var new_list :Array[Dictionary]
-	var end_list :Array = []
-	for ani in animation_list:
+	for i in animation_list.size():
+		var ani :Dictionary = animation_list.pop_front()
 		if ani.Node3d == null:
 			continue
 		var rate :float = (timenow - ani.StartTick) / ani.DurSec
 		if rate >= 1.0:
-			end_list.append([ani.Node3d, ani])
-			continue
-		new_list.append(ani)
+			rate = 1.0
 		match ani.Field:
 			"position":
 				if ani.has("SubField"):
@@ -147,8 +144,7 @@ func handle_animation() -> void:
 					ani.Node3d.scale[ani.SubField] = lerpf(ani.StartValue, ani.EndValue, rate)
 				else:
 					ani.Node3d.scale = ani.StartValue.lerp(ani.EndValue, rate)
-	animation_list = new_list
-	# signal send AFTER animation_list update
-	# for correct animation count on siganl receive
-	for el in end_list:
-		animation_ended.emit( el[0], el[1])
+		if rate >= 1.0:
+			animation_ended.emit(ani.Node3d, ani)
+		else:
+			animation_list.push_back(ani)

@@ -46,10 +46,10 @@ func start_all_animation() -> void:
 	for st in storey_list:
 		start_rotate_animation(st, Vector3.Axis.AXIS_Y, AnimationDuration)
 		if shift_count % 2 == 0 :
-			if is_zero_approx(st.position.x):
-				start_shift_in_animation(st, Vector3.Axis.AXIS_Z, AnimationDuration)
-			else:
+			if not is_zero_approx(st.position.x):
 				start_shift_in_animation(st, Vector3.Axis.AXIS_X, AnimationDuration)
+			if not is_zero_approx(st.position.z):
+				start_shift_in_animation(st, Vector3.Axis.AXIS_Z, AnimationDuration)
 		else:
 			start_shift_out_animation(st, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random(), AnimationDuration)
 

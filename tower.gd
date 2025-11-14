@@ -13,9 +13,8 @@ func start_rotate_animation(ani_dur :float) -> void:
 	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, ani_dur)
 
 func start_storey_rotate_animation(st :Storey, ani_dur :float) -> void:
-	var diff := Vector3.ZERO
-	diff.y = [PI/2,-PI/2].pick_random()
-	tower_animation.start_rotate("ani_rot", st, st.rotation, st.rotation + diff, ani_dur)
+	var diff = [PI/2,-PI/2].pick_random()
+	tower_animation.start_rotate_subfield("ani_rot", st, 1, st.rotation.y, st.rotation.y + diff, ani_dur)
 
 func start_reset_rotate_animation(ani_dur :float) -> void:
 	tower_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, ani_dur)

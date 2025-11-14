@@ -1,6 +1,8 @@
 extends Node3D
 class_name Tower
 
+const AnimationDuration := 2.0
+
 var tower_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	tower_animation.handle_animation()
@@ -10,28 +12,64 @@ func start_rotate_animation(ani_dur :float) -> void:
 	diff[randi_range(0,2)] = [PI/2,-PI/2].pick_random()
 	tower_animation.start_rotate("ani_rot", self, rotation, rotation + diff, ani_dur)
 
+func start_storey_rotate_animation(st :Storey, ani_dur :float) -> void:
+	var diff := Vector3.ZERO
+	diff.y = [PI/2,-PI/2].pick_random()
+	tower_animation.start_rotate("ani_rot", st, st.rotation, st.rotation + diff, ani_dur)
+
 func start_reset_rotate_animation(ani_dur :float) -> void:
 	tower_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, ani_dur)
 
-func tower_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
-	match ani.Name:
-		"ani_rot":
-			if need_reset_rotation_animation:
-				need_reset_rotation_animation = false
-				start_reset_rotate_animation(2)
+func start_reset_storey_rotate_animation(st :Storey, ani_dur :float) -> void:
+	tower_animation.start_rotate("ani_rot", st, st.rotation, Vector3.ZERO, ani_dur)
+
+func start_storey_shift_out_animation(st :Storey, ani_dur :float) -> void:
+	var subfield :int = [0,2].pick_random()
+	var diff = maze3d_setting.CalcDiagonalLengthV2() /2
+	tower_animation.start_move_subfield("ani_shift_out", st, subfield,  st.position[subfield], st.position[subfield] + diff, ani_dur)
+
+func start_storey_shift_in_animation(st :Storey, subfield :int, ani_dur :float) -> void:
+	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur )
+
+func start_reset_storey_position_animation(st :Storey, ani_dur :float) -> void:
+	var subfield := 0
+	# prevent double call ani_shift_in end signal
+	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur)
+	subfield = 2
+	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur)
+
+func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
+	#print_debug(node , " ", ani, " ", tower_animation.get_animation_count())
+	if tower_animation.is_empty():
+		if randi_range(0,5) == 0:
+			start_reset_all_animation()
+		else:
+			start_all_animation()
+
+func start_reset_all_animation() -> void:
+	shift_count = 0
+	start_reset_rotate_animation(AnimationDuration)
+	for st in storey_list:
+		start_reset_storey_rotate_animation(st, AnimationDuration)
+		start_reset_storey_position_animation(st, AnimationDuration)
+
+var shift_count := 0
+func start_all_animation() -> void:
+	shift_count += 1
+	start_rotate_animation(AnimationDuration)
+	for st in storey_list:
+		start_storey_rotate_animation(st, AnimationDuration)
+		if shift_count % 2 == 1 :
+			if is_zero_approx(st.position.x):
+				start_storey_shift_in_animation(st, 2, AnimationDuration)
 			else:
-				start_rotate_animation(2)
-				if randi_range(0,5) == 0:
-					set_need_reset_animation()
+				start_storey_shift_in_animation(st, 0, AnimationDuration)
+		else:
+			start_storey_shift_out_animation(st, AnimationDuration)
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)
-	start_rotate_animation(2)
-
-func set_need_reset_animation() -> void:
-	for st in storey_list:
-		st.set_need_reset_animation()
-	need_reset_rotation_animation = true
+	start_rotate_animation(AnimationDuration)
 
 var need_reset_rotation_animation :bool
 
@@ -110,7 +148,7 @@ func add_new_storey(stnum :int) -> void:
 	ms.MazeSize += Vector2i(randi_range(-1,1), randi_range(-1,1) )
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
-	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms, deco_ani)
+	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
 	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
 	st.view_pillars(view_pillars)
 	st.set_wallview_mode(view_walls)

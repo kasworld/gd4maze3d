@@ -16,65 +16,6 @@ var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	storey_animation.handle_animation()
 
-func start_rotate_animation(ani_dur :float) -> void:
-	var diff := Vector3.ZERO
-	diff.y = [PI/2,-PI/2].pick_random()
-	storey_animation.start_rotate("ani_rot", self, rotation, rotation + diff, ani_dur)
-
-func start_shift_out_animation(ani_dur :float) -> void:
-	var subfield :int = [0,2].pick_random()
-	var diff = maze3d_setting.CalcDiagonalLengthV2() /2
-	storey_animation.start_move_subfield("ani_shift_out", self, subfield,  position[subfield], position[subfield] + diff, ani_dur)
-
-func start_shift_in_animation(subfield :int, ani_dur :float) -> void:
-	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, ani_dur )
-
-func start_reset_rotate_animation(ani_dur :float) -> void:
-	storey_animation.start_rotate("ani_rot", self, rotation, Vector3.ZERO, ani_dur)
-
-func start_reset_position_animation(ani_dur :float) -> void:
-	var subfield := 0
-	# prevent double call ani_shift_in end signal
-	storey_animation.start_move_subfield( "_ani_shift_in", self, subfield, position[subfield], 0, ani_dur)
-	subfield = 2
-	storey_animation.start_move_subfield( "ani_shift_in", self, subfield, position[subfield], 0, ani_dur)
-
-func storey_animation_ended(_tw :Node3D, ani :Dictionary) -> void:
-	match ani.Name:
-		"ani_rot":
-			if need_reset_rotation_animation:
-				need_reset_rotation_animation = false
-				start_reset_rotate_animation(2)
-			else:
-				start_rotate_animation(2)
-		"ani_shift_out":
-			if need_reset_position_animation:
-				need_reset_position_animation = false
-				start_reset_position_animation(2)
-			else:
-				start_shift_in_animation(ani.SubField,2)
-		"ani_shift_in":
-			if need_reset_position_animation:
-				need_reset_position_animation = false
-				start_reset_position_animation(3)
-			else:
-				start_shift_out_animation(2)
-		_ :
-			pass
-
-func init_storey_animaion() -> void:
-	storey_animation.animation_ended.connect(storey_animation_ended)
-	start_rotate_animation(2)
-	start_shift_out_animation(2)
-
-func set_need_reset_animation() -> void:
-	need_reset_rotation_animation = true
-	need_reset_position_animation = true
-
-var need_reset_rotation_animation :bool
-var need_reset_position_animation :bool
-
-var deco_ani :bool
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_num :int
@@ -90,10 +31,9 @@ var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 �
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
 
-func init(num :int, ss :StoreySetting, ms :Maze3DSetting, deco_ania :bool=false) -> Storey:
+func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
 	maze3d_setting = ms
 	storey_setting = ss
-	deco_ani = deco_ania
 
 	if num % 2 ==0 :
 		$Maze3D.init_with_mat(maze3d_setting, add_wall_deco_at,
@@ -146,8 +86,6 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting, deco_ania :bool=false)
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
 	$Label3D.position += -shiftsize
 	$WallDeco.position += -shiftsize
-	if deco_ani:
-		init_storey_animaion()
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:

@@ -24,7 +24,7 @@ func start_reset_storey_rotate_animation(st :Storey, ani_dur :float) -> void:
 
 func start_storey_shift_out_animation(st :Storey, ani_dur :float) -> void:
 	var subfield :int = [0,2].pick_random()
-	var diff = maze3d_setting.CalcDiagonalLengthV2() /2
+	var diff = st.maze3d_setting.CalcDiagonalLengthV2() /2
 	tower_animation.start_move_subfield("ani_shift_out", st, subfield,  st.position[subfield], st.position[subfield] + diff, ani_dur)
 
 func start_storey_shift_in_animation(st :Storey, subfield :int, ani_dur :float) -> void:
@@ -58,7 +58,7 @@ func start_all_animation() -> void:
 	start_rotate_animation(AnimationDuration)
 	for st in storey_list:
 		start_storey_rotate_animation(st, AnimationDuration)
-		if shift_count % 2 == 1 :
+		if shift_count % 2 == 0 :
 			if is_zero_approx(st.position.x):
 				start_storey_shift_in_animation(st, 2, AnimationDuration)
 			else:
@@ -68,7 +68,7 @@ func start_all_animation() -> void:
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)
-	start_rotate_animation(AnimationDuration)
+	start_all_animation()
 
 var need_reset_rotation_animation :bool
 

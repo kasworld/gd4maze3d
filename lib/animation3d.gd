@@ -123,6 +123,8 @@ func handle_animation() -> void:
 	var timenow := Time.get_unix_time_from_system()
 	var new_list :Array[Dictionary]
 	for ani in animation_list:
+		if ani.Node3d == null:
+			continue
 		var rate :float = (timenow - ani.StartTick) / ani.DurSec
 		if rate >= 1.0:
 			animation_ended.emit(ani.Node3d, ani)

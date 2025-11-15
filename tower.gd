@@ -119,9 +119,8 @@ func start_storey_gap_animation() -> void:
 	gap_ani_dir_open = not gap_ani_dir_open
 	for i in storey_list.size():
 		var st := storey_list[i]
-		var new_pos := st.position
-		new_pos.y = calc_storey_base_y_pos(i)
-		st.storey_animation.start_move("ani_gap", st, st.position, new_pos, 1)
+		var new_y = calc_storey_base_y_pos(i)
+		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, 1)
 
 func set_all_storey_position() -> void:
 	for i in storey_list.size():

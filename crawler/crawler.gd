@@ -29,10 +29,9 @@ func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
 		1.0/current_action.APS)
 
 func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
-	var ydiff := to.global_position.y - from.global_position.y
-	var y := to.maze3d_setting.StoryH/2
-	var p1 := from.maze3d_setting.mazepos2storeypos(src, y - ydiff)
-	var p2 := to.maze3d_setting.mazepos2storeypos(dst, y)
+	var diff := to.global_position - from.global_position
+	var p1 := from.maze3d_setting.mazepos2storeypos(src, from.maze3d_setting.StoryH/2) - diff
+	var p2 := to.maze3d_setting.mazepos2storeypos(dst, to.maze3d_setting.StoryH/2)
 	crawler_animation.start_move("ani_move", self,
 		p1, p2,
 		1.0/current_action.APS)

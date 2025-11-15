@@ -20,11 +20,19 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 			dir_src = dir_dst
 	act_character()
 
-func start_move_animation(from :Storey, to :Storey) -> void:
+func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
+	var y := st.maze3d_setting.StoryH/2
+	var p1 := st.maze3d_setting.mazepos2storeypos(src, y)
+	var p2 := st.maze3d_setting.mazepos2storeypos(dst, y)
+	crawler_animation.start_move("ani_move", self,
+		p1, p2,
+		1.0/current_action.APS)
+
+func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
 	var ydiff := to.global_position.y - from.global_position.y
 	var y := to.maze3d_setting.StoryH/2
-	var p1 := from.maze3d_setting.mazepos2storeypos(pos_src, y - ydiff)
-	var p2 := to.maze3d_setting.mazepos2storeypos(pos_dst, y)
+	var p1 := from.maze3d_setting.mazepos2storeypos(src, y - ydiff)
+	var p2 := to.maze3d_setting.mazepos2storeypos(dst, y)
 	crawler_animation.start_move("ani_move", self,
 		p1, p2,
 		1.0/current_action.APS)
@@ -108,7 +116,7 @@ func handle_action_in_queue() -> bool:
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
 				pos_dst = pos_src + EnumDir.DirToVt2[dir_src]
-				start_move_animation(storey,storey)
+				start_move_animation(storey, pos_src, pos_dst)
 			else :
 				return false # action ignored
 		ActionQueue.Action.TurnLeft:
@@ -125,7 +133,7 @@ func handle_action_in_queue() -> bool:
 			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
 				from_storey = storey
-			start_move_animation(from_storey,storey)
+			start_inter_storey_move_animation(from_storey,storey, pos_src, pos_dst)
 
 	# update action stats
 	total_action_stats[current_action.Action ] += 1

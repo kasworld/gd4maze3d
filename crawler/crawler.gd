@@ -6,7 +6,6 @@ signal crawler_goal_reached(st :Storey, cr :Crawler)
 var crawler_animation := Animation3D.new()
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	current_action = {}
-	rotation = rotation.snappedf(PI/2)
 	match ani.Name:
 		"ani_move":
 			pos_src = pos_dst
@@ -17,7 +16,8 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 				storey.놓인것들줍기(cr)
 			storey.get_mini_map().update_char_pos(cr)
 		"ani_turn":
-			dir_src = dir_dst
+			rotation = rotation.snappedf(PI/2)
+			dir_src = EnumDir.RadianToDir(rotation.y)
 	act_character()
 
 func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
@@ -64,7 +64,6 @@ var storey :Storey
 var pos_src :Vector2i
 var pos_dst :Vector2i
 var dir_src : EnumDir.Dir
-var dir_dst : EnumDir.Dir
 
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
@@ -94,10 +93,8 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.enqueue_with_speed(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
 	storey = st
 	pos_dst = pos
-	#dir_src = EnumDir.Dir.North
 	rotation.y = 0
 	dir_src = EnumDir.RadianToDir(rotation.y)
-	dir_dst = dir_src
 	storey_action_stats = ActionQueue.new_stats()
 	action_queue.rand_act_speed()
 	rotation = rotation.snappedf(PI/2)
@@ -120,10 +117,8 @@ func handle_action_in_queue() -> bool:
 			else :
 				return false # action ignored
 		ActionQueue.Action.TurnLeft:
-			dir_dst = EnumDir.DirTurnLeft[dir_src]
 			start_turn_animation(PI/2)
 		ActionQueue.Action.TurnRight:
-			dir_dst = EnumDir.DirTurnRight[dir_src]
 			start_turn_animation(-PI/2)
 		ActionQueue.Action.RollRight:
 			start_roll_animation(PI/2)

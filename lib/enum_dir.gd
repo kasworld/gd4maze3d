@@ -1,15 +1,15 @@
 class_name EnumDir
 
-static func RadianToVt2(rad :float) -> Vector2i:
+static func RadianToDir(rad :float) -> Dir:
 	var dir := snappedi(rad *2/PI, 1)
-	dir = (dir+4)%4
-	var dir2vt2 := [
-		Vector2i(1,0),
-		Vector2i(0,-1),
-		Vector2i(-1,0),
-		Vector2i(0,1),
+	dir = ((dir%4)+4)%4
+	var dir2dir := [
+		Dir.North, # Vector2i(0,-1),
+		Dir.West,  # Vector2i(-1,0),
+		Dir.South, # Vector2i(0,1),
+		Dir.East,  # Vector2i(1,0),
 	]
-	return dir2vt2[dir]
+	return dir2dir[dir]
 
 enum Dir {
 	North = 0,

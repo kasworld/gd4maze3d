@@ -73,7 +73,7 @@ var view_walls :Maze3D.WallView = Maze3D.WallView.Reduced
 var view_pillars :bool = true
 
 func calc_height() -> float:
-	return storey_list[-1].position.y - storey_list[0].position.y + storey_list[-1].maze3d_setting.StoryH
+	return (VisibleStoreyDown+1+VisibleStoreyUp) *( maze3d_setting.StoryH + StoreyGap )
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
@@ -124,7 +124,9 @@ func start_storey_gap_animation() -> void:
 
 func set_all_storey_position() -> void:
 	for i in storey_list.size():
-		storey_list[i].position.y = calc_storey_base_y_pos(i)
+		var st := storey_list[i]
+		var new_y := calc_storey_base_y_pos(i)
+		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, 1)
 
 func add_new_storey(stnum :int) -> void:
 	var ms := maze3d_setting.duplicate()

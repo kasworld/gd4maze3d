@@ -1,7 +1,8 @@
 extends Node3D
 class_name Tower
 
-const AnimationDuration := 2.0
+const AnimationDuration := 3.0
+const StoreyAnimationDuration := 1.5
 
 var tower_animation := Animation3D.new()
 func _process(_delta: float) -> void:
@@ -120,13 +121,13 @@ func start_storey_gap_animation() -> void:
 	for i in storey_list.size():
 		var st := storey_list[i]
 		var new_y = calc_storey_base_y_pos(i)
-		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, 1)
+		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
 func set_all_storey_position() -> void:
 	for i in storey_list.size():
 		var st := storey_list[i]
 		var new_y := calc_storey_base_y_pos(i)
-		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, 1)
+		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
 func add_new_storey(stnum :int) -> void:
 	var ms := maze3d_setting.duplicate()
@@ -139,14 +140,15 @@ func add_new_storey(stnum :int) -> void:
 	st.set_wallview_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
+	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
 	set_all_storey_position()
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
-	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), 1)
+	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), StoreyAnimationDuration)
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > VisibleStoreyDown:
 		var st :Storey = storey_list.pop_front()
-		st.storey_animation.start_scale("ani_del", st, Vector3(1,1,1), Vector3(0.1,0.1,0.1), 1)
+		st.storey_animation.start_scale("ani_del", st, Vector3(1,1,1), Vector3(0.1,0.1,0.1), StoreyAnimationDuration)
 
 func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 	match ani.Name:
@@ -155,7 +157,7 @@ func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 		"ani_del":
 			remove_child(st)
 			st.queue_free()
-		"ani_gap":
+		"ani_gap", "ani_add_move":
 			pass
 
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:

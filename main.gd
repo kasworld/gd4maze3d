@@ -13,7 +13,7 @@ func _ready() -> void:
 	$MovingCameraLight.init(0)
 	var vp_size := get_viewport().get_visible_rect().size
 	var msgrect := Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 25.1.0"))
+	$TimedMessage.init(80, msgrect, tr("gd4maze3d 26.0.0"))
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 

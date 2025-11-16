@@ -225,9 +225,6 @@ func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
 	sp.material_override.albedo_texture = sv.get_texture()
 	return sp
 
-func can_move(x :int , y :int, dir :EnumDir.Dir) -> bool:
-	return $Maze3D.maze_cells.is_open_dir_at(x,y, EnumDir.DirToFlag[dir] )
-
 func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Maze3D.view_floor_ceiling(f,c)
 

@@ -26,7 +26,7 @@ func _ready() -> void:
 	for i in CharacterCount:
 		add_crawler(i)
 	player = $CharacterContainer.get_child(PlayerNumber)
-	MovingCameraLight.SetCurrentCamera(0)
+	$MovingCameraLight.make_current()
 
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 3
 	for i in DecoTowerCount:

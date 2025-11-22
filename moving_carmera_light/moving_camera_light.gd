@@ -10,10 +10,6 @@ static func NextCamera() -> void:
 	SelfList[CurrentNumber].make_current()
 static func GetCurrentCamera() -> MovingCameraLight:
 	return SelfList[CurrentNumber]
-static func SetCurrentCamera(i :int) -> void:
-	CurrentNumber = i
-	CurrentNumber %= SelfList.size()
-	SelfList[CurrentNumber].make_current()
 
 var number :int
 var fov_camera := ClampedFloat.new(75,1,179)
@@ -26,9 +22,10 @@ func get_light() -> SpotLight3D:
 	return $SpotLight3D
 
 func _ready() -> void:
-	SelfList.append(self)
 	number = SelfList.size()
+	SelfList.append(self)
 	fov_camera_reset()
+	make_current()
 
 func copy_position_rotation(n :Node3D) -> void:
 	position = n.position
@@ -72,4 +69,6 @@ func set_center_pos_far(center :Vector3, pos :Vector3, far :float) -> void:
 	$SpotLight3D.spot_range = far
 
 func make_current() -> void:
+	CurrentNumber = number
+	CurrentNumber %= SelfList.size()
 	$Camera3D.current = true

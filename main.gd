@@ -180,10 +180,10 @@ func _on_button_roll_left_pressed() -> void:
 	player.act_character()
 
 func _on_button_fov_up_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().fov_inc()
+	MovingCameraLight.GetCurrentCamera().fov_camera_inc()
 
 func _on_button_fov_down_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().fov_dec()
+	MovingCameraLight.GetCurrentCamera().fov_camera_dec()
 
 func _on_button_aps_max_pressed() -> void:
 	player.action_queue.action_per_second.set_max()

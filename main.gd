@@ -10,7 +10,6 @@ var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
 
 func _ready() -> void:
-	$MovingCameraLight.init(0)
 	var vp_size := get_viewport().get_visible_rect().size
 	var msgrect := Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
 	$TimedMessage.init(80, msgrect, tr("gd4maze3d 26.0.0"))
@@ -61,7 +60,7 @@ func _on_vpsize_changed() -> void:
 func _process(_delta: float) -> void:
 	update_info()
 	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
-		$MovingCameraLight.move_camera_around(
+		$MovingCameraLight.move_around_y(
 			Vector3.ZERO,
 			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
 			get_current_tower().calc_height() *2,

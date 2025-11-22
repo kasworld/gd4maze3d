@@ -76,7 +76,6 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	crawler_num = n
 	player_num = p_num
 	color = co
-	$MovingCameraLight.init(n+1)
 	$MeshInstance3D.mesh.material.albedo_color = co
 	$MeshInstance3D.mesh.height = 0.2*LaneW
 	$MeshInstance3D.mesh.top_radius = 0.01*LaneW

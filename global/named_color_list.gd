@@ -14,6 +14,18 @@ func get_colorname_by_color(c :Color)->String:
 			return v[1]
 	return c.to_html()
 
+func filter_to_colorlist(clist = color_list) -> Array[Color]:
+	var rtn :Array[Color] = []
+	for i in clist:
+		rtn.append(i[0])
+	return rtn
+
+func filter_to_namelist(clist = color_list) -> Array[String]:
+	var rtn :Array[String] = []
+	for i in clist:
+		rtn.append(i[1])
+	return rtn
+
 func make_light_color_list(l :float= 0.5) -> Array:
 	var rtn := []
 	for i in color_list:
@@ -27,7 +39,7 @@ func make_dark_color_list(l :float= 0.5, clist = color_list) -> Array:
 		if i[0].get_luminance() < l:
 			rtn.append(i)
 	return rtn
-	
+
 func make_red_color_list(clist = color_list) -> Array:
 	var rtn := []
 	for i in clist:

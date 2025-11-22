@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ces3a6yv0c5fi"]
 
-[ext_resource type="Script" uid="uid://dm8v1xr2aeoyr" path="res://moving_camera_light.gd" id="1_hbcsi"]
+[ext_resource type="Script" uid="uid://dm8v1xr2aeoyr" path="res://moving_carmera_light/moving_camera_light.gd" id="1_hbcsi"]
 
 [node name="MovingCameraLight" type="Node3D"]
 script = ExtResource("1_hbcsi")

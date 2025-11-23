@@ -59,7 +59,7 @@ func _on_vpsize_changed() -> void:
 
 func _process(_delta: float) -> void:
 	update_info()
-	if MovingCameraLight.GetCurrentCamera() == $MovingCameraLight:
+	if $MovingCameraLight.is_current_camera():
 		$MovingCameraLight.move_around_y(
 			Vector3.ZERO,
 			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),

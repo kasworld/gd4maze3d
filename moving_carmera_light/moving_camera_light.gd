@@ -3,15 +3,21 @@ extends Node3D
 class_name MovingCameraLight
 
 static var SelfList :Array[MovingCameraLight]
-static var CurrentNumber :int
+static var CurrentIndex :int
 static func NextCamera() -> void:
-	CurrentNumber +=1
-	CurrentNumber %= SelfList.size()
-	SelfList[CurrentNumber].make_current()
+	CurrentIndex +=1
+	CurrentIndex %= SelfList.size()
+	SelfList[CurrentIndex].make_current()
 static func GetCurrentCamera() -> MovingCameraLight:
-	return SelfList[CurrentNumber]
+	return SelfList[CurrentIndex]
+static func FindCameraIndexByID(idx :int) -> int:
+	for i in SelfList.size():
+		if SelfList[i].id == idx:
+			return i
+	assert(false)
+	return -1
 
-var number :int
+var id :int # not serial if some deleted
 var fov_camera := ClampedFloat.new(75,1,179)
 var fov_light := ClampedFloat.new(75,1,179)
 
@@ -22,7 +28,10 @@ func get_light() -> SpotLight3D:
 	return $SpotLight3D
 
 func _ready() -> void:
-	number = SelfList.size()
+	if SelfList.size() > 0:
+		id = SelfList[-1].id+1
+	else :
+		id = 0
 	SelfList.append(self)
 	fov_camera_reset()
 	make_current()
@@ -32,7 +41,7 @@ func copy_position_rotation(n :Node3D) -> void:
 	rotation = n.rotation
 
 func _to_string() -> String:
-	return "MovingCameraLight%d[fov camera:%s, fov light:%s, rotation:%s]" % [number, fov_camera,fov_light, rotation_degrees ]
+	return "MovingCameraLight%d[fov camera:%s, fov light:%s, rotation:%s]" % [id, fov_camera,fov_light, rotation_degrees ]
 
 func fov_camera_inc() -> void:
 	$Camera3D.fov = fov_camera.set_up()
@@ -69,6 +78,10 @@ func set_center_pos_far(center :Vector3, pos :Vector3, far :float) -> void:
 	$SpotLight3D.spot_range = far
 
 func make_current() -> void:
-	CurrentNumber = number
-	CurrentNumber %= SelfList.size()
+	var idx := FindCameraIndexByID(id)
+	CurrentIndex = idx
+	CurrentIndex %= SelfList.size()
 	$Camera3D.current = true
+
+func is_current_camera() -> bool:
+	return $Camera3D.current

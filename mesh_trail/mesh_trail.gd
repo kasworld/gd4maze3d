@@ -8,7 +8,7 @@ func init_OnBounce() -> MeshTrail:
 	color_mode = ColorMode.OnBounce
 	return self
 
-# for ColorMode.MeshGradient 
+# for ColorMode.MeshGradient
 var color_from :Color # or current color
 var color_to :Color
 var color_progress :int # 0 to mesh_count-1
@@ -34,7 +34,7 @@ func init_ByPositionFn(fn :Callable) -> MeshTrail:
 	color_mode = ColorMode.ByPosition
 	get_color_ByPosition_fn = fn
 	return self
-	
+
 var get_color_ByPosition_fn = get_color_ByPosition
 func get_color_ByPosition(pos :Vector3) -> Color:
 	var co :Color
@@ -79,7 +79,7 @@ func set_speed(mins :float, maxs :float, tick_sec :float) -> MeshTrail:
 	return self
 
 func make_mat_multi(mesh :Mesh, count :int, initial_pos:Vector3):
-	var mat = StandardMaterial3D.new()
+	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color.WHITE
 	mat.vertex_color_use_as_albedo = true
 	mesh.material = mat
@@ -90,7 +90,7 @@ func make_mat_multi(mesh :Mesh, count :int, initial_pos:Vector3):
 
 	for i in $MultiMeshInstance3D.multimesh.visible_instance_count:
 		set_color_by_mode(i, initial_pos)
-		var t = Transform3D(Basis(), initial_pos)
+		var t := Transform3D(Basis(), initial_pos)
 		$MultiMeshInstance3D.multimesh.set_instance_transform(i,t)
 
 func set_color_by_mode(mesh_index :int, pos :Vector3) -> void:
@@ -103,7 +103,7 @@ func set_color_by_mode(mesh_index :int, pos :Vector3) -> void:
 		ColorMode.MeshGradient:
 			co = get_color_MeshGradient()
 	$MultiMeshInstance3D.multimesh.set_instance_color(mesh_index, co)
-	
+
 func set_multi_pos_rot(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:
 	var t := Transform3D(Basis(), pos)
 	t = t.rotated_local(axis, rot)
@@ -122,8 +122,8 @@ func move(delta :float) -> void:
 	move_trail(delta, old_cursor, obj_cursor)
 
 func move_trail(delta: float, oldi :int, newi:int) -> void:
-	var oldpos = $MultiMeshInstance3D.multimesh.get_instance_transform(oldi).origin
-	var newpos = oldpos + head_velocity * delta
+	var oldpos :Vector3 = $MultiMeshInstance3D.multimesh.get_instance_transform(oldi).origin
+	var newpos :Vector3 = oldpos + head_velocity * delta
 	var bn = bounce_fn.call(oldpos,newpos,radius)
 	for i in 3:
 		# change vel on bounce
@@ -145,7 +145,7 @@ func move_trail(delta: float, oldi :int, newi:int) -> void:
 		head_velocity = head_velocity.normalized() * speed_min
 
 func new_mesh_by_type(mesh_type , r :float) -> Mesh:
-	var mesh:Mesh
+	var mesh :Mesh
 	match mesh_type:
 		0:
 			mesh = SphereMesh.new()
@@ -174,6 +174,6 @@ func new_mesh_by_type(mesh_type , r :float) -> Mesh:
 			mesh = TextMesh.new()
 			mesh.depth = r/4
 			mesh.pixel_size = r / 10
-			mesh.font_size = r*200
+			mesh.font_size = r*40
 			mesh.text = "%s" % mesh_type
 	return mesh

@@ -7,12 +7,12 @@ var label_list :Array
 var label_text := ["X", "Y", "Z"]
 func _ready() -> void:
 	for i in 3:
-		var ar = preload("res://arrow3d/arrow_3d.tscn").instantiate()
+		var ar :Arrow3D = preload("res://arrow3d/arrow_3d.tscn").instantiate()
 		ar.set_color(colors[i])
 		arrow_list.append(ar)
 		add_child(ar)
 
-		var lb = Label3D.new()
+		var lb := Label3D.new()
 		lb.text = label_text[i]
 		lb.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		label_list.append(lb)

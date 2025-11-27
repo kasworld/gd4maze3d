@@ -25,7 +25,7 @@ func init_with_random(ln_count :int, pt_count :int, w:float, dsize :Vector2, amo
 	color_list = make_color_list(point_count)
 	init_point_list = make_point_list(point_count, draw_area_size)
 	for i in line_count:
-		var ln = Line2D.new()
+		var ln := Line2D.new()
 		ln.points = init_point_list
 		ln.gradient = Gradient.new()
 		ln.gradient.colors = color_list
@@ -75,7 +75,7 @@ func move_line(delta: float, ln :Line2D) -> void:
 	var rt := Rect2(Vector2.ZERO, draw_area_size)
 	for i in velocity_list.size():
 		ln.points[i] += velocity_list[i] *delta
-		var bn = bounce2d(rt,ln.points[i],ln.width/2)
+		var bn := bounce2d(rt,ln.points[i],ln.width/2)
 		ln.points[i] = bn.pos
 		# change vel on bounce
 		for j in 2:

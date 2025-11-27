@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://d4kkhfcvaexg1"]
+
+[ext_resource type="Script" uid="uid://dogwcqbt8us8y" path="res://valve_handle/valve_handle.gd" id="1_oelkg"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_oelkg"]
+resource_local_to_scene = true
+
+[node name="ValveHandle" type="Node3D"]
+script = ExtResource("1_oelkg")
+
+[node name="중앙기둥" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_oelkg")

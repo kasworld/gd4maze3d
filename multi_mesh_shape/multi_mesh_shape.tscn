@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfnbpemvoy1i6"]
+
+[ext_resource type="Script" uid="uid://brthvnlbu6c53" path="res://multi_mesh_shape/multi_mesh_shape.gd" id="1_3lfy5"]
+
+[node name="MultiMeshShape" type="MultiMeshInstance3D"]
+script = ExtResource("1_3lfy5")

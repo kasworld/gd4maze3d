@@ -4,7 +4,7 @@ class_name AnalogClock3D
 enum BarAlign {None, In,Mid,Out}
 enum NumberType {None, Hour,Minute,Degree}
 
-var font = preload("res://font/HakgyoansimBareondotumR.ttf")
+var font := preload("res://font/HakgyoansimBareondotumR.ttf")
 
 # for calendar
 var colors := {
@@ -70,7 +70,6 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String) -> MeshI
 	var sp := MeshInstance3D.new()
 	sp.mesh = mesh
 	return sp
-
 
 func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> AnalogClock3D:
 	tz_shift = tzs

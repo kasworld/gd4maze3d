@@ -15,13 +15,13 @@ var color_from :Color
 var color_to :Color
 
 func init_common_params(
-		tree_width_a: float, 
-		tree_height_a :float, 
-		bar_width_a :float, 
-		bar_count_a:int, 
-		bar_rotation_a :float, 
-		bar_rotation_begin_a :float, 
-		bar_shift_rate_a :float, 
+		tree_width_a: float,
+		tree_height_a :float,
+		bar_width_a :float,
+		bar_count_a:int,
+		bar_rotation_a :float,
+		bar_rotation_begin_a :float,
+		bar_shift_rate_a :float,
 		auto_rotate_bar_a:bool) -> BarTree2:
 	tree_height = tree_height_a
 	tree_width = tree_width_a
@@ -31,13 +31,13 @@ func init_common_params(
 	bar_rotation_begin = bar_rotation_begin_a
 	bar_shift_rate = bar_shift_rate_a
 	auto_rotate_bar = auto_rotate_bar_a
-	return self	
+	return self
 
 func init_with_color(co1 :Color, co2:Color) -> BarTree2:
 	use_color = true
 	color_from = co1
 	color_to = co2
-	
+
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color.WHITE
 	mat.vertex_color_use_as_albedo = true
@@ -84,7 +84,7 @@ func update_bar_color() -> void:
 	for i in $MultiMeshInstance3D.multimesh.visible_instance_count:
 		var rate = float(i)/bar_count
 		$MultiMeshInstance3D.multimesh.set_instance_color(i,color_from.lerp(color_to,rate))
-		
+
 func set_visible_bar_count(bar_count_a :int) -> void:
 	assert(bar_count_a >= 0)
 	bar_count = bar_count_a
@@ -109,6 +109,6 @@ func bar_rotation_y() -> void:
 	for i in $MultiMeshInstance3D.multimesh.visible_instance_count:
 		var t :Transform3D = $MultiMeshInstance3D.multimesh.get_instance_transform(i)
 		var rate := float(i)/bar_count
-		var bar_rot := rate * bar_rotation 
+		var bar_rot := rate * bar_rotation
 		t = t.rotated(Vector3(0,1,0), bar_rot)
 		$MultiMeshInstance3D.multimesh.set_instance_transform(i,t )

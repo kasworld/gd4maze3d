@@ -3,7 +3,7 @@ class_name Calendar3D
 
 var font = preload("res://font/HakgyoansimBareondotumR.ttf")
 const weekdaystring = ["일","월","화","수","목","금","토"]
-var colors = {
+var colors := {
 	weekday = [
 		Color.RED,  # sunday
 		Color.WHITE,  # monday
@@ -19,7 +19,7 @@ var colors = {
 }
 
 # 1+7x7 : year+month, weekdayname, 6 weeek
-var calendar_labels = []
+var calendar_labels := []
 
 func get_color_mat(co: Color)->Material:
 	var mat := StandardMaterial3D.new()
@@ -72,7 +72,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 	for i in range(1,8): # skip yearmonth, week title + 6 week
 		var ln := []
 		for wd in weekdaystring.size():
-			var co = colors.weekday[wd]
+			var co :Color = colors.weekday[wd]
 			mat = get_color_mat(co)
 			lb = new_text(fsize,fdepth, mat, weekdaystring[wd])
 			lb.rotation.x = deg_to_rad(-90)
@@ -110,7 +110,7 @@ func update_calendar() -> void:
 			var day_index_dict := Time.get_date_dict_from_unix_time(day_index)
 			var curLabel :MeshInstance3D = calendar_labels[i][wd]
 			set_mesh_text(curLabel, "%d" % day_index_dict["day"] )
-			var co = colors.weekday[wd]
+			var co :Color = colors.weekday[wd]
 			var lb_scale := Vector3(1,1,1)
 			if day_index_dict["month"] != today_dict["month"]:
 				co = co.darkened(0.5)

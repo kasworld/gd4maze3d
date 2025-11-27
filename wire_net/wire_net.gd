@@ -9,7 +9,7 @@ func init_with_color(net_sizea :Vector2, wire_counta :Vector2i, wire_r :float, c
 	net_size = net_sizea
 	wire_count = wire_counta
 	wire_radius = wire_r
-	
+
 	$MultiMeshInstance3D.multimesh.instance_count = wire_count.x + wire_count.y
 	$MultiMeshInstance3D.multimesh.visible_instance_count = $MultiMeshInstance3D.multimesh.instance_count
 	for i in $MultiMeshInstance3D.multimesh.visible_instance_count:

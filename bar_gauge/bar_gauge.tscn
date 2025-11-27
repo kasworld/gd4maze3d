@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bs27xy18qt4s2"]
+
+[ext_resource type="Script" uid="uid://b66uhtlspv240" path="res://bar_gauge/bar_gauge.gd" id="1_aexue"]
+[ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="2_ngnq6"]
+
+[node name="BarGauge" type="Node3D"]
+script = ExtResource("1_aexue")
+
+[node name="MultiMeshShape" parent="." instance=ExtResource("2_ngnq6")]

@@ -5,7 +5,7 @@ signal crawler_goal_reached(st :Storey, cr :Crawler)
 
 var crawler_animation := Animation3D.new()
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
-	current_action = {}
+	current_action.clear()
 	match ani.Name:
 		"ani_move":
 			pos_src = pos_dst
@@ -18,6 +18,8 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 		"ani_turn":
 			rotation = rotation.snappedf(PI/2)
 			dir_src = EnumDir.RadianToDir(rotation.y)
+		"ani_roll":
+			pass
 	act_character()
 
 func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
@@ -72,7 +74,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	auto_walk_type = walk_type
 	total_action_stats = ActionQueue.new_stats()
 	dir_src = EnumDir.Dir.North
-	current_action = {}
+	current_action.clear()
 	crawler_num = n
 	player_num = p_num
 	color = co
@@ -82,8 +84,11 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	$MeshInstance3D.mesh.bottom_radius = 0.07*LaneW
 	$MeshInstance3D.rotation.x = -PI/2
 	$MeshInstance3D.scale.x = 0.5
-	$MeshInstance3D.position.x = LaneW*0.2
+	#$MeshInstance3D.position.x = LaneW*0.1
+	#$MeshInstance3D.position.z = -LaneW*0.1
 	$Label3D.text = "%d" % [ crawler_num ] # for debug
+	#$Label3D.position.x = LaneW*0.05
+	#$MovingCameraLight.position.z = LaneW*0.3
 	crawler_animation.animation_ended.connect(animation_ended)
 	return self
 
@@ -100,6 +105,9 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	act_character()
 
 func act_character() -> void:
+	if crawler_animation.is_empty() and not current_action.is_empty():
+		print_debug("animation ended but current_action not cleared %s" %[ current_action ])
+		current_action.clear()
 	if current_action.is_empty() && action_queue.is_empty():
 		enqueue_auto_walk_action_by_type()
 	if current_action.is_empty() && not action_queue.is_empty():

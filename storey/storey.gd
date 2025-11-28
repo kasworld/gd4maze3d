@@ -64,9 +64,9 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
 	if goal_pos == start_pos:
 		print_debug("start, goal pos same %s" % start_pos)
 	var 크기기준 := maze3d_setting.LaneW
-	$StartMark.init(크기기준*1.5, 크기기준/100, random_color(), "Start %d" % storey_num
+	$StartMark.init(크기기준*0.2, 크기기준/100, random_color(), "Start %d" % storey_num
 		).position = maze3d_setting.mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
-	$EndMark.init(크기기준*1.5, 크기기준/100, random_color(), "Goal %d" % storey_num
+	$EndMark.init(크기기준*0.2, 크기기준/100, random_color(), "Goal %d" % storey_num
 		).position = maze3d_setting.mazepos2storeypos(goal_pos, maze3d_setting.StoryH/2.0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
@@ -191,13 +191,15 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	if randf() < storey_setting.MakeClockCalWallRate:
 		var n :Node3D
 		var depth := 0.1
+		var 기준크기 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 		clockcalendar_sel +=1
 		if clockcalendar_sel % 2 == 0:
 			n = preload("res://calendar3d/calendar_3d.tscn").instantiate()
-			n.init(maze3d_setting.LaneW, maze3d_setting.StoryH,depth, 5, false)
+			n.init(maze3d_setting.LaneW, maze3d_setting.StoryH,
+				depth, 기준크기/12, false)
 		else :
 			n = preload("res://analogclock3d/analog_clock_3d.tscn").instantiate()
-			n.init(min(maze3d_setting.LaneW,maze3d_setting.StoryH)/2,depth, 4, 9.0, false)
+			n.init(기준크기/2, depth, 기준크기/16, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(EnumDir.DirToRadian(1+EnumDir.FlagToDir[dir]))
 		n.position = $Maze3D.deco_pos_by_dir(x,y,dir)

@@ -5,7 +5,8 @@ signal crawler_goal_reached(st :Storey, cr :Crawler)
 
 var crawler_animation := Animation3D.new()
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
-	current_action.clear()
+	if crawler_animation.is_empty():
+		current_action.clear()
 	match ani.Name:
 		"ani_move":
 			pos_src = pos_dst

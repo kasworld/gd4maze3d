@@ -61,14 +61,20 @@ func fov_light_dec() -> void:
 func fov_light_reset() -> void:
 	$SpotLight3D.fov = fov_light.reset()
 
-func move_around_y(center :Vector3, radius :float, height :float, spd :float = 2.3) -> void:
-	var t := -Time.get_unix_time_from_system() /spd
+func move_wave_around_y(t :float,  center :Vector3, radius :float, height :float) -> void:
 	position = Vector3( sin(t)*radius, sin(t*1.3)*height, cos(t)*radius ) + center
 	look_at(center)
 
-func move_hober_around_z(center :Vector3, radius :float, height :float, spd :float = 2.3) -> void:
-	var t := -Time.get_unix_time_from_system() /spd
-	position = Vector3(sin(t)*radius, cos(t)*radius, height ) + center
+func move_hober_around_x(t :float,  center :Vector3, radius :float, height :float) -> void:
+	position = Vector3( height, sin(t)*radius, cos(t)*radius ) + center
+	look_at(center)
+
+func move_hober_around_y(t :float,  center :Vector3, radius :float, height :float) -> void:
+	position = Vector3( sin(t)*radius, height, cos(t)*radius ) + center
+	look_at(center)
+
+func move_hober_around_z(t :float, center :Vector3, radius :float, height :float) -> void:
+	position = Vector3( sin(t)*radius, cos(t)*radius, height ) + center
 	look_at(center)
 
 func set_center_pos_far(center :Vector3, pos :Vector3, far :float) -> void:

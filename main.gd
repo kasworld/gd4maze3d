@@ -26,7 +26,7 @@ func _ready() -> void:
 	for i in CharacterCount:
 		add_crawler(i)
 	player = $CharacterContainer.get_child(PlayerNumber)
-	$MovingCameraLight.make_current()
+	$MovingCameraLightAround.make_current()
 
 	var orbitr := default_maze3d_setting.CalcDiagonalLengthWithWallV3() * 3
 	for i in DecoTowerCount:
@@ -38,6 +38,10 @@ func _ready() -> void:
 		orbitr *= 2
 	$DecoOrbit.init(orbitr)
 	$AxisArrow3D.set_size(default_maze3d_setting.CalcDiagonalLengthV2()/2)
+
+	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, orbitr), orbitr*2)
+	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, orbitr), orbitr*2)
+	$MovingCameraLightAround.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, orbitr), orbitr*2)
 
 	enter_next_storey(null)
 	update_button_text()
@@ -59,12 +63,21 @@ func _on_vpsize_changed() -> void:
 
 func _process(_delta: float) -> void:
 	update_info()
-	if $MovingCameraLight.is_current_camera():
-		$MovingCameraLight.move_around_y(
-			Vector3.ZERO,
-			default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
-			get_current_tower().calc_height() *2,
-			)
+
+	var t := Time.get_unix_time_from_system() /2.3
+	var r := default_maze3d_setting.CalcDiagonalLengthWithWallV3()
+	var h := get_current_tower().calc_height() *2
+	if $MovingCameraLightHober.is_current_camera():
+		$MovingCameraLightHober.move_hober_around_z(t, Vector3.ZERO, r, h )
+	elif $MovingCameraLightAround.is_current_camera():
+		$MovingCameraLightAround.move_wave_around_y(t, Vector3.ZERO, r, h )
+
+	#if $MovingCameraLight.is_current_camera():
+		#$MovingCameraLight.move_around_y(
+			#Vector3.ZERO,
+			#default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
+			#get_current_tower().calc_height() *2,
+			#)
 
 func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
@@ -121,6 +134,11 @@ var key2fn = {
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
+		if $FixedCameraLight.is_current_camera():
+			var fi = FlyNode3D.Key2Info.get(event.keycode)
+			if fi != null:
+				FlyNode3D.fly_node3d($FixedCameraLight, fi)
+
 		var fn = key2fn.get(event.keycode)
 		if fn != null:
 			fn.call()
@@ -179,12 +197,6 @@ func _on_button_roll_left_pressed() -> void:
 	player.action_queue.enqueue_with_speed(ActionQueue.Action.RollLeft, 10)
 	player.act_character()
 
-func _on_button_fov_up_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().fov_camera_inc()
-
-func _on_button_fov_down_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().fov_camera_dec()
-
 func _on_button_aps_max_pressed() -> void:
 	player.action_queue.action_per_second.set_max()
 
@@ -202,6 +214,13 @@ func _on_button_storey_up_pressed() -> void:
 
 func _on_button_camera_pressed() -> void:
 	MovingCameraLight.NextCamera()
+
+func _on_button_fov_up_pressed() -> void:
+	MovingCameraLight.GetCurrentCamera().fov_camera_inc()
+
+func _on_button_fov_down_pressed() -> void:
+	MovingCameraLight.GetCurrentCamera().fov_camera_dec()
+
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug
 @onready var performancelabel = $ButtonContainer/LabelContainer/Performance

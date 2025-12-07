@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dr21303f5q2mm"]
+
+[ext_resource type="Script" uid="uid://bcg5llj8iokwo" path="res://wave_gauge/wave_gauge.gd" id="1_bckdd"]
+
+[node name="WaveGauge" type="Node3D"]
+script = ExtResource("1_bckdd")

@@ -5,9 +5,12 @@ var m_mesh :MultiMesh
 
 func init(mesh :Mesh, co :Color, count :int, pos :Vector3) -> MultiMeshShape:
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = co
-	if co.a != 1.0:
+	# draw call 이 TRANSPARENCY_ALPHA 인 경우만 줄어든다. 버그인가?
+	if co.a >= 1.0:
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+	else:
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = co
 	mat.vertex_color_use_as_albedo = true
 	mesh.material = mat
 	m_mesh = MultiMesh.new()

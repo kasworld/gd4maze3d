@@ -29,8 +29,6 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("2_lquwl")
 
-[node name="MovingCameraLight" parent="." instance=ExtResource("3_hdadt")]
-
 [node name="CharacterContainer" type="Node3D" parent="."]
 
 [node name="ButtonContainer" type="VBoxContainer" parent="."]
@@ -184,6 +182,12 @@ theme = SubResource("Theme_u7t45")
 [node name="AxisArrow3D" parent="." instance=ExtResource("6_7mycd")]
 
 [node name="TowerContainer" type="Node3D" parent="."]
+
+[node name="MovingCameraLightHober" parent="." instance=ExtResource("3_hdadt")]
+
+[node name="MovingCameraLightAround" parent="." instance=ExtResource("3_hdadt")]
+
+[node name="FixedCameraLight" parent="." instance=ExtResource("3_hdadt")]
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

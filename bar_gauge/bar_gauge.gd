@@ -14,7 +14,7 @@ func init(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :float = 1.0 , 
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(sz.x, sz.y / count * (1-gaprate) , sz.z)
 
-	$MultiMeshShape.init(mesh, Color(Color.WHITE, alpha), count, Vector3.ZERO)
+	$MultiMeshShape.init_with_color(mesh, Color(Color.WHITE, alpha), count)
 	for i in count:
 		var rate := (i as float) / (count as float)
 		var pos3d := Vector3(0,rate*sz.y,0) # grow upward

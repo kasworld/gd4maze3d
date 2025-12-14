@@ -15,6 +15,8 @@ func random_color()->Color:
 var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	storey_animation.handle_animation()
+	for t in tree_list:
+		t.rotate_bar_y(0.1)
 
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
@@ -27,6 +29,7 @@ func is_goal_pos(p :Vector2i) -> bool:
 var wall_info_all :Array
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
+var tree_list :Array
 
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
@@ -141,14 +144,15 @@ func add_tree(p :Vector2i) ->void:
 	var tree_height := randf_range(크기기준*0.5, 크기기준*0.9)
 	var bar_width = randf_range(크기기준*0.5, 크기기준*0.9)/10
 	var bar_count := randi_range(20,50)
-	var bar_rotation := randfn(0,PI/40)
-	var bar_rotation_begin := randf_range(0, 2*PI)
-	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate().init_common_params(
-		tree_width, tree_height, bar_width, bar_count, bar_rotation, bar_rotation_begin, 0, true,
-	).init_with_color(random_color(), random_color())
+	#var bar_rotation := randfn(0,PI/40)
+	#var bar_rotation_begin := randf_range(0, 2*PI)
+	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate(
+		).init_bar_with_color(random_color(), random_color(),bar_count
+		).init_bar_transform(tree_width, tree_height, bar_width, 0)
 	t.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
 	add_child(t)
 	놓인것들.set_at(p,t)
+	tree_list.append(t)
 
 func add_ball_trails(mesh_type_list) ->void:
 	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)

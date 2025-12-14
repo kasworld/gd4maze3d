@@ -25,7 +25,9 @@ static func fly_node3d(nd :Node3D, flyinfo :Array) -> void:
 	} [flyinfo[1]]
 	match field:
 		"position":
-			nd.position[axis] += flyinfo[2]
+			var mv := Vector3.ZERO
+			mv[axis] += flyinfo[2]
+			nd.transform = nd.transform.translated_local(mv)
 		"rotation":
 			nd.rotation[axis] += flyinfo[2]
 		"scale":

@@ -16,6 +16,28 @@ static func 집중선만들기(r :float, start:float, end:float, depth :float, c
 		mms.set_inst_color(i, co)
 	return mms
 
+func init_wire_net(net_size :Vector2, wire_count :Vector2i, wire_radius :float, co :Color) -> MultiMeshShape:
+	var 선 := BoxMesh.new()
+	var count := wire_count.x + wire_count.y
+	init_with_color(선, Color.WHITE, count)
+	for i in count:
+		multimesh.set_instance_color(i,co)
+		if i < wire_count.x:
+			var pos := Vector3( net_size.x/(wire_count.x-1)* i, net_size.y/2, 0)
+			var t := Transform3D(Basis(), pos)
+			#t = t.rotated(Vector3(0,1,0), bar_rot)
+			t = t.scaled_local( Vector3(wire_radius,net_size.y,wire_radius) )
+			multimesh.set_instance_transform(i,t)
+		else:
+			var pos := Vector3(net_size.x/2, net_size.y/(wire_count.y-1)* (i-wire_count.x), 0)
+			var t := Transform3D(Basis(), pos)
+			#t = t.rotated(Vector3(0,1,0), bar_rot)
+			t = t.scaled_local( Vector3(net_size.x,wire_radius,wire_radius) )
+			multimesh.set_instance_transform(i,t)
+	return self
+
+
+
 func _init_multimesh(mesh :Mesh, mat :Material) -> void:
 	mesh.material = mat
 	multimesh.mesh = mesh

@@ -50,9 +50,9 @@ func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cos
 
 func init_floor_ceiling() -> void:
 	var sz := maze3d_setting.CalcSizeWithWallV2()
-	$Floor.init_with_color(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
+	$Floor.init_wire_net(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
 	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
-	$Ceiling.init_with_color(sz, sz*2, 0.01, lightcolorlist.pick_random()[0])
+	$Ceiling.init_wire_net(sz, sz*2, 0.01, lightcolorlist.pick_random()[0])
 	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/2)
 
 	var shiftsize := maze3d_setting.CalcSizeV3()/2

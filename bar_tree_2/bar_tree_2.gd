@@ -1,5 +1,4 @@
 extends MultiMeshShape
-
 class_name BarTree2
 
 func init_bar_with_color(color_from :Color, color_to:Color, bar_count :int) -> BarTree2:

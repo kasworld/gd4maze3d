@@ -1,6 +1,80 @@
-[gd_scene load_steps=2 format=3 uid="uid://jmb1btvtwi1m"]
+[gd_scene load_steps=16 format=3 uid="uid://jmb1btvtwi1m"]
 
 [ext_resource type="Script" uid="uid://cownvyqjgybgj" path="res://analogclock3d/analog_clock_3d.gd" id="1_7heg4"]
+[ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="2_rgemn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgemn"]
+resource_local_to_scene = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lfosk"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_rgemn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sas7y"]
+resource_local_to_scene = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rgemn"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_sas7y")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lfosk"]
+resource_local_to_scene = true
+
+[sub_resource type="TorusMesh" id="TorusMesh_oupwd"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_lfosk")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oupwd"]
+resource_local_to_scene = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_m653a"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_oupwd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xw0rf"]
+resource_local_to_scene = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_7cmrs"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_xw0rf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mg8ci"]
+resource_local_to_scene = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_1i3f0"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_mg8ci")
+
+[sub_resource type="MultiMesh" id="MultiMesh_lfosk"]
+resource_local_to_scene = true
 
 [node name="AnalogClock3d" type="Node3D"]
 script = ExtResource("1_7heg4")
+
+[node name="BackPlane" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("CylinderMesh_lfosk")
+
+[node name="Center" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_rgemn")
+
+[node name="Donut" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_oupwd")
+
+[node name="HourBase" type="Node3D" parent="."]
+
+[node name="HourHand" type="MeshInstance3D" parent="HourBase"]
+mesh = SubResource("BoxMesh_m653a")
+
+[node name="MinuteBase" type="Node3D" parent="."]
+
+[node name="MinuteHand" type="MeshInstance3D" parent="MinuteBase"]
+mesh = SubResource("BoxMesh_7cmrs")
+
+[node name="SecondBase" type="Node3D" parent="."]
+
+[node name="SecondHand" type="MeshInstance3D" parent="SecondBase"]
+mesh = SubResource("BoxMesh_1i3f0")
+
+[node name="DialBars" parent="." instance=ExtResource("2_rgemn")]
+multimesh = SubResource("MultiMesh_lfosk")

@@ -1,20 +1,21 @@
 extends MultiMeshInstance3D
 class_name MultiMeshShape
 
-static func 집중선만들기(r :float, start:float, end:float, depth :float, count :int, co :Color) -> MultiMeshShape:
+# example usage
+
+func init_집중선(r :float, start:float, end:float, depth :float, count :int, co :Color) -> MultiMeshShape:
 	var 구분선 := BoxMesh.new()
 	var 길이 := r*(end-start)
 	구분선.size = Vector3(길이, depth/10, depth )
 	var cell각도 := 2.0*PI / count
 	var radius := r-길이/2
-	var mms :MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate().init_with_color(
-		구분선, Color.WHITE, count)
+	init_with_color(구분선, Color.WHITE, count)
 	for i in count:
 		var rad := cell각도 *i + cell각도/2
-		mms.set_inst_rotation(i, Vector3.BACK, rad)
-		mms.set_inst_pos(i, Vector3(cos(rad) *radius,sin(rad) *radius, 0) )
-		mms.set_inst_color(i, co)
-	return mms
+		set_inst_rotation(i, Vector3.BACK, rad)
+		set_inst_pos(i, Vector3(cos(rad) *radius,sin(rad) *radius, 0) )
+		set_inst_color(i, co)
+	return self
 
 func init_wire_net(net_size :Vector2, wire_count :Vector2i, wire_radius :float, co :Color) -> MultiMeshShape:
 	var 선 := BoxMesh.new()
@@ -36,6 +37,18 @@ func init_wire_net(net_size :Vector2, wire_count :Vector2i, wire_radius :float, 
 			multimesh.set_instance_transform(i,t)
 	return self
 
+func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :float = 1.0 , gaprate :float = 0.1) -> MultiMeshShape:
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(sz.x, sz.y / count * (1-gaprate) , sz.z)
+	init_with_color(mesh, Color(Color.WHITE, alpha), count)
+	for i in count:
+		var rate := (i as float) / (count as float)
+		var pos3d := Vector3(0,rate*sz.y,0) # grow upward
+		set_inst_pos(i, pos3d)
+		set_inst_color(i, lerp(co1, co2, rate) )
+	return self
+
+# end example
 
 
 func _init_multimesh(mesh :Mesh, mat :Material) -> void:
@@ -89,11 +102,36 @@ func set_gradient_color(color_from :Color, color_to:Color) -> void:
 func get_total_count() -> int:
 	return multimesh.instance_count
 
-func set_visible_count(i :int) -> void:
-	multimesh.visible_instance_count = i
+func normalize_visible_count() -> int:
+	if multimesh.visible_instance_count <= 0:
+		multimesh.visible_instance_count = 0
+		return -1
+	elif multimesh.visible_instance_count >= multimesh.instance_count:
+		multimesh.visible_instance_count = multimesh.instance_count
+		return 1
+	return 0
 
 func get_visible_count() -> int:
 	return multimesh.visible_instance_count
+
+func set_visible_count( i :int) -> int:
+	multimesh.visible_instance_count = i
+	return normalize_visible_count()
+
+func inc_visible_count( n :int = 1 ) -> int:
+	multimesh.visible_instance_count += n
+	return normalize_visible_count()
+
+func dec_visible_count( n :int = 1 ) -> int:
+	multimesh.visible_instance_count -= n
+	return normalize_visible_count()
+
+func set_visible_rate( v :float) -> int:
+	multimesh.visible_instance_count = int(v * multimesh.instance_count)
+	return normalize_visible_count()
+
+func calc_visible_rate() -> float:
+	return float(multimesh.visible_instance_count) / float(multimesh.instance_count)
 
 func set_inst_rotation(i :int, axis :Vector3, rot :float) -> void:
 	var t := multimesh.get_instance_transform(i)

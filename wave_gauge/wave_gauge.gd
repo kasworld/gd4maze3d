@@ -20,7 +20,7 @@ func init(sz :Vector3, counta :Vector3i, co_list :Array = color_list, gaprate :f
 		var irate := float(i) / count.x
 		for j in count.z:
 			var jrate := float(j) / count.z
-			var bg = preload("res://bar_gauge/bar_gauge.tscn").instantiate().init(
+			var bg = preload("res://bar_gauge/bar_gauge.tscn").instantiate().init_bar_gauge(
 				count.y, Vector3( block_size.x * blockrate, box_size.y, block_size.z * blockrate ),
 				lerp( lerp(co_list[0], co_list[1], irate) , lerp(co_list[2], co_list[3], irate), jrate),
 				lerp( lerp(co_list[4], co_list[5], irate) , lerp(co_list[6], co_list[7], irate), jrate),

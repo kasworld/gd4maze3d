@@ -2,8 +2,8 @@ extends MultiMeshShape
 class_name BarTree2
 
 func init_bartree_with_color(color_from :Color, color_to:Color, bar_count :int) -> BarTree2:
-	init_with_alpha_color(BoxMesh.new(), 1.0, bar_count)
-	set_gradient_color(color_from, color_to)
+	init_with_alpha(BoxMesh.new(), bar_count, 1.0)
+	set_gradient_color_all(color_from, color_to)
 	return self
 
 func init_bartree_with_material(mat :Material, bar_count :int) -> BarTree2:

@@ -20,7 +20,7 @@ func init(sz :Vector3, counta :Vector3i, co_list :Array = color_list, gaprate :f
 		var irate := float(i) / count.x
 		for j in count.z:
 			var jrate := float(j) / count.z
-			var bg = preload("res://bar_gauge/bar_gauge.tscn").instantiate().init_bar_gauge(
+			var bg = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate().init_bar_gauge_y(
 				count.y, Vector3( block_size.x * blockrate, box_size.y, block_size.z * blockrate ),
 				lerp( lerp(co_list[0], co_list[1], irate) , lerp(co_list[2], co_list[3], irate), jrate),
 				lerp( lerp(co_list[4], co_list[5], irate) , lerp(co_list[6], co_list[7], irate), jrate),
@@ -35,7 +35,7 @@ func init(sz :Vector3, counta :Vector3i, co_list :Array = color_list, gaprate :f
 # for debug
 func set_all_rate(rate :float = 1.0) -> void:
 	for bg in gauge_list:
-		bg.set_current_rate(rate)
+		bg.set_visible_rate(rate)
 
 func animate_wave(speed1 :float =2, speed2:float=3, len1 :float = PI, len2 :float = PI) -> void:
 	var now := Time.get_unix_time_from_system()
@@ -48,7 +48,7 @@ func animate_wave(speed1 :float =2, speed2:float=3, len1 :float = PI, len2 :floa
 		for j in count.z:
 			var jrate := float(j) * len2z
 			var bg = gauge_list[i*count.z+j]
-			bg.set_current_rate(
+			bg.set_visible_rate(
 				((sin( nowspeed1 + irate ) + 1.0) / 4.0) +
 				((cos( nowspeed2 + jrate ) + 1.0) / 4.0)
 				)

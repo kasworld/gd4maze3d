@@ -69,7 +69,7 @@ func make_hands(r :float, d:float)->void:
 
 #var multi_bar :MultiMeshShape
 func make_dial_bar_multi(r :float, d:float, align :BarAlign):
-	$DialBars.init_with_color(BoxMesh.new(), Color.WHITE, 360)
+	$DialBars.init_with_alpha_color(BoxMesh.new(), 1.0, 360)
 	$DialBars.set_gradient_color(colors.dial_1,colors.dial_1)
 	# Set the transform of the instances.
 	var bar_height := d*0.2

@@ -62,69 +62,53 @@ func init_floor_ceiling() -> void:
 	$PillarContainer.position = -shiftsize
 
 func make_box_pillas() -> void:
-	var multi_inst = make_box_multi_inst(pillar_mat, Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick) )
-	$PillarContainer.add_child(multi_inst)
 	var pos_list :Array = []
 	for y in maze3d_setting.MazeSize.y+1:
 		for x in maze3d_setting.MazeSize.x+1:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
-	pos_multimesh(multi_inst.multimesh, pos_list)
-func make_box_multi_inst(mat :Material, sz :Vector3) -> MultiMeshInstance3D:
 	var mesh := BoxMesh.new()
-	mesh.size = sz
-	mesh.material = mat
-	var multimesh := MultiMesh.new()
-	multimesh.mesh = mesh
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	var multi_inst := MultiMeshInstance3D.new()
-	multi_inst.multimesh = multimesh
-	return multi_inst
+	mesh.size = Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick)
+	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
+		).init_with_material(mesh, pillar_mat, pos_list.size())
+	pos_multimeshshape(rtn, pos_list)
+	$PillarContainer.add_child(rtn)
 
 func make_capsule_pillas() -> void:
-	var multi_inst := make_capsule_multi_inst(pillar_mat, maze3d_setting.WallThick/2 , maze3d_setting.StoryH )
-	$PillarContainer.add_child(multi_inst)
 	var pos_list :Array = []
 	for y in maze3d_setting.MazeSize.y+1:
 		for x in maze3d_setting.MazeSize.x+1:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
-	pos_multimesh(multi_inst.multimesh, pos_list)
-func make_capsule_multi_inst(mat :Material, radius :float, height :float) -> MultiMeshInstance3D:
 	var mesh := CapsuleMesh.new()
-	mesh.radius = radius
-	mesh.height = height
-	mesh.material = mat
-	var multimesh := MultiMesh.new()
-	multimesh.mesh = mesh
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	var multi_inst := MultiMeshInstance3D.new()
-	multi_inst.multimesh = multimesh
-	return multi_inst
+	mesh.radius = maze3d_setting.WallThick/2
+	mesh.height = maze3d_setting.StoryH
+	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
+		).init_with_material(mesh, pillar_mat, pos_list.size())
+	pos_multimeshshape(rtn, pos_list)
+	$PillarContainer.add_child(rtn)
 
-func pos_multimesh(multimesh :MultiMesh, pos_list :Array) -> void:
-	multimesh.instance_count = pos_list.size()
-	multimesh.visible_instance_count = pos_list.size()
+func pos_multimeshshape(mms :MultiMeshShape, pos_list :Array) -> void:
 	for i in pos_list.size():
 		var t := Transform3D(Basis(), pos_list[i])
-		multimesh.set_instance_transform(i,t)
+		mms.multimesh.set_instance_transform(i,t)
 
-var wall_multi_inst_ew_main :MultiMeshInstance3D
-var wall_multi_inst_ns_main :MultiMeshInstance3D
-var wall_multi_inst_ew_sub :MultiMeshInstance3D
-var wall_multi_inst_ns_sub :MultiMeshInstance3D
+func make_wall_multi_shape(mat :Material, sz :Vector3, pos_list :Array) -> MultiMeshShape:
+	var mesh := BoxMesh.new()
+	mesh.size = sz
+	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
+		).init_with_material(mesh, mat, pos_list.size())
+	pos_multimeshshape(rtn, pos_list)
+	$WallContainer.add_child(rtn)
+	return rtn
+
+var wall_multi_inst_ew_main :MultiMeshShape
+var wall_multi_inst_ns_main :MultiMeshShape
+var wall_multi_inst_ew_sub :MultiMeshShape
+var wall_multi_inst_ns_sub :MultiMeshShape
 var pos_list_ew_main :Array
 var pos_list_ns_main :Array
 var pos_list_ew_sub :Array
 var pos_list_ns_sub :Array
 func make_wall_by_maze() -> void:
-	wall_multi_inst_ew_main = make_box_multi_inst(main_wall_mat, maze3d_setting.CalcWallSize_EW_Reduced())
-	wall_multi_inst_ns_main = make_box_multi_inst(main_wall_mat, maze3d_setting.CalcWallSize_NS_Reduced())
-	wall_multi_inst_ew_sub = make_box_multi_inst(sub_wall_mat, maze3d_setting.CalcWallSize_EW_Reduced())
-	wall_multi_inst_ns_sub = make_box_multi_inst(sub_wall_mat, maze3d_setting.CalcWallSize_NS_Reduced())
-	$WallContainer.add_child(wall_multi_inst_ew_main)
-	$WallContainer.add_child(wall_multi_inst_ns_main)
-	$WallContainer.add_child(wall_multi_inst_ew_sub)
-	$WallContainer.add_child(wall_multi_inst_ns_sub)
-
 	for y in maze3d_setting.MazeSize.y:
 		for x in maze3d_setting.MazeSize.x:
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
@@ -140,10 +124,10 @@ func make_wall_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(maze3d_setting.MazeSize.x-1,y,EnumDir.Flag.East):
 			add_wall_at( maze3d_setting.MazeSize.x , y , EnumDir.Flag.East)
 
-	pos_multimesh(wall_multi_inst_ew_main.multimesh, pos_list_ew_main)
-	pos_multimesh(wall_multi_inst_ns_main.multimesh, pos_list_ns_main)
-	pos_multimesh(wall_multi_inst_ew_sub.multimesh, pos_list_ew_sub)
-	pos_multimesh(wall_multi_inst_ns_sub.multimesh, pos_list_ns_sub)
+	wall_multi_inst_ew_main = make_wall_multi_shape(main_wall_mat, maze3d_setting.CalcWallSize_EW_Reduced(), pos_list_ew_main)
+	wall_multi_inst_ns_main = make_wall_multi_shape(main_wall_mat, maze3d_setting.CalcWallSize_NS_Reduced(), pos_list_ns_main)
+	wall_multi_inst_ew_sub = make_wall_multi_shape(sub_wall_mat, maze3d_setting.CalcWallSize_EW_Reduced(), pos_list_ew_sub)
+	wall_multi_inst_ns_sub = make_wall_multi_shape(sub_wall_mat, maze3d_setting.CalcWallSize_NS_Reduced(), pos_list_ns_sub)
 
 func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	var pos_face_ew := Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW +maze3d_setting.LaneW/2)

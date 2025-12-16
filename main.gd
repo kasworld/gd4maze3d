@@ -72,13 +72,6 @@ func _process(_delta: float) -> void:
 	elif $MovingCameraLightAround.is_current_camera():
 		$MovingCameraLightAround.move_wave_around_y(t, Vector3.ZERO, r, h )
 
-	#if $MovingCameraLight.is_current_camera():
-		#$MovingCameraLight.move_around_y(
-			#Vector3.ZERO,
-			#default_maze3d_setting.CalcDiagonalLengthWithWallV3(),
-			#get_current_tower().calc_height() *2,
-			#)
-
 func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")

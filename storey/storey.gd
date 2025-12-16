@@ -16,7 +16,7 @@ var storey_animation := Animation3D.new()
 func _process(_delta: float) -> void:
 	storey_animation.handle_animation()
 	for t in tree_list:
-		t.rotate_bar_y(0.1)
+		t.rotate_tree_bar_y(0.1)
 
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
@@ -147,8 +147,8 @@ func add_tree(p :Vector2i) ->void:
 	#var bar_rotation := randfn(0,PI/40)
 	#var bar_rotation_begin := randf_range(0, 2*PI)
 	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate(
-		).init_bar_with_color(random_color(), random_color(),bar_count
-		).init_bar_transform(tree_width, tree_height, bar_width, 0)
+		).init_bartree_with_color(random_color(), random_color(),bar_count
+		).init_bartree_transform( Vector3(tree_width, tree_height, bar_width), 0)
 	t.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
 	add_child(t)
 	놓인것들.set_at(p,t)

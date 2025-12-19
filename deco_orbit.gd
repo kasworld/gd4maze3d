@@ -35,3 +35,9 @@ func get_color_mat(co: Color)->Material:
 	#mat.metallic = 1
 	#mat.clearcoat = true
 	return mat
+
+func _process(delta: float) -> void:
+	var now := Time.get_unix_time_from_system()
+	$Moon.animate_rotate(now, delta)
+	$Earth.animate_rotate(now, delta)
+	$Sun.animate_rotate(now, delta)

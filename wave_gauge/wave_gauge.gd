@@ -37,8 +37,8 @@ func set_all_rate(rate :float = 1.0) -> void:
 	for bg in gauge_list:
 		bg.set_visible_rate(rate)
 
-func animate_wave(speed1 :float =2, speed2:float=3, len1 :float = PI, len2 :float = PI) -> void:
-	var now := Time.get_unix_time_from_system()
+## now : Time.get_unix_time_from_system()
+func animate_wave(now:float, speed1 :float =2, speed2:float=3, len1 :float = PI, len2 :float = PI) -> void:
 	var nowspeed1 := now*speed1
 	var nowspeed2 := now*speed2
 	var len1x := len1 / count.x

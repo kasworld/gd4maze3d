@@ -13,10 +13,12 @@ func random_color()->Color:
 	return themecolorlist.pick_random().pick_random()[0]
 
 var storey_animation := Animation3D.new()
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	storey_animation.handle_animation()
 	for t in tree_list:
 		t.rotate_tree_bar_y(0.1)
+	for bt in mesh_trail_list:
+		bt.move(delta)
 
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
@@ -80,7 +82,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
 		if 놓인것들.get_at(p) != null:
 			continue
 		add_tree(p)
-	add_ball_trails(storey_setting.MeshTrailTypeList)
+	add_mesh_trails(storey_setting.MeshTrailTypeList)
 	$Label3D.pixel_size = maze3d_setting.StoryH/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d_setting.WallThick*2, maze3d_setting.StoryH/2, -maze3d_setting.WallThick*2)
@@ -154,7 +156,8 @@ func add_tree(p :Vector2i) ->void:
 	놓인것들.set_at(p,t)
 	tree_list.append(t)
 
-func add_ball_trails(mesh_type_list) ->void:
+var mesh_trail_list :Array
+func add_mesh_trails(mesh_type_list) ->void:
 	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
@@ -162,8 +165,10 @@ func add_ball_trails(mesh_type_list) ->void:
 		var pos2d := maze3d_setting.rand_pos_2i()
 		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH/2)
 		var tc := randi_range(20,50)
-		var bt = preload("res://mesh_trail/mesh_trail.tscn").instantiate().init_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4,0.05)
+		var bt = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
+			).set_ColorChange_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4)
 		add_child(bt)
+		mesh_trail_list.append(bt)
 
 func make_cell_wallinfo(x:int, y:int) -> Array:
 	var axis_wall :Array = $Maze3D.maze_cells.make_wallinfo_for_bounce(x,y)

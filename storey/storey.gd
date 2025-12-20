@@ -17,8 +17,8 @@ func _process(delta: float) -> void:
 	storey_animation.handle_animation()
 	for t in tree_list:
 		t.rotate_tree_bar_y(0.1)
-	for bt in mesh_trail_list:
-		bt.move(delta)
+	for mt in mesh_trail_list:
+		mt.move_trail(delta, bounce_cell, trailmesh_radius, 4*PI,)
 
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
@@ -156,17 +156,20 @@ func add_tree(p :Vector2i) ->void:
 	놓인것들.set_at(p,t)
 	tree_list.append(t)
 
+var trailmesh_radius := 1.0
 var mesh_trail_list :Array
 func add_mesh_trails(mesh_type_list) ->void:
-	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
+	trailmesh_radius = min(maze3d_setting.LaneW, maze3d_setting.StoryH) /20
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(trailmesh_radius*2, trailmesh_radius*2, trailmesh_radius/10)
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
 		var pos2d := maze3d_setting.rand_pos_2i()
 		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH/2)
 		var tc := randi_range(20,50)
-		var bt = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
-			).set_ColorChange_MeshGradient().init(bounce_cell, 크기기준/20, tc, mt, pos).set_speed(1,4)
+		var bt :MeshTrail = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
+			).set_ColorChange_MeshGradient().init_with_alpha(mesh, tc, 1.0, pos).set_speed(1,4)
 		add_child(bt)
 		mesh_trail_list.append(bt)
 

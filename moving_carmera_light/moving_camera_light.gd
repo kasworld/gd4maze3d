@@ -1,5 +1,4 @@
 extends Node3D
-
 class_name MovingCameraLight
 
 static var SelfList :Array[MovingCameraLight]
@@ -76,6 +75,17 @@ func move_hober_around_y(t :float,  center :Vector3, radius :float, height :floa
 func move_hober_around_z(t :float, center :Vector3, radius :float, height :float) -> void:
 	position = Vector3( sin(t)*radius, cos(t)*radius, height ) + center
 	look_at(center)
+
+func bounce_within_aabb(delta :float, bounce_area :AABB, velocity :Vector3, center :Vector3, radius :float) -> Vector3:
+	position += velocity * delta
+	var bn = Bounce.v3f(position, bounce_area, radius)
+	for i in 3:
+		# change vel on bounce
+		if bn.bounced[i] != 0 :
+			velocity[i] = -bn.bounced[i] * abs(velocity[i])
+	position = bn.pos
+	look_at(center)
+	return velocity
 
 func set_center_pos_far(center :Vector3, pos :Vector3, far :float) -> void:
 	position = pos

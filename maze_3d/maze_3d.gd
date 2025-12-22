@@ -49,15 +49,13 @@ func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cos
 	return self
 
 func init_floor_ceiling() -> void:
-	var sz := maze3d_setting.CalcSizeWithWallV2()
-	$Floor.init_wire_net(sz, sz*2, 0.01, darkcolorlist.pick_random()[0])
-	$Floor.position = Vector3(-maze3d_setting.WallThick/2, 0 ,-maze3d_setting.WallThick/2)
-	$Ceiling.init_wire_net(sz, sz*2, 0.01, lightcolorlist.pick_random()[0])
-	$Ceiling.position = Vector3(-maze3d_setting.WallThick/2, maze3d_setting.StoryH ,-maze3d_setting.WallThick/2)
-
+	var wire_r := maze3d_setting.WallThick * 0.5
+	var net_size := maze3d_setting.CalcSizeWithWallV2() - Vector2(wire_r,wire_r)
+	$Floor.init_wire_net(net_size, maze3d_setting.MazeSize*2, wire_r, darkcolorlist.pick_random()[0])
+	$Ceiling.init_wire_net(net_size, maze3d_setting.MazeSize*2, wire_r, lightcolorlist.pick_random()[0])
+	$Floor.position.y -= maze3d_setting.StoryH/2
+	$Ceiling.position.y += maze3d_setting.StoryH/2
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
-	$Floor.position += -shiftsize
-	$Ceiling.position += -shiftsize
 	$WallContainer.position = -shiftsize
 	$PillarContainer.position = -shiftsize
 

@@ -89,7 +89,8 @@ func bounce_within_aabb(delta :float, bounce_area :AABB, velocity :Vector3, cent
 
 func set_center_pos_far(center :Vector3, pos :Vector3, far :float) -> void:
 	position = pos
-	look_at(center)
+	#look_at(center)
+	look_at_from_position(position, center)
 	$Camera3D.far = far
 	$SpotLight3D.spot_range = far
 

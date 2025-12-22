@@ -1,6 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://dl14flc0fkeyt"]
+[gd_scene load_steps=3 format=3 uid="uid://dl14flc0fkeyt"]
 
 [ext_resource type="Script" uid="uid://ddkt5j34od0lk" path="res://axis_arrow3d/axis_arrow_3d.gd" id="1_yfllo"]
+[ext_resource type="PackedScene" uid="uid://c8npqlgeyy3xa" path="res://arrow3d/arrow_3d.tscn" id="2_yfllo"]
 
 [node name="AxisArrow3D" type="Node3D"]
 script = ExtResource("1_yfllo")
+
+[node name="Arrows" type="Node3D" parent="."]
+
+[node name="ArrowX" parent="Arrows" instance=ExtResource("2_yfllo")]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ArrowY" parent="Arrows" instance=ExtResource("2_yfllo")]
+
+[node name="ArrowZ" parent="Arrows" instance=ExtResource("2_yfllo")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Labels" type="Node3D" parent="."]
+
+[node name="LabelX" type="Label3D" parent="Labels"]
+billboard = 1
+text = "X"
+
+[node name="LabelY" type="Label3D" parent="Labels"]
+billboard = 1
+text = "Y"
+
+[node name="LabelZ" type="Label3D" parent="Labels"]
+billboard = 1
+text = "Z"

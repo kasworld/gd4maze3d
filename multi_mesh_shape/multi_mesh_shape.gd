@@ -17,7 +17,8 @@ func init_집중선(r :float, start:float, end:float, depth :float, count :int, 
 		set_inst_color(i, co)
 	return self
 
-func init_wire_net(net_size :Vector2, wire_count :Vector2i, wire_radius :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+func init_wire_net(net_size :Vector2, grid_count :Vector2i, wire_radius :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+	var wire_count := Vector2i(grid_count.x +1, grid_count.y +1)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	var 선 := BoxMesh.new()
 	var count := wire_count.x + wire_count.y
@@ -158,12 +159,17 @@ func calc_visible_rate() -> float:
 func set_inst_rotation(i :int, axis :Vector3, rot :float) -> void:
 	var t := multimesh.get_instance_transform(i)
 	t = t.rotated_local(axis, rot)
-	multimesh.set_instance_transform(i,t )
+	multimesh.set_instance_transform(i, t)
+
+func set_inst_scale(i :int, scale_a :Vector3) -> void:
+	var t := multimesh.get_instance_transform(i)
+	t = t.scaled_local(scale_a)
+	multimesh.set_instance_transform(i, t)
 
 func set_inst_position(i :int, pos :Vector3) -> void:
 	var t := multimesh.get_instance_transform(i)
 	t.origin = pos
-	multimesh.set_instance_transform(i,t )
+	multimesh.set_instance_transform(i, t)
 
 func set_inst_color(i, co :Color) -> void:
 	multimesh.set_instance_color(i,co)
@@ -171,4 +177,4 @@ func set_inst_color(i, co :Color) -> void:
 func set_inst_position_rotation(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:
 	var t := Transform3D(Basis(), pos)
 	t = t.rotated_local(axis, rot)
-	multimesh.set_instance_transform(i,t )
+	multimesh.set_instance_transform(i, t)

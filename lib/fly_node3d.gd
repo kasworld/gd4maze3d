@@ -3,10 +3,10 @@ class_name FlyNode3D
 # for free fly camera
 
 const Key2Info := {
-	KEY_UP: ["rotation", "x", PI/10],
-	KEY_DOWN: ["rotation", "x", -PI/10],
-	KEY_LEFT: ["rotation", "y", PI/10],
-	KEY_RIGHT: ["rotation", "y", -PI/10],
+	KEY_UP: ["rotation", "x", PI/180],
+	KEY_DOWN: ["rotation", "x", -PI/180],
+	KEY_LEFT: ["rotation", "y", PI/180],
+	KEY_RIGHT: ["rotation", "y", -PI/180],
 	KEY_A: ["position", "x", -1],
 	KEY_D: ["position", "x", 1],
 	KEY_W: ["position", "z", -1],

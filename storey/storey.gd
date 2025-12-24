@@ -148,7 +148,7 @@ func add_tree(p :Vector2i) ->void:
 	var bar_count := randi_range(20,50)
 	#var bar_rotation := randfn(0,PI/40)
 	#var bar_rotation_begin := randf_range(0, 2*PI)
-	var t :BarTree2	= preload("res://bar_tree_2/bar_tree_2.tscn").instantiate(
+	var t :BarTree	= preload("res://bar_tree/bar_tree.tscn").instantiate(
 		).init_bartree_with_color(random_color(), random_color(),bar_count
 		).init_bartree_transform( Vector3(tree_width, tree_height, bar_width), 0)
 	t.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
@@ -206,11 +206,11 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		var 기준크기 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 		clockcalendar_sel +=1
 		if clockcalendar_sel % 2 == 0:
-			n = preload("res://calendar3d/calendar_3d.tscn").instantiate()
+			n = preload("res://calendar_3d/calendar_3d.tscn").instantiate()
 			n.init(maze3d_setting.LaneW, maze3d_setting.StoryH,
 				depth, 기준크기/12, false)
 		else :
-			n = preload("res://analogclock3d/analog_clock_3d.tscn").instantiate()
+			n = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
 			n.init(기준크기/2, depth, 기준크기/16, 9.0, false)
 		n.rotate_z(PI/2)
 		n.rotate_y(EnumDir.DirToRadian(1+EnumDir.FlagToDir[dir]))
@@ -218,7 +218,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		$WallDeco.add_child(n)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
-	var l2d :MoveLine2D = preload("res://move_line2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
+	var l2d :MoveLine2D = preload("res://move_line_2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
 	l2d.start()
 	var sv := SubViewport.new()
 	sv.size = size_pixel

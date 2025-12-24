@@ -1,18 +1,18 @@
 extends MultiMeshShape
-class_name BarTree2
+class_name BarTree
 
-func init_bartree_with_color(color_from :Color, color_to:Color, bar_count :int) -> BarTree2:
+func init_bartree_with_color(color_from :Color, color_to:Color, bar_count :int) -> BarTree:
 	init_with_alpha(BoxMesh.new(), bar_count, 1.0)
 	set_gradient_color_all(color_from, color_to)
 	return self
 
-func init_bartree_with_material(mat :Material, bar_count :int) -> BarTree2:
+func init_bartree_with_material(mat :Material, bar_count :int) -> BarTree:
 	init_with_material(BoxMesh.new(), mat, bar_count)
 	return self
 
 # also reset bar rotation
 # x : width , y : height , z :depth
-func init_bartree_transform(tree_size: Vector3, bar_shift_rate :float) -> BarTree2:
+func init_bartree_transform(tree_size: Vector3, bar_shift_rate :float) -> BarTree:
 	var count :int = get_visible_count()
 	# Set the transform of the instances.
 	var bar_height := tree_size.y/count

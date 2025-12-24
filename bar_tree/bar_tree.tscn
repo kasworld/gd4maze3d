@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://btkkwpk54jqc"]
 
-[ext_resource type="Script" uid="uid://dergnxkn2as4m" path="res://bar_tree_2/bar_tree_2.gd" id="1_4edun"]
+[ext_resource type="Script" uid="uid://dergnxkn2as4m" path="res://bar_tree/bar_tree.gd" id="1_4edun"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_uuw71"]
 resource_local_to_scene = true
 
-[node name="BarTree2" type="MultiMeshInstance3D"]
+[node name="BarTree" type="MultiMeshInstance3D"]
 multimesh = SubResource("MultiMesh_uuw71")
 script = ExtResource("1_4edun")
 metadata/_custom_type_script = "uid://brthvnlbu6c53"

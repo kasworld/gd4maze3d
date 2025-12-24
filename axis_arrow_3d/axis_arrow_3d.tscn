@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dl14flc0fkeyt"]
 
-[ext_resource type="Script" uid="uid://ddkt5j34od0lk" path="res://axis_arrow3d/axis_arrow_3d.gd" id="1_yfllo"]
-[ext_resource type="PackedScene" uid="uid://c8npqlgeyy3xa" path="res://arrow3d/arrow_3d.tscn" id="2_yfllo"]
+[ext_resource type="Script" uid="uid://ddkt5j34od0lk" path="res://axis_arrow_3d/axis_arrow_3d.gd" id="1_yfllo"]
+[ext_resource type="PackedScene" uid="uid://c8npqlgeyy3xa" path="res://arrow_3d/arrow_3d.tscn" id="2_yfllo"]
 
 [node name="AxisArrow3D" type="Node3D"]
 script = ExtResource("1_yfllo")

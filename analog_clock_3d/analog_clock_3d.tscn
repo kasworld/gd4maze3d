@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://jmb1btvtwi1m"]
 
-[ext_resource type="Script" uid="uid://cownvyqjgybgj" path="res://analogclock3d/analog_clock_3d.gd" id="1_7heg4"]
+[ext_resource type="Script" uid="uid://cownvyqjgybgj" path="res://analog_clock_3d/analog_clock_3d.gd" id="1_7heg4"]
 [ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="2_rgemn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgemn"]

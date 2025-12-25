@@ -72,7 +72,35 @@ func _set_count(count :int) -> void:
 	multimesh.instance_count = count
 	multimesh.visible_instance_count = count
 
-func _init_transform(pos :Vector3 = Vector3.ZERO) -> void:
+
+func init_with_material(
+		mesh :Mesh, mat :Material, count :int,
+		callinit_transform :bool = true,
+		pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
+	_init_multimesh(mesh, mat)
+	# Then resize (otherwise, changing the format is not allowed).
+	_set_count(count)
+	if callinit_transform:
+		init_position_all(pos)
+	return self
+
+func init_with_alpha(
+		mesh :Mesh, count :int,
+		alpha :float = 1.0,
+		callinit_transform :bool = true,
+		pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
+	if alpha == 1.0:
+		_init_multimesh(mesh, make_color_material( Color.WHITE ))
+	else:
+		_init_multimesh(mesh, make_color_material( Color(Color.WHITE,alpha) ))
+	multimesh.use_colors = true # before set instance_count
+	# Then resize (otherwise, changing the format is not allowed).
+	_set_count(count)
+	if callinit_transform:
+		init_position_all(pos)
+	return self
+
+func init_position_all(pos :Vector3 = Vector3.ZERO) -> void:
 	if pos == Vector3.ZERO:
 		for i in multimesh.visible_instance_count:
 			multimesh.set_instance_transform(i,Transform3D())
@@ -81,29 +109,10 @@ func _init_transform(pos :Vector3 = Vector3.ZERO) -> void:
 			var t = Transform3D(Basis(), pos)
 			multimesh.set_instance_transform(i,t)
 
-func init_with_material(
-		mesh :Mesh, mat :Material, count :int,
-		pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
-	_init_multimesh(mesh, mat)
-	# Then resize (otherwise, changing the format is not allowed).
-	_set_count(count)
-	_init_transform(pos)
-	return self
-
-func init_with_alpha(
-		mesh :Mesh, count :int,
-		alpha :float = 1.0,
-		pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
-	_init_multimesh(mesh, make_color_material( Color(Color.WHITE,alpha) ))
-	multimesh.use_colors = true # before set instance_count
-	# Then resize (otherwise, changing the format is not allowed).
-	_set_count(count)
-	_init_transform(pos)
-	return self
-
 func set_position_all(pos :Vector3) -> MultiMeshShape:
 	for i in multimesh.visible_instance_count:
-		var t = Transform3D(Basis(), pos)
+		var t := multimesh.get_instance_transform(i)
+		t.origin = pos
 		multimesh.set_instance_transform(i,t)
 	return self
 

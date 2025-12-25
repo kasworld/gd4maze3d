@@ -169,7 +169,7 @@ func add_mesh_trails(mesh_type_list) ->void:
 		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH/2)
 		var tc := randi_range(20,50)
 		var bt :MeshTrail = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
-			).set_ColorChange_MeshGradient().init_with_alpha(mesh, tc, 1.0, pos).set_speed(1,4)
+			).set_ColorChange_MeshGradient().init_with_alpha(mesh, tc, 1.0, true, pos).set_speed(1,4)
 		add_child(bt)
 		mesh_trail_list.append(bt)
 

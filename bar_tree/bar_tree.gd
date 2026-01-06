@@ -2,12 +2,16 @@ extends MultiMeshShape
 class_name BarTree
 
 func init_bartree_with_color(color_from :Color, color_to:Color, bar_count :int) -> BarTree:
-	init_with_alpha(BoxMesh.new(), bar_count, 1.0)
+	var mesh := BoxMesh.new()
+	mesh.material = MultiMeshShape.make_color_material()
+	init_with_color_mesh(mesh, bar_count, 1.0)
 	set_gradient_color_all(color_from, color_to)
 	return self
 
 func init_bartree_with_material(mat :Material, bar_count :int) -> BarTree:
-	init_with_material(BoxMesh.new(), mat, bar_count)
+	var mesh := BoxMesh.new()
+	mesh.material = mat
+	init_with_mesh(mesh, bar_count)
 	return self
 
 # also reset bar rotation

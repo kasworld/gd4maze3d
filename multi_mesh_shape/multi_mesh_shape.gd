@@ -9,7 +9,8 @@ func init_집중선(r :float, start:float, end:float, depth :float, count :int, 
 	구분선.size = Vector3(길이, depth/10, depth )
 	var cell각도 := 2.0*PI / count
 	var radius := r-길이/2
-	init_with_alpha(구분선, count, alpha)
+	구분선.material = make_color_material(alpha)
+	init_with_color_mesh(구분선, count)
 	for i in count:
 		var rad := cell각도 *i + cell각도/2
 		set_inst_rotation(i, Vector3.BACK, rad)
@@ -22,7 +23,8 @@ func init_wire_net(net_size :Vector2, grid_count :Vector2i, wire_radius :float, 
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	var 선 := BoxMesh.new()
 	var count := wire_count.x + wire_count.y
-	init_with_alpha(선, count, alpha)
+	선.material = make_color_material(alpha)
+	init_with_color_mesh(선, count)
 	for i in count:
 		multimesh.set_instance_color(i,co)
 		if i < wire_count.x:
@@ -39,10 +41,11 @@ func init_wire_net(net_size :Vector2, grid_count :Vector2i, wire_radius :float, 
 			multimesh.set_instance_transform(i,t)
 	return self
 
-func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :float = 1.0 , gaprate :float = 0.1) -> MultiMeshShape:
+func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :float = 1.0, gaprate :float = 0.1) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(sz.x, sz.y / count * (1-gaprate) , sz.z)
-	init_with_alpha(mesh, count, alpha)
+	mesh.material = make_color_material(alpha)
+	init_with_color_mesh(mesh, count)
 	for i in count:
 		var rate := (i as float) / (count as float)
 		var pos3d := Vector3(0,rate*sz.y,0) # grow upward
@@ -50,55 +53,253 @@ func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :fl
 		set_inst_color(i, lerp(co1, co2, rate) )
 	return self
 
+func init_wire_box(box_size :Vector3, wire_width :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+	var mesh := BoxMesh.new()
+	mesh.material = make_color_material(alpha)
+	init_with_color_mesh(mesh, 12, false)
+	set_color_all(co)
+	var wire_scale := Vector3(wire_width, wire_width, box_size.z)
+	var i := 0
+	for pos in [
+		Vector3( box_size.x/2,  box_size.y/2,0),
+		Vector3( -box_size.x/2,  box_size.y/2,0),
+		Vector3( box_size.x/2,  -box_size.y/2,0),
+		Vector3( -box_size.x/2,  -box_size.y/2,0),
+		]:
+			multimesh.set_instance_transform(i, Transform3D(Basis(), pos).scaled_local( wire_scale ))
+			i += 1
+	wire_scale = Vector3(box_size.x, wire_width, wire_width)
+	for pos in [
+		Vector3(0, box_size.y/2,  box_size.z/2),
+		Vector3(0, -box_size.y/2,  box_size.z/2),
+		Vector3(0, box_size.y/2,  -box_size.z/2),
+		Vector3(0, -box_size.y/2,  -box_size.z/2),
+		]:
+			multimesh.set_instance_transform(i, Transform3D(Basis(), pos).scaled_local( wire_scale ))
+			i += 1
+	wire_scale = Vector3(wire_width, box_size.y,  wire_width)
+	for pos in [
+		Vector3( box_size.x/2, 0,  box_size.z/2),
+		Vector3( -box_size.x/2, 0,  box_size.z/2),
+		Vector3( box_size.x/2, 0,  -box_size.z/2),
+		Vector3( -box_size.x/2, 0,  -box_size.z/2),
+		]:
+			multimesh.set_instance_transform(i, Transform3D(Basis(), pos).scaled_local( wire_scale ))
+			i += 1
+	return self
+
+func init_spheres_by_point_list(point_list :Array, point_radius :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+	var sp_mesh := SphereMesh.new()
+	sp_mesh.material = make_color_material(alpha)
+	sp_mesh.radius = point_radius
+	sp_mesh.height = point_radius*2
+	return init_meshs_by_point_list(sp_mesh, point_list, co)
+
+func init_meshs_by_point_list(mesh :Mesh, point_list :Array, co :Color) -> MultiMeshShape:
+	init_with_color_mesh(mesh, point_list.size(), false)
+	set_color_all(co)
+	for i in point_list.size():
+		multimesh.set_instance_transform(i, Transform3D(Basis(), point_list[i]))
+	return self
+
+func multi_line_by_pos(pos_list:Array, wire_width :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+	var mesh := BoxMesh.new()
+	mesh.material = make_color_material(alpha)
+	return multi_mesh_line_by_pos(mesh, pos_list, wire_width, co)
+
+func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :Color) -> MultiMeshShape:
+	init_with_color_mesh(mesh, pos_list.size(), false)
+	set_color_all(co)
+	for i in pos_list.size():
+		var p1 :Vector3 = pos_list[i][0]
+		var p2 :Vector3 = pos_list[i][1]
+		var center := (p1+p2)/2
+		var l := p1.distance_to(p2)
+		var wire_scale := Vector3(wire_width, wire_width, l)
+		var t := Transform3D(Basis(), center)
+		t = t.looking_at(p2)
+		t = t.scaled_local(wire_scale)
+		multimesh.set_instance_transform(i,t)
+	return self
+
+
+const CubePoints := [
+	Vector3(1,1,1),
+	Vector3(-1,1,1),
+	Vector3(1,-1,1),
+	Vector3(-1,-1,1),
+	Vector3(1,1,-1),
+	Vector3(-1,1,-1),
+	Vector3(1,-1,-1),
+	Vector3(-1,-1,-1),
+]
+static var CubeLines := PointListToLineList(CubePoints,3)
+
+const TetrahedronPoints := [
+	Vector3(1,1,1),
+	Vector3(1,-1,-1),
+	Vector3(-1,1,-1),
+	Vector3(-1,-1,1),
+]
+static var TetrahedronLines := PointListToLineList(TetrahedronPoints,3)
+
+const OctahedronPoints := [
+	Vector3(1,0,0),
+	Vector3(0,1,0),
+	Vector3(0,0,1),
+	Vector3(-1,0,0),
+	Vector3(0,-1,0),
+	Vector3(0,0,-1),
+]
+static var OctahedronLines := PointListToLineList(OctahedronPoints,4)
+
+static var golden_ratio := (1+sqrt(5))/2
+static var IcosahedronPoints :Array= [
+	Vector3(0,1,golden_ratio),
+	Vector3(0,-1,golden_ratio),
+	Vector3(0,1,-golden_ratio),
+	Vector3(0,-1,-golden_ratio),
+	Vector3(1,golden_ratio,0),
+	Vector3(-1,golden_ratio,0),
+	Vector3(1,-golden_ratio,0),
+	Vector3(-1,-golden_ratio,0),
+	Vector3(golden_ratio,0,1),
+	Vector3(golden_ratio,0,-1),
+	Vector3(-golden_ratio,0,1),
+	Vector3(-golden_ratio,0,-1),
+]
+static var IcosahedronLines := PointListToLineList(IcosahedronPoints,5)
+
+static var DodecahedronPoints := [
+	Vector3(1,1,1),
+	Vector3(-1,1,1),
+	Vector3(1,-1,1),
+	Vector3(-1,-1,1),
+	Vector3(1,1,-1),
+	Vector3(-1,1,-1),
+	Vector3(1,-1,-1),
+	Vector3(-1,-1,-1),
+	Vector3(0, 1/golden_ratio, golden_ratio),
+	Vector3(0, -1/golden_ratio, golden_ratio),
+	Vector3(0, 1/golden_ratio, -golden_ratio),
+	Vector3(0, -1/golden_ratio, -golden_ratio),
+	Vector3(1/golden_ratio, golden_ratio, 0),
+	Vector3(-1/golden_ratio, golden_ratio, 0),
+	Vector3(1/golden_ratio, -golden_ratio, 0),
+	Vector3(-1/golden_ratio, -golden_ratio, 0),
+	Vector3(golden_ratio, 0, 1/golden_ratio),
+	Vector3(golden_ratio, 0, -1/golden_ratio),
+	Vector3(-golden_ratio, 0, 1/golden_ratio),
+	Vector3(-golden_ratio, 0, -1/golden_ratio),
+]
+static var DodecahedronLines := PointListToLineList(DodecahedronPoints,3)
+
+static func MultiplyLineList(line_list :Array,  m :float) -> Array:
+	var rtn := []
+	for l in line_list:
+		var ml := []
+		for v in l:
+			ml.append(v*m)
+		rtn.append(ml)
+	return rtn
+
+## m can float, Vector3
+static func MultiplyPointList(point_list :Array, m ) -> Array:
+	var rtn := []
+	for l in point_list:
+		rtn.append(l*m)
+	return rtn
+
+## cut_count : edge count per vertex
+static func PointListToLineList(point_list:Array, cut_count :int) -> Array:
+	var sorted_point_list_list := []
+	# 각 배열의 첫 원소와 가장 가까운 순으로 점들을 정렬한다.
+	for p :Vector3 in point_list:
+		var plist := point_list.duplicate()
+		plist.sort_custom(func(a , b): return p.distance_to(a) < p.distance_to(b))
+		sorted_point_list_list.append(plist)
+	# make_line_from_sorted_point_list_list
+	var line_list := []
+	for v in sorted_point_list_list:
+		for i in cut_count:
+			# prepare del duplicated line
+			if v[0] < v[1+i]:
+				line_list.append([v[0], v[1+i]])
+			else:
+				line_list.append([v[1+i], v[0]])
+	line_list.sort_custom(func(a,b): return a < b)
+	var rtn := []
+	# del duplicated line
+	for i in range(0,line_list.size(),2):
+		rtn.append(line_list[i])
+	return rtn
+
 # end example ##################################################################
 
-static func make_color_material(co :Color) -> StandardMaterial3D:
+static func make_color_material(alpha :float = 1.0) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	# draw call 이 TRANSPARENCY_ALPHA 인 경우만 줄어든다. 버그인가?
-	if co.a >= 1.0:
+	if alpha >= 1.0:
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 	else:
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = co
+	mat.albedo_color = Color(Color.WHITE,alpha)
 	mat.vertex_color_use_as_albedo = true
+
+	#mat.metallic = 1.0
+	##mat.roughness = 0.5
+	#mat.clearcoat_enabled = true
+	#mat.refraction_enabled = true
+	#mat.rim_enabled = true
 	return mat
 
-func _init_multimesh(mesh :Mesh, mat :Material) -> void:
-	mesh.material = mat
-	multimesh.mesh = mesh
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 
 func _set_count(count :int) -> void:
 	multimesh.instance_count = count
 	multimesh.visible_instance_count = count
 
 
-func init_with_material(
-		mesh :Mesh, mat :Material, count :int,
+func _init_multimesh(mesh :Mesh) -> void:
+	multimesh.mesh = mesh
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+
+func init_with_mesh( mesh :Mesh, count :int,
 		callinit_transform :bool = true,
 		pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
-	_init_multimesh(mesh, mat)
+	_init_multimesh(mesh)
 	# Then resize (otherwise, changing the format is not allowed).
 	_set_count(count)
 	if callinit_transform:
 		init_position_all(pos)
 	return self
 
-func init_with_alpha(
-		mesh :Mesh, count :int,
-		alpha :float = 1.0,
+func init_with_color_mesh( mesh :Mesh, count :int,
 		callinit_transform :bool = true,
 		pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
-	if alpha == 1.0:
-		_init_multimesh(mesh, make_color_material( Color.WHITE ))
-	else:
-		_init_multimesh(mesh, make_color_material( Color(Color.WHITE,alpha) ))
+	_init_multimesh(mesh)
 	multimesh.use_colors = true # before set instance_count
 	# Then resize (otherwise, changing the format is not allowed).
 	_set_count(count)
 	if callinit_transform:
 		init_position_all(pos)
 	return self
+
+#func init_with_alpha( mesh :Mesh, count :int,
+		#alpha :float = 1.0,
+		#callinit_transform :bool = true,
+		#pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
+	#if alpha == 1.0:
+		#mesh.material = make_color_material( Color.WHITE )
+	#else:
+		#mesh.material = make_color_material( Color(Color.WHITE,alpha) )
+	#_init_multimesh(mesh)
+	#multimesh.use_colors = true # before set instance_count
+	## Then resize (otherwise, changing the format is not allowed).
+	#_set_count(count)
+	#if callinit_transform:
+		#init_position_all(pos)
+	#return self
+
 
 func init_position_all(pos :Vector3 = Vector3.ZERO) -> void:
 	if pos == Vector3.ZERO:

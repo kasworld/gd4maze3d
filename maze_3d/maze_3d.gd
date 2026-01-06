@@ -65,9 +65,10 @@ func make_box_pillas() -> void:
 		for x in maze3d_setting.MazeSize.x+1:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
 	var mesh := BoxMesh.new()
+	mesh.material = pillar_mat
 	mesh.size = Vector3(maze3d_setting.WallThick,maze3d_setting.StoryH,maze3d_setting.WallThick)
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
-		).init_with_material(mesh, pillar_mat, pos_list.size())
+		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape(rtn, pos_list)
 	$PillarContainer.add_child(rtn)
 
@@ -77,10 +78,11 @@ func make_capsule_pillas() -> void:
 		for x in maze3d_setting.MazeSize.x+1:
 			pos_list.append(Vector3( x *maze3d_setting.LaneW, maze3d_setting.StoryH/2.0, y *maze3d_setting.LaneW) )
 	var mesh := CapsuleMesh.new()
+	mesh.material = pillar_mat
 	mesh.radius = maze3d_setting.WallThick/2
 	mesh.height = maze3d_setting.StoryH
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
-		).init_with_material(mesh, pillar_mat, pos_list.size())
+		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape(rtn, pos_list)
 	$PillarContainer.add_child(rtn)
 
@@ -92,8 +94,9 @@ func pos_multimeshshape(mms :MultiMeshShape, pos_list :Array) -> void:
 func make_wall_multi_shape(mat :Material, sz :Vector3, pos_list :Array) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
 	mesh.size = sz
+	mesh.material = mat
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
-		).init_with_material(mesh, mat, pos_list.size())
+		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape(rtn, pos_list)
 	$WallContainer.add_child(rtn)
 	return rtn

@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://coko3qw5yj3fs"]
+
+[ext_resource type="Script" uid="uid://c448by2wb5wqw" path="res://tornado/tornado.gd" id="1_uq4ja"]
+[ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="2_b67br"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_myt8e"]
+resource_local_to_scene = true
+
+[sub_resource type="MultiMesh" id="MultiMesh_b2hnm"]
+resource_local_to_scene = true
+
+[node name="Tornado" type="Node3D"]
+script = ExtResource("1_uq4ja")
+
+[node name="RingsOut" parent="." instance=ExtResource("2_b67br")]
+multimesh = SubResource("MultiMesh_myt8e")
+
+[node name="RingsIn" parent="." instance=ExtResource("2_b67br")]
+multimesh = SubResource("MultiMesh_b2hnm")

@@ -36,7 +36,8 @@ func _ready() -> void:
 
 	if DecoTowerCount != 0:
 		orbitr *= 2
-	$DecoOrbit.init(orbitr)
+	var WorldSize :Vector3 = default_maze3d_setting.CalcSizeV3() * 4
+	$DecoOrbit.init(WorldSize, 9)
 	$AxisArrow3D.set_size(default_maze3d_setting.CalcDiagonalLengthV2()/2).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, orbitr), orbitr*2)

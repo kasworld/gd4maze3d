@@ -4,7 +4,7 @@ const PlayerNumber :int = 0
 const CharacterCount :int = 2
 const DecoTowerCount :int = 6
 
-var tower_scene = preload("res://tower.tscn")
+var tower_scene = preload("res://tower/tower.tscn")
 var player :Crawler
 var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting

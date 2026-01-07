@@ -133,9 +133,9 @@ func add_donut_capsule(n :int) -> void:
 		var pobj
 		var 크기기준 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 		if randi()%2 ==0:
-			pobj = preload("res://capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
+			pobj = preload("res://places_things/capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
-			pobj = preload("res://donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
+			pobj = preload("res://places_things/donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
 		pobj.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH/4.0)
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)

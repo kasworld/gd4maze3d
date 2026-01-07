@@ -4,7 +4,7 @@
 [ext_resource type="Environment" uid="uid://dq6rkclkoup3n" path="res://skymap/skymap.tres" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_carmera_light/moving_camera_light.tscn" id="3_hdadt"]
 [ext_resource type="PackedScene" uid="uid://c6cct2gj2a3im" path="res://timed_message/timed_message.tscn" id="4_fd2hu"]
-[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbit.tscn" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbits/deco_orbit.tscn" id="5_lquwl"]
 [ext_resource type="PackedScene" uid="uid://dl14flc0fkeyt" path="res://axis_arrow_3d/axis_arrow_3d.tscn" id="6_7mycd"]
 
 [sub_resource type="Theme" id="Theme_sfr3e"]

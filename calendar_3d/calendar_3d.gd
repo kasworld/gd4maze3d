@@ -48,8 +48,8 @@ func init(w :float, h:float,d:float, fsize :float, backplane:bool=true) -> Calen
 	$BackplaneBox.visible = backplane
 	if backplane:
 		$BackplaneBox.mesh.material.albedo_color = colors.calbg
-		$BackplaneBox.mesh.size = Vector3(h, d*0.5, w)
-		$BackplaneBox.position.y = -d*0.25
+		$BackplaneBox.mesh.size = Vector3(w, h, d*0.5)
+		$BackplaneBox.position.z = -d*0.25
 
 	init_calendar(w/weekdaystring.size(), h/8,d, fsize)
 	update_calendar()
@@ -62,9 +62,9 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 	var mat := get_color_mat(colors.datelabel)
 	var lb := new_text(fsize, fdepth, mat,
 		"%4d년 %2d월" % [time_now_dict["year"] , time_now_dict["month"]])
-	lb.rotation.x = deg_to_rad(-90)
-	lb.rotation.z = deg_to_rad(-90)
-	lb.position = Vector3(3.5*h, fdepth/2, 0)
+	#lb.rotation.x = deg_to_rad(-90)
+	#lb.rotation.z = deg_to_rad(-90)
+	lb.position = Vector3(0, 3.5*h, fdepth/2)
 	calendar_labels.append(lb)
 	$LabelConatiner.add_child(lb)
 
@@ -75,10 +75,10 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 			var co :Color = colors.weekday[wd]
 			mat = get_color_mat(co)
 			lb = new_text(fsize,fdepth, mat, weekdaystring[wd])
-			lb.rotation.x = deg_to_rad(-90)
+			#lb.rotation.x = deg_to_rad(-90)
 			#t.rotation.y = deg2rad(90)
-			lb.rotation.z = deg_to_rad(-90)
-			lb.position = Vector3(3.5*h - i*h , fdepth/2, wd*w - 3*w)
+			#lb.rotation.z = deg_to_rad(-90)
+			lb.position = Vector3(wd*w - 3*w, 3.5*h - i*h , fdepth/2)
 			ln.append(lb)
 			$LabelConatiner.add_child(lb)
 		calendar_labels.append(ln)

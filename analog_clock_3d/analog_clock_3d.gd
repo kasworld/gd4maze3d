@@ -28,16 +28,19 @@ func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=tru
 	$BackPlane.mesh.top_radius = r
 	$BackPlane.mesh.bottom_radius = r
 	$BackPlane.mesh.material.albedo_color = colors.clockbg
-	$BackPlane.position.y = -d*0.25
+	$BackPlane.position.z = -d*0.25
+	$BackPlane.rotation.x = -PI/2
 	$Center.mesh.height = d*0.5
 	$Center.mesh.top_radius = r/50
 	$Center.mesh.bottom_radius = r/50
 	$Center.mesh.material.albedo_color = colors.center_circle1
-	$Center.position.y = d*0.5/2
+	$Center.position.z = d*0.5/2
+	$Center.rotation.x = -PI/2
 	$Donut.mesh.outer_radius = r/20.0
 	$Donut.mesh.inner_radius = r/40.0
 	$Donut.mesh.material.albedo_color = colors.center_circle2
-	$Donut.position.y = d*0.5/2
+	$Donut.position.z = d*0.5/2
+	$Donut.rotation.x = -PI/2
 
 	if backplane:
 		$BackPlane.visible = true
@@ -55,16 +58,19 @@ func make_hands(r :float, d:float)->void:
 	$SecondBase/SecondHand.mesh.material.albedo_color = colors.second
 
 	var hand_height := d*0.1
-	$HourBase/HourHand.mesh.size = Vector3(r*0.75,hand_height,r/36)
-	$MinuteBase/MinuteHand.mesh.size = Vector3(r*0.88,hand_height,r/54)
-	$SecondBase/SecondHand.mesh.size = Vector3(r*1.0,hand_height,r/72)
-	$HourBase/HourHand.position.x = r*0.75 /2
-	$MinuteBase/MinuteHand.position.x = r*0.88 /2
-	$SecondBase/SecondHand.position.x = r*1.0 /2
+	$HourBase/HourHand.mesh.size = Vector3(r*0.75,r/36,hand_height)
+	$MinuteBase/MinuteHand.mesh.size = Vector3(r*0.88,r/54,hand_height)
+	$SecondBase/SecondHand.mesh.size = Vector3(r*1.0,r/72,hand_height)
+	$HourBase/HourHand.position.y = r*0.75 /2
+	$MinuteBase/MinuteHand.position.y = r*0.88 /2
+	$SecondBase/SecondHand.position.y = r*1.0 /2
+	$HourBase/HourHand.rotation.z = PI/2
+	$MinuteBase/MinuteHand.rotation.z = PI/2
+	$SecondBase/SecondHand.rotation.z = PI/2
 
-	$HourBase.position.y = hand_height*1
-	$MinuteBase.position.y = hand_height*2
-	$SecondBase.position.y = hand_height*3
+	$HourBase.position.z = hand_height*1
+	$MinuteBase.position.z = hand_height*2
+	$SecondBase.position.z = hand_height*3
 
 #var multi_bar :MultiMeshShape
 func make_dial_bar_multi(r :float, d:float, align :BarAlign):
@@ -76,18 +82,15 @@ func make_dial_bar_multi(r :float, d:float, align :BarAlign):
 	var bar_height := d*0.2
 	var bar_size :Vector3
 	for i in $DialBars.get_visible_count():
-		var rad := deg_to_rad(-i+90)
-		var bar_center := Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
-		var bar_rotation := Vector3.ZERO
+		var rad := deg_to_rad(-i)
+		var bar_center := Vector3(cos(rad)*r, sin(rad)*r,  bar_height/2)
 		var bar_position := Vector3.ZERO
 		if i % 30 == 0 :
-			bar_size = Vector3(r/18,bar_height,r/180)
+			bar_size = Vector3(r/18,r/180,bar_height)
 		elif i % 6 == 0 :
-			bar_size = Vector3(r/24,bar_height,r/480)
+			bar_size = Vector3(r/24,r/480,bar_height)
 		else :
-			bar_size = Vector3(r/72,bar_height,r/720)
-		var bar_rot := deg_to_rad(-i)
-		bar_rotation.y = bar_rot
+			bar_size = Vector3(r/72,r/720,bar_height)
 		match align:
 			BarAlign.In :
 				bar_position = bar_center*(1 - bar_size.x/r/2)
@@ -95,10 +98,10 @@ func make_dial_bar_multi(r :float, d:float, align :BarAlign):
 				bar_position = bar_center
 			BarAlign.Out :
 				bar_position = bar_center*(1 + bar_size.x/r/2)
-		bar_position.y = bar_height/2
+		bar_position.z = bar_height/2
 		# make transform from bar_rotation, bar_position, bar_size
 		var t := Transform3D(Basis(), bar_position)
-		t = t.rotated_local(Vector3.UP, bar_rot)
+		t = t.rotated_local(Vector3.BACK, rad)
 		t = t.scaled_local( bar_size )
 		$DialBars.multimesh.set_instance_transform(i,t)
 
@@ -109,26 +112,26 @@ func make_dial_num(r :float, d:float, fsize :float, nt :NumberType)->void:
 	match nt:
 		NumberType.Hour:
 			for i in range(1,13):
-				var rad := deg_to_rad( -i*(360.0/12.0) +90)
-				var bar_center := Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+				var rad := deg_to_rad( -i*(360.0/12.0) )
+				var bar_center := Vector3(sin(rad)*r, cos(rad)*r, bar_height/2)
 				var t := new_text(fsize, bar_height, mat, "%d" % [i])
-				t.rotation = Vector3(-PI/2,0,-PI/2)
+				#t.rotation = Vector3(-PI/2,0,-PI/2)
 				t.position = bar_center
 				add_child(t)
 		NumberType.Minute:
 			for i in range(0,60,5):
-				var rad := deg_to_rad( -i*(360.0/60.0) +90)
-				var bar_center := Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+				var rad := deg_to_rad( -i*(360.0/60.0) )
+				var bar_center := Vector3(sin(rad)*r, cos(rad)*r, bar_height/2)
 				var t := new_text(fsize, bar_height, mat, "%d" % [i])
-				t.rotation = Vector3(-PI/2,0,-PI/2)
+				#t.rotation = Vector3(-PI/2,0,-PI/2)
 				t.position = bar_center
 				add_child(t)
 		NumberType.Degree:
 			for i in range(0,360,30):
-				var rad := deg_to_rad( -i*(360.0/360.0) +90)
-				var bar_center := Vector3(sin(rad)*r,bar_height/2, cos(rad)*r)
+				var rad := deg_to_rad( -i*(360.0/360.0) )
+				var bar_center := Vector3(sin(rad)*r, cos(rad)*r, bar_height/2)
 				var t := new_text(fsize, bar_height, mat, "%d" % [i])
-				t.rotation = Vector3(-PI/2,0,-PI/2)
+				#t.rotation = Vector3(-PI/2,0,-PI/2)
 				t.position = bar_center
 				add_child(t)
 
@@ -154,9 +157,9 @@ func update_clock():
 	var minute := ms - int(ms/60)*60
 	ms = ms / 60
 	var hour := ms - int(ms/24)*24 + tz_shift
-	$SecondBase.rotation.y = -second2rad(second)
-	$MinuteBase.rotation.y = -minute2rad(minute)
-	$HourBase.rotation.y = -hour2rad(hour)
+	$SecondBase.rotation.z = -second2rad(second)
+	$MinuteBase.rotation.z = -minute2rad(minute)
+	$HourBase.rotation.z = -hour2rad(hour)
 
 func second2rad(sec :float) -> float:
 	return 2.0*PI/60.0*sec

@@ -213,8 +213,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		else :
 			n = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
 			n.init(기준크기/2, depth, 기준크기/16, 9.0, false)
-		n.rotate_z(PI/2)
-		n.rotate_y(EnumDir.DirToRadian(1+EnumDir.FlagToDir[dir]))
+		n.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
 		n.position = $Maze3D.deco_pos_by_dir(x,y,dir)
 		$WallDeco.add_child(n)
 

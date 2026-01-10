@@ -82,7 +82,7 @@ func make_dial_bar_multi(r :float, d:float, align :BarAlign):
 	var bar_height := d*0.2
 	var bar_size :Vector3
 	for i in $DialBars.get_visible_count():
-		var rad := deg_to_rad(-i)
+		var rad := deg_to_rad(i)
 		var bar_center := Vector3(cos(rad)*r, sin(rad)*r,  bar_height/2)
 		var bar_position := Vector3.ZERO
 		if i % 30 == 0 :
@@ -112,7 +112,7 @@ func make_dial_num(r :float, d:float, fsize :float, nt :NumberType)->void:
 	match nt:
 		NumberType.Hour:
 			for i in range(1,13):
-				var rad := deg_to_rad( -i*(360.0/12.0) )
+				var rad := deg_to_rad( i*(360.0/12.0) )
 				var bar_center := Vector3(sin(rad)*r, cos(rad)*r, bar_height/2)
 				var t := new_text(fsize, bar_height, mat, "%d" % [i])
 				#t.rotation = Vector3(-PI/2,0,-PI/2)
@@ -120,7 +120,7 @@ func make_dial_num(r :float, d:float, fsize :float, nt :NumberType)->void:
 				add_child(t)
 		NumberType.Minute:
 			for i in range(0,60,5):
-				var rad := deg_to_rad( -i*(360.0/60.0) )
+				var rad := deg_to_rad( i*(360.0/60.0) )
 				var bar_center := Vector3(sin(rad)*r, cos(rad)*r, bar_height/2)
 				var t := new_text(fsize, bar_height, mat, "%d" % [i])
 				#t.rotation = Vector3(-PI/2,0,-PI/2)
@@ -128,7 +128,7 @@ func make_dial_num(r :float, d:float, fsize :float, nt :NumberType)->void:
 				add_child(t)
 		NumberType.Degree:
 			for i in range(0,360,30):
-				var rad := deg_to_rad( -i*(360.0/360.0) )
+				var rad := deg_to_rad( i*(360.0/360.0) )
 				var bar_center := Vector3(sin(rad)*r, cos(rad)*r, bar_height/2)
 				var t := new_text(fsize, bar_height, mat, "%d" % [i])
 				#t.rotation = Vector3(-PI/2,0,-PI/2)

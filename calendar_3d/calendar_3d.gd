@@ -1,8 +1,8 @@
 extends Node3D
 class_name Calendar3D
 
-var font = preload("res://font/HakgyoansimBareondotumR.ttf")
-const weekdaystring = ["일","월","화","수","목","금","토"]
+var font := preload("res://font/HakgyoansimBareondotumR.ttf")
+const weekdaystring := ["일","월","화","수","목","금","토"]
 var colors := {
 	weekday = [
 		Color.RED,  # sunday
@@ -14,7 +14,7 @@ var colors := {
 		Color.BLUE,  # saturday
 	],
 	today = Color.GREEN,
-	calbg = Color.BLACK.lightened(0.2),
+	calbg = Color(0.5,0.5,0.5,0.5),
 	datelabel = Color.WHITE,
 }
 
@@ -33,7 +33,6 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshIns
 	mesh.font = font
 	mesh.depth = fdepth
 	mesh.pixel_size = fsize / 16
-	#mesh.font_size = fsize as int
 	mesh.text = text
 	mesh.material = mat
 	var sp := MeshInstance3D.new()
@@ -44,13 +43,10 @@ func init(w :float, h:float,d:float, fsize :float, backplane:bool=true) -> Calen
 	calendar_labels = []
 	for o in $LabelConatiner.get_children():
 		o.queue_free()
-
 	$BackplaneBox.visible = backplane
 	if backplane:
 		$BackplaneBox.mesh.material.albedo_color = colors.calbg
 		$BackplaneBox.mesh.size = Vector3(w, h, d*0.5)
-		$BackplaneBox.position.z = -d*0.25
-
 	init_calendar(w/weekdaystring.size(), h/8,d, fsize)
 	update_calendar()
 	return self
@@ -62,12 +58,9 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 	var mat := get_color_mat(colors.datelabel)
 	var lb := new_text(fsize, fdepth, mat,
 		"%4d년 %2d월" % [time_now_dict["year"] , time_now_dict["month"]])
-	#lb.rotation.x = deg_to_rad(-90)
-	#lb.rotation.z = deg_to_rad(-90)
-	lb.position = Vector3(0, 3.5*h, fdepth/2)
+	lb.position = Vector3(0, 3.5*h, 0)
 	calendar_labels.append(lb)
 	$LabelConatiner.add_child(lb)
-
 	# prepare calendar
 	for i in range(1,8): # skip yearmonth, week title + 6 week
 		var ln := []
@@ -75,10 +68,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 			var co :Color = colors.weekday[wd]
 			mat = get_color_mat(co)
 			lb = new_text(fsize,fdepth, mat, weekdaystring[wd])
-			#lb.rotation.x = deg_to_rad(-90)
-			#t.rotation.y = deg2rad(90)
-			#lb.rotation.z = deg_to_rad(-90)
-			lb.position = Vector3(wd*w - 3*w, 3.5*h - i*h , fdepth/2)
+			lb.position = Vector3(wd*w - 3*w, 3.5*h - i*h , 0)
 			ln.append(lb)
 			$LabelConatiner.add_child(lb)
 		calendar_labels.append(ln)
@@ -124,7 +114,6 @@ func update_calendar() -> void:
 var old_time_dict = {"day":0} # datetime dict
 func _on_timer_timeout() -> void:
 	var time_now_dict := Time.get_datetime_dict_from_system()
-
 	# date changed, update datelabel, calendar
 	if old_time_dict["day"] != time_now_dict["day"]:
 		old_time_dict = time_now_dict
@@ -132,5 +121,4 @@ func _on_timer_timeout() -> void:
 		var curLabel :MeshInstance3D = calendar_labels[0]
 		set_mesh_text(curLabel, "%4d년 %2d월" % [
 			time_now_dict["year"] , time_now_dict["month"]
-			]
-			)
+			])

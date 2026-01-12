@@ -1,9 +1,9 @@
-class_name Animation3D
+class_name SimpleAnimation
 
-signal animation_ended(st :Node3D, ani :Dictionary)
+signal animation_ended(st :Node, ani :Dictionary)
 
 var animation_list :Array[Dictionary]
-# {Name,  Node3d, Field(position, rotation, scale), SubField(0,1,2) , StartValue, EndValue , StartTick, DurSec }
+# {Name,  Node, Field(position, rotation, scale), SubField(0,1,2) , StartValue, EndValue , StartTick, DurSec }
 
 func get_animation_count() -> int:
 	return animation_list.size()
@@ -37,10 +37,10 @@ func find_by_Field(field :String) -> Array[Dictionary]:
 			rtn.append(d)
 	return rtn
 
-func start_move(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
+func start_move(name :String, node :Node, src_val :Variant, dst_val: Variant, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node,
+		"Node" : node,
 		"Field" : "position",
 		"StartValue" : src_val,
 		"EndValue" : dst_val,
@@ -50,10 +50,10 @@ func start_move(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, 
 	animation_list.append(ani)
 	return ani
 
-func start_move_subfield(name :String, node :Node3D, sub_index :int, src_val :float, dst_val: float, dur_sec :float) -> Dictionary:
+func start_move_subfield(name :String, node :Node, sub_index :int, src_val :Variant, dst_val: Variant, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node,
+		"Node" : node,
 		"Field" : "position",
 		"SubField" : sub_index,
 		"StartValue" : src_val,
@@ -64,10 +64,10 @@ func start_move_subfield(name :String, node :Node3D, sub_index :int, src_val :fl
 	animation_list.append(ani)
 	return ani
 
-func start_rotate(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
+func start_rotate(name :String, node :Node, src_val :Variant, dst_val: Variant, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node,
+		"Node" : node,
 		"Field" : "rotation",
 		"StartValue" : src_val,
 		"EndValue" : dst_val,
@@ -77,10 +77,10 @@ func start_rotate(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3
 	animation_list.append(ani)
 	return ani
 
-func start_rotate_subfield(name :String, node :Node3D, sub_index :int, src_val :float, dst_val: float, dur_sec :float) -> Dictionary:
+func start_rotate_subfield(name :String, node :Node, sub_index :int, src_val :Variant, dst_val: Variant, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node,
+		"Node" : node,
 		"Field" : "rotation",
 		"SubField" : sub_index,
 		"StartValue" : src_val,
@@ -91,11 +91,10 @@ func start_rotate_subfield(name :String, node :Node3D, sub_index :int, src_val :
 	animation_list.append(ani)
 	return ani
 
-
-func start_scale(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3, dur_sec :float) -> Dictionary:
+func start_scale(name :String, node :Node, src_val :Variant, dst_val: Variant, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node,
+		"Node" : node,
 		"Field" : "scale",
 		"StartValue" : src_val,
 		"EndValue" : dst_val,
@@ -105,10 +104,10 @@ func start_scale(name :String, node :Node3D, src_val :Vector3, dst_val: Vector3,
 	animation_list.append(ani)
 	return ani
 
-func start_scale_subfield(name :String, node :Node3D, sub_index :int, src_val :float, dst_val: float, dur_sec :float) -> Dictionary:
+func start_scale_subfield(name :String, node :Node, sub_index :int, src_val :Variant, dst_val: Variant, dur_sec :float) -> Dictionary:
 	var ani := {
 		"Name" : name, # for end signal
-		"Node3d" : node,
+		"Node" : node,
 		"Field" : "scale",
 		"SubField" : sub_index,
 		"StartValue" : src_val,
@@ -123,28 +122,16 @@ func handle_animation() -> void:
 	var timenow := Time.get_unix_time_from_system()
 	for i in animation_list.size():
 		var ani :Dictionary = animation_list.pop_front()
-		if ani.Node3d == null:
+		if ani.Node == null:
 			continue
 		var rate :float = (timenow - ani.StartTick) / ani.DurSec
 		if rate >= 1.0:
 			rate = 1.0
-		match ani.Field:
-			"position":
-				if ani.has("SubField"):
-					ani.Node3d.position[ani.SubField] = lerpf(ani.StartValue, ani.EndValue, rate)
-				else:
-					ani.Node3d.position = ani.StartValue.lerp(ani.EndValue, rate)
-			"rotation":
-				if ani.has("SubField"):
-					ani.Node3d.rotation[ani.SubField] = lerpf(ani.StartValue, ani.EndValue, rate)
-				else:
-					ani.Node3d.rotation = ani.StartValue.lerp(ani.EndValue, rate)
-			"scale":
-				if ani.has("SubField"):
-					ani.Node3d.scale[ani.SubField] = lerpf(ani.StartValue, ani.EndValue, rate)
-				else:
-					ani.Node3d.scale = ani.StartValue.lerp(ani.EndValue, rate)
+		if ani.has("SubField"):
+			ani.Node[ani.Field][ani.SubField] = lerp(ani.StartValue, ani.EndValue, rate)
+		else:
+			ani.Node[ani.Field] = ani.StartValue.lerp(ani.EndValue, rate)
 		if rate >= 1.0:
-			animation_ended.emit(ani.Node3d, ani)
+			animation_ended.emit(ani.Node, ani)
 		else:
 			animation_list.push_back(ani)

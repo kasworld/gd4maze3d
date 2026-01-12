@@ -3,7 +3,7 @@ class_name Crawler
 
 signal crawler_goal_reached(st :Storey, cr :Crawler)
 
-var crawler_animation := Animation3D.new()
+var crawler_animation := SimpleAnimation.new()
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	if crawler_animation.is_empty():
 		current_action.clear()

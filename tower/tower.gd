@@ -4,7 +4,7 @@ class_name Tower
 const AnimationDuration := 3.0
 const StoreyAnimationDuration := 1.5
 
-var tower_animation := Animation3D.new()
+var tower_animation := SimpleAnimation.new()
 func _process(_delta: float) -> void:
 	tower_animation.handle_animation()
 
@@ -20,7 +20,7 @@ func start_shift_out_animation(st :Node3D, subfield :int, ani_dur :float) -> voi
 	tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, ani_dur)
 
 func start_shift_in_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
-	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0, ani_dur )
+	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, ani_dur )
 
 func start_reset_position_animation(st :Node3D, ani_dur :float) -> void:
 	start_shift_in_animation(st, Vector3.Axis.AXIS_X, ani_dur)

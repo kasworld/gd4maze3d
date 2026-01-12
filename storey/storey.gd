@@ -12,7 +12,7 @@ static var themecolorlist = [
 func random_color()->Color:
 	return themecolorlist.pick_random().pick_random()[0]
 
-var storey_animation := Animation3D.new()
+var storey_animation := SimpleAnimation.new()
 func _process(delta: float) -> void:
 	storey_animation.handle_animation()
 	for t in tree_list:

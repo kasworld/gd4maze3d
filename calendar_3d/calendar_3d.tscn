@@ -4,10 +4,12 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g3tgt"]
 resource_local_to_scene = true
+transparency = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_yig0t"]
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_g3tgt")
+flip_faces = true
 
 [node name="Calendar3d" type="Node3D"]
 script = ExtResource("1_ss2hb")

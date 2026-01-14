@@ -195,13 +195,13 @@ func _on_button_aps_max_pressed() -> void:
 	player.action_queue.action_per_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
-	player.action_per_second.set_up()
+	player.action_queue.action_per_second.set_up()
 
 func _on_button_aps_min_pressed() -> void:
-	player.action_per_second.set_min()
+	player.action_queue.action_per_second.set_min()
 
 func _on_button_aps_down_pressed() -> void:
-	player.action_per_second.set_down()
+	player.action_queue.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
 	enter_next_storey(get_current_tower().cur_storey)
@@ -210,10 +210,10 @@ func _on_button_camera_pressed() -> void:
 	MovingCameraLight.NextCamera()
 
 func _on_button_fov_up_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().fov_camera_inc()
+	MovingCameraLight.GetCurrentCamera().camera_fov_inc()
 
 func _on_button_fov_down_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().fov_camera_dec()
+	MovingCameraLight.GetCurrentCamera().camera_fov_dec()
 
 
 @onready var debuglabel = $ButtonContainer/LabelContainer/Debug

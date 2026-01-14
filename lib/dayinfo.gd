@@ -35,7 +35,7 @@ func clear()->void:
 
 # return true if added
 func add_day_repeat_data(k :String, v :String)->bool:
-	var klist = k.split("/", false,1)
+	var klist := k.split("/", false,1)
 	if klist.size() != 2:
 		return false
 	var repeat_day = klist[1]
@@ -47,14 +47,14 @@ func add_day_repeat_data(k :String, v :String)->bool:
 
 func make(text:String)->void:
 	clear()
-	var lines = text.strip_edges().split("\n", false,0)
+	var lines := text.strip_edges().split("\n", false,0)
 	for s in lines :
-		var slist = s.strip_edges().split(" ", false,1)
+		var slist := s.strip_edges().split(" ", false,1)
 		if slist.size() != 2:
 			print_debug(slist)
 			continue
-		var key = slist[0]
-		var value = slist[1]
+		var key := slist[0]
+		var value := slist[1]
 		if add_day_repeat_data(key,value):
 			continue # day repeat data
 		# process non repeat data
@@ -66,7 +66,7 @@ func make(text:String)->void:
 
 func get_daystringlist()->Array[String]:
 	var rtn :Array[String] = []
-	var addkey = func(key):
+	var addkey := func(key):
 		if data_dict.get(key) == null:
 			return
 		for v in data_dict[key]:
@@ -75,7 +75,7 @@ func get_daystringlist()->Array[String]:
 	# every day
 	addkey.call("*")
 
-	var time_now_dict = Time.get_datetime_dict_from_system()
+	var time_now_dict := Time.get_datetime_dict_from_system()
 	# year repeat day info
 	addkey.call("%02d-%02d" % [time_now_dict["month"], time_now_dict["day"]] )
 	# month repeat day info
@@ -83,7 +83,7 @@ func get_daystringlist()->Array[String]:
 	# week repeat day info
 	addkey.call(weekday_name[time_now_dict["weekday"]] )
 	# today's info
-	var todaystr = "%04d-%02d-%02d" % [time_now_dict["year"] , time_now_dict["month"] ,time_now_dict["day"]]
+	var todaystr := "%04d-%02d-%02d" % [time_now_dict["year"] , time_now_dict["month"] ,time_now_dict["day"]]
 	addkey.call(todaystr)
 	for v in day_repeat_list:
 		var diffday = calc_day_diff(v[0], todaystr)
@@ -93,6 +93,6 @@ func get_daystringlist()->Array[String]:
 
 # string must YYYY-MM-DD no time zone
 func calc_day_diff(from :String, to :String)->int:
-	var from_tick = Time.get_unix_time_from_datetime_string (from)
-	var to_tick = Time.get_unix_time_from_datetime_string (to)
+	var from_tick := Time.get_unix_time_from_datetime_string (from)
+	var to_tick := Time.get_unix_time_from_datetime_string (to)
 	return (to_tick-from_tick)/(24*60*60)

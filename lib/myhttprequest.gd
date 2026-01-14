@@ -1,7 +1,7 @@
 class_name MyHTTPRequest extends Node
 
 # for http header Last-Modified: Wed, 19 Oct 2022 03:10:02 GMT
-const to_find_data = "Last-Modified: "
+const to_find_data := "Last-Modified: "
 
 var url_to_get :String
 var process_body :Callable
@@ -39,7 +39,7 @@ func force_update()->void:
 func _http_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	timer.start(repeat_second)
 	if result == HTTPRequest.RESULT_SUCCESS and response_code==200:
-		var this_modified = key_value_from_header(to_find_data,headers)
+		var this_modified := key_value_from_header(to_find_data,headers)
 		if last_modified != this_modified:
 			last_modified = this_modified
 			process_body.call(body)
@@ -48,9 +48,8 @@ func _http_request_completed(result: int, response_code: int, headers: PackedStr
 		fail_to_get.call()
 
 func key_value_from_header(key: String ,headers: PackedStringArray )->String:
-	var keyLen = len(key)
+	var keyLen := len(key)
 	for i in headers:
 		if i.left(keyLen) == key:
 			return i.right(keyLen)
 	return ""
-

@@ -4,7 +4,7 @@ class_name InfoText
 
 signal text_updated(info_text :String)
 
-var request_dict = {}
+var request_dict := {}
 func init_request(weather_url :String, dayinfo_url:String, todayinfo_url:String )->void:
 	request_dict["weather_url"] = MyHTTPRequest.new(
 		weather_url,
@@ -31,18 +31,18 @@ func force_update()->void:
 		request_dict[k].force_update()
 
 func make_info_text():
-	var dayinfo = day_info.get_daystringlist()
-	var all = []
+	var dayinfo := day_info.get_daystringlist()
+	var all := []
 	if weather_info.size() > 0:
 		all.append_array(weather_info)
 	all.append_array(dayinfo)
 	all.append_array(today_info)
-	var info_text = "\n".join(all)
+	var info_text := "\n".join(all)
 	text_updated.emit(info_text)
 
 var weather_info :Array[String]
 func weather_success(body)->void:
-	var text = body.get_string_from_utf8()
+	var text :String = body.get_string_from_utf8()
 	weather_info = split2list( text )
 	make_info_text()
 func weather_fail()->void:
@@ -67,7 +67,7 @@ func todayinfo_fail()->void:
 
 # remove empty line
 func split2list(text :String)->Array[String]:
-	var lines = text.strip_edges().split("\n", false,0)
+	var lines := text.strip_edges().split("\n", false,0)
 	var rtn :Array[String]=[]
 	for l in lines:
 		if not l.is_empty():

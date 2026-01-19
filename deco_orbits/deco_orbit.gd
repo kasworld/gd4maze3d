@@ -40,4 +40,4 @@ func _process(delta: float) -> void:
 		os.animate_rotate(now, delta)
 
 func random_color() -> Color:
-	return NamedColorList.color_list.pick_random()[0]
+	return NamedColors.random_color()

@@ -90,7 +90,7 @@ func add_crawler(i :int) -> Crawler:
 	$CharacterContainer.add_child(cr)
 	cr.init(
 		[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
-		i, default_maze3d_setting.LaneW, NamedColorList.color_list.pick_random()[0])
+		i, default_maze3d_setting.LaneW, NamedColors.random_color())
 	if cr.crawler_num == PlayerNumber:
 		cr.crawler_goal_reached.connect(crawler_goal_reached)
 	return cr

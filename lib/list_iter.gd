@@ -1,14 +1,17 @@
-class_name ShuffleIter
+class_name ListIter
 
+var shuffle_flag :bool
 var iter_data :Array
 var curser :int
 
-func _init(list :Array) -> void:
+func _init(list :Array, shuffle_flag_a :bool = true) -> void:
+	shuffle_flag = shuffle_flag_a
 	iter_data = list.duplicate()
 	shuffle()
 
-func shuffle() -> ShuffleIter:
-	iter_data.shuffle()
+func shuffle() -> ListIter:
+	if shuffle_flag:
+		iter_data.shuffle()
 	curser = 0
 	return self
 

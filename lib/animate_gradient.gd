@@ -1,7 +1,7 @@
 class_name AnimateGradient
 
 static func random_color() -> Color:
-	return NamedColorList.color_list.pick_random()[0]
+	return NamedColors.random_color()
 
 var color_fn :Callable
 

@@ -2,15 +2,15 @@ extends Node3D
 class_name Storey
 
 static var themecolorlist = [
-	NamedColorList.make_red_color_list(),
-	NamedColorList.make_green_color_list(),
-	NamedColorList.make_blue_color_list(),
-	NamedColorList.make_cyan_color_list(),
-	NamedColorList.make_magenta_color_list(),
-	NamedColorList.make_yellow_color_list(),
+	NamedColors.filter_red_color_list(),
+	NamedColors.filter_green_color_list(),
+	NamedColors.filter_blue_color_list(),
+	NamedColors.filter_cyan_color_list(),
+	NamedColors.filter_magenta_color_list(),
+	NamedColors.filter_yellow_color_list(),
 ]
 func random_color()->Color:
-	return themecolorlist.pick_random().pick_random()[0]
+	return themecolorlist.pick_random().pick_random()
 
 var storey_animation := SimpleAnimation.new()
 func _process(delta: float) -> void:
@@ -129,7 +129,7 @@ func add_donut_capsule(n :int) -> void:
 		var p = 구석자리목록.pick_random()
 		if 놓인것들.get_at(p) != null:
 			continue
-		var co :Color = NamedColorList.color_list.pick_random()[0]
+		var co :Color = NamedColors.random_color()
 		var pobj
 		var 크기기준 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
 		if randi()%2 ==0:

@@ -1,8 +1,8 @@
 extends Node3D
 class_name Maze3D
 
-static var darkcolorlist = NamedColorList.make_dark_color_list()
-static var lightcolorlist = NamedColorList.make_light_color_list()
+static var darkcolorlist = NamedColors.filter_dark_color_list()
+static var lightcolorlist = NamedColors.filter_light_color_list()
 
 enum WallView {Reduced, Full, Off}
 static func wallview2str(vd :WallView) -> String:
@@ -51,8 +51,8 @@ func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cos
 func init_floor_ceiling() -> void:
 	var wire_r := maze3d_setting.WallThick * 0.5
 	var net_size := maze3d_setting.CalcSizeWithWallV2() - Vector2(wire_r,wire_r)
-	$Floor.init_wire_net(net_size, maze3d_setting.MazeSize*2, wire_r, darkcolorlist.pick_random()[0])
-	$Ceiling.init_wire_net(net_size, maze3d_setting.MazeSize*2, wire_r, lightcolorlist.pick_random()[0])
+	$Floor.init_wire_net(net_size, maze3d_setting.MazeSize*2, wire_r, darkcolorlist.pick_random())
+	$Ceiling.init_wire_net(net_size, maze3d_setting.MazeSize*2, wire_r, lightcolorlist.pick_random())
 	$Floor.position.y -= maze3d_setting.StoryH/2
 	$Ceiling.position.y += maze3d_setting.StoryH/2
 	var shiftsize := maze3d_setting.CalcSizeV3()/2

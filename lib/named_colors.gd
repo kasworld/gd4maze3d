@@ -1,89 +1,219 @@
-extends Node
+class_name NamedColors
 
-#class_name NamedColorList
+static func random_color(clist = color_list) -> Color:
+	return clist.pick_random()
 
-func get_color(i :int)->Color:
-	return color_list[i%color_list.size()][0]
+static func iter_color(i :int) -> Color:
+	return color_list[i%color_list.size()]
 
-func get_colorname(i :int)->String:
-	return color_list[i%color_list.size()][1]
-
-func get_colorname_by_color(c :Color)->String:
-	for v in color_list:
-		if v[0] == c:
-			return v[1]
-	return c.to_html()
-
-func filter_to_colorlist(clist = color_list) -> Array[Color]:
-	var rtn :Array[Color] = []
-	for i in clist:
-		rtn.append(i[0])
-	return rtn
-
-func filter_to_namelist(clist = color_list) -> Array[String]:
-	var rtn :Array[String] = []
-	for i in clist:
-		rtn.append(i[1])
-	return rtn
-
-func make_light_color_list(l :float= 0.5) -> Array:
+static func filter_light_color_list(l :float= 0.5) -> Array:
 	var rtn := []
 	for i in color_list:
-		if i[0].get_luminance() > l:
+		if i.get_luminance() > l:
 			rtn.append(i)
 	return rtn
 
-func make_dark_color_list(l :float= 0.5, clist = color_list) -> Array:
+static func filter_dark_color_list(l :float= 0.5, clist = color_list) -> Array:
 	var rtn := []
 	for i in clist:
-		if i[0].get_luminance() < l:
+		if i.get_luminance() < l:
 			rtn.append(i)
 	return rtn
 
-func make_red_color_list(clist = color_list) -> Array:
-	var rtn := []
-	for i in clist:
-		if i[0].r > i[0].g and i[0].r > i[0].b:
-			rtn.append(i)
-	return rtn
+static func is_red_like(co :Color) -> bool:
+	return co.r > co.g and co.r > co.b
 
-func make_blue_color_list(clist = color_list) -> Array:
-	var rtn := []
-	for i in clist:
-		if i[0].b > i[0].g and i[0].b > i[0].r:
-			rtn.append(i)
-	return rtn
+static func is_blue_like(co :Color) -> bool:
+	return co.b > co.g and co.b > co.r
 
-func make_green_color_list(clist = color_list) -> Array:
-	var rtn := []
-	for i in clist:
-		if i[0].g > i[0].r and i[0].g > i[0].b:
-			rtn.append(i)
-	return rtn
+static func is_green_like(co :Color) -> bool:
+	return co.g > co.r and co.g > co.b
 
-func make_yellow_color_list(clist = color_list) -> Array:
-	var rtn := []
-	for i in clist:
-		if i[0].r > i[0].b and i[0].g > i[0].b:
-			rtn.append(i)
-	return rtn
+static func is_yellow_like(co :Color) -> bool:
+	return co.r > co.b and co.g > co.b
 
-func make_cyan_color_list(clist = color_list) -> Array:
-	var rtn := []
-	for i in clist:
-		if i[0].b > i[0].r and i[0].g > i[0].r:
-			rtn.append(i)
-	return rtn
+static func is_cyan_like(co :Color) -> bool:
+	return co.b > co.r and co.g > co.r
 
-func make_magenta_color_list(clist = color_list) -> Array:
-	var rtn := []
-	for i in clist:
-		if i[0].b > i[0].g and i[0].r > i[0].g:
-			rtn.append(i)
-	return rtn
+static func is_magenta_like(co :Color) -> bool:
+	return co.b > co.g and co.r > co.g
+
+static func filter_red_color_list(clist :Array[Color] = color_list) -> Array:
+	return clist.filter(is_red_like)
+
+static func filter_blue_color_list(clist :Array[Color] = color_list) -> Array:
+	return clist.filter(is_blue_like)
+
+static func filter_green_color_list(clist :Array[Color] = color_list) -> Array:
+	return clist.filter(is_green_like)
+
+static func filter_yellow_color_list(clist :Array[Color] = color_list) -> Array:
+	return clist.filter(is_yellow_like)
+
+static func filter_cyan_color_list(clist :Array[Color] = color_list) -> Array:
+	return clist.filter(is_cyan_like)
+
+static func filter_magenta_color_list(clist :Array[Color] = color_list) -> Array:
+	return clist.filter(is_magenta_like)
 
 
-const color_list = [
+const color_list :Array[Color]= [
+Color.ALICE_BLUE,
+Color.ANTIQUE_WHITE,
+Color.AQUA,
+Color.AQUAMARINE,
+Color.AZURE,
+Color.BEIGE,
+Color.BISQUE,
+Color.BLACK,
+Color.BLANCHED_ALMOND,
+Color.BLUE,
+Color.BLUE_VIOLET,
+Color.BROWN,
+Color.BURLYWOOD,
+Color.CADET_BLUE,
+Color.CHARTREUSE,
+Color.CHOCOLATE,
+Color.CORAL,
+Color.CORNFLOWER_BLUE,
+Color.CORNSILK,
+Color.CRIMSON,
+Color.CYAN,
+Color.DARK_BLUE,
+Color.DARK_CYAN,
+Color.DARK_GOLDENROD,
+Color.DARK_GRAY,
+Color.DARK_GREEN,
+Color.DARK_KHAKI,
+Color.DARK_MAGENTA,
+Color.DARK_OLIVE_GREEN,
+Color.DARK_ORANGE,
+Color.DARK_ORCHID,
+Color.DARK_RED,
+Color.DARK_SALMON,
+Color.DARK_SEA_GREEN,
+Color.DARK_SLATE_BLUE,
+Color.DARK_SLATE_GRAY,
+Color.DARK_TURQUOISE,
+Color.DARK_VIOLET,
+Color.DEEP_PINK,
+Color.DEEP_SKY_BLUE,
+Color.DIM_GRAY,
+Color.DODGER_BLUE,
+Color.FIREBRICK,
+Color.FLORAL_WHITE,
+Color.FOREST_GREEN,
+Color.FUCHSIA,
+Color.GAINSBORO,
+Color.GHOST_WHITE,
+Color.GOLD,
+Color.GOLDENROD,
+Color.GRAY,
+Color.GREEN,
+Color.GREEN_YELLOW,
+Color.HONEYDEW,
+Color.HOT_PINK,
+Color.INDIAN_RED,
+Color.INDIGO,
+Color.IVORY,
+Color.KHAKI,
+Color.LAVENDER,
+Color.LAVENDER_BLUSH,
+Color.LAWN_GREEN,
+Color.LEMON_CHIFFON,
+Color.LIGHT_BLUE,
+Color.LIGHT_CORAL,
+Color.LIGHT_CYAN,
+Color.LIGHT_GOLDENROD,
+Color.LIGHT_GRAY,
+Color.LIGHT_GREEN,
+Color.LIGHT_PINK,
+Color.LIGHT_SALMON,
+Color.LIGHT_SEA_GREEN,
+Color.LIGHT_SKY_BLUE,
+Color.LIGHT_SLATE_GRAY,
+Color.LIGHT_STEEL_BLUE,
+Color.LIGHT_YELLOW,
+Color.LIME,
+Color.LIME_GREEN,
+Color.LINEN,
+Color.MAGENTA,
+Color.MAROON,
+Color.MEDIUM_AQUAMARINE,
+Color.MEDIUM_BLUE,
+Color.MEDIUM_ORCHID,
+Color.MEDIUM_PURPLE,
+Color.MEDIUM_SEA_GREEN,
+Color.MEDIUM_SLATE_BLUE,
+Color.MEDIUM_SPRING_GREEN,
+Color.MEDIUM_TURQUOISE,
+Color.MEDIUM_VIOLET_RED,
+Color.MIDNIGHT_BLUE,
+Color.MINT_CREAM,
+Color.MISTY_ROSE,
+Color.MOCCASIN,
+Color.NAVAJO_WHITE,
+Color.NAVY_BLUE,
+Color.OLD_LACE,
+Color.OLIVE,
+Color.OLIVE_DRAB,
+Color.ORANGE,
+Color.ORANGE_RED,
+Color.ORCHID,
+Color.PALE_GOLDENROD,
+Color.PALE_GREEN,
+Color.PALE_TURQUOISE,
+Color.PALE_VIOLET_RED,
+Color.PAPAYA_WHIP,
+Color.PEACH_PUFF,
+Color.PERU,
+Color.PINK,
+Color.PLUM,
+Color.POWDER_BLUE,
+Color.PURPLE,
+Color.REBECCA_PURPLE,
+Color.RED,
+Color.ROSY_BROWN,
+Color.ROYAL_BLUE,
+Color.SADDLE_BROWN,
+Color.SALMON,
+Color.SANDY_BROWN,
+Color.SEA_GREEN,
+Color.SEASHELL,
+Color.SIENNA,
+Color.SILVER,
+Color.SKY_BLUE,
+Color.SLATE_BLUE,
+Color.SLATE_GRAY,
+Color.SNOW,
+Color.SPRING_GREEN,
+Color.STEEL_BLUE,
+Color.TAN,
+Color.TEAL,
+Color.THISTLE,
+Color.TOMATO,
+#Color.TRANSPARENT,
+Color.TURQUOISE,
+Color.VIOLET,
+Color.WEB_GRAY,
+Color.WEB_GREEN,
+Color.WEB_MAROON,
+Color.WEB_PURPLE,
+Color.WHEAT,
+Color.WHITE,
+Color.WHITE_SMOKE,
+Color.YELLOW,
+Color.YELLOW_GREEN,
+]
+
+## cannot use dictionary because same color value exist in color list
+static func get_colorname_by_color(co :Color)->String:
+	for v in color_to_name:
+		if co == v[0]:
+			return v[1]
+	return co.to_html()
+
+const color_to_name := [
 [Color.ALICE_BLUE, "ALICE_BLUE"],
 [Color.ANTIQUE_WHITE, "ANTIQUE_WHITE"],
 [Color.AQUA, "AQUA"],

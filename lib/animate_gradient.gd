@@ -1,11 +1,8 @@
 class_name AnimateGradient
 
-static func random_color() -> Color:
-	return NamedColors.random_color()
-
 var color_fn :Callable
 
-func _init(color_fn_a :Callable = random_color) -> void:
+func _init(color_fn_a :Callable = NamedColors.random_color) -> void:
 	set_color_fn(color_fn_a)
 	color_list = [color_fn.call(),color_fn.call()]
 

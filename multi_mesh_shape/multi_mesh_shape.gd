@@ -269,7 +269,7 @@ func set_inst_position(i :int, pos :Vector3) -> void:
 	t.origin = pos
 	multimesh.set_instance_transform(i, t)
 
-func set_inst_color(i, co :Color) -> void:
+func set_inst_color(i :int, co :Color) -> void:
 	multimesh.set_instance_color(i,co)
 
 func set_inst_position_rotation(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:

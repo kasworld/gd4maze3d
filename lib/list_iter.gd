@@ -31,3 +31,12 @@ func get_next() -> Variant:
 	var rtn = get_current()
 	next()
 	return rtn
+
+func get_size() -> int:
+	return iter_data.size()
+
+func get_itered_slice() -> Array:
+	return iter_data.slice(0,curser)
+
+func get_unitered_slice() -> Array:
+	return iter_data.slice(curser)

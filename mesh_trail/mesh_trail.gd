@@ -48,12 +48,10 @@ func get_color_ByPosition(pos :Vector3) -> Color:
 		co[i] = (pos[i] - color_aabb.position[i]) / color_aabb.size[i]
 	return co
 
-var get_random_color_fn :Callable = get_random_color
+var get_random_color_fn :Callable = RandomColor.random_color
 func set_get_random_color_fn(fn :Callable) -> MeshTrail:
 	get_random_color_fn = fn
 	return self
-func get_random_color() -> Color:
-	return Color(randf(),randf(),randf())
 
 var head_velocity :Vector3
 var speed_max :float

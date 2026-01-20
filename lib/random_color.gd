@@ -14,6 +14,10 @@ static func red_pure() -> Color:
 static func blue_pure() -> Color:
 	return Color(0,0,randf())
 
+## fater then rate_color([],0)
+static func random_color() -> Color:
+	return Color(randf(),randf(),randf())
+
 ## all random color use rate_color([],0)
 static func rate_color(high_index_list :Array, rate :float=0.6) -> Color:
 	var rtn := Color(0,0,0)

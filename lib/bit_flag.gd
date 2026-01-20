@@ -3,23 +3,23 @@ class_name BitFlag
 static func ByPos(pos :int) -> int:
 	return 1 << pos
 
-static func SetByPos(pos :int, v :int) -> int:
-	return v | (1 << pos)
+static func SetByPos(pos :int, flags :int) -> int:
+	return flags | (1 << pos)
 
-static func ClearByPos(pos :int, v :int) -> int:
-	return v & ~(1 << pos)
+static func ClearByPos(pos :int, flags :int) -> int:
+	return flags & ~(1 << pos)
 
-static func TestByPos(pos :int, v :int) -> bool:
-	return v & (1 << pos)
+static func TestByPos(pos :int, flags :int) -> bool:
+	return flags & (1 << pos)
 
 ## 0b101 -> [0,2]
-static func MakePosList(v :int) -> Array[int]:
+static func MakePosList(flags :int) -> Array[int]:
 	var rtn :Array[int] = []
 	var pos := 0
-	while v > 0:
-		if v % 2 == 1:
+	while flags > 0:
+		if flags % 2 == 1:
 			rtn.append(pos)
-		v >>= 1
+		flags >>= 1
 		pos += 1
 	return rtn
 
@@ -29,3 +29,12 @@ static func FromPosList(pos_list :Array) -> int:
 	for pos in pos_list:
 		rtn += (1 << pos)
 	return rtn
+
+static func MakeFilledPosList(bit_len :int) -> Array[int]:
+	var rtn :Array[int] = []
+	for i in bit_len:
+		rtn.append(1 << i)
+	return rtn
+
+static func MakeFilledFlags(bit_len :int) -> int:
+	return (1 << bit_len+1) -1

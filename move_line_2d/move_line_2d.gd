@@ -2,7 +2,6 @@ extends Node2D
 
 class_name MoveLine2D
 
-var rng :RandomNumberGenerator
 var draw_area_size :Vector2
 var line_cursor :int
 var line_width :float
@@ -15,7 +14,6 @@ var move_speed :float
 var auto_move :bool
 
 func init_with_random(ln_count :int, pt_count :int, w:float, dsize :Vector2, amovespd :float = 1.0/60.0 ) -> MoveLine2D:
-	rng = RandomNumberGenerator.new()
 	point_count = pt_count
 	line_width = w
 	line_count = ln_count
@@ -34,8 +32,6 @@ func init_with_random(ln_count :int, pt_count :int, w:float, dsize :Vector2, amo
 	return self
 
 func init_with_copy(other :MoveLine2D) -> MoveLine2D:
-	rng = RandomNumberGenerator.new()
-	rng.seed = other.rng.seed
 	point_count = other.point_count
 	line_width = other.line_width
 	line_count = other.line_count
@@ -110,7 +106,7 @@ func make_point_list(count :int, rt :Vector2) -> PackedVector2Array:
 	return rtn
 
 func random_pos_vector2d(rt :Vector2) -> Vector2:
-	return Vector2( rng.randf_range(0,rt.x), rng.randf_range(0,rt.y) )
+	return Vector2( randf_range(0,rt.x), randf_range(0,rt.y) )
 
 func make_vel_list(count :int, rt :Vector2) -> PackedVector2Array:
 	var rtn :PackedVector2Array = []
@@ -123,7 +119,7 @@ func random_vel_vector2d(rt :Vector2) -> Vector2:
 
 func random_no_zero(w :float) -> float:
 	var v := random_positive(w/2)
-	match rng.randi_range(1,2):
+	match randi_range(1,2):
 		1:
 			pass
 		2:
@@ -131,13 +127,10 @@ func random_no_zero(w :float) -> float:
 	return v
 
 func random_positive(w :float) -> float:
-	return rng.randf_range(w/10,w)
+	return randf_range(w/10,w)
 
 func make_color_list(count :int) -> PackedColorArray:
 	var rtn :PackedColorArray = []
 	for j in count:
-		rtn.append(random_color())
+		rtn.append(RandomColor.random_color())
 	return rtn
-
-func random_color() -> Color:
-	return Color(rng.randf(),rng.randf(),rng.randf())

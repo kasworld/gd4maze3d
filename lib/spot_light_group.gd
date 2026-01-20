@@ -15,15 +15,18 @@ func _init(arg ) -> void:
 		assert(false)
 
 ## flag bit == 1 , set visible to b
-func set_light_on(b :bool, pos_flag :int = 0xff) -> void:
+func set_light_on(b :bool, flags :int) -> void:
 	for i in light_list.size():
-		if BitFlag.TestByPos(i, pos_flag):
+		if BitFlag.TestByPos(i, flags):
 			light_list[i].visible = b
 
+func set_light_on_at(i :int, b :bool) -> void:
+	light_list[i].visible = b
+
 ## all light on/off by flag
-func set_light_on_all(pos_flag :int = 0xff) -> void:
+func set_light_on_all(flags :int) -> void:
 	for i in light_list.size():
-		light_list[i].visible = BitFlag.TestByPos(i, pos_flag)
+		light_list[i].visible = BitFlag.TestByPos(i, flags)
 
 func get_light_on_all() -> int:
 	var rtn := 0
@@ -32,15 +35,18 @@ func get_light_on_all() -> int:
 	return rtn
 
 ## flag bit == 1 , set light shadow to b
-func set_light_shadow(b :bool, pos_flag :int = 0xff) -> void:
+func set_light_shadow(b :bool, flags :int) -> void:
 	for i in light_list.size():
-		if BitFlag.TestByPos(i, pos_flag):
+		if BitFlag.TestByPos(i, flags):
 			light_list[i].shadow_enabled = b
 
+func set_light_shadow_at(i :int, b :bool) -> void:
+	light_list[i].shadow_enabled = b
+
 ## all light shadow on/off by flag
-func set_light_shadow_all(pos_flag :int = 0xff) -> void:
+func set_light_shadow_all(flags :int) -> void:
 	for i in light_list.size():
-		light_list[i].shadow_enabled = BitFlag.TestByPos(i, pos_flag)
+		light_list[i].shadow_enabled = BitFlag.TestByPos(i, flags)
 
 func get_light_shadow_all() -> int:
 	var rtn := 0
@@ -48,13 +54,22 @@ func get_light_shadow_all() -> int:
 		BitFlag.SetByPos(i, light_list[i].shadow_enabled)
 	return rtn
 
-func set_light_color(co :Color, pos_flag :int = 0xff) -> void:
+func set_light_color(co :Color, flags :int) -> void:
 	for i in light_list.size():
-		if BitFlag.TestByPos(i, pos_flag):
+		if BitFlag.TestByPos(i, flags):
 			light_list[i].light_color = co
+
+func set_light_color_at(i :int, co :Color) -> void:
+	light_list[i].light_color = co
 
 func get_light_color_all() -> Array[Color]:
 	var rtn :Array[Color] = []
 	for lt in light_list:
 		rtn.append(lt.light_color)
 	return rtn
+
+func make_pos_list() -> Array[int]:
+	return BitFlag.MakeFilledPosList(light_list.size())
+
+func get_size() -> int:
+	return light_list.size()

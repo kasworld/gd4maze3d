@@ -12,11 +12,17 @@ func _init(list :Array, shuffle_flag_a :bool = true) -> void:
 func shuffle() -> ListIter:
 	if shuffle_flag:
 		iter_data.shuffle()
-	curser = 0
+	reset_cursor()
 	return self
 
 func is_new_start() -> bool:
 	return curser == 0
+
+func reset_cursor() -> void:
+	curser = 0
+
+func get_data_array() -> Array:
+	return iter_data
 
 func next() -> void:
 	curser += 1

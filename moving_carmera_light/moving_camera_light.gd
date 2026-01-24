@@ -3,10 +3,13 @@ class_name MovingCameraLight
 
 static var SelfList :Array[MovingCameraLight]
 static var CurrentIndex :int
-static func NextCamera() -> void:
+## retuen old
+static func NextCamera() -> MovingCameraLight:
+	var old := GetCurrentCamera()
 	CurrentIndex +=1
 	CurrentIndex %= SelfList.size()
 	SelfList[CurrentIndex].make_current()
+	return old
 static func GetCurrentCamera() -> MovingCameraLight:
 	return SelfList[CurrentIndex]
 static func FindCameraIndex( mcl :MovingCameraLight) -> int:
@@ -24,6 +27,9 @@ var info_text :String
 func set_info_text(s :String) -> MovingCameraLight:
 	info_text = s
 	return self
+func get_info_text() -> String:
+	return info_text
+
 var camera_fov := ClampedFloat.new(75,1,179)
 var light_angle := ClampedFloat.new(45,1,179)
 

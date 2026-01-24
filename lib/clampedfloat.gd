@@ -9,27 +9,27 @@ func _init(v :float, v1 :float, v2:float)->void:
 	_vmax = v2
 	_value = clampf(v, _vmin, _vmax)
 	_default = _value
-func get_value()->float:
+func get_value() -> float:
 	return _value
-func set_value(v :float)->float:
+func set_value(v :float) -> float:
 	_value = clampf(v, _vmin, _vmax)
 	return _value
-func set_up()->float:
+func set_up() -> float:
 	_value = clampf(_value *1.1, _vmin, _vmax)
 	return _value
-func set_max()->float:
+func set_max() -> float:
 	_value = _vmax
 	return _value
-func set_down()->float:
+func set_down() -> float:
 	_value = clampf(_value /1.1, _vmin, _vmax)
 	return _value
-func set_min()->float:
+func set_min() -> float:
 	_value = _vmin
 	return _value
-func set_randfn()->float:
+func set_randfn() -> float:
 	_value = clampf(randfn((_vmin+_vmax)/2,(_vmax-_vmin)/4) , _vmin, _vmax)
 	return _value
-func reset()->float:
+func reset() -> float:
 	_value = _default
 	return _value
 func _to_string() -> String:

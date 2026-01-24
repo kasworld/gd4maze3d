@@ -4,11 +4,11 @@ class_name Maze3D
 static var darkcolorlist = NamedColors.filter_dark_color_list()
 static var lightcolorlist = NamedColors.filter_light_color_list()
 
-enum WallView {Reduced, Full, Off}
-static func wallview2str(vd :WallView) -> String:
-	return WallView.keys()[vd]
-static func wallview_next(a :WallView) -> WallView:
-	return (a +1) % WallView.keys().size() as WallView
+enum WallPillarView {Full, Reduced, ReducedWithPillar, Off,  OffWithPillar}
+static func wallview2str(vd :WallPillarView) -> String:
+	return WallPillarView.keys()[vd]
+static func wallview_next(a :WallPillarView) -> WallPillarView:
+	return (a +1) % WallPillarView.keys().size() as WallPillarView
 
 var maze3d_setting :Maze3DSetting
 var maze_cells :Maze
@@ -184,8 +184,8 @@ func view_floor_ceiling(f :bool,c :bool) -> void:
 	$Floor.visible = f
 	$Ceiling.visible = c
 
-func set_wall_size(full :bool) -> void:
-	if full:
+func set_wall_size_full(b :bool) -> void:
+	if b:
 		wall_multi_inst_ns_main.multimesh.mesh.size = maze3d_setting.CalcWallSize_NS_Full()
 		wall_multi_inst_ns_sub.multimesh.mesh.size = maze3d_setting.CalcWallSize_NS_Full()
 		wall_multi_inst_ew_main.multimesh.mesh.size = maze3d_setting.CalcWallSize_EW_Full()
@@ -196,19 +196,29 @@ func set_wall_size(full :bool) -> void:
 		wall_multi_inst_ew_main.multimesh.mesh.size = maze3d_setting.CalcWallSize_EW_Reduced()
 		wall_multi_inst_ew_sub.multimesh.mesh.size = maze3d_setting.CalcWallSize_EW_Reduced()
 
-func view_walls(w :bool) -> void:
-	$WallContainer.visible = w
+func view_walls(b :bool) -> void:
+	$WallContainer.visible = b
 
-func view_pillars(w :bool) -> void:
-	$PillarContainer.visible = w
+func view_pillars(b :bool) -> void:
+	$PillarContainer.visible = b
 
-func set_wallview_mode(w :WallView) -> void:
+func set_wallpillar_view_mode(w :WallPillarView) -> void:
 	match w:
-		WallView.Full:
+		WallPillarView.Full:
 			view_walls(true)
-			set_wall_size(true)
-		WallView.Reduced:
+			set_wall_size_full(true)
+			view_pillars(false)
+		WallPillarView.Reduced:
 			view_walls(true)
-			set_wall_size(false)
-		WallView.Off:
+			set_wall_size_full(false)
+			view_pillars(false)
+		WallPillarView.ReducedWithPillar:
+			view_walls(true)
+			set_wall_size_full(false)
+			view_pillars(true)
+		WallPillarView.Off:
 			view_walls(false)
+			view_pillars(false)
+		WallPillarView.OffWithPillar:
+			view_walls(false)
+			view_pillars(true)

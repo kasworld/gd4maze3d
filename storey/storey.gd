@@ -33,6 +33,9 @@ var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 var tree_list :Array
 
+func get_maze3d() -> Maze3D:
+	return $Maze3D
+
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
 
@@ -238,18 +241,6 @@ func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
 	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
 	sp.material_override.albedo_texture = sv.get_texture()
 	return sp
-
-func view_floor_ceiling(f :bool,c :bool) -> void:
-	$Maze3D.view_floor_ceiling(f,c)
-
-func view_walls(w :bool) -> void:
-	$Maze3D.view_walls(w)
-
-func view_pillars(w :bool) -> void:
-	$Maze3D.view_pillars(w)
-
-func set_wallview_mode(w :Maze3D.WallView) -> void:
-	$Maze3D.set_wallview_mode(w)
 
 func get_maze_cells() -> Maze:
 	return $Maze3D.maze_cells

@@ -70,7 +70,7 @@ var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey
 var view_floor_ceiling :bool = true
-var view_walls :Maze3D.WallView = Maze3D.WallView.Reduced
+var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ReducedWithPillar
 var view_pillars :bool = true
 
 func calc_height() -> float:
@@ -135,9 +135,8 @@ func add_new_storey(stnum :int) -> void:
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
 	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
-	st.view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
-	st.view_pillars(view_pillars)
-	st.set_wallview_mode(view_walls)
+	st.get_maze3d().view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
 	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
@@ -162,33 +161,24 @@ func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 
 func set_floor_ceiling_visible(f :bool,c :bool) -> void:
 	for i in storey_list.size():
-		storey_list[i].view_floor_ceiling(f,c)
+		storey_list[i].get_maze3d().view_floor_ceiling(f,c)
 
-func set_wallview_mode(w :Maze3D.WallView) -> void:
+func set_wallpillar_view_mode(w :Maze3D.WallPillarView) -> void:
 	for i in storey_list.size():
-		storey_list[i].set_wallview_mode(w)
-
-func set_pillars_visible(w :bool) -> void:
-	for i in storey_list.size():
-		storey_list[i].view_pillars(w)
+		storey_list[i].get_maze3d().set_wallpillar_view_mode(w)
 
 func toggle_visible_floor_ceiling() -> void:
 	view_floor_ceiling = not view_floor_ceiling
 	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
 
-func view_wall_next() -> void:
+func view_wallpillar_next() -> void:
 	view_walls = Maze3D.wallview_next(view_walls)
-	set_wallview_mode(view_walls)
-
-func toggle_visible_pillars() -> void:
-	view_pillars = not view_pillars
-	set_pillars_visible(view_pillars)
+	set_wallpillar_view_mode(view_walls)
 
 var demo_random_list = [
 	move_to_upper_storey,
 	toggle_visible_floor_ceiling,
-	view_wall_next,
-	toggle_visible_pillars,
+	view_wallpillar_next,
 	start_storey_gap_animation,
 ]
 func start_demo_random() -> void:

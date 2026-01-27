@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://brywee43bqjex"]
+[gd_scene format=3 uid="uid://brywee43bqjex"]
 
 [ext_resource type="Script" uid="uid://bqo1fk2lfpr8d" path="res://tower/tower.gd" id="1_k1sas"]
 
-[node name="Tower" type="Node3D"]
+[node name="Tower" type="Node3D" unique_id=1335735195]
 script = ExtResource("1_k1sas")
 
-[node name="TimerDemoRandom" type="Timer" parent="."]
+[node name="TimerDemoRandom" type="Timer" parent="." unique_id=742488950]
 wait_time = 2.0
 
 [connection signal="timeout" from="TimerDemoRandom" to="." method="_on_timer_demo_random_timeout"]

@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://dfsu6vtygh0tc"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dfsu6vtygh0tc"]
 
 [ext_resource type="Texture2D" uid="uid://dyyjfu431yi7r" path="res://test_materials/texture_bricks_depth.jpg" id="1"]
 [ext_resource type="Texture2D" uid="uid://cn6yat4b4mngn" path="res://test_materials/texture_bricks_normal.jpg" id="2"]

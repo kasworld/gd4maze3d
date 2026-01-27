@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cs8u8tbfgjxsu"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cs8u8tbfgjxsu"]
 
 [ext_resource type="Texture2D" uid="uid://dmu4xdw0s4lne" path="res://earthmoon/moon.png" id="1_humkd"]
 [ext_resource type="Texture2D" uid="uid://2x0cka7afmvg" path="res://earthmoon/moon_normals.png" id="2_el5eo"]

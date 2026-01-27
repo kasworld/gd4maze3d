@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dr5oq5ap3a4pu"]
+[gd_scene format=3 uid="uid://dr5oq5ap3a4pu"]
 
 [ext_resource type="Script" uid="uid://caqhtrorwmkvs" path="res://deco_orbits/deco_orbit.gd" id="1_ulw4h"]
 
-[node name="DecoOrbit" type="Node3D"]
+[node name="DecoOrbit" type="Node3D" unique_id=23219505]
 script = ExtResource("1_ulw4h")

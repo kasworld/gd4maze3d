@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://csug2xt4alhvo"]
+[gd_scene format=3 uid="uid://csug2xt4alhvo"]
 
 [ext_resource type="Script" uid="uid://cjqy2cvidd28a" path="res://places_things/donut.gd" id="1_l7w5s"]
 
-[node name="Donut" type="Node3D"]
+[node name="Donut" type="Node3D" unique_id=1292935286]
 script = ExtResource("1_l7w5s")

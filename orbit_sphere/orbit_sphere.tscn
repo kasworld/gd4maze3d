@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c5ifq7nknxri4"]
+[gd_scene format=3 uid="uid://c5ifq7nknxri4"]
 
 [ext_resource type="Script" uid="uid://ccmb058ab37vy" path="res://orbit_sphere/orbit_sphere.gd" id="1_dct2n"]
 
@@ -25,15 +25,15 @@ resource_local_to_scene = true
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_e4e6c")
 
-[node name="OrbitSphere" type="Node3D"]
+[node name="OrbitSphere" type="Node3D" unique_id=484924951]
 script = ExtResource("1_dct2n")
 
-[node name="Orbit" type="MeshInstance3D" parent="."]
+[node name="Orbit" type="MeshInstance3D" parent="." unique_id=1500473014]
 mesh = SubResource("TorusMesh_dct2n")
 
-[node name="Sphere" type="MeshInstance3D" parent="."]
+[node name="Sphere" type="MeshInstance3D" parent="." unique_id=948156925]
 mesh = SubResource("SphereMesh_tjfih")
 
-[node name="Axis" type="MeshInstance3D" parent="Sphere"]
+[node name="Axis" type="MeshInstance3D" parent="Sphere" unique_id=1325676966]
 mesh = SubResource("CylinderMesh_u54x1")
 skeleton = NodePath("../..")

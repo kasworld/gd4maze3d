@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=4 format=3 uid="uid://dq6rkclkoup3n"]
+[gd_resource type="Environment" format=3 uid="uid://dq6rkclkoup3n"]
 
 [ext_resource type="Texture2D" uid="uid://k1k5bbintag5" path="res://skymap/skymap.hdr" id="1_byb0y"]
 

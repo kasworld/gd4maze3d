@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c8npqlgeyy3xa"]
+[gd_scene format=3 uid="uid://c8npqlgeyy3xa"]
 
 [ext_resource type="Script" uid="uid://bsay8ghokgijt" path="res://arrow_3d/arrow_3d.gd" id="1_v14xl"]
 
@@ -19,13 +19,13 @@ material = SubResource("StandardMaterial3D_ct3x0")
 top_radius = 0.2
 bottom_radius = 0.2
 
-[node name="Arrow3D" type="Node3D"]
+[node name="Arrow3D" type="Node3D" unique_id=1356849062]
 script = ExtResource("1_v14xl")
 
-[node name="Head" type="MeshInstance3D" parent="."]
+[node name="Head" type="MeshInstance3D" parent="." unique_id=952179648]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CylinderMesh_h4ipo")
 
-[node name="Body" type="MeshInstance3D" parent="."]
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1429893256]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("CylinderMesh_oc4q6")

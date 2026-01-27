@@ -1,12 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://ces3a6yv0c5fi"]
+[gd_scene format=3 uid="uid://ces3a6yv0c5fi"]
 
 [ext_resource type="Script" uid="uid://dm8v1xr2aeoyr" path="res://moving_carmera_light/moving_camera_light.gd" id="1_hbcsi"]
 
-[node name="MovingCameraLight" type="Node3D"]
+[node name="MovingCameraLight" type="Node3D" unique_id=1685919946]
 script = ExtResource("1_hbcsi")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1167774085]
 current = true
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=355049610]
 light_energy = 20.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://huxiv0a21wm"]
+[gd_scene format=3 uid="uid://huxiv0a21wm"]
 
 [ext_resource type="Script" uid="uid://cmyt4l4pcbk2f" path="res://crawler/crawler.gd" id="1_rofni"]
 [ext_resource type="PackedScene" uid="uid://ces3a6yv0c5fi" path="res://moving_carmera_light/moving_camera_light.tscn" id="2_b2ixb"]
@@ -11,15 +11,15 @@ resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_rofni")
 radial_segments = 5
 
-[node name="MazeCrawl" type="Node3D"]
+[node name="MazeCrawl" type="Node3D" unique_id=1594414255]
 script = ExtResource("1_rofni")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=510997270]
 mesh = SubResource("CylinderMesh_b2ixb")
 
-[node name="MovingCameraLight" parent="." instance=ExtResource("2_b2ixb")]
+[node name="MovingCameraLight" parent="." unique_id=995703569 instance=ExtResource("2_b2ixb")]
 
-[node name="Label3D" type="Label3D" parent="."]
+[node name="Label3D" type="Label3D" parent="." unique_id=1869567556]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 visible = false
 text = "0"

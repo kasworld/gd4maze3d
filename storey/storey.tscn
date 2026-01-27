@@ -1,24 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://c76t0bgq0j8ux"]
+[gd_scene format=3 uid="uid://c76t0bgq0j8ux"]
 
 [ext_resource type="Script" uid="uid://dp0yfx2i1wsf4" path="res://storey/storey.gd" id="1_vfl4n"]
 [ext_resource type="PackedScene" uid="uid://bg7pvk7ens3l8" path="res://places_things/text_mark.tscn" id="2_wtqod"]
 [ext_resource type="PackedScene" uid="uid://dauu5e87kykn" path="res://storey/mini_map/mini_map.tscn" id="4_16v43"]
 [ext_resource type="PackedScene" uid="uid://bdycgvb1g25w" path="res://maze_3d/maze_3d.tscn" id="4_rbrve"]
 
-[node name="Storey" type="Node3D"]
+[node name="Storey" type="Node3D" unique_id=1370983570]
 script = ExtResource("1_vfl4n")
 
-[node name="EndMark" parent="." instance=ExtResource("2_wtqod")]
+[node name="EndMark" parent="." unique_id=776696214 instance=ExtResource("2_wtqod")]
 
-[node name="StartMark" parent="." instance=ExtResource("2_wtqod")]
+[node name="StartMark" parent="." unique_id=630885011 instance=ExtResource("2_wtqod")]
 
-[node name="Label3D" type="Label3D" parent="."]
+[node name="Label3D" type="Label3D" parent="." unique_id=1655292194]
 billboard = 1
 
-[node name="MiniMap" parent="." instance=ExtResource("4_16v43")]
+[node name="MiniMap" parent="." unique_id=1236770542 instance=ExtResource("4_16v43")]
 
-[node name="Maze3D" parent="." instance=ExtResource("4_rbrve")]
+[node name="Maze3D" parent="." unique_id=1499655247 instance=ExtResource("4_rbrve")]
 
-[node name="WallDeco" type="Node3D" parent="."]
+[node name="WallDeco" type="Node3D" parent="." unique_id=1337128885]
 
-[node name="CharacterContainer" type="Node3D" parent="."]
+[node name="CharacterContainer" type="Node3D" parent="." unique_id=440755670]

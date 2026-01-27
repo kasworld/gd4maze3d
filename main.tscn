@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bp1buta4pxobp"]
+[gd_scene format=3 uid="uid://bp1buta4pxobp"]
 
 [ext_resource type="Script" uid="uid://b5yxqdg2kgvdl" path="res://main.gd" id="1_ct15n"]
 [ext_resource type="Environment" uid="uid://dq6rkclkoup3n" path="res://skymap/skymap.tres" id="2_lquwl"]
@@ -15,179 +15,179 @@ font_size = 32
 
 [sub_resource type="SystemFont" id="SystemFont_bejao"]
 
-[sub_resource type="Theme" id="Theme_u7t45"]
+[sub_resource type="Theme" id="Theme_7mycd"]
 resource_local_to_scene = true
 default_font = SubResource("SystemFont_bejao")
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1241607610]
 script = ExtResource("1_ct15n")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=653586333]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=574097255]
 environment = ExtResource("2_lquwl")
 
-[node name="CharacterContainer" type="Node3D" parent="."]
+[node name="CharacterContainer" type="Node3D" parent="." unique_id=843286766]
 
-[node name="ButtonContainer" type="VBoxContainer" parent="."]
+[node name="ButtonContainer" type="VBoxContainer" parent="." unique_id=235426187]
 offset_right = 40.0
 offset_bottom = 40.0
 theme = SubResource("Theme_sfr3e")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ButtonContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ButtonContainer" unique_id=821117912]
 layout_mode = 2
 
-[node name="ButtonESC" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonESC" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=491111934]
 layout_mode = 2
 text = "ESC:Quit"
 
-[node name="ButtonHelp" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonHelp" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=1668808916]
 layout_mode = 2
 text = "1:Help"
 
-[node name="ButtonMinimap" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonMinimap" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=2083927]
 layout_mode = 2
 text = "2:Minimap"
 
-[node name="ButtonFloorCeiling" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonFloorCeiling" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=1887702657]
 layout_mode = 2
 text = "3:FloorCeiling"
 
-[node name="ButtonWalls" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonWalls" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=297097537]
 layout_mode = 2
 text = "4:Walls"
 
-[node name="ButtonPillars" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonPillars" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=470464974]
 layout_mode = 2
 text = "5:Pillars"
 
-[node name="ButtonAutoMove" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonAutoMove" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=281784402]
 layout_mode = 2
 text = "6:Automove"
 
-[node name="ButtonDebug" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonDebug" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=1447459745]
 layout_mode = 2
 text = "7:Debug"
 
-[node name="ButtonPerformance" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonPerformance" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=569382714]
 layout_mode = 2
 text = "8:Performance"
 
-[node name="ButtonInfo" type="Button" parent="ButtonContainer/HBoxContainer"]
+[node name="ButtonInfo" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=62459601]
 layout_mode = 2
 text = "9:Info"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="ButtonContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="ButtonContainer" unique_id=1950948291]
 layout_mode = 2
 
-[node name="ButtonMove" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
+[node name="ButtonMove" type="GridContainer" parent="ButtonContainer/HBoxContainer2" unique_id=1612547149]
 layout_mode = 2
 columns = 3
 
-[node name="ButtonRollLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+[node name="ButtonRollLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=1129439817]
 layout_mode = 2
 text = "A:RollLeft"
 
-[node name="ButtonForward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+[node name="ButtonForward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=1908888114]
 layout_mode = 2
 text = "↑:Forward"
 
-[node name="ButtonRollRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+[node name="ButtonRollRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=885419356]
 layout_mode = 2
 text = "D:RollRight"
 
-[node name="ButtonLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+[node name="ButtonLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=92665886]
 layout_mode = 2
 text = "←:Left"
 
-[node name="ButtonBackward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+[node name="ButtonBackward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=113807449]
 layout_mode = 2
 text = "↓:Backward"
 
-[node name="ButtonRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove"]
+[node name="ButtonRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=411700817]
 layout_mode = 2
 text = "→:Right"
 
-[node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2"]
+[node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2" unique_id=1417775527]
 layout_mode = 2
 columns = 3
 
-[node name="ButtonFovUP" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+[node name="ButtonFovUP" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=1120036512]
 layout_mode = 2
 text = "Ins:FovUp"
 
-[node name="ButtonAPSMax" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+[node name="ButtonAPSMax" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=1101307849]
 layout_mode = 2
 text = "Home:APSMax"
 
-[node name="ButtonAPSUp" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+[node name="ButtonAPSUp" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=1705135231]
 layout_mode = 2
 text = "PgUp:APSUp"
 
-[node name="ButtonFovDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+[node name="ButtonFovDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=172927274]
 layout_mode = 2
 text = "Del:FOVDown"
 
-[node name="ButtonAPSMin" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+[node name="ButtonAPSMin" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=389300895]
 layout_mode = 2
 text = "End:APSMin"
 
-[node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc"]
+[node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=797861952]
 layout_mode = 2
 text = "PgDn:APSDown"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="ButtonContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="ButtonContainer" unique_id=1802479345]
 layout_mode = 2
 
-[node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer3"]
+[node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer3" unique_id=602448304]
 layout_mode = 2
 text = "Enter: StoreyUp"
 
-[node name="ButtonCamera" type="Button" parent="ButtonContainer/HBoxContainer3"]
+[node name="ButtonCamera" type="Button" parent="ButtonContainer/HBoxContainer3" unique_id=1132841509]
 layout_mode = 2
 text = "C: Camera"
 
-[node name="ButtonStoreyGap" type="Button" parent="ButtonContainer/HBoxContainer3"]
+[node name="ButtonStoreyGap" type="Button" parent="ButtonContainer/HBoxContainer3" unique_id=623524988]
 layout_mode = 2
 text = "O: StoreyGap Open/Close"
 
-[node name="LabelContainer" type="VBoxContainer" parent="ButtonContainer"]
+[node name="LabelContainer" type="VBoxContainer" parent="ButtonContainer" unique_id=1577642872]
 z_index = 1
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 2
 
-[node name="Debug" type="Label" parent="ButtonContainer/LabelContainer"]
+[node name="Debug" type="Label" parent="ButtonContainer/LabelContainer" unique_id=2000316346]
 visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
-[node name="Info" type="Label" parent="ButtonContainer/LabelContainer"]
+[node name="Info" type="Label" parent="ButtonContainer/LabelContainer" unique_id=1879965313]
 visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
-[node name="Performance" type="Label" parent="ButtonContainer/LabelContainer"]
+[node name="Performance" type="Label" parent="ButtonContainer/LabelContainer" unique_id=2024122925]
 visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_1637f")
 
-[node name="TimedMessage" parent="." instance=ExtResource("4_fd2hu")]
+[node name="TimedMessage" parent="." unique_id=124848858 instance=ExtResource("4_fd2hu")]
 modulate = Color(1, 1, 1, 0.498039)
-theme = SubResource("Theme_u7t45")
+theme = SubResource("Theme_7mycd")
 
-[node name="DecoOrbit" parent="." instance=ExtResource("5_lquwl")]
+[node name="DecoOrbit" parent="." unique_id=596848813 instance=ExtResource("5_lquwl")]
 
-[node name="AxisArrow3D" parent="." instance=ExtResource("6_7mycd")]
+[node name="AxisArrow3D" parent="." unique_id=2079731285 instance=ExtResource("6_7mycd")]
 
-[node name="TowerContainer" type="Node3D" parent="."]
+[node name="TowerContainer" type="Node3D" parent="." unique_id=1641332113]
 
-[node name="MovingCameraLightHober" parent="." instance=ExtResource("3_hdadt")]
+[node name="MovingCameraLightHober" parent="." unique_id=123708318 instance=ExtResource("3_hdadt")]
 
-[node name="MovingCameraLightAround" parent="." instance=ExtResource("3_hdadt")]
+[node name="MovingCameraLightAround" parent="." unique_id=1737262761 instance=ExtResource("3_hdadt")]
 
-[node name="FixedCameraLight" parent="." instance=ExtResource("3_hdadt")]
+[node name="FixedCameraLight" parent="." unique_id=199817869 instance=ExtResource("3_hdadt")]
 
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
 [connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]

@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://da370dapcfjwm"]
+[gd_scene format=3 uid="uid://da370dapcfjwm"]
 
 [ext_resource type="Script" uid="uid://db5bwxvddu3lh" path="res://move_line_2d/move_line_2d.gd" id="1_88yft"]
 
-[node name="MoveLine2D" type="Node2D"]
+[node name="MoveLine2D" type="Node2D" unique_id=243029232]
 script = ExtResource("1_88yft")
 
-[node name="LineContainer" type="Node2D" parent="."]
+[node name="LineContainer" type="Node2D" parent="." unique_id=1424988965]

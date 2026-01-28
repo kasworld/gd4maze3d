@@ -21,31 +21,31 @@ resource_local_to_scene = true
 [sub_resource type="MultiMesh" id="MultiMesh_6tr68"]
 resource_local_to_scene = true
 
-[node name="GlassCabinet" type="Node3D" unique_id=1112024883]
+[node name="GlassCabinet" type="Node3D" unique_id=382686767]
 script = ExtResource("1_2v0m0")
 
-[node name="WallBox" type="MeshInstance3D" parent="." unique_id=1107749724]
+[node name="WallBox" type="MeshInstance3D" parent="." unique_id=1488685636]
 mesh = SubResource("BoxMesh_nkhty")
 
-[node name="FixedCameraLight" parent="." unique_id=230089168 instance=ExtResource("2_71gvw")]
+[node name="FixedCameraLight" parent="." unique_id=1132206210 instance=ExtResource("2_71gvw")]
 
-[node name="AxisArrow3D" parent="." unique_id=1145635746 instance=ExtResource("3_nkhty")]
+[node name="AxisArrow3D" parent="." unique_id=1525573769 instance=ExtResource("3_nkhty")]
 visible = false
 
-[node name="WireBox" parent="." unique_id=766938346 instance=ExtResource("4_2eiwf")]
+[node name="WireBox" parent="." unique_id=383489822 instance=ExtResource("4_2eiwf")]
 multimesh = SubResource("MultiMesh_2eiwf")
 
-[node name="Points" parent="." unique_id=281662539 instance=ExtResource("4_2eiwf")]
+[node name="Points" parent="." unique_id=1022455997 instance=ExtResource("4_2eiwf")]
 multimesh = SubResource("MultiMesh_6tr68")
 
-[node name="LightContainer" type="Node3D" parent="." unique_id=1732467576]
+[node name="LightContainer" type="Node3D" parent="." unique_id=1244943125]
 
-[node name="Title" type="Label3D" parent="." unique_id=936736555]
+[node name="Title" type="Label3D" parent="." unique_id=356165087]
 visible = false
 horizontal_alignment = 0
 vertical_alignment = 0
 
-[node name="Description" type="Label3D" parent="." unique_id=1762370097]
+[node name="Description" type="Label3D" parent="." unique_id=605342281]
 visible = false
 horizontal_alignment = 2
 vertical_alignment = 2

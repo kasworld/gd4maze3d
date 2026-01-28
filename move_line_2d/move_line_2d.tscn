@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://db5bwxvddu3lh" path="res://move_line_2d/move_line_2d.gd" id="1_88yft"]
 
-[node name="MoveLine2D" type="Node2D" unique_id=243029232]
+[node name="MoveLine2D" type="Node2D" unique_id=405283091]
 script = ExtResource("1_88yft")
 
-[node name="LineContainer" type="Node2D" parent="." unique_id=1424988965]
+[node name="LineContainer" type="Node2D" parent="." unique_id=699865532]

@@ -5,8 +5,8 @@
 [sub_resource type="CylinderMesh" id="CylinderMesh_oelkg"]
 resource_local_to_scene = true
 
-[node name="ValveHandle" type="Node3D" unique_id=43518438]
+[node name="ValveHandle" type="Node3D" unique_id=1922311881]
 script = ExtResource("1_oelkg")
 
-[node name="중앙기둥" type="MeshInstance3D" parent="." unique_id=1311325205]
+[node name="중앙기둥" type="MeshInstance3D" parent="." unique_id=905487585]
 mesh = SubResource("CylinderMesh_oelkg")

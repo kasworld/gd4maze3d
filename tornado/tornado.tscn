@@ -9,11 +9,11 @@ resource_local_to_scene = true
 [sub_resource type="MultiMesh" id="MultiMesh_o338m"]
 resource_local_to_scene = true
 
-[node name="Tornado" type="Node3D" unique_id=283990469]
+[node name="Tornado" type="Node3D" unique_id=1003335604]
 script = ExtResource("1_uq4ja")
 
-[node name="RingsOut" parent="." unique_id=2011276648 instance=ExtResource("2_b67br")]
+[node name="RingsOut" parent="." unique_id=96458150 instance=ExtResource("2_b67br")]
 multimesh = SubResource("MultiMesh_0isvb")
 
-[node name="RingsIn" parent="." unique_id=2039249938 instance=ExtResource("2_b67br")]
+[node name="RingsIn" parent="." unique_id=2121467691 instance=ExtResource("2_b67br")]
 multimesh = SubResource("MultiMesh_o338m")

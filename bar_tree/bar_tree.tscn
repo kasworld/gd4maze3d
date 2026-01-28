@@ -5,7 +5,7 @@
 [sub_resource type="MultiMesh" id="MultiMesh_uuw71"]
 resource_local_to_scene = true
 
-[node name="BarTree" type="MultiMeshInstance3D" unique_id=1426947847]
+[node name="BarTree" type="MultiMeshInstance3D" unique_id=1101341030]
 multimesh = SubResource("MultiMesh_uuw71")
 script = ExtResource("1_4edun")
 metadata/_custom_type_script = "uid://brthvnlbu6c53"

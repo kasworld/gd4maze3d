@@ -11,15 +11,15 @@ resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_g3tgt")
 flip_faces = true
 
-[node name="Calendar3d" type="Node3D" unique_id=257303266]
+[node name="Calendar3d" type="Node3D" unique_id=19407395]
 script = ExtResource("1_ss2hb")
 
-[node name="Timer" type="Timer" parent="." unique_id=1705313830]
+[node name="Timer" type="Timer" parent="." unique_id=920288151]
 autostart = true
 
-[node name="LabelConatiner" type="Node3D" parent="." unique_id=292930818]
+[node name="LabelConatiner" type="Node3D" parent="." unique_id=2130794242]
 
-[node name="BackplaneBox" type="MeshInstance3D" parent="." unique_id=1320188193]
+[node name="BackplaneBox" type="MeshInstance3D" parent="." unique_id=1178392633]
 mesh = SubResource("BoxMesh_yig0t")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

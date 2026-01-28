@@ -3,29 +3,29 @@
 [ext_resource type="Script" uid="uid://ddkt5j34od0lk" path="res://axis_arrow_3d/axis_arrow_3d.gd" id="1_yfllo"]
 [ext_resource type="PackedScene" uid="uid://c8npqlgeyy3xa" path="res://arrow_3d/arrow_3d.tscn" id="2_yfllo"]
 
-[node name="AxisArrow3D" type="Node3D" unique_id=887254493]
+[node name="AxisArrow3D" type="Node3D" unique_id=700798448]
 script = ExtResource("1_yfllo")
 
-[node name="Arrows" type="Node3D" parent="." unique_id=595644268]
+[node name="Arrows" type="Node3D" parent="." unique_id=189853844]
 
-[node name="ArrowX" parent="Arrows" unique_id=1722030009 instance=ExtResource("2_yfllo")]
+[node name="ArrowX" parent="Arrows" unique_id=1074998121 instance=ExtResource("2_yfllo")]
 transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
 
-[node name="ArrowY" parent="Arrows" unique_id=795825441 instance=ExtResource("2_yfllo")]
+[node name="ArrowY" parent="Arrows" unique_id=1217990657 instance=ExtResource("2_yfllo")]
 
-[node name="ArrowZ" parent="Arrows" unique_id=1420254412 instance=ExtResource("2_yfllo")]
+[node name="ArrowZ" parent="Arrows" unique_id=228734652 instance=ExtResource("2_yfllo")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 
-[node name="Labels" type="Node3D" parent="." unique_id=27716925]
+[node name="Labels" type="Node3D" parent="." unique_id=1930317882]
 
-[node name="LabelX" type="Label3D" parent="Labels" unique_id=1740671612]
+[node name="LabelX" type="Label3D" parent="Labels" unique_id=334767551]
 billboard = 1
 text = "X"
 
-[node name="LabelY" type="Label3D" parent="Labels" unique_id=1725513063]
+[node name="LabelY" type="Label3D" parent="Labels" unique_id=845537374]
 billboard = 1
 text = "Y"
 
-[node name="LabelZ" type="Label3D" parent="Labels" unique_id=1326418827]
+[node name="LabelZ" type="Label3D" parent="Labels" unique_id=152725696]
 billboard = 1
 text = "Z"

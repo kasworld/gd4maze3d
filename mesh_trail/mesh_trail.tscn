@@ -5,7 +5,7 @@
 [sub_resource type="MultiMesh" id="MultiMesh_0ntik"]
 resource_local_to_scene = true
 
-[node name="MeshTrail" type="MultiMeshInstance3D" unique_id=1358198232]
+[node name="MeshTrail" type="MultiMeshInstance3D" unique_id=1370467187]
 multimesh = SubResource("MultiMesh_0ntik")
 script = ExtResource("1_0ntik")
 metadata/_custom_type_script = "uid://brthvnlbu6c53"

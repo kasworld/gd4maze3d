@@ -5,6 +5,6 @@
 [sub_resource type="MultiMesh" id="MultiMesh_6skt3"]
 resource_local_to_scene = true
 
-[node name="MultiMeshShape" type="MultiMeshInstance3D" unique_id=1969862470]
+[node name="MultiMeshShape" type="MultiMeshInstance3D" unique_id=211187273]
 multimesh = SubResource("MultiMesh_6skt3")
 script = ExtResource("1_3lfy5")

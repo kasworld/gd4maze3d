@@ -124,6 +124,8 @@ func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :C
 
 # end example ##################################################################
 
+# color functions
+
 static func make_color_material(alpha :float = 1.0) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	# draw call 이 TRANSPARENCY_ALPHA 인 경우만 줄어든다. 버그인가?
@@ -141,70 +143,6 @@ static func make_color_material(alpha :float = 1.0) -> StandardMaterial3D:
 	#mat.rim_enabled = true
 	return mat
 
-
-func _set_count(count :int) -> void:
-	multimesh.instance_count = count
-	multimesh.visible_instance_count = count
-
-
-func _init_multimesh(mesh :Mesh) -> void:
-	multimesh.mesh = mesh
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-
-func init_with_mesh( mesh :Mesh, count :int,
-		callinit_transform :bool = true,
-		pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
-	_init_multimesh(mesh)
-	# Then resize (otherwise, changing the format is not allowed).
-	_set_count(count)
-	if callinit_transform:
-		init_position_all(pos)
-	return self
-
-func init_with_color_mesh( mesh :Mesh, count :int,
-		callinit_transform :bool = true,
-		pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
-	_init_multimesh(mesh)
-	multimesh.use_colors = true # before set instance_count
-	# Then resize (otherwise, changing the format is not allowed).
-	_set_count(count)
-	if callinit_transform:
-		init_position_all(pos)
-	return self
-
-#func init_with_alpha( mesh :Mesh, count :int,
-		#alpha :float = 1.0,
-		#callinit_transform :bool = true,
-		#pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
-	#if alpha == 1.0:
-		#mesh.material = make_color_material( Color.WHITE )
-	#else:
-		#mesh.material = make_color_material( Color(Color.WHITE,alpha) )
-	#_init_multimesh(mesh)
-	#multimesh.use_colors = true # before set instance_count
-	## Then resize (otherwise, changing the format is not allowed).
-	#_set_count(count)
-	#if callinit_transform:
-		#init_position_all(pos)
-	#return self
-
-
-func init_position_all(pos :Vector3 = Vector3.ZERO) -> void:
-	if pos == Vector3.ZERO:
-		for i in multimesh.visible_instance_count:
-			multimesh.set_instance_transform(i,Transform3D())
-	else:
-		for i in multimesh.visible_instance_count:
-			var t = Transform3D(Basis(), pos)
-			multimesh.set_instance_transform(i,t)
-
-func set_position_all(pos :Vector3) -> MultiMeshShape:
-	for i in multimesh.visible_instance_count:
-		var t := multimesh.get_instance_transform(i)
-		t.origin = pos
-		multimesh.set_instance_transform(i,t)
-	return self
-
 func set_color_all(color :Color) -> MultiMeshShape:
 	for i in multimesh.visible_instance_count:
 		multimesh.set_instance_color(i,color)
@@ -213,12 +151,17 @@ func set_color_all(color :Color) -> MultiMeshShape:
 func set_gradient_color_all(color_from :Color, color_to:Color) -> MultiMeshShape:
 	var count :int = multimesh.visible_instance_count
 	for i in count:
-		var rate = float(i)/(count-1)
+		var rate := float(i)/(count-1)
 		multimesh.set_instance_color(i,color_from.lerp(color_to,rate))
 	return self
 
 func color_used() -> bool:
 	return multimesh.use_colors
+
+func set_inst_color(i :int, co :Color) -> void:
+	multimesh.set_instance_color(i,co)
+
+# count functions
 
 func get_total_count() -> int:
 	return multimesh.instance_count
@@ -254,6 +197,56 @@ func set_visible_rate( v :float) -> int:
 func calc_visible_rate() -> float:
 	return float(multimesh.visible_instance_count) / float(multimesh.instance_count)
 
+
+# init functions
+
+func init_with_mesh( mesh :Mesh, count :int,
+		callinit_transform :bool = true,
+		pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
+	_init_multimesh(mesh)
+	# Then resize (otherwise, changing the format is not allowed).
+	_set_count(count)
+	if callinit_transform:
+		_init_position_all(pos)
+	return self
+
+func init_with_color_mesh( mesh :Mesh, count :int,
+		callinit_transform :bool = true,
+		pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
+	_init_multimesh(mesh)
+	multimesh.use_colors = true # before set instance_count
+	# Then resize (otherwise, changing the format is not allowed).
+	_set_count(count)
+	if callinit_transform:
+		_init_position_all(pos)
+	return self
+
+func _set_count(count :int) -> void:
+	multimesh.instance_count = count
+	multimesh.visible_instance_count = count
+
+func _init_multimesh(mesh :Mesh) -> void:
+	multimesh.mesh = mesh
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+
+func _init_position_all(pos :Vector3 = Vector3.ZERO) -> void:
+	if pos == Vector3.ZERO:
+		for i in multimesh.visible_instance_count:
+			multimesh.set_instance_transform(i,Transform3D())
+	else:
+		for i in multimesh.visible_instance_count:
+			var t := Transform3D(Basis(), pos)
+			multimesh.set_instance_transform(i,t)
+
+# tranform functions
+
+func set_position_all(pos :Vector3) -> MultiMeshShape:
+	for i in multimesh.visible_instance_count:
+		var t := multimesh.get_instance_transform(i)
+		t.origin = pos
+		multimesh.set_instance_transform(i,t)
+	return self
+
 func set_inst_rotation(i :int, axis :Vector3, rot :float) -> void:
 	var t := multimesh.get_instance_transform(i)
 	t = t.rotated_local(axis, rot)
@@ -268,9 +261,6 @@ func set_inst_position(i :int, pos :Vector3) -> void:
 	var t := multimesh.get_instance_transform(i)
 	t.origin = pos
 	multimesh.set_instance_transform(i, t)
-
-func set_inst_color(i :int, co :Color) -> void:
-	multimesh.set_instance_color(i,co)
 
 func set_inst_position_rotation(i :int, pos :Vector3, axis :Vector3, rot :float) -> void:
 	var t := Transform3D(Basis(), pos)

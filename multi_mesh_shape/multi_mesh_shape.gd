@@ -117,7 +117,11 @@ func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :C
 		var l := p1.distance_to(p2)
 		var wire_scale := Vector3(wire_width, wire_width, l)
 		var t := Transform3D(Basis(), center)
-		t = t.looking_at(p2)
+		var dir := p1.direction_to(p2)
+		var up = Vector3.UP
+		if abs(dir.dot(up)) > 0.999: # 거의 일직선상인 경우
+			up = Vector3.FORWARD
+		t = t.looking_at(p2,up)
 		t = t.scaled_local(wire_scale)
 		multimesh.set_instance_transform(i,t)
 	return self

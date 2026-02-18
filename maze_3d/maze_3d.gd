@@ -222,3 +222,25 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 		WallPillarView.OffWithPillar:
 			view_walls(false)
 			view_pillars(true)
+
+var bounce_wall_info_all :Array
+# wallinfo [aabb , axis_wall [3][2]bool ]
+func make_bounce_wall_info() -> void:
+	bounce_wall_info_all = []
+	bounce_wall_info_all.resize(maze3d_setting.MazeSize.y)
+	for y in maze3d_setting.MazeSize.y:
+		bounce_wall_info_all[y] = []
+		bounce_wall_info_all[y].resize(maze3d_setting.MazeSize.x)
+		for x in maze3d_setting.MazeSize.x:
+			bounce_wall_info_all[y][x] = [
+				maze3d_setting.CalcCellBoxXY(x,y), # AABB
+				maze_cells.make_wallinfo_for_bounce(x,y), # axis_wall [3:xyz][2]bool
+			]
+func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
+	var pos2d := maze3d_setting.storeypos2mazepos(oldpos)
+	#var aabb :AABB = maze3d_setting.CalcCellBox(pos2d)
+	#var axis_wall :Array = maze_cells.make_wallinfo_for_bounce(pos2d.x,pos2d.y)
+	var wallinfo :Array = bounce_wall_info_all[pos2d.y][pos2d.x]
+	var aabb :AABB = wallinfo[0]
+	var axis_wall :Array = wallinfo[1]
+	return Bounce.v3f_wall(pos, aabb, axis_wall, radius)

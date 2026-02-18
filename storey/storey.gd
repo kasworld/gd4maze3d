@@ -18,7 +18,7 @@ func _process(delta: float) -> void:
 	for t in tree_list:
 		t.rotate_tree_bar_y(0.1)
 	for mt in mesh_trail_list:
-		mt.move_trail(delta, bounce_cell, trailmesh_radius, 4*PI,)
+		mt.move_trail(delta, $Maze3D.bounce_cell, trailmesh_radius, 4*PI,)
 
 var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
@@ -53,7 +53,7 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
 		)
 	storey_num = num
 
-	wall_info_all = make_wallinfo()
+	$Maze3D.make_bounce_wall_info()
 
 	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
 	for y in maze3d_setting.MazeSize.y:
@@ -175,28 +175,6 @@ func add_mesh_trails(mesh_type_list) ->void:
 			).set_ColorChange_MeshGradient().init_with_color_mesh(mesh, tc, true, pos).set_speed(1,4)
 		add_child(bt)
 		mesh_trail_list.append(bt)
-
-# wallinfo [aabb , axis_wall [3][2]bool ]
-func make_wallinfo() -> Array:
-	var rtn := []
-	rtn.resize(maze3d_setting.MazeSize.y)
-	for y in maze3d_setting.MazeSize.y:
-		rtn[y] = []
-		rtn[y].resize(maze3d_setting.MazeSize.x)
-		for x in maze3d_setting.MazeSize.x:
-			rtn[y][x] = [
-				maze3d_setting.CalcCellBoxXY(x,y), # AABB
-				$Maze3D.maze_cells.make_wallinfo_for_bounce(x,y), # axis_wall [3:xyz][2]bool
-			]
-	return rtn
-func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
-	var pos2d := maze3d_setting.storeypos2mazepos(oldpos)
-	#var aabb :AABB = maze3d_setting.CalcCellBox(pos2d)
-	#var axis_wall :Array = maze3d.maze_cells.make_wallinfo_for_bounce(pos2d.x,pos2d.y)
-	var wallinfo :Array = wall_info_all[pos2d.y][pos2d.x]
-	var aabb :AABB = wallinfo[0]
-	var axis_wall :Array = wallinfo[1]
-	return Bounce.v3f_wall(pos, aabb, axis_wall, radius)
 
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int

@@ -53,12 +53,11 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
 		)
 	storey_num = num
 
+	wall_info_all = make_wallinfo()
+
 	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
-	wall_info_all = []
 	for y in maze3d_setting.MazeSize.y:
-		wall_info_all.append([])
 		for x in maze3d_setting.MazeSize.x:
-			wall_info_all[y].append( make_cell_wallinfo(x,y) )
 			if $Maze3D.maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
 
@@ -177,18 +176,27 @@ func add_mesh_trails(mesh_type_list) ->void:
 		add_child(bt)
 		mesh_trail_list.append(bt)
 
-func make_cell_wallinfo(x:int, y:int) -> Array:
-	var axis_wall :Array = $Maze3D.maze_cells.make_wallinfo_for_bounce(x,y)
-	var aabb := maze3d_setting.CalcCellBox(Vector2i(x,y))
-	return [aabb, axis_wall]
-
 # wallinfo [aabb , axis_wall [3][2]bool ]
+func make_wallinfo() -> Array:
+	var rtn := []
+	rtn.resize(maze3d_setting.MazeSize.y)
+	for y in maze3d_setting.MazeSize.y:
+		rtn[y] = []
+		rtn[y].resize(maze3d_setting.MazeSize.x)
+		for x in maze3d_setting.MazeSize.x:
+			rtn[y][x] = [
+				maze3d_setting.CalcCellBoxXY(x,y), # AABB
+				$Maze3D.maze_cells.make_wallinfo_for_bounce(x,y), # axis_wall [3:xyz][2]bool
+			]
+	return rtn
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var pos2d := maze3d_setting.storeypos2mazepos(oldpos)
+	#var aabb :AABB = maze3d_setting.CalcCellBox(pos2d)
+	#var axis_wall :Array = maze3d.maze_cells.make_wallinfo_for_bounce(pos2d.x,pos2d.y)
 	var wallinfo :Array = wall_info_all[pos2d.y][pos2d.x]
-	var aabb :AABB= wallinfo[0]
+	var aabb :AABB = wallinfo[0]
 	var axis_wall :Array = wallinfo[1]
-	return Bounce.v3f_wall(pos, aabb, axis_wall,radius)
+	return Bounce.v3f_wall(pos, aabb, axis_wall, radius)
 
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int

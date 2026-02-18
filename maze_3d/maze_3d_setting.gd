@@ -76,8 +76,13 @@ func storeypos2mazepos(pos :Vector3) -> Vector2i:
 	return Vector2i(x,y)
 
 func CalcCellBox(pos :Vector2i) -> AABB:
-	var rtn = AABB(
+	return AABB(
 		Vector3(LaneW*pos.x +WallThick/2, 0, LaneW*pos.y +WallThick/2) -CalcSizeV3()/2,
 		Vector3(LaneW -WallThick, StoryH, LaneW -WallThick)
 		)
-	return rtn
+
+func CalcCellBoxXY(x :int, y :int) -> AABB:
+	return AABB(
+		Vector3(LaneW*x +WallThick/2, 0, LaneW*y +WallThick/2) -CalcSizeV3()/2,
+		Vector3(LaneW -WallThick, StoryH, LaneW -WallThick)
+		)

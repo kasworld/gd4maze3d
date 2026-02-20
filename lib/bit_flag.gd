@@ -30,6 +30,12 @@ static func FromPosList(pos_list :Array) -> int:
 		rtn += (1 << pos)
 	return rtn
 
+static func FromPosList2(...pos_list) -> int:
+	var rtn := 0
+	for pos in pos_list:
+		rtn += (1 << pos)
+	return rtn
+
 static func MakeFilledPosList(bit_len :int) -> Array[int]:
 	var rtn :Array[int] = []
 	for i in bit_len:

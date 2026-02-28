@@ -16,7 +16,7 @@ func start_reset_rotate_animation(nd :Node3D, ani_dur :float) -> void:
 	tower_animation.start_rotation("ani_rot", nd, nd.rotation, Vector3.ZERO, ani_dur)
 
 func start_shift_out_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
-	var diff := maze3d_setting.CalcDiagonalLengthV2() /2
+	var diff := maze3d_setting.CalcSizeV2().length() /2
 	tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, ani_dur)
 
 func start_shift_in_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
@@ -24,7 +24,7 @@ func start_shift_in_animation(st :Node3D, subfield :int, ani_dur :float) -> void
 
 func start_reset_position_animation(st :Node3D, ani_dur :float) -> void:
 	start_shift_in_animation(st, Vector3.Axis.AXIS_X, ani_dur)
-	start_shift_in_animation(st, Vector3.Axis.AXIS_Z, ani_dur)
+	start_shift_in_animation(st, Vector3.Axis.AXIS_Y, ani_dur)
 
 func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
 	if tower_animation.is_empty():
@@ -45,14 +45,14 @@ func start_all_animation() -> void:
 	shift_count += 1
 	start_rotate_animation(self, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y, Vector3.Axis.AXIS_Z].pick_random(), AnimationDuration)
 	for st in storey_list:
-		start_rotate_animation(st, Vector3.Axis.AXIS_Y, AnimationDuration)
+		start_rotate_animation(st, Vector3.Axis.AXIS_Z, AnimationDuration)
 		if shift_count % 2 == 0 :
 			if not is_zero_approx(st.position.x):
 				start_shift_in_animation(st, Vector3.Axis.AXIS_X, AnimationDuration)
-			if not is_zero_approx(st.position.z):
-				start_shift_in_animation(st, Vector3.Axis.AXIS_Z, AnimationDuration)
+			if not is_zero_approx(st.position.y):
+				start_shift_in_animation(st, Vector3.Axis.AXIS_Y, AnimationDuration)
 		else:
-			start_shift_out_animation(st, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random(), AnimationDuration)
+			start_shift_out_animation(st, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y].pick_random(), AnimationDuration)
 
 func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)
@@ -108,7 +108,7 @@ func find_storey_by_num(num :int) -> Storey:
 			return storey_list[i]
 	return null
 
-func calc_storey_base_y_pos(storey_index :int) -> float:
+func calc_storey_base_z_pos(storey_index :int) -> float:
 	var rtn := storey_list[0].maze3d_setting.StoryH/2
 	if gap_ani_dir_open:
 		rtn += StoreyGap * storey_index
@@ -120,14 +120,14 @@ func start_storey_gap_animation() -> void:
 	gap_ani_dir_open = not gap_ani_dir_open
 	for i in storey_list.size():
 		var st := storey_list[i]
-		var new_y = calc_storey_base_y_pos(i)
-		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
+		var new_z = calc_storey_base_z_pos(i)
+		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Z, st.position.z, new_z, StoreyAnimationDuration)
 
 func set_all_storey_position() -> void:
 	for i in storey_list.size():
 		var st := storey_list[i]
-		var new_y := calc_storey_base_y_pos(i)
-		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
+		var new_z := calc_storey_base_z_pos(i)
+		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Z, st.position.z, new_z, StoreyAnimationDuration)
 
 func add_new_storey(stnum :int) -> void:
 	var ms := maze3d_setting.duplicate()
@@ -139,7 +139,7 @@ func add_new_storey(stnum :int) -> void:
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
-	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
+	st.position.z = calc_storey_base_z_pos(storey_list.size()-1)
 	set_all_storey_position()
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), StoreyAnimationDuration)

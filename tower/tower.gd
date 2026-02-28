@@ -69,9 +69,8 @@ var maze3d_setting :Maze3DSetting
 var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey
-var view_floor_ceiling :bool = true
-var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ReducedWithPillar
-var view_pillars :bool = true
+var view_floor_ceiling := Maze3D.FloorCeiling.Both
+var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ShortWithPillarBox
 
 func calc_height() -> float:
 	return (VisibleStoreyDown+1+VisibleStoreyUp) *( maze3d_setting.StoryH + StoreyGap )
@@ -135,7 +134,7 @@ func add_new_storey(stnum :int) -> void:
 	ms.StoryH *= pow(2, randf()*2 -1 )
 	ms.LaneW *= pow(2, randf()*2 -1 )
 	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting, ms)
-	st.get_maze3d().view_floor_ceiling(view_floor_ceiling,view_floor_ceiling)
+	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
@@ -159,17 +158,18 @@ func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 		"ani_gap", "ani_add_move":
 			pass
 
-func set_floor_ceiling_visible(f :bool,c :bool) -> void:
+func set_floor_ceiling_visible(v :Maze3D.FloorCeiling) -> void:
 	for i in storey_list.size():
-		storey_list[i].get_maze3d().view_floor_ceiling(f,c)
+		storey_list[i].get_maze3d().view_floor_ceiling(v)
 
 func set_wallpillar_view_mode(w :Maze3D.WallPillarView) -> void:
 	for i in storey_list.size():
 		storey_list[i].get_maze3d().set_wallpillar_view_mode(w)
 
-func toggle_visible_floor_ceiling() -> void:
-	view_floor_ceiling = not view_floor_ceiling
-	set_floor_ceiling_visible(view_floor_ceiling,view_floor_ceiling)
+func next_visible_floor_ceiling() -> void:
+	view_floor_ceiling += 1
+	view_floor_ceiling %= Maze3D.FloorCeiling.size()
+	set_floor_ceiling_visible(view_floor_ceiling)
 
 func view_wallpillar_next() -> void:
 	view_walls = Maze3D.wallview_next(view_walls)
@@ -177,7 +177,7 @@ func view_wallpillar_next() -> void:
 
 var demo_random_list = [
 	move_to_upper_storey,
-	toggle_visible_floor_ceiling,
+	next_visible_floor_ceiling,
 	view_wallpillar_next,
 	start_storey_gap_animation,
 ]

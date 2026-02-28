@@ -4,11 +4,6 @@ class_name Maze3D
 static var darkcolorlist = NamedColors.filter_dark_color_list()
 static var lightcolorlist = NamedColors.filter_light_color_list()
 
-enum WallPillarView {Full, Reduced, ReducedWithPillar, Off,  OffWithPillar}
-static func wallview2str(vd :WallPillarView) -> String:
-	return WallPillarView.keys()[vd]
-static func wallview_next(a :WallPillarView) -> WallPillarView:
-	return (a +1) % WallPillarView.keys().size() as WallPillarView
 
 var maze3d_setting :Maze3DSetting
 var maze_cells :Maze
@@ -28,6 +23,7 @@ func init_with_mat(ts :Maze3DSetting, makedecofn :Callable, matmain :StandardMat
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
 	make_box_pillas()
+	make_capsule_pillas()
 	make_wall_deco_by_maze(makedecofn)
 	init_floor_ceiling()
 	return self
@@ -43,7 +39,7 @@ func init_with_color(ts :Maze3DSetting, makedecofn :Callable, comain :Color, cos
 	pillar_mat.albedo_color = copillar
 	maze_cells = Maze.new(maze3d_setting.MazeSize)
 	make_wall_by_maze()
-	#make_box_pillas()
+	make_box_pillas()
 	make_capsule_pillas()
 	make_wall_deco_by_maze(makedecofn)
 	init_floor_ceiling()
@@ -58,7 +54,8 @@ func init_floor_ceiling() -> void:
 	$Ceiling.position.z += maze3d_setting.StoryH/2
 	var shiftsize := maze3d_setting.CalcSizeV3()/2
 	$WallContainer.position = -shiftsize
-	$PillarContainer.position = -shiftsize
+	$CapsulePillars.position = -shiftsize
+	$BoxPillars.position = -shiftsize
 
 func make_box_pillas() -> void:
 	var pos_list :Array = []
@@ -71,7 +68,7 @@ func make_box_pillas() -> void:
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
 		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape(rtn, pos_list)
-	$PillarContainer.add_child(rtn)
+	$BoxPillars.add_child(rtn)
 
 func make_capsule_pillas() -> void:
 	var pos_list :Array = []
@@ -85,7 +82,7 @@ func make_capsule_pillas() -> void:
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
 		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape_capsule(rtn, pos_list)
-	$PillarContainer.add_child(rtn)
+	$CapsulePillars.add_child(rtn)
 
 func pos_multimeshshape_capsule(mms :MultiMeshShape, pos_list :Array) -> void:
 	for i in pos_list.size():
@@ -187,9 +184,22 @@ func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
 			pos =  pos_face_H - Vector3(0,maze3d_setting.WallThick,0)
 	return pos
 
-func view_floor_ceiling(f :bool,c :bool) -> void:
-	$Floor.visible = f
-	$Ceiling.visible = c
+
+enum FloorCeiling {Off, Floor, Ceiling, Both}
+func view_floor_ceiling(v :FloorCeiling) -> void:
+	match v:
+		FloorCeiling.Off:
+			$Floor.visible = false
+			$Ceiling.visible = false
+		FloorCeiling.Floor:
+			$Floor.visible = true
+			$Ceiling.visible = false
+		FloorCeiling.Ceiling:
+			$Floor.visible = false
+			$Ceiling.visible = true
+		FloorCeiling.Both:
+			$Floor.visible = true
+			$Ceiling.visible = true
 
 func set_wall_size_long(b :bool) -> void:
 	if b:
@@ -203,32 +213,64 @@ func set_wall_size_long(b :bool) -> void:
 		wall_multi_inst_V_main.multimesh.mesh.size = maze3d_setting.CalcWallSize_V_Short()
 		wall_multi_inst_V_sub.multimesh.mesh.size = maze3d_setting.CalcWallSize_V_Short()
 
-func view_walls(b :bool) -> void:
-	$WallContainer.visible = b
+enum WallView {Off, Short, Long}
+func view_walls(v :WallView) -> void:
+	match v:
+		WallView.Off:
+			$WallContainer.visible = false
+		WallView.Short:
+			$WallContainer.visible = true
+			set_wall_size_long(false)
+		WallView.Long:
+			$WallContainer.visible = true
+			set_wall_size_long(true)
 
-func view_pillars(b :bool) -> void:
-	$PillarContainer.visible = b
+enum PillarView {Off, Box, Capsule}
+func view_pillars(v :PillarView) -> void:
+	match v:
+		PillarView.Off:
+			$CapsulePillars.visible = false
+			$BoxPillars.visible = false
+		PillarView.Box:
+			$CapsulePillars.visible = false
+			$BoxPillars.visible = true
+		PillarView.Capsule:
+			$CapsulePillars.visible = true
+			$BoxPillars.visible = false
+
+enum WallPillarView {Long, Short, ShortWithPillarBox, ShortWithPillarCapsule, Off, OffWithPillarBox, OffWithPillarCapsule}
+static func wallview2str(vd :WallPillarView) -> String:
+	return WallPillarView.keys()[vd]
+static func wallview_next(a :WallPillarView) -> WallPillarView:
+	return (a +1) % WallPillarView.keys().size() as WallPillarView
 
 func set_wallpillar_view_mode(w :WallPillarView) -> void:
 	match w:
-		WallPillarView.Full:
-			view_walls(true)
+		WallPillarView.Long:
+			view_walls(WallView.Long)
 			set_wall_size_long(true)
-			view_pillars(false)
-		WallPillarView.Reduced:
-			view_walls(true)
+			view_pillars(PillarView.Off)
+		WallPillarView.Short:
+			view_walls(WallView.Short)
 			set_wall_size_long(false)
-			view_pillars(false)
-		WallPillarView.ReducedWithPillar:
-			view_walls(true)
+			view_pillars(PillarView.Off)
+		WallPillarView.ShortWithPillarBox:
+			view_walls(WallView.Short)
 			set_wall_size_long(false)
-			view_pillars(true)
+			view_pillars(PillarView.Box)
+		WallPillarView.ShortWithPillarCapsule:
+			view_walls(WallView.Short)
+			set_wall_size_long(false)
+			view_pillars(PillarView.Capsule)
 		WallPillarView.Off:
-			view_walls(false)
-			view_pillars(false)
-		WallPillarView.OffWithPillar:
-			view_walls(false)
-			view_pillars(true)
+			view_walls(WallView.Off)
+			view_pillars(PillarView.Off)
+		WallPillarView.OffWithPillarBox:
+			view_walls(WallView.Off)
+			view_pillars(PillarView.Box)
+		WallPillarView.OffWithPillarCapsule:
+			view_walls(WallView.Off)
+			view_pillars(PillarView.Capsule)
 
 var bounce_wall_info_all :Array
 # wallinfo [aabb , axis_wall [3][2]bool ]

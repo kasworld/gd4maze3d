@@ -70,13 +70,6 @@ func open_dir_str(x :int , y :int) -> String:
 		rtn += "%s " %[EnumDir.FlagToStr[d]]
 	return rtn
 
-# wall [axis:3][2]bool : [ [-x,+x], [-y,+y], [-z,+z] ]
-func make_wallinfo_for_bounce(x:int, y:int) -> Array[Array]:
-	return [
-		[is_wall_dir_at(x,y, EnumDir.Flag.West), is_wall_dir_at(x,y, EnumDir.Flag.East)],
-		[true,true],
-		[is_wall_dir_at(x,y, EnumDir.Flag.North), is_wall_dir_at(x,y, EnumDir.Flag.South)],
-	]
 
 # from_pos -> [ {"pos" : to_pos, "dir" : dir} ]
 func make_move_graph() -> Dictionary:

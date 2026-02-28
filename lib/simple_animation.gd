@@ -2,9 +2,8 @@ class_name SimpleAnimation
 
 signal animation_ended(st :Node, ani :Dictionary)
 
+## {Name,  Node, Field(position, rotation, scale), SubField(0,1,2) , From, To , StartTick, DurSec }
 var animation_list :Array[Dictionary]
-# {Name,  Node, Field(position, rotation, scale), SubField(0,1,2) , From, To , StartTick, DurSec }
-
 
 func get_animation_count() -> int:
 	return animation_list.size()
@@ -43,86 +42,62 @@ func add_animation(ani :Dictionary) -> Dictionary:
 	animation_list.append(ani)
 	return ani
 
-func start_move(name :String, aniNode :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return add_animation(make_move(name,aniNode,from,to,dur_sec))
-
-func make_move(name :String, aniNode :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+static func MakeAnimation(name:String, ani_node :Node, field :String, from :Variant, to :Variant, dur_sec :float) -> Dictionary:
 	return {
-		"Name" : name, # for end signal
-		"AniNode" : aniNode,
-		"Field" : "position",
+		"Name" : name,
+		"AniNode" : ani_node,
+		"Field" : field,
 		"From" : from,
 		"To" : to,
 		"DurSec" : dur_sec,
 	}
-
-func start_move_subfield(name :String, aniNode :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return add_animation( make_move_subfield(name,aniNode, sub_index, from,to, dur_sec) )
-
-func make_move_subfield(name :String, aniNode :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+static func MakeAnimationSubfield(name:String, ani_node :Node, field :String, sub_index :int, from :Variant, to :Variant, dur_sec :float) -> Dictionary:
 	return {
-		"Name" : name, # for end signal
-		"AniNode" : aniNode,
-		"Field" : "position",
+		"Name" : name,
+		"AniNode" : ani_node,
+		"Field" : field,
 		"SubField" : sub_index,
 		"From" : from,
 		"To" : to,
 		"DurSec" : dur_sec,
 	}
 
-func start_rotate(name :String, aniNode :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return add_animation(make_rotate(name,aniNode,from,to,dur_sec))
 
-func make_rotate(name :String, aniNode :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return  {
-		"Name" : name, # for end signal
-		"AniNode" : aniNode,
-		"Field" : "rotation",
-		"From" : from,
-		"To" : to,
-		"DurSec" : dur_sec,
-	}
+func start_move(name :String, ani_node :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return add_animation(MakeMove(name,ani_node,from,to,dur_sec))
 
-func start_rotate_subfield(name :String, aniNode :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return add_animation( make_rotate_subfield(name,aniNode, sub_index, from,to, dur_sec) )
+static func MakeMove(name :String, ani_node :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return MakeAnimation(name, ani_node,"position",from,to,dur_sec)
 
-func make_rotate_subfield(name :String, aniNode :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return {
-		"Name" : name, # for end signal
-		"AniNode" : aniNode,
-		"Field" : "rotation",
-		"SubField" : sub_index,
-		"From" : from,
-		"To" : to,
-		"DurSec" : dur_sec,
-	}
+func start_move_subfield(name :String, ani_node :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return add_animation( MakeMoveSubfield(name,ani_node, sub_index, from,to, dur_sec) )
 
-func start_scale(name :String, aniNode :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return add_animation(make_scale(name,aniNode,from,to,dur_sec))
+static func MakeMoveSubfield(name :String, ani_node :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return MakeAnimationSubfield(name, ani_node,"position",sub_index,from,to,dur_sec)
 
-func make_scale(name :String, aniNode :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return {
-		"Name" : name, # for end signal
-		"AniNode" : aniNode,
-		"Field" : "scale",
-		"From" : from,
-		"To" : to,
-		"DurSec" : dur_sec,
-	}
+func start_rotation(name :String, ani_node :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return add_animation(MakeRotation(name,ani_node,from,to,dur_sec))
 
-func start_scale_subfield(name :String, aniNode :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return add_animation( make_scale_subfield(name,aniNode, sub_index, from,to, dur_sec) )
+static func MakeRotation(name :String, ani_node :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return MakeAnimation(name, ani_node,"rotation",from,to,dur_sec)
 
-func make_scale_subfield(name :String, aniNode :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
-	return {
-		"Name" : name, # for end signal
-		"AniNode" : aniNode,
-		"Field" : "scale",
-		"SubField" : sub_index,
-		"From" : from,
-		"To" : to,
-		"DurSec" : dur_sec,
-	}
+func start_rotation_subfield(name :String, ani_node :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return add_animation( MakeRotationSubfield(name,ani_node, sub_index, from,to, dur_sec) )
+
+static func MakeRotationSubfield(name :String, ani_node :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return MakeAnimationSubfield(name, ani_node,"rotation",sub_index,from,to,dur_sec)
+
+func start_scale(name :String, ani_node :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return add_animation(MakeScale(name,ani_node,from,to,dur_sec))
+
+static func MakeScale(name :String, ani_node :Node, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return MakeAnimation(name, ani_node,"scale",from,to,dur_sec)
+
+func start_scale_subfield(name :String, ani_node :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return add_animation( MakeScaleSubfield(name,ani_node, sub_index, from,to, dur_sec) )
+
+static func MakeScaleSubfield(name :String, ani_node :Node, sub_index :int, from :Variant, to: Variant, dur_sec :float) -> Dictionary:
+	return MakeAnimationSubfield(name, ani_node,"scale",sub_index,from,to,dur_sec)
 
 func handle_animation() -> void:
 	var timenow := Time.get_unix_time_from_system()

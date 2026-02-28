@@ -10,10 +10,10 @@ func _process(_delta: float) -> void:
 
 func start_rotate_animation(nd :Node3D, subfield :int, ani_dur :float) -> void:
 	var diff :float = [PI/2,-PI/2].pick_random()
-	tower_animation.start_rotate_subfield("ani_rot", nd, subfield , nd.rotation[subfield], nd.rotation[subfield] + diff, ani_dur)
+	tower_animation.start_rotation_subfield("ani_rot", nd, subfield , nd.rotation[subfield], nd.rotation[subfield] + diff, ani_dur)
 
 func start_reset_rotate_animation(nd :Node3D, ani_dur :float) -> void:
-	tower_animation.start_rotate("ani_rot", nd, nd.rotation, Vector3.ZERO, ani_dur)
+	tower_animation.start_rotation("ani_rot", nd, nd.rotation, Vector3.ZERO, ani_dur)
 
 func start_shift_out_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
 	var diff := maze3d_setting.CalcDiagonalLengthV2() /2

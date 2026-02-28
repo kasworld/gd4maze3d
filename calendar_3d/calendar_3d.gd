@@ -22,7 +22,7 @@ var colors := {
 var calendar_labels := []
 
 func get_color_mat(co: Color)->Material:
-	var mat := StandardMaterial3D.new()
+	var mat := MultiMeshShape.make_color_material()
 	mat.albedo_color = co
 	#mat.metallic = 1
 	#mat.clearcoat = true
@@ -47,18 +47,19 @@ func init(w :float, h:float,d:float, fsize :float, backplane:bool=true) -> Calen
 	if backplane:
 		$BackplaneBox.mesh.material.albedo_color = colors.calbg
 		$BackplaneBox.mesh.size = Vector3(w, h, d*0.5)
-	init_calendar(w/weekdaystring.size(), h/8,d, fsize)
+	init_calendar(w, h,d, fsize)
 	update_calendar()
 	return self
 
 func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
+	var calc_grid := CalcGrid3D.new( CalcGrid3D.SizeToAABB(Vector3(w,h,d)) , Vector3i(7,8,1))
 	# add year month
 	var fdepth := d * 0.2
 	var time_now_dict := Time.get_datetime_dict_from_system()
 	var mat := get_color_mat(colors.datelabel)
 	var lb := new_text(fsize, fdepth, mat,
 		"%4d년 %2d월" % [time_now_dict["year"] , time_now_dict["month"]])
-	lb.position = Vector3(0, 3.5*h, 0)
+	lb.position = calc_grid.posi_to_lanepos(Vector3(3,7,0))
 	calendar_labels.append(lb)
 	$LabelConatiner.add_child(lb)
 	# prepare calendar
@@ -68,7 +69,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 			var co :Color = colors.weekday[wd]
 			mat = get_color_mat(co)
 			lb = new_text(fsize,fdepth, mat, weekdaystring[wd])
-			lb.position = Vector3(wd*w - 3*w, 3.5*h - i*h , 0)
+			lb.position = calc_grid.posi_to_lanepos(Vector3(wd,7-i,0))
 			ln.append(lb)
 			$LabelConatiner.add_child(lb)
 		calendar_labels.append(ln)

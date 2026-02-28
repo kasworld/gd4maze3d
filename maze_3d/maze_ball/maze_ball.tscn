@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://kx2qoyah0tlm"]
+
+[ext_resource type="Script" uid="uid://o4icjyng2wil" path="res://maze_3d/maze_ball/maze_ball.gd" id="1_uqw5n"]
+
+[node name="MazeBall" type="MeshInstance3D" unique_id=756725529]
+script = ExtResource("1_uqw5n")

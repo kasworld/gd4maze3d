@@ -6,7 +6,6 @@ const DecoTowerCount :int = 6
 
 var tower_scene = preload("res://tower/tower.tscn")
 var player :Crawler
-var default_maze3d_setting :Maze3DSetting
 var default_storey_setting :StoreySetting
 
 func _ready() -> void:
@@ -16,10 +15,9 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 
-	default_maze3d_setting = Maze3DSetting.new_default()
-	default_storey_setting = StoreySetting.new_default(default_maze3d_setting.MazeSize)
+	default_storey_setting = StoreySetting.new_default(Storey.maze_size)
 	var tw :Tower = tower_scene.instantiate().init(
-		0, 3,3,1,default_storey_setting, default_maze3d_setting, true,
+		0, 3,3,1,default_storey_setting, true,
 		)
 	$TowerContainer.add_child(tw)
 
@@ -28,7 +26,7 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(PlayerNumber)
 	$MovingCameraLightAround.make_current()
 
-	var orbitr := default_maze3d_setting.CalcSizeWithWallV3().length() * 3
+	var orbitr := (Storey.maze_size*Storey.lane_width).length() * 3
 	for i in DecoTowerCount:
 		var rd := 2*PI/DecoTowerCount *i
 		var h := randfn(0, DecoTowerCount)
@@ -36,9 +34,9 @@ func _ready() -> void:
 
 	if DecoTowerCount != 0:
 		orbitr *= 2
-	var WorldSize :Vector3 = default_maze3d_setting.CalcSizeV3() * 4
+	var WorldSize := Vector3(Storey.maze_size.x *Storey.lane_width,Storey.maze_size.y*Storey.lane_width,Storey.maze_height ) * 4
 	$DecoOrbit.init(WorldSize, 9)
-	$AxisArrow3D.set_size(default_maze3d_setting.CalcSizeV2().length()/2).set_colors()
+	$AxisArrow3D.set_size((Storey.maze_size*Storey.lane_width).length()/2).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, orbitr), orbitr*2)
 	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, orbitr), orbitr*2)
@@ -52,7 +50,7 @@ func get_current_tower() -> Tower:
 
 func add_deco_tower(i :int, p :Vector3) -> Tower:
 	var deco_tower :Tower = tower_scene.instantiate().init(
-		i, 3,3,3,StoreySetting.new_deco(), Maze3DSetting.new_default(), true,
+		i, 3,3,3,StoreySetting.new_deco(), true,
 		)
 	$TowerContainer.add_child(deco_tower)
 	deco_tower.position = p
@@ -66,7 +64,7 @@ func _process(_delta: float) -> void:
 	update_info()
 
 	var t := Time.get_unix_time_from_system() /2.3
-	var r := default_maze3d_setting.CalcSizeWithWallV3().length()
+	var r := (Storey.maze_size*Storey.lane_width).length()
 	var h := get_current_tower().calc_height() *2
 	if $MovingCameraLightHober.is_current_camera():
 		$MovingCameraLightHober.move_hober_around_z(t, Vector3.ZERO, r, h )
@@ -90,7 +88,7 @@ func add_crawler(i :int) -> Crawler:
 	$CharacterContainer.add_child(cr)
 	cr.init(
 		[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
-		i, default_maze3d_setting.LaneW, NamedColors.random_color())
+		i, Storey.lane_width, NamedColors.random_color())
 	if cr.crawler_num == PlayerNumber:
 		cr.crawler_goal_reached.connect(crawler_goal_reached)
 	return cr

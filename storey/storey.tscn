@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://dp0yfx2i1wsf4" path="res://storey/storey.gd" id="1_vfl4n"]
 [ext_resource type="PackedScene" uid="uid://bg7pvk7ens3l8" path="res://places_things/text_mark.tscn" id="2_wtqod"]
 [ext_resource type="PackedScene" uid="uid://dauu5e87kykn" path="res://storey/mini_map/mini_map.tscn" id="4_16v43"]
-[ext_resource type="PackedScene" uid="uid://bdycgvb1g25w" path="res://maze_3d/maze_3d.tscn" id="4_rbrve"]
 
 [node name="Storey" type="Node3D" unique_id=1370983570]
 script = ExtResource("1_vfl4n")
@@ -16,8 +15,6 @@ script = ExtResource("1_vfl4n")
 billboard = 1
 
 [node name="MiniMap" parent="." unique_id=1236770542 instance=ExtResource("4_16v43")]
-
-[node name="Maze3D" parent="." unique_id=1499655247 instance=ExtResource("4_rbrve")]
 
 [node name="WallDeco" type="Node3D" parent="." unique_id=1337128885]
 

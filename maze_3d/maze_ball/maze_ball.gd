@@ -9,9 +9,9 @@ var speed_max :float
 var maze3d :Maze3D
 func init(co :Color, mz :Maze3D) -> MazeBall:
 	maze3d = mz
-	speed_min = maze3d.maze3d_setting.LaneW
+	speed_min = maze3d.LaneW
 	speed_max = speed_min * 2
-	radius = maze3d.maze3d_setting.LaneW / 10
+	radius = maze3d.LaneW / 10
 	mesh = BoxMesh.new()
 	mesh.size = Vector3(radius*2,radius*2,radius/2)
 	mesh.material = MultiMeshShape.make_color_material()
@@ -20,10 +20,10 @@ func init(co :Color, mz :Maze3D) -> MazeBall:
 	mesh.material.clearcoat_enabled = true
 	mesh.material.refraction_enabled = true
 	mesh.material.rim_enabled = true
-	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * maze3d.maze3d_setting.LaneW
+	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * maze3d.LaneW
 	rot_vel = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() / PI /2
-	var pos2d := maze3d.maze3d_setting.rand_pos_2i()
-	position = maze3d.maze3d_setting.mazepos2storeypos(pos2d, maze3d.maze3d_setting.StoryH/2)
+	var pos2d := maze3d.rand_pos_2i()
+	position = maze3d.mazepos2storeypos(pos2d, 0)
 	return self
 
 func bounce(delta :float) -> void:

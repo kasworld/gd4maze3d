@@ -1,6 +1,14 @@
 extends Node3D
 class_name Storey
 
+## maze default settings
+static var maze_size := Vector2i(4,4)
+static var maze_height :float = 3.0
+static var lane_width :float = 4.0
+#static var wall_thick :float = 4.0*0.05
+#static var subwall_rate :float = 1.0/(4*4)
+
+
 static var themecolorlist = [
 	NamedColors.filter_red_color_list(),
 	NamedColors.filter_green_color_list(),
@@ -18,9 +26,9 @@ func _process(delta: float) -> void:
 	for t in tree_list:
 		t.rotate_tree_bar_y(0.1)
 	for mt in mesh_trail_list:
-		mt.move_trail(delta, $Maze3D.bounce_cell, trailmesh_radius, 4*PI,)
+		mt.move_trail(delta, maze3d.bounce_cell, trailmesh_radius, 4*PI,)
 
-var maze3d_setting :Maze3DSetting
+var maze3d :Maze3D
 var storey_setting :StoreySetting
 var storey_num :int
 var start_pos :Vector2i
@@ -34,31 +42,34 @@ var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 �
 var tree_list :Array
 
 func get_maze3d() -> Maze3D:
-	return $Maze3D
+	return maze3d
 
 func _to_string() -> String:
 	return "Storey[%d %s]" % [storey_num, storey_setting]
 
-func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
-	maze3d_setting = ms
+func init(num :int, ss :StoreySetting) -> Storey:
+	var MazeSize = maze_size + Vector2i(randi_range(-1,1), randi_range(-1,1) )
+	var StoryH = maze_height * pow(2, randf()*2 -1 )
+	var LaneW = lane_width * pow(2, randf()*2 -1 )
 	storey_setting = ss
 
+	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
+		).init_setting(MazeSize, StoryH, LaneW, LaneW *0.05, 1.0/(MazeSize.x*MazeSize.y))
+	add_child(maze3d)
 	if num % 2 ==0 :
-		$Maze3D.init_with_mat(maze3d_setting, add_wall_deco_at,
+		maze3d.init_with_mat(add_wall_deco_at,
 			TexMat.make_mainwall_mat(),
 			TexMat.make_subwall_mat() )
 	else:
-		$Maze3D.init_with_color(maze3d_setting, add_wall_deco_at,
+		maze3d.init_with_color(add_wall_deco_at,
 			random_color(), random_color(), random_color(),
 		)
 	storey_num = num
 
-	$Maze3D.make_bounce_wall_info()
-
-	놓인것들 = PlacedThings.new(maze3d_setting.MazeSize)
-	for y in maze3d_setting.MazeSize.y:
-		for x in maze3d_setting.MazeSize.x:
-			if $Maze3D.maze_cells.get_open_dir_at(x,y).size() == 1:
+	놓인것들 = PlacedThings.new(maze3d.MazeSize)
+	for y in maze3d.MazeSize.y:
+		for x in maze3d.MazeSize.x:
+			if maze3d.maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
 
 	start_pos = 구석자리목록.pick_random()
@@ -70,29 +81,29 @@ func init(num :int, ss :StoreySetting, ms :Maze3DSetting) -> Storey:
 		trycount -=1
 	if goal_pos == start_pos:
 		print_debug("start, goal pos same %s" % start_pos)
-	var 크기기준 := maze3d_setting.LaneW
+	var 크기기준 := maze3d.LaneW
 	$StartMark.init(크기기준*0.2, 크기기준/100, random_color(), "Start %d" % storey_num
-		).position = maze3d_setting.mazepos2storeypos(start_pos, maze3d_setting.StoryH/2.0)
+		).position = maze3d.mazepos2storeypos(start_pos, maze3d.StoryH/2.0)
 	$EndMark.init(크기기준*0.2, 크기기준/100, random_color(), "Goal %d" % storey_num
-		).position = maze3d_setting.mazepos2storeypos(goal_pos, maze3d_setting.StoryH/2.0)
+		).position = maze3d.mazepos2storeypos(goal_pos, maze3d.StoryH/2.0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
 
 	add_donut_capsule(storey_setting.DonutCapsuleCount)
 	for i in storey_setting.TreeCount:
-		var p = maze3d_setting.rand_pos_2i()
+		var p = maze3d.rand_pos_2i()
 		if 놓인것들.get_at(p) != null:
 			continue
 		add_tree(p)
 	add_mesh_trails(storey_setting.MeshTrailTypeList)
-	$Label3D.pixel_size = maze3d_setting.StoryH/50
+	$Label3D.pixel_size = maze3d.StoryH/50
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-maze3d_setting.WallThick*2, maze3d_setting.StoryH/2, -maze3d_setting.WallThick*2)
+	$Label3D.position = Vector3(-maze3d.WallThick*2, maze3d.StoryH/2, -maze3d.WallThick*2)
 	$MiniMap.init(self)
 
-	var shiftsize := maze3d_setting.CalcSizeV3()/2
-	$Label3D.position += -shiftsize
-	$WallDeco.position += -shiftsize
+	var shiftsize := maze3d.calc_grid.boundary.position
+	$Label3D.position = shiftsize
+	$WallDeco.position = shiftsize
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
@@ -101,7 +112,7 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 		if ch.crawler_num == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
-			ch.enter_storey(old_storey, self, maze3d_setting.rand_pos_2i())
+			ch.enter_storey(old_storey, self, maze3d.rand_pos_2i())
 
 	$MiniMap.add_chars(char_list, playernum)
 	$MiniMap.update_size()
@@ -133,17 +144,17 @@ func add_donut_capsule(n :int) -> void:
 			continue
 		var co :Color = NamedColors.random_color()
 		var pobj
-		var 크기기준 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
+		var 크기기준 :float = min(maze3d.LaneW, maze3d.StoryH)
 		if randi()%2 ==0:
 			pobj = preload("res://places_things/capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:
 			pobj = preload("res://places_things/donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
-		pobj.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH/4.0)
+		pobj.position = maze3d.mazepos2storeypos(p, maze3d.StoryH/4.0)
 		add_child(pobj)
 		놓인것들.set_at(p,pobj)
 
 func add_tree(p :Vector2i) ->void:
-	var 크기기준 = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
+	var 크기기준 = min(maze3d.LaneW, maze3d.StoryH)
 	var tree_width := randf_range(크기기준*0.5, 크기기준*0.9)
 	var tree_height := randf_range(크기기준*0.5, 크기기준*0.9)
 	var bar_width = randf_range(크기기준*0.5, 크기기준*0.9)/10
@@ -153,7 +164,7 @@ func add_tree(p :Vector2i) ->void:
 	var t :BarTree	= preload("res://bar_tree/bar_tree.tscn").instantiate(
 		).init_bartree_with_color(random_color(), random_color(),bar_count
 		).init_bartree_transform( Vector3(tree_width, tree_height, bar_width), 0)
-	t.position = maze3d_setting.mazepos2storeypos(p, maze3d_setting.StoryH*0.1)
+	t.position = maze3d.mazepos2storeypos(p, maze3d.StoryH*0.1)
 	add_child(t)
 	놓인것들.set_at(p,t)
 	tree_list.append(t)
@@ -161,15 +172,15 @@ func add_tree(p :Vector2i) ->void:
 var trailmesh_radius := 1.0
 var mesh_trail_list :Array
 func add_mesh_trails(mesh_type_list) ->void:
-	trailmesh_radius = min(maze3d_setting.LaneW, maze3d_setting.StoryH) /20
+	trailmesh_radius = min(maze3d.LaneW, maze3d.StoryH) /20
 	var mesh := BoxMesh.new()
 	mesh.material = MultiMeshShape.make_color_material(1.0)
 	mesh.size = Vector3(trailmesh_radius*2, trailmesh_radius*2, trailmesh_radius/10)
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
-		var pos2d := maze3d_setting.rand_pos_2i()
-		var pos := maze3d_setting.mazepos2storeypos(pos2d, maze3d_setting.StoryH/2)
+		var pos2d := maze3d.rand_pos_2i()
+		var pos := maze3d.mazepos2storeypos(pos2d, maze3d.StoryH/2)
 		var tc := randi_range(20,50)
 		var bt :MeshTrail = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
 			).set_ColorChange_MeshGradient().init_with_color_mesh(mesh, tc, true, pos).set_speed(1,4)
@@ -186,24 +197,24 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			$WallDeco.add_child(line2d_subviewport)
 		var b := make_plane_from_subviewport(line2d_subviewport)
 		$WallDeco.add_child(b)
-		b.position = $Maze3D.deco_pos_by_dir(x,y,dir)
+		b.position = maze3d.deco_pos_by_dir(x,y,dir)
 		b.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
 		return
 
 	if randf() < storey_setting.MakeClockCalWallRate:
 		var n :Node3D
 		var depth := 0.1
-		var 기준크기 :float = min(maze3d_setting.LaneW, maze3d_setting.StoryH)
+		var 기준크기 :float = min(maze3d.LaneW, maze3d.StoryH)
 		clockcalendar_sel +=1
 		if clockcalendar_sel % 2 == 0:
 			n = preload("res://calendar_3d/calendar_3d.tscn").instantiate()
-			n.init(maze3d_setting.LaneW, maze3d_setting.StoryH,
+			n.init(maze3d.LaneW, maze3d.StoryH,
 				depth, 기준크기/12, false)
 		else :
 			n = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
 			n.init(기준크기/2, depth, 기준크기/16, 9.0, false)
 		n.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
-		n.position = $Maze3D.deco_pos_by_dir(x,y,dir)
+		n.position = maze3d.deco_pos_by_dir(x,y,dir)
 		$WallDeco.add_child(n)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
@@ -219,7 +230,7 @@ func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 
 func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
 	var mesh := PlaneMesh.new()
-	mesh.size = Vector2(maze3d_setting.LaneW, maze3d_setting.StoryH)
+	mesh.size = Vector2(maze3d.LaneW, maze3d.StoryH)
 	mesh.orientation = PlaneMesh.FACE_Z
 	var sp := MeshInstance3D.new()
 	sp.mesh = mesh
@@ -229,4 +240,4 @@ func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
 	return sp
 
 func get_maze_cells() -> Maze:
-	return $Maze3D.maze_cells
+	return maze3d.maze_cells

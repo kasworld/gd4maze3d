@@ -49,9 +49,9 @@ func init_setting(grid_size :Vector2i, maze_height :float, lane_width :float, wa
 	return self
 
 
-func mazepos2storeypos( mp :Vector2i, z :float) -> Vector3:
+func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
 	var rtn := calc_grid.posi_to_lanepos( xz_Vector2iToVector3i(mp,0) )
-	rtn.z = z
+	rtn.y = y
 	return rtn
 
 func storeypos2mazepos(pos :Vector3) -> Vector2i:

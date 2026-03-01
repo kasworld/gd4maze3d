@@ -164,13 +164,10 @@ func add_tree(p :Vector2i) ->void:
 	var tree_height := randf_range(크기기준*0.5, 크기기준*0.9)
 	var bar_width = randf_range(크기기준*0.5, 크기기준*0.9)/10
 	var bar_count := randi_range(20,50)
-	#var bar_rotation := randfn(0,PI/40)
-	#var bar_rotation_begin := randf_range(0, 2*PI)
 	var t :BarTree	= preload("res://bar_tree/bar_tree.tscn").instantiate(
 		).init_bartree_with_color(random_color(), random_color(),bar_count
 		).init_bartree_transform( Vector3(tree_width, tree_height, bar_width), 0)
-	t.position = maze3d.mazepos2storeypos(p, -maze3d.StoryH*0.4)
-	#t.rotate_x(PI/2)
+	t.position = maze3d.mazepos2storeypos(p, -maze3d.StoryH/2)
 	$PlacedThings.add_child(t)
 	놓인것들.set_at(p,t)
 	tree_list.append(t)

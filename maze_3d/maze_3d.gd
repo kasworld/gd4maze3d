@@ -186,21 +186,24 @@ func make_wall_by_maze() -> void:
 	wall_multi_inst_V_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_V_Short, pos_list_V_sub)
 	wall_multi_inst_H_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_H_Short, pos_list_H_sub)
 
-func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
-	var pos_face_V := calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, StoryH/2, LaneW/2)
-	var pos_face_H := calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(LaneW/2, StoryH/2, 0)
+func calc_pos_face_V(x :int, y :int) -> Vector3:
+	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, StoryH/2, LaneW/2)
 
+func calc_pos_face_H(x :int, y :int) -> Vector3:
+	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(LaneW/2, StoryH/2, 0)
+
+func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	match dir:
 		EnumDir.Flag.West, EnumDir.Flag.East:
 			if randf() < MakeSubWallRate:
-				pos_list_V_sub.append(pos_face_V)
+				pos_list_V_sub.append(calc_pos_face_V(x,y))
 			else:
-				pos_list_V_main.append(pos_face_V)
+				pos_list_V_main.append(calc_pos_face_V(x,y))
 		EnumDir.Flag.North, EnumDir.Flag.South:
 			if randf() < MakeSubWallRate:
-				pos_list_H_sub.append(pos_face_H)
+				pos_list_H_sub.append(calc_pos_face_H(x,y))
 			else:
-				pos_list_H_main.append(pos_face_H)
+				pos_list_H_main.append(calc_pos_face_H(x,y))
 
 func make_wall_deco_by_maze(makedeco :Callable) -> void:
 	if not makedeco.is_valid():
@@ -209,32 +212,30 @@ func make_wall_deco_by_maze(makedeco :Callable) -> void:
 	for y in MazeSize.y:
 		for x in MazeSize.x:
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
-				makedeco.call( x , y , EnumDir.Flag.North)
+				makedeco.call(x, y, EnumDir.Flag.North)
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
-				makedeco.call( x , y , EnumDir.Flag.West)
+				makedeco.call(x, y, EnumDir.Flag.West)
 
 	for x in MazeSize.x :
 		if not maze_cells.is_open_dir_at(x,MazeSize.y-1,EnumDir.Flag.South):
-			makedeco.call( x , MazeSize.y , EnumDir.Flag.South)
+			makedeco.call(x, MazeSize.y, EnumDir.Flag.South)
 
 	for y in MazeSize.y:
 		if not maze_cells.is_open_dir_at(MazeSize.x-1,y,EnumDir.Flag.East):
-			makedeco.call( MazeSize.x , y , EnumDir.Flag.East)
+			makedeco.call(MazeSize.x, y, EnumDir.Flag.East)
 
 func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
-	var pos_face_V := calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, StoryH/2, LaneW/2)
-	var pos_face_H := calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(LaneW/2, StoryH/2, 0)
-	var pos :Vector3
 	match dir:
 		EnumDir.Flag.West:
-			pos =  pos_face_V + Vector3(WallThick,0,0)
+			return calc_pos_face_V(x,y) + Vector3(WallThick,0,0)
 		EnumDir.Flag.East:
-			pos =  pos_face_V - Vector3(WallThick,0,0)
+			return calc_pos_face_V(x,y) - Vector3(WallThick,0,0)
 		EnumDir.Flag.North:
-			pos =  pos_face_H + Vector3(0,0,WallThick)
+			return calc_pos_face_H(x,y) + Vector3(0,0,WallThick)
 		EnumDir.Flag.South:
-			pos =  pos_face_H - Vector3(0,0,WallThick)
-	return pos
+			return calc_pos_face_H(x,y) - Vector3(0,0,WallThick)
+	assert(false,"invalid dir %s" % dir)
+	return Vector3.ZERO
 
 
 enum FloorCeiling {Off, Floor, Ceiling, Both}

@@ -55,6 +55,7 @@ func start_all_animation() -> void:
 			start_shift_out_animation(st, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y].pick_random(), AnimationDuration)
 
 func init_tower_animaion() -> void:
+	return
 	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_all_animation()
 

@@ -2,7 +2,7 @@ extends Node3D
 
 const PlayerNumber :int = 0
 const CharacterCount :int = 2
-const DecoTowerCount :int = 6
+const DecoTowerCount :int = 0
 
 var tower_scene = preload("res://tower/tower.tscn")
 var player :Crawler
@@ -148,14 +148,14 @@ func _on_button_minimap_pressed() -> void:
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
-	get_current_tower().view_wall_next()
+	get_current_tower().view_wallpillar_next()
 	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
-	get_current_tower().toggle_visible_floor_ceiling()
+	get_current_tower().next_visible_floor_ceiling()
 
 func _on_button_pillars_pressed() -> void:
-	get_current_tower().toggle_visible_pillars()
+	get_current_tower().view_wallpillar_next()
 
 func _on_button_storey_gap_pressed() -> void:
 	get_current_tower().start_storey_gap_animation()

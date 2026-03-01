@@ -22,8 +22,8 @@ func init(co :Color, mz :Maze3D) -> MazeBall:
 	mesh.material.rim_enabled = true
 	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * maze3d.LaneW
 	rot_vel = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() / PI /2
-	var pos2d := maze3d.rand_pos_2i()
-	position = maze3d.mazepos2storeypos(pos2d, 0)
+	var pos3i := maze3d.calc_grid.rand_posi()
+	position = maze3d.calc_grid.posi_to_lanepos(pos3i)
 	return self
 
 func bounce(delta :float) -> void:

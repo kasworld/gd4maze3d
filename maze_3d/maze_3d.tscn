@@ -19,7 +19,9 @@ script = ExtResource("1_0k1os")
 [node name="BoxPillars" type="Node3D" parent="." unique_id=1013896200]
 
 [node name="Floor" parent="." unique_id=51520612 instance=ExtResource("2_2b0r0")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 multimesh = SubResource("MultiMesh_2b0r0")
 
 [node name="Ceiling" parent="." unique_id=1807419852 instance=ExtResource("2_2b0r0")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 multimesh = SubResource("MultiMesh_7je7j")

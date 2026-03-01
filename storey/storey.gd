@@ -94,19 +94,20 @@ func init(num :int, ss :StoreySetting) -> Storey:
 
 	add_donut_capsule(storey_setting.DonutCapsuleCount)
 	for i in storey_setting.TreeCount:
-		var p = maze3d.rand_pos_2i()
+		var p := Maze3D.xz_Vector3iToVector2i(maze3d.calc_grid.rand_posi())
 		if 놓인것들.get_at(p) != null:
 			continue
 		add_tree(p)
 	add_mesh_trails(storey_setting.MeshTrailTypeList)
 	$Label3D.pixel_size = maze3d.StoryH/50
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-maze3d.WallThick*2, -maze3d.WallThick*2, 0)
+	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2)
 	$MiniMap.init(self)
 
-	var shiftsize := maze3d.calc_grid.boundary.position
-	$Label3D.position = shiftsize
-	$WallDeco.position = shiftsize
+	#var shiftsize := maze3d.calc_grid.boundary.position
+	#$Label3D.position = shiftsize
+	#$WallDeco.position = shiftsize
+	#$PlacedThings.position = shiftsize
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
@@ -115,7 +116,8 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 		if ch.crawler_num == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
 		else:
-			ch.enter_storey(old_storey, self, maze3d.rand_pos_2i())
+			var p := Maze3D.xz_Vector3iToVector2i(maze3d.calc_grid.rand_posi())
+			ch.enter_storey(old_storey, self, p)
 
 	$MiniMap.add_chars(char_list, playernum)
 	$MiniMap.update_size()
@@ -153,7 +155,7 @@ func add_donut_capsule(n :int) -> void:
 		else:
 			pobj = preload("res://places_things/donut.tscn").instantiate().init(크기기준*0.07, 크기기준*0.15,co)
 		pobj.position = maze3d.mazepos2storeypos(p, -maze3d.StoryH*0.3)
-		add_child(pobj)
+		$PlacedThings.add_child(pobj)
 		놓인것들.set_at(p,pobj)
 
 func add_tree(p :Vector2i) ->void:
@@ -168,8 +170,8 @@ func add_tree(p :Vector2i) ->void:
 		).init_bartree_with_color(random_color(), random_color(),bar_count
 		).init_bartree_transform( Vector3(tree_width, tree_height, bar_width), 0)
 	t.position = maze3d.mazepos2storeypos(p, -maze3d.StoryH*0.4)
-	t.rotate_x(PI/2)
-	add_child(t)
+	#t.rotate_x(PI/2)
+	$PlacedThings.add_child(t)
 	놓인것들.set_at(p,t)
 	tree_list.append(t)
 
@@ -183,8 +185,10 @@ func add_mesh_trails(mesh_type_list) ->void:
 	for mt in mesh_type_list:
 		if randf() > storey_setting.MakeMeshTrailRate:
 			continue
-		var pos2d := maze3d.rand_pos_2i()
-		var pos := maze3d.mazepos2storeypos(pos2d, maze3d.StoryH/2)
+		var pos3i := maze3d.calc_grid.rand_posi()
+		var pos := maze3d.calc_grid.posi_to_lanepos(pos3i)
+		#var pos2d := maze3d.rand_pos_2i()
+		#var pos := maze3d.mazepos2storeypos(pos2d, maze3d.StoryH/2)
 		var tc := randi_range(20,50)
 		var bt :MeshTrail = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
 			).set_ColorChange_MeshGradient().init_with_color_mesh(mesh, tc, true, pos).set_speed(1,4)
@@ -202,8 +206,8 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		var b := make_plane_from_subviewport(line2d_subviewport)
 		$WallDeco.add_child(b)
 		b.position = maze3d.deco_pos_by_dir(x,y,dir)
-		b.rotate_x(PI/2)
-		b.rotate_z(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
+		#b.rotate_x(PI/2)
+		b.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
 		return
 
 	if randf() < storey_setting.MakeClockCalWallRate:
@@ -218,8 +222,8 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		else :
 			n = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
 			n.init(기준크기/2, depth, 기준크기/16, 9.0, false)
-		n.rotate_x(PI/2)
-		n.rotate_z(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
+		#n.rotate_x(PI/2)
+		n.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
 		n.position = maze3d.deco_pos_by_dir(x,y,dir)
 		$WallDeco.add_child(n)
 

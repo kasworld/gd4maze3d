@@ -9,6 +9,16 @@ func _init(list :Array, shuffle_flag_a :bool = true) -> void:
 	iter_data = list.duplicate()
 	shuffle()
 
+func _iter_init(_iter: Array) -> bool:
+	return not iter_data.is_empty()
+
+func _iter_get(_iter: Variant) -> Variant:
+	return get_current()
+
+func _iter_next(_iter: Array) -> bool:
+	next()
+	return not is_new_start()
+
 func get_data(index :int) -> Variant:
 	return iter_data[index % iter_data.size()]
 

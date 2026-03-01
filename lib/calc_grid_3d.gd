@@ -4,10 +4,13 @@ var boundary :AABB
 var grid_size :Vector3i
 var unit_size :Vector3
 
-static func Vector2iToVector3i(vt2i :Vector2i, z :int) -> Vector3i:
+func _to_string() -> String:
+	return "boundary %s gridsize %s unitsize %s" % [boundary,grid_size,unit_size]
+
+static func xy_Vector2iToVector3i(vt2i :Vector2i, z :int) -> Vector3i:
 	return Vector3i(vt2i.x, vt2i.y, z)
 
-static func Vector3iToVector2i(vt3i :Vector3i) -> Vector2i:
+static func xy_Vector3iToVector2i(vt3i :Vector3i) -> Vector2i:
 	return Vector2i(vt3i.x, vt3i.y)
 
 static func SizeToAABB(size :Vector3) -> AABB:
@@ -54,3 +57,10 @@ func get_n_th_lanepos(n :int) -> Vector3:
 
 func get_n_th_linepos(n :int) -> Vector3:
 	return posi_to_linepos(get_n_th_posi(n))
+
+func rand_posi() -> Vector3i:
+	return Vector3i(
+		randi_range(0,grid_size.x-1),
+		randi_range(0,grid_size.y-1),
+		randi_range(0,grid_size.z-1),
+		)

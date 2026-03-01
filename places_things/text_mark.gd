@@ -26,4 +26,4 @@ func get_text() -> String:
 var auto_rotate :bool = true
 func _process(delta: float) -> void:
 	if auto_rotate:
-		rotate_z(delta)
+		rotate_y(delta)

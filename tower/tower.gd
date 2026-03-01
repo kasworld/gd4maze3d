@@ -106,7 +106,7 @@ func find_storey_by_num(num :int) -> Storey:
 			return storey_list[i]
 	return null
 
-func calc_storey_base_z_pos(storey_index :int) -> float:
+func calc_storey_base_y_pos(storey_index :int) -> float:
 	var rtn :float = storey_list[0].maze3d.StoryH/2
 	if gap_ani_dir_open:
 		rtn += StoreyGap * storey_index
@@ -118,14 +118,14 @@ func start_storey_gap_animation() -> void:
 	gap_ani_dir_open = not gap_ani_dir_open
 	for i in storey_list.size():
 		var st := storey_list[i]
-		var new_z = calc_storey_base_z_pos(i)
-		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Z, st.position.z, new_z, StoreyAnimationDuration)
+		var new_y = calc_storey_base_y_pos(i)
+		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
 func set_all_storey_position() -> void:
 	for i in storey_list.size():
 		var st := storey_list[i]
-		var new_z := calc_storey_base_z_pos(i)
-		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Z, st.position.z, new_z, StoreyAnimationDuration)
+		var new_y := calc_storey_base_y_pos(i)
+		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
 func add_new_storey(stnum :int) -> void:
 	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting)
@@ -133,7 +133,7 @@ func add_new_storey(stnum :int) -> void:
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)
 	add_child(st)
-	st.position.z = calc_storey_base_z_pos(storey_list.size()-1)
+	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)
 	set_all_storey_position()
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), StoreyAnimationDuration)

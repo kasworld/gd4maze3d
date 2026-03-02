@@ -8,24 +8,6 @@ var tower_animation := SimpleAnimation.new()
 func _process(_delta: float) -> void:
 	tower_animation.handle_animation()
 
-func start_rotate_animation(nd :Node3D, subfield :int, ani_dur :float) -> void:
-	var diff :float = [PI/2,-PI/2].pick_random()
-	tower_animation.start_rotation_subfield("ani_rot", nd, subfield , nd.rotation[subfield], nd.rotation[subfield] + diff, ani_dur)
-
-func start_reset_rotate_animation(nd :Node3D, ani_dur :float) -> void:
-	tower_animation.start_rotation("ani_rot", nd, nd.rotation, Vector3.ZERO, ani_dur)
-
-func start_shift_out_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
-	var diff := (Storey.GridSize*Storey.CellSize.x).length() /2
-	tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, ani_dur)
-
-func start_shift_in_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
-	tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, ani_dur )
-
-func start_reset_position_animation(st :Node3D, ani_dur :float) -> void:
-	start_shift_in_animation(st, Vector3.Axis.AXIS_X, ani_dur)
-	start_shift_in_animation(st, Vector3.Axis.AXIS_Y, ani_dur)
-
 func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
 	if tower_animation.is_empty():
 		if randi_range(0,5) == 0:
@@ -35,27 +17,38 @@ func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
 
 func start_reset_all_animation() -> void:
 	shift_count = 0
-	start_reset_rotate_animation(self, AnimationDuration)
+	tower_animation.start_rotation("ani_rot", self, rotation, Vector3.ZERO, AnimationDuration)
 	for st in storey_list:
-		start_reset_rotate_animation(st, AnimationDuration)
-		start_reset_position_animation(st, AnimationDuration)
+		tower_animation.start_rotation("ani_rot", st, st.rotation, Vector3.ZERO, AnimationDuration)
+		var subfield := Vector3.Axis.AXIS_X
+		tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
+		subfield = Vector3.Axis.AXIS_Z
+		tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
 
 var shift_count := 0
 func start_all_animation() -> void:
 	shift_count += 1
-	start_rotate_animation(self, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y, Vector3.Axis.AXIS_Z].pick_random(), AnimationDuration)
+	var diff :float = [PI/2,-PI/2].pick_random()
+	var subfield :int = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y, Vector3.Axis.AXIS_Z].pick_random()
+	tower_animation.start_rotation_subfield("ani_rot", self, subfield , rotation[subfield], rotation[subfield] + diff, AnimationDuration)
 	for st in storey_list:
-		start_rotate_animation(st, Vector3.Axis.AXIS_Z, AnimationDuration)
+		diff = [PI/2,-PI/2].pick_random()
+		subfield = Vector3.Axis.AXIS_Y
+		tower_animation.start_rotation_subfield("ani_rot", st, subfield, st.rotation[subfield], st.rotation[subfield] + diff, AnimationDuration)
 		if shift_count % 2 == 0 :
 			if not is_zero_approx(st.position.x):
-				start_shift_in_animation(st, Vector3.Axis.AXIS_X, AnimationDuration)
+				subfield = Vector3.Axis.AXIS_X
+				tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
 			if not is_zero_approx(st.position.y):
-				start_shift_in_animation(st, Vector3.Axis.AXIS_Y, AnimationDuration)
+				subfield = Vector3.Axis.AXIS_Z
+				tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
 		else:
-			start_shift_out_animation(st, [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y].pick_random(), AnimationDuration)
+			diff = (Storey.GridSize*Storey.CellSize.x).length() /2
+			subfield = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random()
+			tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, AnimationDuration)
 
 func init_tower_animaion() -> void:
-	return
+	#return
 	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_all_animation()
 

@@ -11,7 +11,8 @@ var maze_cells :Maze
 
 var main_wall_mat :StandardMaterial3D
 var sub_wall_mat :StandardMaterial3D
-var pillar_mat :StandardMaterial3D
+var pillar_box_mat :StandardMaterial3D
+var pillar_capsule_mat :StandardMaterial3D
 
 func _to_string() -> String:
 	return "Maze3D[calc_grid:%s wall thick:%.1f]" % [
@@ -57,8 +58,10 @@ func storeypos2mazepos(pos :Vector3) -> Vector2i:
 func init_with_mat(makedecofn :Callable, matmain :StandardMaterial3D, matsub :StandardMaterial3D) -> Maze3D:
 	sub_wall_mat = matsub
 	main_wall_mat = matmain
-	pillar_mat = main_wall_mat.duplicate()
-	pillar_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
+	pillar_box_mat = main_wall_mat.duplicate()
+	pillar_box_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
+	pillar_capsule_mat = main_wall_mat.duplicate()
+	pillar_capsule_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 	make_wall_by_maze()
 	make_box_pillas()
 	make_capsule_pillas()
@@ -66,14 +69,16 @@ func init_with_mat(makedecofn :Callable, matmain :StandardMaterial3D, matsub :St
 	init_floor_ceiling()
 	return self
 
-func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillar :Color) -> Maze3D:
+func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillarbox :Color, copillarcapsule :Color) -> Maze3D:
 	sub_wall_mat = StandardMaterial3D.new()
 	sub_wall_mat.albedo_color = Color( cosub, 0.5)
 	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
 	main_wall_mat = StandardMaterial3D.new()
 	main_wall_mat.albedo_color = comain
-	pillar_mat = StandardMaterial3D.new()
-	pillar_mat.albedo_color = copillar
+	pillar_box_mat = StandardMaterial3D.new()
+	pillar_box_mat.albedo_color = copillarbox
+	pillar_capsule_mat = StandardMaterial3D.new()
+	pillar_capsule_mat.albedo_color = copillarcapsule
 	make_wall_by_maze()
 	make_box_pillas()
 	make_capsule_pillas()
@@ -96,7 +101,7 @@ func make_box_pillas() -> void:
 			pos_list.append(
 				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
 	var mesh := BoxMesh.new()
-	mesh.material = pillar_mat
+	mesh.material = pillar_box_mat
 	mesh.size = PreCalced.PillarSize
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
 		).init_with_mesh(mesh, pos_list.size())
@@ -110,7 +115,7 @@ func make_capsule_pillas() -> void:
 			pos_list.append(
 				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
 	var mesh := CapsuleMesh.new()
-	mesh.material = pillar_mat
+	mesh.material = pillar_capsule_mat
 	mesh.radius = WallThick/2
 	mesh.height = calc_grid.unit_size.y
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(

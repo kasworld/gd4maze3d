@@ -64,7 +64,7 @@ func init(num :int, ss :StoreySetting) -> Storey:
 			TexMat.make_subwall_mat() )
 	else:
 		maze3d.init_with_color(add_wall_deco_at,
-			random_color(), random_color(), random_color(),
+			random_color(), random_color(), random_color(), random_color(),
 		)
 	storey_num = num
 

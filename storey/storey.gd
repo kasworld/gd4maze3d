@@ -100,7 +100,7 @@ func init(num :int, ss :StoreySetting) -> Storey:
 	add_mesh_trails(storey_setting.MeshTrailTypeList)
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2)
+	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
 	$MiniMap.init(self)
 
 	#var shiftsize := maze3d.calc_grid.boundary.position

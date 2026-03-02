@@ -9,9 +9,9 @@ var speed_max :float
 var maze3d :Maze3D
 func init(co :Color, mz :Maze3D) -> MazeBall:
 	maze3d = mz
-	speed_min = maze3d.LaneW
+	speed_min = maze3d.calc_grid.unit_size.x
 	speed_max = speed_min * 2
-	radius = maze3d.LaneW / 10
+	radius = maze3d.calc_grid.unit_size.x / 10
 	mesh = BoxMesh.new()
 	mesh.size = Vector3(radius*2,radius*2,radius/2)
 	mesh.material = MultiMeshShape.make_color_material()
@@ -20,7 +20,7 @@ func init(co :Color, mz :Maze3D) -> MazeBall:
 	mesh.material.clearcoat_enabled = true
 	mesh.material.refraction_enabled = true
 	mesh.material.rim_enabled = true
-	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * maze3d.LaneW
+	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * maze3d.calc_grid.unit_size.x
 	rot_vel = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() / PI /2
 	var pos3i := maze3d.calc_grid.rand_posi()
 	position = maze3d.calc_grid.posi_to_lanepos(pos3i)

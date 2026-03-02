@@ -33,9 +33,9 @@ func init(st :Storey) -> MiniMap:
 	#minimap_mode = viewmode
 	storey = st
 	walls_known = []
-	walls_known.resize(storey.maze3d.MazeSize.y*2+1)
+	walls_known.resize(storey.maze3d.PreCalced.Grid2D.y*2+1)
 	for cl in walls_known:
-		cl.resize(storey.maze3d.MazeSize.x*2+1)
+		cl.resize(storey.maze3d.PreCalced.Grid2D.x*2+1)
 	goal = new_label(Color.RED, "Goal", 8)
 	add_child(goal)
 	start = new_label(Color.YELLOW, "Start", 8)
@@ -74,7 +74,7 @@ func apply_minimap_mode() -> void:
 
 func update_size() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
-	map_scale = min( vp_size.x / storey.maze3d.MazeSize.x , vp_size.y / storey.maze3d.MazeSize.y )
+	map_scale = min( vp_size.x / storey.maze3d.PreCalced.Grid2D.x , vp_size.y / storey.maze3d.PreCalced.Grid2D.y )
 	WallThick = map_scale*0.1
 	if WallThick < 1 :
 		WallThick = 1
@@ -140,7 +140,7 @@ func pos2mapscale(pos :Vector2i) -> Vector2:
 # make wallline by maze
 func make_walllines_all() -> void:
 	walllines_all = []
-	var MazeSize := storey.maze3d.MazeSize
+	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if not storey.get_maze_cells().is_open_dir_at(x,y,EnumDir.Flag.North):
@@ -159,7 +159,7 @@ func make_walllines_all() -> void:
 # make wallline by walls_known
 func make_walllines_known() -> void:
 	walllines_known = []
-	var MazeSize := storey.maze3d.MazeSize
+	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
 	for y in MazeSize.y:
 		for x in MazeSize.x :
 			if is_known_wall_at(x,y,EnumDir.Dir.North):
@@ -208,9 +208,9 @@ func add_wall_at_to_walllines(x:int,y :int, dir :EnumDir.Dir,wl :PackedVector2Ar
 			wl.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
 
 func get_width() -> float:
-	return storey.maze3d.MazeSize.x * map_scale
+	return storey.maze3d.PreCalced.Grid2D.x * map_scale
 func get_height() -> float:
-	return storey.maze3d.MazeSize.y * map_scale
+	return storey.maze3d.PreCalced.Grid2D.y * map_scale
 
 func _draw() -> void:
 	match minimap_mode:

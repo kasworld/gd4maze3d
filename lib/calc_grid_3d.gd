@@ -13,6 +13,13 @@ static func xy_Vector2iToVector3i(vt2i :Vector2i, z :int) -> Vector3i:
 static func xy_Vector3iToVector2i(vt3i :Vector3i) -> Vector2i:
 	return Vector2i(vt3i.x, vt3i.y)
 
+static func xz_Vector2iToVector3i(vt2i :Vector2i, y :int) -> Vector3i:
+	return Vector3i(vt2i.x, y, vt2i.y)
+
+static func xz_Vector3iToVector2i(vt3i :Vector3i) -> Vector2i:
+	return Vector2i(vt3i.x, vt3i.z)
+
+
 static func SizeToAABB(size :Vector3) -> AABB:
 	return AABB(-size/2, size)
 

@@ -15,7 +15,7 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 
-	default_storey_setting = StoreySetting.new_default(Storey.maze_size)
+	default_storey_setting = StoreySetting.new_default(Storey.GridSize)
 	var tw :Tower = tower_scene.instantiate().init(
 		0, 3,3,1,default_storey_setting, true,
 		)
@@ -26,7 +26,7 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(PlayerNumber)
 	$MovingCameraLightAround.make_current()
 
-	var orbitr := (Storey.maze_size*Storey.lane_width).length() * 3
+	var orbitr := (Storey.GridSize*Storey.CellSize.x).length() * 3
 	for i in DecoTowerCount:
 		var rd := 2*PI/DecoTowerCount *i
 		var h := randfn(0, DecoTowerCount)
@@ -34,9 +34,9 @@ func _ready() -> void:
 
 	if DecoTowerCount != 0:
 		orbitr *= 2
-	var WorldSize := Vector3(Storey.maze_size.x *Storey.lane_width,Storey.maze_size.y*Storey.lane_width,Storey.maze_height ) * 4
+	var WorldSize := Vector3(Storey.GridSize.x *Storey.CellSize.x, Storey.CellSize.y, Storey.GridSize.y*Storey.CellSize.z ) * 4
 	$DecoOrbit.init(WorldSize, 9)
-	$AxisArrow3D.set_size((Storey.maze_size*Storey.lane_width).length()/2).set_colors()
+	$AxisArrow3D.set_size((Storey.GridSize*Storey.CellSize.x).length()/2).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, orbitr), orbitr*2)
 	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, orbitr), orbitr*2)
@@ -64,7 +64,7 @@ func _process(_delta: float) -> void:
 	update_info()
 
 	var t := Time.get_unix_time_from_system() /2.3
-	var r := (Storey.maze_size*Storey.lane_width).length()
+	var r := (Storey.GridSize*Storey.CellSize.x).length()
 	var h := get_current_tower().calc_height() *2
 	if $MovingCameraLightHober.is_current_camera():
 		$MovingCameraLightHober.move_hober_around_z(t, Vector3.ZERO, r, h )
@@ -88,7 +88,7 @@ func add_crawler(i :int) -> Crawler:
 	$CharacterContainer.add_child(cr)
 	cr.init(
 		[Crawler.Walk.RightFirst,Crawler.Walk.LeftFirst][i%2],
-		i, Storey.lane_width, NamedColors.random_color())
+		i, Storey.CellSize.x, NamedColors.random_color())
 	if cr.crawler_num == PlayerNumber:
 		cr.crawler_goal_reached.connect(crawler_goal_reached)
 	return cr

@@ -4,12 +4,8 @@ class_name Maze3D
 static var darkcolorlist = NamedColors.filter_dark_color_list()
 static var lightcolorlist = NamedColors.filter_light_color_list()
 
-var MazeSize :Vector2i
-var StoryH :float
-var LaneW :float
 var WallThick :float
 var MakeSubWallRate :float
-
 var calc_grid :CalcGrid3D
 var maze_cells :Maze
 
@@ -24,51 +20,37 @@ func _to_string() -> String:
 
 var PreCalced := {}
 
-func init_setting(grid_size :Vector2i, maze_height :float, lane_width :float, wall_thick :float, subwall_rate :float) -> Maze3D:
-	MazeSize = grid_size
-	StoryH = maze_height
-	LaneW = lane_width
+func init_setting( grid_size :Vector2i, cell_size :Vector3, wall_thick :float, subwall_rate :float) -> Maze3D:
 	WallThick = wall_thick
 	MakeSubWallRate = subwall_rate
 
-	var sz := Vector3(lane_width*grid_size.x, maze_height, lane_width*grid_size.y)
-	calc_grid = CalcGrid3D.new(
-		CalcGrid3D.SizeToAABB(sz),
-		Vector3i(grid_size.x, 1, grid_size.y),
-		)
+	var grid3d := CalcGrid3D.xz_Vector2iToVector3i(grid_size,1)
+	var sz := cell_size * (grid3d as Vector3)
+	calc_grid = CalcGrid3D.new(CalcGrid3D.SizeToAABB(sz), grid3d)
 	maze_cells = Maze.new(grid_size)
-	PreCalced.PillarSize = Vector3(wall_thick,maze_height,wall_thick)
-	PreCalced.SizeV2 = grid_size*lane_width
+	PreCalced.Grid2D = grid_size
+	PreCalced.PillarSize = Vector3(wall_thick,cell_size.y,wall_thick)
+	PreCalced.SizeV2 = (grid_size as Vector2) * Vector2(cell_size.x, cell_size.z)
 	PreCalced.SizeV3 = calc_grid.boundary.size
 	PreCalced.SizeWithWallV2 = PreCalced.SizeV2 + Vector2(wall_thick, wall_thick)
-	PreCalced.SizeWithWallV3 = Vector3(PreCalced.SizeWithWallV2.x, maze_height, PreCalced.SizeWithWallV2.y)
-	PreCalced.WallSize_H_Long = Vector3(lane_width, maze_height, wall_thick)
+	PreCalced.SizeWithWallV3 = Vector3(PreCalced.SizeWithWallV2.x, cell_size.y, PreCalced.SizeWithWallV2.y)
+	PreCalced.WallSize_H_Long = Vector3(cell_size.x, cell_size.y, wall_thick)
 	PreCalced.WallSize_H_Short = PreCalced.WallSize_H_Long - Vector3(wall_thick, 0, 0)
-	PreCalced.WallSize_V_Long = swap_xz(PreCalced.WallSize_H_Long)
-	PreCalced.WallSize_V_Short = swap_xz(PreCalced.WallSize_H_Short)
+	PreCalced.WallSize_V_Long = Vector3(wall_thick, cell_size.y, cell_size.z)
+	PreCalced.WallSize_V_Short = PreCalced.WallSize_V_Long - Vector3(0, 0, wall_thick)
 	return self
 
+static func SwapXZ(src :Vector3) -> Vector3:
+	return Vector3(src.z,src.y,src.x)
 
 func mazepos2storeypos( mp :Vector2i, y :float) -> Vector3:
-	var rtn := calc_grid.posi_to_lanepos( xz_Vector2iToVector3i(mp,0) )
+	var rtn := calc_grid.posi_to_lanepos( CalcGrid3D.xz_Vector2iToVector3i(mp,0) )
 	rtn.y = y
 	return rtn
 
 func storeypos2mazepos(pos :Vector3) -> Vector2i:
 	var rtn := calc_grid.lanepos_to_posi(pos)
-	return xz_Vector3iToVector2i(rtn)
-
-static func xz_Vector2iToVector3i(vt2i :Vector2i, y :int) -> Vector3i:
-	return Vector3i(vt2i.x, y, vt2i.y)
-
-static func xz_Vector3iToVector2i(vt3i :Vector3i) -> Vector2i:
-	return Vector2i(vt3i.x, vt3i.z)
-
-static func swap_xz(src :Vector3) -> Vector3:
-	return Vector3(src.z,src.y,src.x)
-
-#func rand_pos_2i() -> Vector2i:
-	#return Vector2i(randi_range(0,MazeSize.x-1),randi_range(0,MazeSize.y-1) )
+	return CalcGrid3D.xz_Vector3iToVector2i(rtn)
 
 # end settings
 
@@ -100,19 +82,19 @@ func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillar
 	return self
 
 func init_floor_ceiling() -> void:
-	var wire_r := WallThick * 0.5
+	var wire_r := WallThick
 	var net_size :Vector2 = PreCalced.SizeWithWallV2 - Vector2(wire_r,wire_r)
-	$Floor.init_wire_net(net_size, MazeSize*2, wire_r, darkcolorlist.pick_random())
-	$Ceiling.init_wire_net(net_size, MazeSize*2, wire_r, lightcolorlist.pick_random())
-	$Floor.position.y -= StoryH/2
-	$Ceiling.position.y += StoryH/2
+	$Floor.init_wire_net(net_size, PreCalced.Grid2D*2, wire_r, darkcolorlist.pick_random())
+	$Ceiling.init_wire_net(net_size, PreCalced.Grid2D*2, wire_r, lightcolorlist.pick_random())
+	$Floor.position.y -= calc_grid.unit_size.y/2
+	$Ceiling.position.y += calc_grid.unit_size.y/2
 
 func make_box_pillas() -> void:
 	var pos_list :Array = []
-	for y in MazeSize.y+1:
-		for x in MazeSize.x+1:
+	for y in PreCalced.Grid2D.y+1:
+		for x in PreCalced.Grid2D.x+1:
 			pos_list.append(
-				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,StoryH/2.0,0) )
+				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
 	var mesh := BoxMesh.new()
 	mesh.material = pillar_mat
 	mesh.size = PreCalced.PillarSize
@@ -123,14 +105,14 @@ func make_box_pillas() -> void:
 
 func make_capsule_pillas() -> void:
 	var pos_list :Array = []
-	for y in MazeSize.y+1:
-		for x in MazeSize.x+1:
+	for y in PreCalced.Grid2D.y+1:
+		for x in PreCalced.Grid2D.x+1:
 			pos_list.append(
-				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,StoryH/2.0,0) )
+				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
 	var mesh := CapsuleMesh.new()
 	mesh.material = pillar_mat
 	mesh.radius = WallThick/2
-	mesh.height = StoryH
+	mesh.height = calc_grid.unit_size.y
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
 		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape_capsule(rtn, pos_list)
@@ -166,20 +148,20 @@ var pos_list_H_main :Array
 var pos_list_V_sub :Array
 var pos_list_H_sub :Array
 func make_wall_by_maze() -> void:
-	for y in MazeSize.y:
-		for x in MazeSize.x:
+	for y in PreCalced.Grid2D.y:
+		for x in PreCalced.Grid2D.x:
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
 				add_wall_at( x , y , EnumDir.Flag.North)
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
 				add_wall_at( x , y , EnumDir.Flag.West)
 
-	for x in MazeSize.x :
-		if not maze_cells.is_open_dir_at(x,MazeSize.y-1,EnumDir.Flag.South):
-			add_wall_at( x , MazeSize.y , EnumDir.Flag.South)
+	for x in PreCalced.Grid2D.x :
+		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,EnumDir.Flag.South):
+			add_wall_at( x , PreCalced.Grid2D.y , EnumDir.Flag.South)
 
-	for y in MazeSize.y:
-		if not maze_cells.is_open_dir_at(MazeSize.x-1,y,EnumDir.Flag.East):
-			add_wall_at( MazeSize.x , y , EnumDir.Flag.East)
+	for y in PreCalced.Grid2D.y:
+		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,EnumDir.Flag.East):
+			add_wall_at( PreCalced.Grid2D.x , y , EnumDir.Flag.East)
 
 	wall_multi_inst_V_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_V_Short, pos_list_V_main)
 	wall_multi_inst_H_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_H_Short, pos_list_H_main)
@@ -187,10 +169,10 @@ func make_wall_by_maze() -> void:
 	wall_multi_inst_H_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_H_Short, pos_list_H_sub)
 
 func calc_pos_face_V(x :int, y :int) -> Vector3:
-	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, StoryH/2, LaneW/2)
+	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, calc_grid.unit_size.y/2, calc_grid.unit_size.z/2)
 
 func calc_pos_face_H(x :int, y :int) -> Vector3:
-	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(LaneW/2, StoryH/2, 0)
+	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(calc_grid.unit_size.x/2, calc_grid.unit_size.y/2, 0)
 
 func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 	match dir:
@@ -209,20 +191,20 @@ func make_wall_deco_by_maze(makedeco :Callable) -> void:
 	if not makedeco.is_valid():
 		return
 
-	for y in MazeSize.y:
-		for x in MazeSize.x:
+	for y in PreCalced.Grid2D.y:
+		for x in PreCalced.Grid2D.x:
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
 				makedeco.call(x, y, EnumDir.Flag.North)
 			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
 				makedeco.call(x, y, EnumDir.Flag.West)
 
-	for x in MazeSize.x :
-		if not maze_cells.is_open_dir_at(x,MazeSize.y-1,EnumDir.Flag.South):
-			makedeco.call(x, MazeSize.y, EnumDir.Flag.South)
+	for x in PreCalced.Grid2D.x :
+		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,EnumDir.Flag.South):
+			makedeco.call(x, PreCalced.Grid2D.y, EnumDir.Flag.South)
 
-	for y in MazeSize.y:
-		if not maze_cells.is_open_dir_at(MazeSize.x-1,y,EnumDir.Flag.East):
-			makedeco.call(MazeSize.x, y, EnumDir.Flag.East)
+	for y in PreCalced.Grid2D.y:
+		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,EnumDir.Flag.East):
+			makedeco.call(PreCalced.Grid2D.x, y, EnumDir.Flag.East)
 
 func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
 	match dir:

@@ -16,7 +16,7 @@ func start_reset_rotate_animation(nd :Node3D, ani_dur :float) -> void:
 	tower_animation.start_rotation("ani_rot", nd, nd.rotation, Vector3.ZERO, ani_dur)
 
 func start_shift_out_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
-	var diff := (Storey.maze_size*Storey.lane_width).length() /2
+	var diff := (Storey.GridSize*Storey.CellSize.x).length() /2
 	tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, ani_dur)
 
 func start_shift_in_animation(st :Node3D, subfield :int, ani_dur :float) -> void:
@@ -73,7 +73,7 @@ var view_floor_ceiling := Maze3D.FloorCeiling.Both
 var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ShortWithPillarBox
 
 func calc_height() -> float:
-	return (VisibleStoreyDown+1+VisibleStoreyUp) *( Storey.maze_height + StoreyGap )
+	return (VisibleStoreyDown+1+VisibleStoreyUp) *( Storey.CellSize.y + StoreyGap )
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
@@ -107,11 +107,11 @@ func find_storey_by_num(num :int) -> Storey:
 	return null
 
 func calc_storey_base_y_pos(storey_index :int) -> float:
-	var rtn :float = storey_list[0].maze3d.StoryH/2
+	var rtn :float = storey_list[0].maze3d.calc_grid.unit_size.y/2
 	if gap_ani_dir_open:
 		rtn += StoreyGap * storey_index
 	for i in storey_index:
-		rtn += storey_list[i].maze3d.StoryH/2 + storey_list[i+1].maze3d.StoryH/2
+		rtn += storey_list[i].maze3d.calc_grid.unit_size.y/2 + storey_list[i+1].maze3d.calc_grid.unit_size.y/2
 	return rtn
 
 func start_storey_gap_animation() -> void:

@@ -84,12 +84,12 @@ func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillar
 	make_wall_deco_by_maze(makedecofn)
 	return self
 
-func init_floor_ceiling(grid_count :Vector2i, wire_width :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
+func init_floor_ceiling(grid_count :Vector2i, wire_width :float, wire_height :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
 	var net_size :Vector2 = PreCalced.SizeWithWallV2 - Vector2(wire_width,wire_width)
-	$Floor.init_wire_net(net_size, grid_count, wire_width, co_floor)
-	$Ceiling.init_wire_net(net_size, grid_count, wire_width, co_ceiling)
-	$Floor.position.y -= calc_grid.unit_size.y/2+wire_width/2
-	$Ceiling.position.y += calc_grid.unit_size.y/2+wire_width/2
+	$Floor.init_wire_net2(net_size, grid_count, wire_width,wire_height, co_floor)
+	$Ceiling.init_wire_net2(net_size, grid_count, wire_width,wire_height, co_ceiling)
+	$Floor.position.y -= calc_grid.unit_size.y/2+wire_height/2
+	$Ceiling.position.y += calc_grid.unit_size.y/2+wire_height/2
 	return self
 
 func make_box_pillas() -> void:

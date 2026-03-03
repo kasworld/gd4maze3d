@@ -1,8 +1,10 @@
 class_name Maze
 
 # opened dir NOT wall
-var _cells : Array[PackedInt32Array]
-var _maze_size : Vector2i
+var _cells : PackedByteArray
+#var _maze_size : Vector2i
+var _w :int
+var _h :int
 
 func _select_visited(visted_pos :Array) -> int:
 	if randi_range(0,1)==0:
@@ -11,15 +13,15 @@ func _select_visited(visted_pos :Array) -> int:
 		return randi_range(0,visted_pos.size()-1)
 
 func _open_dir_at(x:int,y:int, d :int) -> void:
-	_cells[y][x] |= d
+	_cells[y*_w+x] |= d
 
 func _init(msize :Vector2i) -> void:
-	_maze_size = msize
-	_cells.resize(_maze_size.y)
-	for cl in _cells:
-		cl.resize(_maze_size.x)
+	#_maze_size = msize
+	_w = msize.x
+	_h = msize.y
+	_cells.resize(_h*_w)
 	var visted_pos := []
-	var pos := Vector2i( randi_range(0,_maze_size.x-1),randi_range(0,_maze_size.y-1),)
+	var pos := Vector2i( randi_range(0,_w-1),randi_range(0,_h-1),)
 	visted_pos.append(pos)
 	while visted_pos.size() > 0:
 		var posidx := _select_visited(visted_pos)
@@ -39,13 +41,13 @@ func _init(msize :Vector2i) -> void:
 			visted_pos.remove_at(posidx)
 
 func is_in(x:int,y:int) -> bool:
-	return x >=0 && y>=0 && x < _maze_size.x && y < _maze_size.y
+	return x >=0 && y>=0 && x < _w && y < _h
 
 func get_cell(x :int, y:int) -> int:
-	return _cells[y][x]
+	return _cells[y*_w+x]
 
 func is_open_dir_at(x :int, y :int, dir :EnumDir.Flag) -> bool:
-	return (_cells[y][x] & dir) != 0
+	return (_cells[y*_w+x] & dir) != 0
 
 func get_open_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
 	var rtn :Array[EnumDir.Flag] = []
@@ -55,7 +57,17 @@ func get_open_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
 	return rtn
 
 func is_wall_dir_at(x :int, y :int, dir :EnumDir.Flag) -> bool:
-	return (_cells[y][x] & dir) == 0
+	return (_cells[y*_w+x] & dir) == 0
+
+## enumdir order : North West South East
+func get_wall_alldir_at(x :int, y :int) -> Array[bool]:
+	var v := _cells[y*_w+x]
+	return [
+		(v & EnumDir.Flag.North) == 0,
+		(v & EnumDir.Flag.West) == 0,
+		(v & EnumDir.Flag.South) == 0,
+		(v & EnumDir.Flag.East) == 0,
+	]
 
 func get_wall_dir_at(x :int, y :int) -> Array[EnumDir.Flag]:
 	var rtn :Array[EnumDir.Flag] = []
@@ -74,8 +86,8 @@ func open_dir_str(x :int , y :int) -> String:
 # from_pos -> [ {"pos" : to_pos, "dir" : dir} ]
 func make_move_graph() -> Dictionary:
 	var rtn := {}
-	for y in _cells.size():
-		for x in _cells[y].size():
+	for y in _h:
+		for x in _w:
 			var val := []
 			var srcpos := Vector2i(x,y)
 			for fdir in get_open_dir_at(x,y):

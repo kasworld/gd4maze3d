@@ -56,7 +56,8 @@ func init(num :int, ss :StoreySetting) -> Storey:
 	storey_setting = ss
 
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
-		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y))
+		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
+		).init_floor_ceiling(cell_size.y *0.02)
 	add_child(maze3d)
 	if num % 2 ==0 :
 		maze3d.init_with_mat(add_wall_deco_at,

@@ -66,7 +66,6 @@ func init_with_mat(makedecofn :Callable, matmain :StandardMaterial3D, matsub :St
 	make_box_pillas()
 	make_capsule_pillas()
 	make_wall_deco_by_maze(makedecofn)
-	init_floor_ceiling()
 	return self
 
 func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillarbox :Color, copillarcapsule :Color) -> Maze3D:
@@ -83,16 +82,15 @@ func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillar
 	make_box_pillas()
 	make_capsule_pillas()
 	make_wall_deco_by_maze(makedecofn)
-	init_floor_ceiling()
 	return self
 
-func init_floor_ceiling() -> void:
-	var wire_r := WallThick
-	var net_size :Vector2 = PreCalced.SizeWithWallV2 - Vector2(wire_r,wire_r)
-	$Floor.init_wire_net(net_size, PreCalced.Grid2D*2, wire_r, darkcolorlist.pick_random())
-	$Ceiling.init_wire_net(net_size, PreCalced.Grid2D*2, wire_r, lightcolorlist.pick_random())
-	$Floor.position.y -= calc_grid.unit_size.y/2
-	$Ceiling.position.y += calc_grid.unit_size.y/2
+func init_floor_ceiling(wire_radius :float) -> Maze3D:
+	var net_size :Vector2 = PreCalced.SizeWithWallV2 - Vector2(wire_radius,wire_radius)
+	$Floor.init_wire_net(net_size, PreCalced.Grid2D*2, wire_radius, darkcolorlist.pick_random())
+	$Ceiling.init_wire_net(net_size, PreCalced.Grid2D*2, wire_radius, lightcolorlist.pick_random())
+	$Floor.position.y -= calc_grid.unit_size.y/2+wire_radius/2
+	$Ceiling.position.y += calc_grid.unit_size.y/2+wire_radius/2
+	return self
 
 func make_box_pillas() -> void:
 	var pos_list :Array = []
@@ -168,10 +166,10 @@ func make_wall_by_maze() -> void:
 		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,EnumDir.Flag.East):
 			add_wall_at( PreCalced.Grid2D.x , y , EnumDir.Flag.East)
 
-	wall_multi_inst_V_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_V_Short, pos_list_V_main)
-	wall_multi_inst_H_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_H_Short, pos_list_H_main)
-	wall_multi_inst_V_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_V_Short, pos_list_V_sub)
-	wall_multi_inst_H_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_H_Short, pos_list_H_sub)
+	wall_multi_inst_V_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
+	wall_multi_inst_H_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)
+	wall_multi_inst_V_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_sub)
+	wall_multi_inst_H_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_sub)
 
 func calc_pos_face_V(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, calc_grid.unit_size.y/2, calc_grid.unit_size.z/2)
@@ -314,12 +312,13 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var posi := calc_grid.lanepos_to_posi(oldpos)
+	var walls := maze_cells.get_wall_alldir_at(posi.x,posi.z)
 	return Bounce.v3f_wall(
 		pos,
 		calc_grid.cell_aabb_by_posi(posi),
 		[
-			[maze_cells.is_wall_dir_at(posi.x,posi.z, EnumDir.Flag.West), maze_cells.is_wall_dir_at(posi.x,posi.z, EnumDir.Flag.East)],
+			[walls[ EnumDir.Dir.West] , walls[ EnumDir.Dir.East] ],
 			[true,true],
-			[maze_cells.is_wall_dir_at(posi.x,posi.z, EnumDir.Flag.North), maze_cells.is_wall_dir_at(posi.x,posi.z, EnumDir.Flag.South)],
+			[walls[ EnumDir.Dir.North] , walls[ EnumDir.Dir.South] ],
 		],
 		radius)

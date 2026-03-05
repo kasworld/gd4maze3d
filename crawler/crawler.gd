@@ -91,6 +91,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	#$Label3D.position.x = LaneW*0.05
 	#$MovingCameraLight.position.z = LaneW*0.3
 	crawler_animation.animation_ended.connect(animation_ended)
+	$MovingCameraLight.get_light().light_energy = 1
 	return self
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:

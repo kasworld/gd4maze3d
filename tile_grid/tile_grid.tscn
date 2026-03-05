@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bm3ltqg5ktv8p"]
+
+[ext_resource type="Script" uid="uid://w5dmc8xtiwml" path="res://tile_grid/tile_grid.gd" id="1_slx1t"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_slx1t"]
+resource_local_to_scene = true
+
+[node name="TileGrid" type="MultiMeshInstance3D" unique_id=918218758]
+multimesh = SubResource("MultiMesh_slx1t")
+script = ExtResource("1_slx1t")
+metadata/_custom_type_script = "uid://brthvnlbu6c53"

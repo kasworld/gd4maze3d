@@ -4,14 +4,12 @@ class_name MazeBall
 var velocity :Vector3
 var radius :float
 var rot_vel :Vector3
-var speed_min :float
-var speed_max :float
+var speed :float
 var maze3d :Maze3D
-func init(co :Color, mz :Maze3D) -> MazeBall:
+func init(mz :Maze3D, r :float,spd :float, co :Color) -> MazeBall:
 	maze3d = mz
-	speed_min = maze3d.calc_grid.unit_size.x
-	speed_max = speed_min * 2
-	radius = maze3d.calc_grid.unit_size.x / 10
+	radius = r
+	speed = spd
 	mesh = BoxMesh.new()
 	mesh.size = Vector3(radius*2,radius*2,radius/2)
 	mesh.material = MultiMeshShape.make_color_material()
@@ -20,7 +18,7 @@ func init(co :Color, mz :Maze3D) -> MazeBall:
 	mesh.material.clearcoat_enabled = true
 	mesh.material.refraction_enabled = true
 	mesh.material.rim_enabled = true
-	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * maze3d.calc_grid.unit_size.x
+	velocity = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() * speed
 	rot_vel = Vector3(randf()-0.5,randf()-0.5,randf()-0.5).normalized() / PI /2
 	var pos3i := maze3d.calc_grid.rand_posi()
 	position = maze3d.calc_grid.posi_to_lanepos(pos3i)
@@ -34,6 +32,6 @@ func bounce(delta :float) -> void:
 		# change vel on bounce
 		if bn.bounced[i] != 0 :
 			velocity[i] = -bn.bounced[i] * abs(velocity[i]) * (randf() +0.5)
-	velocity = velocity.normalized() * speed_max
+	velocity = velocity.normalized() * speed
 	position = bn.pos
 	rotation += rot_vel

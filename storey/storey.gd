@@ -110,8 +110,17 @@ func init(num :int, ss :StoreySetting) -> Storey:
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
 	$MiniMap.init(self)
 
-	add_bouncing(10)
+	add_bouncing(10, 크기기준 /20)
 	return self
+
+var bouncing_list :Array
+func add_bouncing(n :int, radius :float) -> void:
+	bouncing_list = []
+	for i in n:
+		var mb :MazeBall = preload("res://maze_3d/maze_ball/maze_ball.tscn").instantiate(
+			).init(maze3d, radius, radius*10, NamedColors.random_color())
+		$BouncingContainer.add_child(mb)
+		bouncing_list.append(mb)
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
 	for ch in char_list:
@@ -197,14 +206,6 @@ func add_mesh_trails(mesh_type_list) ->void:
 		mesh_trail_list.append(bt)
 
 
-var bouncing_list :Array
-func add_bouncing(n :int) -> void:
-	bouncing_list = []
-	for i in n:
-		var mb :MazeBall = preload("res://maze_3d/maze_ball/maze_ball.tscn").instantiate(
-			).init(NamedColors.random_color(), maze3d)
-		$BouncingContainer.add_child(mb)
-		bouncing_list.append(mb)
 
 
 var line2d_subviewport :SubViewport

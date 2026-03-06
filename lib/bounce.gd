@@ -1,13 +1,13 @@
 class_name Bounce
 
-# wall [axis:3][2]bool : [ [-x,+x], [-y,+y], [-z,+z] ]
-static func v3f_wall(pos :Vector3, area :AABB, wall :Array, radius :float)->Dictionary:
+# wall [axis:3, -+:2]bool : [ -x,+x, -y,+y, -z,+z ]
+static func v3f_wall(pos :Vector3, area :AABB, wall :Array[bool], radius :float)->Dictionary:
 	var bounced := Vector3i.ZERO
 	for i in 3:
-		if wall[i][0] && pos[i] < area.position[i] + radius :
+		if wall[i*2+0] && pos[i] < area.position[i] + radius :
 			pos[i] = area.position[i] + radius
 			bounced[i] = -1
-		elif wall[i][1] && pos[i] > area.end[i] - radius:
+		elif wall[i*2+1] && pos[i] > area.end[i] - radius:
 			pos[i] = area.end[i] - radius
 			bounced[i] = 1
 	return {

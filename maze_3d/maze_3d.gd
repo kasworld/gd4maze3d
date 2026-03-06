@@ -321,13 +321,13 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var posi := calc_grid.lanepos_to_posi(oldpos)
-	var walls := maze_cells.get_wall_alldir_at(posi.x,posi.z)
+	var v := maze_cells.get_cell(posi.x,posi.z)
 	return Bounce.v3f_wall(
 		pos,
 		calc_grid.cell_aabb_by_posi(posi),
 		[
-			[walls[ EnumDir.Dir.West] , walls[ EnumDir.Dir.East] ],
-			[true,true],
-			[walls[ EnumDir.Dir.North] , walls[ EnumDir.Dir.South] ],
+			(v & EnumDir.Flag.West) == 0 , (v & EnumDir.Flag.East) == 0 ,
+			true, true,
+			(v & EnumDir.Flag.North) == 0 , (v & EnumDir.Flag.South) == 0 ,
 		],
 		radius)

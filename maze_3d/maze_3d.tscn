@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://dcw2hfmbwc2pm" path="res://maze_3d/maze_3d.gd" id="1_0k1os"]
 [ext_resource type="PackedScene" uid="uid://bm3ltqg5ktv8p" path="res://tile_grid/tile_grid.tscn" id="3_7je7j"]
 
-[sub_resource type="MultiMesh" id="MultiMesh_7o0nl"]
+[sub_resource type="MultiMesh" id="MultiMesh_2b0r0"]
 resource_local_to_scene = true
 
-[sub_resource type="MultiMesh" id="MultiMesh_2b0r0"]
+[sub_resource type="MultiMesh" id="MultiMesh_7je7j"]
 resource_local_to_scene = true
 
 [node name="Maze3D" type="Node3D" unique_id=1197400707]
@@ -21,7 +21,7 @@ visible = false
 visible = false
 
 [node name="Floor" parent="." unique_id=918218758 instance=ExtResource("3_7je7j")]
-multimesh = SubResource("MultiMesh_7o0nl")
+multimesh = SubResource("MultiMesh_2b0r0")
 
 [node name="Ceiling" parent="." unique_id=1275222281 instance=ExtResource("3_7je7j")]
-multimesh = SubResource("MultiMesh_2b0r0")
+multimesh = SubResource("MultiMesh_7je7j")

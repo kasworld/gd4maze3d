@@ -48,7 +48,7 @@ func start_all_animation() -> void:
 			tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, AnimationDuration)
 
 func init_tower_animaion() -> void:
-	#return
+	return
 	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_all_animation()
 

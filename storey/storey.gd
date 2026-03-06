@@ -23,6 +23,8 @@ func _process(delta: float) -> void:
 		t.rotate_tree_bar_y(0.1)
 	for mt in mesh_trail_list:
 		mt.move_trail(delta, maze3d.bounce_cell, trailmesh_radius, 4*PI,)
+	for mb in bouncing_list:
+		mb.bounce(delta)
 
 var maze3d :Maze3D
 var storey_setting :StoreySetting
@@ -48,11 +50,12 @@ func _to_string() -> String:
 
 func init(num :int, ss :StoreySetting) -> Storey:
 	var grid_size = GridSize + Vector2i(randi_range(-1,1), randi_range(-1,1) )
-	var cell_size = CellSize * Vector3(
-		pow(2, randf()*2 -1 ),
-		pow(2, randf()*2 -1 ),
-		pow(2, randf()*2 -1 ),
-	)
+	var cell_size = CellSize
+	#var cell_size = CellSize * Vector3(
+		#pow(2, randf()*2 -1 ),
+		#pow(2, randf()*2 -1 ),
+		#pow(2, randf()*2 -1 ),
+	#)
 	storey_setting = ss
 
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
@@ -107,10 +110,7 @@ func init(num :int, ss :StoreySetting) -> Storey:
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
 	$MiniMap.init(self)
 
-	#var shiftsize := maze3d.calc_grid.boundary.position
-	#$Label3D.position = shiftsize
-	#$WallDeco.position = shiftsize
-	#$PlacedThings.position = shiftsize
+	add_bouncing(10)
 	return self
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
@@ -195,6 +195,17 @@ func add_mesh_trails(mesh_type_list) ->void:
 			).set_ColorChange_MeshGradient().init_with_color_mesh(mesh, tc, true, pos).set_speed(1,4)
 		add_child(bt)
 		mesh_trail_list.append(bt)
+
+
+var bouncing_list :Array
+func add_bouncing(n :int) -> void:
+	bouncing_list = []
+	for i in n:
+		var mb :MazeBall = preload("res://maze_3d/maze_ball/maze_ball.tscn").instantiate(
+			).init(NamedColors.random_color(), maze3d)
+		$BouncingContainer.add_child(mb)
+		bouncing_list.append(mb)
+
 
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int

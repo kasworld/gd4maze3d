@@ -46,6 +46,12 @@ func get_maze3d() -> Maze3D:
 func get_maze_cells() -> Maze:
 	return maze3d.maze_cells
 
+func get_char_list() -> Array:
+	return $CharacterContainer.get_children()
+
+func get_mini_map() -> MiniMap:
+	return $MiniMap
+
 func _to_string() -> String:
 	return "Storey[%d DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
 		storey_num, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
@@ -136,11 +142,6 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)
 		old_storey.get_mini_map().visible = false
 
-func get_char_list() -> Array:
-	return $CharacterContainer.get_children()
-
-func get_mini_map() -> MiniMap:
-	return $MiniMap
 
 func 놓인것들줍기(ch :Crawler) -> void:
 	var ft = 놓인것들.get_at(ch.pos_src)

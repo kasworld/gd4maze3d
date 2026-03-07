@@ -15,15 +15,16 @@ func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
 		else:
 			start_all_animation()
 
+func animate_shift_in_storey(st :Storey, axis :int) -> void:
+	tower_animation.start_move_subfield( "ani_shift_in", st, axis, st.position[axis], 0.0, AnimationDuration )
+
 func start_reset_all_animation() -> void:
 	shift_count = 0
 	tower_animation.start_rotation("ani_rot", self, rotation, Vector3.ZERO, AnimationDuration)
 	for st in storey_list:
 		tower_animation.start_rotation("ani_rot", st, st.rotation, Vector3.ZERO, AnimationDuration)
-		var subfield := Vector3.Axis.AXIS_X
-		tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
-		subfield = Vector3.Axis.AXIS_Z
-		tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
+		animate_shift_in_storey(st, Vector3.Axis.AXIS_X)
+		animate_shift_in_storey(st, Vector3.Axis.AXIS_Z)
 
 var shift_count := 0
 func start_all_animation() -> void:
@@ -37,18 +38,15 @@ func start_all_animation() -> void:
 		tower_animation.start_rotation_subfield("ani_rot", st, subfield, st.rotation[subfield], st.rotation[subfield] + diff, AnimationDuration)
 		if shift_count % 2 == 0 :
 			if not is_zero_approx(st.position.x):
-				subfield = Vector3.Axis.AXIS_X
-				tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
+				animate_shift_in_storey(st, Vector3.Axis.AXIS_X)
 			if not is_zero_approx(st.position.y):
-				subfield = Vector3.Axis.AXIS_Z
-				tower_animation.start_move_subfield( "ani_shift_in", st, subfield, st.position[subfield], 0.0, AnimationDuration )
+				animate_shift_in_storey(st, Vector3.Axis.AXIS_Z)
 		else:
 			diff = (Storey.GridSize*Storey.CellSize.x).length() /2
 			subfield = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random()
 			tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, AnimationDuration)
 
 func init_tower_animaion() -> void:
-	return
 	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_all_animation()
 
@@ -73,12 +71,12 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, deco_ania :bool=false) -> Tower:
+func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, deco_ani_a :bool=false) -> Tower:
 	tower_num = num
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap
-	deco_ani = deco_ania
+	deco_ani = deco_ani_a
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]

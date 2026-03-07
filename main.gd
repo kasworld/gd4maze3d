@@ -14,7 +14,7 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 
-	var tw :Tower = tower_scene.instantiate().init(0, 3,3,1, true)
+	var tw :Tower = tower_scene.instantiate().init(0, 3,3, 1.0, false)
 	$TowerContainer.add_child(tw)
 
 	for i in CharacterCount:

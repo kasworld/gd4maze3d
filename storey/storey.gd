@@ -38,7 +38,6 @@ func is_goal_pos(p :Vector2i) -> bool:
 
 var wall_info_all :Array
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
-var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
 
 func get_maze3d() -> Maze3D:
 	return maze3d
@@ -67,8 +66,8 @@ func init(num :int) -> Storey:
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,
-		Color(NamedColors.random_color(), 0.9),
-		Color(NamedColors.random_color(), 0.9),
+		Color(NamedColors.random_color(), 0.5),
+		Color(NamedColors.random_color(), 0.5),
 	)
 	change_floor_ceiling_colors()
 	add_child(maze3d)
@@ -83,20 +82,16 @@ func init(num :int) -> Storey:
 	storey_num = num
 
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)
+	var 구석자리목록 :Array[Vector2i] = []
 	for y in maze3d.PreCalced.Grid2D.y:
 		for x in maze3d.PreCalced.Grid2D.x:
 			if maze3d.maze_cells.get_open_dir_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
 
-	start_pos = 구석자리목록.pick_random()
-	var trycount := 100
-	while trycount > 0:
-		goal_pos = 구석자리목록.pick_random()
-		if goal_pos != start_pos:
-			break
-		trycount -=1
-	if goal_pos == start_pos:
-		print_debug("start, goal pos same %s" % start_pos)
+	구석자리목록.shuffle()
+	start_pos = 구석자리목록.pop_front()
+	goal_pos = 구석자리목록.pop_front()
+
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num
 		).position = maze3d.mazepos2storeypos(start_pos, 0)
@@ -105,7 +100,7 @@ func init(num :int) -> Storey:
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
 
-	add_donut_capsule(DonutCapsuleCount)
+	add_donut_capsule(DonutCapsuleCount, 구석자리목록)
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
@@ -154,9 +149,11 @@ func 놓인것들줍기(ch :Crawler) -> void:
 		놓인것들.del_at(ch.pos_src)
 		ft.queue_free()
 
-func add_donut_capsule(n :int) -> void:
+func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 	for i in n:
-		var p = 구석자리목록.pick_random()
+		if 구석자리목록.size() <= 0:
+			break
+		var p = 구석자리목록.pop_front()
 		if 놓인것들.get_at(p) != null:
 			continue
 		var co :Color = NamedColors.random_color()

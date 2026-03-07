@@ -7,12 +7,22 @@ const DecoTowerCount :int = 0
 var tower_scene = preload("res://tower/tower.tscn")
 var player :Crawler
 
-func _ready() -> void:
+func on_viewport_size_changed() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
-	var msgrect := Rect2( vp_size.x * 0.3 ,vp_size.y * 0.5 , vp_size.x * 0.4 , vp_size.y * 0.1 )
-	$TimedMessage.init(80, msgrect, tr("gd4maze3d 26.0.0"))
-	$TimedMessage.show_message("",3)
-	get_viewport().size_changed.connect(_on_vpsize_changed)
+	var msgrect := Rect2( vp_size.x * 0.1 ,vp_size.y * 0.4 , vp_size.x * 0.8 , vp_size.y * 0.25 )
+	$TimedMessage.init(vp_size.y*0.05 , msgrect, "%s %s" % [
+			ProjectSettings.get_setting("application/config/name"),
+			ProjectSettings.get_setting("application/config/version") ] )
+	if get_current_tower():
+		get_current_tower().cur_storey.get_mini_map().update_size()
+func timed_message_hidden(_s :String) -> void:
+	pass
+
+func _ready() -> void:
+	on_viewport_size_changed()
+	get_viewport().size_changed.connect(on_viewport_size_changed)
+	$TimedMessage.panel_hidden.connect(timed_message_hidden)
+	$TimedMessage.show_message("",0)
 
 	var tw :Tower = tower_scene.instantiate().init(0, 3,3, 1.0, false)
 	$TowerContainer.add_child(tw)
@@ -50,9 +60,6 @@ func add_deco_tower(i :int, p :Vector3) -> Tower:
 	deco_tower.position = p
 	deco_tower.start_demo_random()
 	return deco_tower
-
-func _on_vpsize_changed() -> void:
-	get_current_tower().cur_storey.get_mini_map().update_size()
 
 func _process(_delta: float) -> void:
 	update_info()

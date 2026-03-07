@@ -52,6 +52,10 @@ func cell_aabb_by_posi(posi :Vector3i) -> AABB:
 		unit_size,
 	)
 
+## inverse get_n_th_posi
+func get_index_by_posi_xyz(x :int, y :int, z :int=0) -> int:
+	return x + (y *grid_size.x) + (z * grid_size.x * grid_size.y)
+
 ## iter x -> y -> z order
 func get_n_th_posi(n :int) -> Vector3i:
 	var z :int = n / (grid_size.x * grid_size.y)

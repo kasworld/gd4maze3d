@@ -19,6 +19,7 @@ func _to_string() -> String:
 		calc_grid, WallThick,
 	]
 
+
 var PreCalced := {}
 
 func init_setting( grid_size :Vector2i, cell_size :Vector3, wall_thick :float, subwall_rate :float) -> Maze3D:
@@ -84,22 +85,20 @@ func init_with_color(makedecofn :Callable, comain :Color, cosub :Color, copillar
 	make_wall_deco_by_maze(makedecofn)
 	return self
 
-func init_floor_ceiling(grid_count :Vector2i, wire_width :float, wire_height :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
-	var net_size :Vector2 = PreCalced.SizeWithWallV2 - Vector2(wire_width,wire_width)
-	$Floor.init_tile_grid_with_box(
-		Vector3(net_size.x, net_size.y, wire_height),
-		grid_count, 0.9, co_floor)
-	#$Floor.tile_rotation_x = PI/2
+func init_floor_ceiling(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
+	var net_size :Vector2 = PreCalced.SizeWithWallV2
+	$Floor.init_tile_grid_with_box( Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_floor)
 	$Floor.rotation.x = -PI/2
-	$Floor.position.y -= calc_grid.unit_size.y/2 +wire_height/2
-
-	$Ceiling.init_tile_grid_with_box(
-		Vector3(net_size.x, net_size.y, wire_height),
-		grid_count, 0.9, co_ceiling)
-	#$Ceiling.tile_rotation_x = PI/2
+	$Floor.position.y -= calc_grid.unit_size.y/2 +height/2
+	$Ceiling.init_tile_grid_with_box(Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_ceiling)
 	$Ceiling.rotation.x = PI/2
-	$Ceiling.position.y += calc_grid.unit_size.y/2 +wire_height/2
+	$Ceiling.position.y += calc_grid.unit_size.y/2 +height/2
 	return self
+
+func get_floor() -> TileGrid:
+	return $Floor
+func get_ceiling() -> TileGrid:
+	return $Ceiling
 
 func make_box_pillas() -> void:
 	var pos_list :Array = []
@@ -230,7 +229,6 @@ func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
 			return calc_pos_face_H(x,y) - Vector3(0,0,WallThick)
 	assert(false,"invalid dir %s" % dir)
 	return Vector3.ZERO
-
 
 enum FloorCeiling {Off, Floor, Ceiling, Both}
 func view_floor_ceiling(v :FloorCeiling) -> void:

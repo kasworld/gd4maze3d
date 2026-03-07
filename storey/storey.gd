@@ -60,10 +60,11 @@ func init(num :int, ss :StoreySetting) -> Storey:
 
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
-		).init_floor_ceiling(grid_size*4, cell_size.x *0.01, cell_size.y *0.1,
+		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,
 		Color(random_color(), 0.9),
 		Color(random_color(), 0.9),
 	)
+	change_floor_ceiling_colors()
 	add_child(maze3d)
 	if num % 2 ==0 :
 		maze3d.init_with_mat(add_wall_deco_at,
@@ -112,6 +113,10 @@ func init(num :int, ss :StoreySetting) -> Storey:
 
 	add_bouncing(10, 크기기준 /20)
 	return self
+
+func change_floor_ceiling_colors() -> void:
+	maze3d.get_floor().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
+	maze3d.get_ceiling().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
 
 var bouncing_list :Array
 func add_bouncing(n :int, radius :float) -> void:
@@ -204,9 +209,6 @@ func add_mesh_trails(mesh_type_list) ->void:
 			).set_ColorChange_MeshGradient().init_with_color_mesh(mesh, tc, true, pos).set_speed(1,4)
 		add_child(bt)
 		mesh_trail_list.append(bt)
-
-
-
 
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int

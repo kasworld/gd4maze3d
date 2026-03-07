@@ -59,7 +59,6 @@ var VisibleStoreyDown :int
 
 var StoreyGap :float
 var gap_ani_dir_open : bool = true # true:open, false:close
-var storey_setting :StoreySetting
 var storey_list :Array[Storey]
 var cur_storey :Storey
 var view_floor_ceiling := Maze3D.FloorCeiling.Both
@@ -74,12 +73,11 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, ss :StoreySetting, deco_ania :bool=false) -> Tower:
+func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, deco_ania :bool=false) -> Tower:
 	tower_num = num
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap
-	storey_setting = ss
 	deco_ani = deco_ania
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
@@ -121,7 +119,8 @@ func set_all_storey_position() -> void:
 		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
 func add_new_storey(stnum :int) -> void:
-	var st :Storey = preload("res://storey/storey.tscn").instantiate().init(stnum, storey_setting)
+	var st :Storey = preload("res://storey/storey.tscn").instantiate()
+	st.setting_default(Storey.GridSize).init(stnum)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)

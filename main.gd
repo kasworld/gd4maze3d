@@ -6,7 +6,6 @@ const DecoTowerCount :int = 0
 
 var tower_scene = preload("res://tower/tower.tscn")
 var player :Crawler
-var default_storey_setting :StoreySetting
 
 func _ready() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
@@ -15,10 +14,7 @@ func _ready() -> void:
 	$TimedMessage.show_message("",3)
 	get_viewport().size_changed.connect(_on_vpsize_changed)
 
-	default_storey_setting = StoreySetting.new_default(Storey.GridSize)
-	var tw :Tower = tower_scene.instantiate().init(
-		0, 3,3,1,default_storey_setting, true,
-		)
+	var tw :Tower = tower_scene.instantiate().init(0, 3,3,1, true)
 	$TowerContainer.add_child(tw)
 
 	for i in CharacterCount:
@@ -49,9 +45,7 @@ func get_current_tower() -> Tower:
 	return $TowerContainer.get_child(0)
 
 func add_deco_tower(i :int, p :Vector3) -> Tower:
-	var deco_tower :Tower = tower_scene.instantiate().init(
-		i, 3,3,3,StoreySetting.new_deco(), true,
-		)
+	var deco_tower :Tower = tower_scene.instantiate().init(i, 3,3,3, true)
 	$TowerContainer.add_child(deco_tower)
 	deco_tower.position = p
 	deco_tower.start_demo_random()

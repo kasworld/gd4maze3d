@@ -19,15 +19,28 @@ func random_color()->Color:
 var storey_animation := SimpleAnimation.new()
 func _process(delta: float) -> void:
 	storey_animation.handle_animation()
-	for t in tree_list:
-		t.rotate_tree_bar_y(0.1)
-	for mt in mesh_trail_list:
-		mt.move_trail(delta, maze3d.bounce_cell, trailmesh_radius, 4*PI,)
 	for mb in bouncing_list:
 		mb.bounce(delta)
 
+var DonutCapsuleCount :int
+var MakeLine2DWallRate :float
+var MakeClockCalWallRate :float
+var BouncingCount :int
+func setting_default(maze_size :Vector2i) -> Storey:
+	DonutCapsuleCount = max(2, maze_size.x*maze_size.y/20.0)
+	MakeLine2DWallRate = 1.0/(maze_size.x*maze_size.y)
+	MakeClockCalWallRate = 1.0/(maze_size.x*maze_size.y)
+	BouncingCount = 10
+	return self
+func setting_simple() -> Storey:
+	DonutCapsuleCount = 0
+	MakeLine2DWallRate = 0
+	MakeClockCalWallRate = 0
+	BouncingCount = 0
+	return self
+
+
 var maze3d :Maze3D
-var storey_setting :StoreySetting
 var storey_num :int
 var start_pos :Vector2i
 var goal_pos :Vector2i
@@ -37,7 +50,6 @@ func is_goal_pos(p :Vector2i) -> bool:
 var wall_info_all :Array
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 var 구석자리목록 :Array[Vector2i] # capsule, donut 배치 가능 위치 목록
-var tree_list :Array
 
 func get_maze3d() -> Maze3D:
 	return maze3d
@@ -46,9 +58,10 @@ func get_maze_cells() -> Maze:
 	return maze3d.maze_cells
 
 func _to_string() -> String:
-	return "Storey[%d %s]" % [storey_num, storey_setting]
+	return "Storey[%d DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
+		storey_num, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
 
-func init(num :int, ss :StoreySetting) -> Storey:
+func init(num :int) -> Storey:
 	var grid_size = GridSize + Vector2i(randi_range(-1,1), randi_range(-1,1) )
 	var cell_size = CellSize
 	#var cell_size = CellSize * Vector3(
@@ -56,8 +69,6 @@ func init(num :int, ss :StoreySetting) -> Storey:
 		#pow(2, randf()*2 -1 ),
 		#pow(2, randf()*2 -1 ),
 	#)
-	storey_setting = ss
-
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,
@@ -99,19 +110,13 @@ func init(num :int, ss :StoreySetting) -> Storey:
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
 
-	add_donut_capsule(storey_setting.DonutCapsuleCount)
-	for i in storey_setting.TreeCount:
-		var p := CalcGrid3D.xz_Vector3iToVector2i(maze3d.calc_grid.rand_posi())
-		if 놓인것들.get_at(p) != null:
-			continue
-		add_tree(p)
-	add_mesh_trails(storey_setting.MeshTrailTypeList)
+	add_donut_capsule(DonutCapsuleCount)
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
 	$MiniMap.init(self)
 
-	add_bouncing(10, 크기기준 /20)
+	add_bouncing(BouncingCount , 크기기준 /20)
 	return self
 
 func change_floor_ceiling_colors() -> void:
@@ -175,46 +180,12 @@ func add_donut_capsule(n :int) -> void:
 		$PlacedThings.add_child(pobj)
 		놓인것들.set_at(p,pobj)
 
-func add_tree(p :Vector2i) ->void:
-	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
-	var tree_width := randf_range(크기기준*0.5, 크기기준*0.9)
-	var tree_height := randf_range(크기기준*0.5, 크기기준*0.9)
-	var bar_width = randf_range(크기기준*0.5, 크기기준*0.9)/10
-	var bar_count := randi_range(20,50)
-	var t :BarTree	= preload("res://bar_tree/bar_tree.tscn").instantiate(
-		).init_bartree_with_color(random_color(), random_color(),bar_count
-		).init_bartree_transform( Vector3(tree_width, tree_height, bar_width), 0)
-	t.position = maze3d.mazepos2storeypos(p, -maze3d.calc_grid.unit_size.y/2)
-	$PlacedThings.add_child(t)
-	놓인것들.set_at(p,t)
-	tree_list.append(t)
-
-var trailmesh_radius := 1.0
-var mesh_trail_list :Array
-func add_mesh_trails(mesh_type_list) ->void:
-	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
-	trailmesh_radius = 크기기준 /20
-	var mesh := BoxMesh.new()
-	mesh.material = MultiMeshShape.make_color_material(1.0)
-	mesh.size = Vector3(trailmesh_radius*2, trailmesh_radius*2, trailmesh_radius/10)
-	for mt in mesh_type_list:
-		if randf() > storey_setting.MakeMeshTrailRate:
-			continue
-		var pos3i := maze3d.calc_grid.rand_posi()
-		var pos := maze3d.calc_grid.posi_to_lanepos(pos3i)
-		#var pos2d := maze3d.rand_pos_2i()
-		#var pos := maze3d.mazepos2storeypos(pos2d, maze3d.calc_grid.unit_size.y/2)
-		var tc := randi_range(20,50)
-		var bt :MeshTrail = preload("res://mesh_trail/mesh_trail.tscn").instantiate(
-			).set_ColorChange_MeshGradient().init_with_color_mesh(mesh, tc, true, pos).set_speed(1,4)
-		add_child(bt)
-		mesh_trail_list.append(bt)
 
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 # add clock or calendar
 func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
-	if randf() < storey_setting.MakeLine2DWallRate:
+	if randf() < MakeLine2DWallRate:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 			$WallDeco.add_child(line2d_subviewport)
@@ -225,7 +196,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		b.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
 		return
 
-	if randf() < storey_setting.MakeClockCalWallRate:
+	if randf() < MakeClockCalWallRate:
 		var n :Node3D
 		var depth := 0.1
 		var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)

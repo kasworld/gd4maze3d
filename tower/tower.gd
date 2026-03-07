@@ -120,7 +120,7 @@ func set_all_storey_position() -> void:
 
 func add_new_storey(stnum :int) -> void:
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
-	st.setting_default(Storey.GridSize).init(stnum)
+	st.setting_default().init(stnum)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)

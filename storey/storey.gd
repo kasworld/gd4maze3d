@@ -5,17 +5,6 @@ class_name Storey
 static var GridSize := Vector2i(4,4)
 static var CellSize := Vector3(4.0,3.0,4.0)
 
-static var themecolorlist = [
-	NamedColors.filter_red_color_list(),
-	NamedColors.filter_green_color_list(),
-	NamedColors.filter_blue_color_list(),
-	NamedColors.filter_cyan_color_list(),
-	NamedColors.filter_magenta_color_list(),
-	NamedColors.filter_yellow_color_list(),
-]
-func random_color()->Color:
-	return themecolorlist.pick_random().pick_random()
-
 var storey_animation := SimpleAnimation.new()
 func _process(delta: float) -> void:
 	storey_animation.handle_animation()
@@ -26,10 +15,10 @@ var DonutCapsuleCount :int
 var MakeLine2DWallRate :float
 var MakeClockCalWallRate :float
 var BouncingCount :int
-func setting_default(maze_size :Vector2i) -> Storey:
-	DonutCapsuleCount = max(2, maze_size.x*maze_size.y/20.0)
-	MakeLine2DWallRate = 1.0/(maze_size.x*maze_size.y)
-	MakeClockCalWallRate = 1.0/(maze_size.x*maze_size.y)
+func setting_default() -> Storey:
+	DonutCapsuleCount = max(2, GridSize.x*GridSize.y/20.0)
+	MakeLine2DWallRate = 1.0/(GridSize.x*GridSize.y)
+	MakeClockCalWallRate = 1.0/(GridSize.x*GridSize.y)
 	BouncingCount = 10
 	return self
 func setting_simple() -> Storey:
@@ -72,8 +61,8 @@ func init(num :int) -> Storey:
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,
-		Color(random_color(), 0.9),
-		Color(random_color(), 0.9),
+		Color(NamedColors.random_color(), 0.9),
+		Color(NamedColors.random_color(), 0.9),
 	)
 	change_floor_ceiling_colors()
 	add_child(maze3d)
@@ -83,7 +72,7 @@ func init(num :int) -> Storey:
 			TexMat.make_subwall_mat() )
 	else:
 		maze3d.init_with_color(add_wall_deco_at,
-			random_color(), random_color(), random_color(), random_color(),
+			NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color(),
 		)
 	storey_num = num
 
@@ -103,9 +92,9 @@ func init(num :int) -> Storey:
 	if goal_pos == start_pos:
 		print_debug("start, goal pos same %s" % start_pos)
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
-	$StartMark.init(크기기준*0.2, 크기기준/100, random_color(), "Start %d" % storey_num
+	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num
 		).position = maze3d.mazepos2storeypos(start_pos, 0)
-	$EndMark.init(크기기준*0.2, 크기기준/100, random_color(), "Goal %d" % storey_num
+	$EndMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Goal %d" % storey_num
 		).position = maze3d.mazepos2storeypos(goal_pos, 0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)

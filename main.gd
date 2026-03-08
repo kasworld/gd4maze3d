@@ -30,7 +30,7 @@ func _ready() -> void:
 	$TimedMessage.panel_hidden.connect(timed_message_hidden)
 	$TimedMessage.show_message("",0)
 
-	main_tower = preload("res://tower/tower.tscn").instantiate().init(0, 1.0, false)
+	main_tower = preload("res://tower/tower.tscn").instantiate().init(1.0, false)
 	add_child(main_tower)
 
 	for i in CharacterCount:
@@ -54,8 +54,8 @@ func _process(_delta: float) -> void:
 	update_info()
 
 	var t := Time.get_unix_time_from_system() /2.3
-	var r := (Storey.GridSize*Storey.CellSize.x).length()
-	var h := main_tower.calc_height() *2
+	var r := Tower.ref_tower_size().length()
+	var h := Tower.ref_tower_size().y *2
 	if $MovingCameraLightHober.is_current_camera():
 		$MovingCameraLightHober.move_hober_around_z(t, Vector3.ZERO, r, h )
 	elif $MovingCameraLightAround.is_current_camera():

@@ -76,7 +76,6 @@ func view_wallpillar_next() -> void:
 	set_wallpillar_view_mode(view_walls)
 
 
-var tower_num :int
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
 
@@ -87,17 +86,13 @@ var cur_storey :Storey
 var view_floor_ceiling := Maze3D.FloorCeiling.Both
 var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ShortWithPillarBox
 
-func calc_height() -> float:
-	return (VisibleStoreyDown+1+VisibleStoreyUp) *( Storey.CellSize.y + StoreyGap )
-
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
 	upper:%d lower:%d
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(num :int, Gap :float, deco_ani :bool=false) -> Tower:
-	tower_num = num
+func init(Gap :float, deco_ani :bool=false) -> Tower:
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap

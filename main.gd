@@ -2,10 +2,11 @@ extends Node3D
 
 const PlayerNumber :int = 0
 const CharacterCount :int = 2
-const DecoTowerCount :int = 0
 
-var tower_scene = preload("res://tower/tower.tscn")
 var player :Crawler
+
+func get_current_tower() -> Tower:
+	return $TowerContainer.get_child(0)
 
 func on_viewport_size_changed() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
@@ -24,7 +25,7 @@ func _ready() -> void:
 	$TimedMessage.panel_hidden.connect(timed_message_hidden)
 	$TimedMessage.show_message("",0)
 
-	var tw :Tower = tower_scene.instantiate().init(0, 3,3, 1.0, false)
+	var tw :Tower = preload("res://tower/tower.tscn").instantiate().init(0, 3,3, 1.0, false)
 	$TowerContainer.add_child(tw)
 
 	for i in CharacterCount:
@@ -33,13 +34,6 @@ func _ready() -> void:
 	$MovingCameraLightAround.make_current()
 
 	var orbitr := (Storey.GridSize*Storey.CellSize.x).length() * 3
-	for i in DecoTowerCount:
-		var rd := 2*PI/DecoTowerCount *i
-		var h := randfn(0, DecoTowerCount)
-		tw = add_deco_tower(i+1, Vector3(sin(rd)*orbitr,h,cos(rd)*orbitr))
-
-	if DecoTowerCount != 0:
-		orbitr *= 2
 	var WorldSize := Vector3(Storey.GridSize.x *Storey.CellSize.x, Storey.CellSize.y, Storey.GridSize.y*Storey.CellSize.z ) * 4
 	$DecoOrbit.init(WorldSize, 9)
 	$AxisArrow3D.set_size((Storey.GridSize*Storey.CellSize.x).length()/2).set_colors()
@@ -51,15 +45,6 @@ func _ready() -> void:
 	enter_next_storey(null)
 	update_button_text()
 
-func get_current_tower() -> Tower:
-	return $TowerContainer.get_child(0)
-
-func add_deco_tower(i :int, p :Vector3) -> Tower:
-	var deco_tower :Tower = tower_scene.instantiate().init(i, 3,3,3, true)
-	$TowerContainer.add_child(deco_tower)
-	deco_tower.position = p
-	deco_tower.start_demo_random()
-	return deco_tower
 
 func _process(_delta: float) -> void:
 	update_info()

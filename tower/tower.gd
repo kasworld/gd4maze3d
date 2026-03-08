@@ -50,8 +50,27 @@ func init_tower_animaion() -> void:
 	tower_animation.animation_ended.connect(tower_animation_ended)
 	start_all_animation()
 
+var demo_random_list = [
+	next_visible_floor_ceiling,
+	view_wallpillar_next,
+	start_storey_gap_animation,
+]
+func start_demo_random() -> void:
+	$TimerDemoRandom.start()
+func stop_demo_random() -> void:
+	$TimerDemoRandom.stop()
+func _on_timer_demo_random_timeout() -> void:
+	demo_random_list.pick_random().call()
+func next_visible_floor_ceiling() -> void:
+	view_floor_ceiling += 1
+	view_floor_ceiling %= Maze3D.FloorCeiling.size()
+	set_floor_ceiling_visible(view_floor_ceiling)
+func view_wallpillar_next() -> void:
+	view_walls = Maze3D.wallview_next(view_walls)
+	set_wallpillar_view_mode(view_walls)
+
+
 var tower_num :int
-var deco_ani :bool
 var VisibleStoreyUp :int
 var VisibleStoreyDown :int
 
@@ -71,12 +90,11 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, deco_ani_a :bool=false) -> Tower:
+func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, deco_ani :bool=false) -> Tower:
 	tower_num = num
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
 	StoreyGap = Gap
-	deco_ani = deco_ani_a
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
@@ -150,25 +168,3 @@ func set_floor_ceiling_visible(v :Maze3D.FloorCeiling) -> void:
 func set_wallpillar_view_mode(w :Maze3D.WallPillarView) -> void:
 	for i in storey_list.size():
 		storey_list[i].get_maze3d().set_wallpillar_view_mode(w)
-
-func next_visible_floor_ceiling() -> void:
-	view_floor_ceiling += 1
-	view_floor_ceiling %= Maze3D.FloorCeiling.size()
-	set_floor_ceiling_visible(view_floor_ceiling)
-
-func view_wallpillar_next() -> void:
-	view_walls = Maze3D.wallview_next(view_walls)
-	set_wallpillar_view_mode(view_walls)
-
-var demo_random_list = [
-	move_to_upper_storey,
-	next_visible_floor_ceiling,
-	view_wallpillar_next,
-	start_storey_gap_animation,
-]
-func start_demo_random() -> void:
-	$TimerDemoRandom.start()
-func stop_demo_random() -> void:
-	$TimerDemoRandom.stop()
-func _on_timer_demo_random_timeout() -> void:
-	demo_random_list.pick_random().call()

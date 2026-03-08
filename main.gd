@@ -10,6 +10,13 @@ func get_current_tower() -> Tower:
 
 func on_viewport_size_changed() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
+	var 짧은길이 :float = min(vp_size.x, vp_size.y)
+	var panel_size := Vector2(vp_size.x/2 - 짧은길이/2, vp_size.y)
+	$"왼쪽패널".size = panel_size
+	$"왼쪽패널".custom_minimum_size = panel_size
+	$오른쪽패널.size = panel_size
+	$"오른쪽패널".custom_minimum_size = panel_size
+	$오른쪽패널.position = Vector2(vp_size.x/2 + 짧은길이/2, 0)
 	var msgrect := Rect2( vp_size.x * 0.1 ,vp_size.y * 0.4 , vp_size.x * 0.8 , vp_size.y * 0.25 )
 	$TimedMessage.init(vp_size.y*0.05 , msgrect, "%s %s" % [
 			ProjectSettings.get_setting("application/config/name"),
@@ -127,7 +134,7 @@ func _on_button_esc_pressed() -> void:
 	get_tree().quit()
 
 func _on_button_help_pressed() -> void:
-	$ButtonContainer.visible = not $ButtonContainer.visible
+	$"오른쪽패널".visible = not $"오른쪽패널".visible
 
 func _on_button_minimap_pressed() -> void:
 	get_current_tower().cur_storey.get_mini_map().mode_next()
@@ -200,9 +207,9 @@ func _on_button_fov_down_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().camera_fov_dec()
 
 
-@onready var debuglabel = $ButtonContainer/LabelContainer/Debug
-@onready var performancelabel = $ButtonContainer/LabelContainer/Performance
-@onready var infolabel = $ButtonContainer/LabelContainer/Info
+@onready var debuglabel = $"오른쪽패널"/Debug
+@onready var performancelabel = $"오른쪽패널"/Performance
+@onready var infolabel = $"오른쪽패널"/Info
 
 func _on_button_debug_pressed() -> void:
 	debuglabel.visible = !debuglabel.visible
@@ -236,6 +243,6 @@ Currently rendering: occlusion culling:%s
 			MovingCameraLight.GetCurrentCamera() ]
 
 func update_button_text() -> void:
-	$ButtonContainer/HBoxContainer/ButtonMinimap.text = "2:%s" % get_current_tower().cur_storey.get_mini_map()
-	$ButtonContainer/HBoxContainer/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
-	$ButtonContainer/HBoxContainer/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(get_current_tower().view_walls)
+	$"왼쪽패널"/ButtonMinimap.text = "2:%s" % get_current_tower().cur_storey.get_mini_map()
+	$"왼쪽패널"/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
+	$"왼쪽패널"/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(get_current_tower().view_walls)

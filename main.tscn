@@ -7,11 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://dr5oq5ap3a4pu" path="res://deco_orbits/deco_orbit.tscn" id="5_lquwl"]
 [ext_resource type="PackedScene" uid="uid://dl14flc0fkeyt" path="res://axis_arrow_3d/axis_arrow_3d.tscn" id="6_7mycd"]
 
-[sub_resource type="Theme" id="Theme_sfr3e"]
-default_font_size = 32
+[sub_resource type="Theme" id="Theme_272bh"]
+default_font_size = 36
 
-[sub_resource type="LabelSettings" id="LabelSettings_1637f"]
-font_size = 32
+[sub_resource type="Theme" id="Theme_5vw27"]
+default_font_size = 24
 
 [sub_resource type="SystemFont" id="SystemFont_bejao"]
 
@@ -22,6 +22,153 @@ default_font = SubResource("SystemFont_bejao")
 [node name="Main" type="Node3D" unique_id=1241607610]
 script = ExtResource("1_ct15n")
 
+[node name="왼쪽패널" type="VBoxContainer" parent="." unique_id=1035857547]
+modulate = Color(1, 1, 1, 0.49803922)
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_272bh")
+
+[node name="ButtonESC" type="Button" parent="왼쪽패널" unique_id=491111934]
+layout_mode = 2
+text = "ESC:Quit"
+alignment = 0
+
+[node name="ButtonHelp" type="Button" parent="왼쪽패널" unique_id=1668808916]
+layout_mode = 2
+text = "1:Help"
+alignment = 0
+
+[node name="ButtonMinimap" type="Button" parent="왼쪽패널" unique_id=2083927]
+layout_mode = 2
+text = "2:Minimap"
+alignment = 0
+
+[node name="ButtonFloorCeiling" type="Button" parent="왼쪽패널" unique_id=1887702657]
+layout_mode = 2
+text = "3:FloorCeiling"
+alignment = 0
+
+[node name="ButtonWalls" type="Button" parent="왼쪽패널" unique_id=297097537]
+layout_mode = 2
+text = "4:Walls"
+alignment = 0
+
+[node name="ButtonPillars" type="Button" parent="왼쪽패널" unique_id=470464974]
+layout_mode = 2
+text = "5:Pillars"
+alignment = 0
+
+[node name="ButtonAutoMove" type="Button" parent="왼쪽패널" unique_id=281784402]
+layout_mode = 2
+text = "6:Automove"
+alignment = 0
+
+[node name="ButtonDebug" type="Button" parent="왼쪽패널" unique_id=1447459745]
+layout_mode = 2
+text = "7:Debug"
+alignment = 0
+
+[node name="ButtonPerformance" type="Button" parent="왼쪽패널" unique_id=569382714]
+layout_mode = 2
+text = "8:Performance"
+alignment = 0
+
+[node name="ButtonInfo" type="Button" parent="왼쪽패널" unique_id=62459601]
+layout_mode = 2
+text = "9:Info"
+alignment = 0
+
+[node name="ButtonMove" type="GridContainer" parent="왼쪽패널" unique_id=1612547149]
+layout_mode = 2
+columns = 3
+
+[node name="ButtonRollLeft" type="Button" parent="왼쪽패널/ButtonMove" unique_id=1129439817]
+layout_mode = 2
+text = "A:RollLeft"
+
+[node name="ButtonForward" type="Button" parent="왼쪽패널/ButtonMove" unique_id=1908888114]
+layout_mode = 2
+text = "↑:Forward"
+
+[node name="ButtonRollRight" type="Button" parent="왼쪽패널/ButtonMove" unique_id=885419356]
+layout_mode = 2
+text = "D:RollRight"
+
+[node name="ButtonLeft" type="Button" parent="왼쪽패널/ButtonMove" unique_id=92665886]
+layout_mode = 2
+text = "←:Left"
+
+[node name="ButtonBackward" type="Button" parent="왼쪽패널/ButtonMove" unique_id=113807449]
+layout_mode = 2
+text = "↓:Backward"
+
+[node name="ButtonRight" type="Button" parent="왼쪽패널/ButtonMove" unique_id=411700817]
+layout_mode = 2
+text = "→:Right"
+
+[node name="ButtonFovUP" type="Button" parent="왼쪽패널" unique_id=1120036512]
+layout_mode = 2
+text = "Ins:FovUp"
+alignment = 0
+
+[node name="ButtonAPSMax" type="Button" parent="왼쪽패널" unique_id=1101307849]
+layout_mode = 2
+text = "Home:APSMax"
+alignment = 0
+
+[node name="ButtonAPSUp" type="Button" parent="왼쪽패널" unique_id=1705135231]
+layout_mode = 2
+text = "PgUp:APSUp"
+alignment = 0
+
+[node name="ButtonFovDown" type="Button" parent="왼쪽패널" unique_id=172927274]
+layout_mode = 2
+text = "Del:FOVDown"
+alignment = 0
+
+[node name="ButtonAPSMin" type="Button" parent="왼쪽패널" unique_id=389300895]
+layout_mode = 2
+text = "End:APSMin"
+alignment = 0
+
+[node name="ButtonAPSDown" type="Button" parent="왼쪽패널" unique_id=797861952]
+layout_mode = 2
+text = "PgDn:APSDown"
+alignment = 0
+
+[node name="ButtonStoreyUp" type="Button" parent="왼쪽패널" unique_id=602448304]
+layout_mode = 2
+text = "Enter: StoreyUp"
+alignment = 0
+
+[node name="ButtonCamera" type="Button" parent="왼쪽패널" unique_id=1132841509]
+layout_mode = 2
+text = "C: Camera"
+alignment = 0
+
+[node name="ButtonStoreyGap" type="Button" parent="왼쪽패널" unique_id=623524988]
+layout_mode = 2
+text = "O: StoreyGap Open/Close"
+alignment = 0
+
+[node name="오른쪽패널" type="VBoxContainer" parent="." unique_id=1197709989]
+modulate = Color(1, 1, 1, 0.49803922)
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_5vw27")
+
+[node name="Debug" type="Label" parent="오른쪽패널" unique_id=2000316346]
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Info" type="Label" parent="오른쪽패널" unique_id=1879965313]
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Performance" type="Label" parent="오른쪽패널" unique_id=2024122925]
+layout_mode = 2
+autowrap_mode = 3
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=653586333]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
@@ -30,148 +177,6 @@ shadow_enabled = true
 environment = ExtResource("2_lquwl")
 
 [node name="CharacterContainer" type="Node3D" parent="." unique_id=843286766]
-
-[node name="ButtonContainer" type="VBoxContainer" parent="." unique_id=235426187]
-offset_right = 40.0
-offset_bottom = 40.0
-theme = SubResource("Theme_sfr3e")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="ButtonContainer" unique_id=821117912]
-layout_mode = 2
-
-[node name="ButtonESC" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=491111934]
-layout_mode = 2
-text = "ESC:Quit"
-
-[node name="ButtonHelp" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=1668808916]
-layout_mode = 2
-text = "1:Help"
-
-[node name="ButtonMinimap" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=2083927]
-layout_mode = 2
-text = "2:Minimap"
-
-[node name="ButtonFloorCeiling" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=1887702657]
-layout_mode = 2
-text = "3:FloorCeiling"
-
-[node name="ButtonWalls" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=297097537]
-layout_mode = 2
-text = "4:Walls"
-
-[node name="ButtonPillars" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=470464974]
-layout_mode = 2
-text = "5:Pillars"
-
-[node name="ButtonAutoMove" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=281784402]
-layout_mode = 2
-text = "6:Automove"
-
-[node name="ButtonDebug" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=1447459745]
-layout_mode = 2
-text = "7:Debug"
-
-[node name="ButtonPerformance" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=569382714]
-layout_mode = 2
-text = "8:Performance"
-
-[node name="ButtonInfo" type="Button" parent="ButtonContainer/HBoxContainer" unique_id=62459601]
-layout_mode = 2
-text = "9:Info"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="ButtonContainer" unique_id=1950948291]
-layout_mode = 2
-
-[node name="ButtonMove" type="GridContainer" parent="ButtonContainer/HBoxContainer2" unique_id=1612547149]
-layout_mode = 2
-columns = 3
-
-[node name="ButtonRollLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=1129439817]
-layout_mode = 2
-text = "A:RollLeft"
-
-[node name="ButtonForward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=1908888114]
-layout_mode = 2
-text = "↑:Forward"
-
-[node name="ButtonRollRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=885419356]
-layout_mode = 2
-text = "D:RollRight"
-
-[node name="ButtonLeft" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=92665886]
-layout_mode = 2
-text = "←:Left"
-
-[node name="ButtonBackward" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=113807449]
-layout_mode = 2
-text = "↓:Backward"
-
-[node name="ButtonRight" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonMove" unique_id=411700817]
-layout_mode = 2
-text = "→:Right"
-
-[node name="ButtonEtc" type="GridContainer" parent="ButtonContainer/HBoxContainer2" unique_id=1417775527]
-layout_mode = 2
-columns = 3
-
-[node name="ButtonFovUP" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=1120036512]
-layout_mode = 2
-text = "Ins:FovUp"
-
-[node name="ButtonAPSMax" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=1101307849]
-layout_mode = 2
-text = "Home:APSMax"
-
-[node name="ButtonAPSUp" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=1705135231]
-layout_mode = 2
-text = "PgUp:APSUp"
-
-[node name="ButtonFovDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=172927274]
-layout_mode = 2
-text = "Del:FOVDown"
-
-[node name="ButtonAPSMin" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=389300895]
-layout_mode = 2
-text = "End:APSMin"
-
-[node name="ButtonAPSDown" type="Button" parent="ButtonContainer/HBoxContainer2/ButtonEtc" unique_id=797861952]
-layout_mode = 2
-text = "PgDn:APSDown"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="ButtonContainer" unique_id=1802479345]
-layout_mode = 2
-
-[node name="ButtonStoreyUp" type="Button" parent="ButtonContainer/HBoxContainer3" unique_id=602448304]
-layout_mode = 2
-text = "Enter: StoreyUp"
-
-[node name="ButtonCamera" type="Button" parent="ButtonContainer/HBoxContainer3" unique_id=1132841509]
-layout_mode = 2
-text = "C: Camera"
-
-[node name="ButtonStoreyGap" type="Button" parent="ButtonContainer/HBoxContainer3" unique_id=623524988]
-layout_mode = 2
-text = "O: StoreyGap Open/Close"
-
-[node name="LabelContainer" type="VBoxContainer" parent="ButtonContainer" unique_id=1577642872]
-z_index = 1
-custom_minimum_size = Vector2(1920, 1080)
-layout_mode = 2
-
-[node name="Debug" type="Label" parent="ButtonContainer/LabelContainer" unique_id=2000316346]
-visible = false
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
-
-[node name="Info" type="Label" parent="ButtonContainer/LabelContainer" unique_id=1879965313]
-visible = false
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
-
-[node name="Performance" type="Label" parent="ButtonContainer/LabelContainer" unique_id=2024122925]
-visible = false
-layout_mode = 2
-label_settings = SubResource("LabelSettings_1637f")
 
 [node name="TimedMessage" parent="." unique_id=124848858 instance=ExtResource("4_fd2hu")]
 modulate = Color(1, 1, 1, 0.498039)
@@ -190,28 +195,28 @@ visible = false
 
 [node name="FixedCameraLight" parent="." unique_id=199817869 instance=ExtResource("3_hdadt")]
 
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonESC" to="." method="_on_button_esc_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonHelp" to="." method="_on_button_help_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonFloorCeiling" to="." method="_on_button_floor_ceiling_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonWalls" to="." method="_on_button_walls_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonPillars" to="." method="_on_button_pillars_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonAutoMove" to="." method="_on_button_auto_move_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonDebug" to="." method="_on_button_debug_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonPerformance" to="." method="_on_button_performance_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer/ButtonInfo" to="." method="_on_button_info_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRollLeft" to="." method="_on_button_roll_left_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonForward" to="." method="_on_button_forward_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRollRight" to="." method="_on_button_roll_right_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonLeft" to="." method="_on_button_left_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonBackward" to="." method="_on_button_backward_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonMove/ButtonRight" to="." method="_on_button_right_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer2/ButtonEtc/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer3/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer3/ButtonCamera" to="." method="_on_button_camera_pressed"]
-[connection signal="pressed" from="ButtonContainer/HBoxContainer3/ButtonStoreyGap" to="." method="_on_button_storey_gap_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonESC" to="." method="_on_button_esc_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonHelp" to="." method="_on_button_help_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonFloorCeiling" to="." method="_on_button_floor_ceiling_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonWalls" to="." method="_on_button_walls_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonPillars" to="." method="_on_button_pillars_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAutoMove" to="." method="_on_button_auto_move_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonDebug" to="." method="_on_button_debug_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonPerformance" to="." method="_on_button_performance_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonInfo" to="." method="_on_button_info_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonRollLeft" to="." method="_on_button_roll_left_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonForward" to="." method="_on_button_forward_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonRollRight" to="." method="_on_button_roll_right_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonLeft" to="." method="_on_button_left_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonBackward" to="." method="_on_button_backward_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonRight" to="." method="_on_button_right_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonCamera" to="." method="_on_button_camera_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonStoreyGap" to="." method="_on_button_storey_gap_pressed"]

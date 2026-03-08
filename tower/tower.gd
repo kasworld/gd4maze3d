@@ -120,11 +120,11 @@ func find_storey_by_num(num :int) -> Storey:
 	return null
 
 func calc_storey_base_y_pos(storey_index :int) -> float:
-	var rtn :float = storey_list[0].maze3d.calc_grid.unit_size.y/2
+	var rtn :float = storey_list[0].storey_height/2
 	if gap_ani_dir_open:
 		rtn += StoreyGap * storey_index
 	for i in storey_index:
-		rtn += storey_list[i].maze3d.calc_grid.unit_size.y/2 + storey_list[i+1].maze3d.calc_grid.unit_size.y/2
+		rtn += storey_list[i].storey_height/2 + storey_list[i+1].storey_height/2
 	return rtn
 
 func start_storey_gap_animation() -> void:

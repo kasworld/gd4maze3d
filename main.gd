@@ -39,7 +39,7 @@ func _ready() -> void:
 	$MovingCameraLightAround.make_current()
 
 	var ref_len := Tower.ref_tower_size().length()
-	$DecoOrbit.init(Tower.ref_tower_size() * 2, 9)
+	#$DecoOrbit.init(Tower.ref_tower_size() * 2, 9)
 	$AxisArrow3D.set_size(ref_len/3).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, ref_len), ref_len*4)

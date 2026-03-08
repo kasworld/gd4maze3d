@@ -51,6 +51,8 @@ func get_char_list() -> Array:
 func get_mini_map() -> MiniMap:
 	return $MiniMap
 
+var storey_height :float
+
 func _to_string() -> String:
 	return "Storey[%d DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
 		storey_num, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
@@ -69,6 +71,7 @@ func init(num :int) -> Storey:
 		Color(NamedColors.random_color(), 0.5),
 		Color(NamedColors.random_color(), 0.5),
 	)
+	storey_height = cell_size.y + cell_size.y *0.01 * 2
 	change_floor_ceiling_colors()
 	add_child(maze3d)
 	if num % 2 ==0 :

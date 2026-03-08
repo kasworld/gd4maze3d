@@ -30,7 +30,7 @@ func _ready() -> void:
 	$TimedMessage.panel_hidden.connect(timed_message_hidden)
 	$TimedMessage.show_message("",0)
 
-	main_tower = preload("res://tower/tower.tscn").instantiate().init(1.0, false)
+	main_tower = preload("res://tower/tower.tscn").instantiate().init(false)
 	add_child(main_tower)
 
 	for i in CharacterCount:

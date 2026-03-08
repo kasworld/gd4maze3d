@@ -92,10 +92,10 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(Gap :float, deco_ani :bool=false) -> Tower:
+func init(deco_ani :bool=false) -> Tower:
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown
-	StoreyGap = Gap
+	StoreyGap = Storey.CellSize.y
 	for i in VisibleStoreyUp:
 		add_new_storey(i)
 	cur_storey = storey_list[0]

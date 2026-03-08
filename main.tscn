@@ -187,8 +187,6 @@ theme = SubResource("Theme_7mycd")
 [node name="AxisArrow3D" parent="." unique_id=2079731285 instance=ExtResource("6_7mycd")]
 visible = false
 
-[node name="TowerContainer" type="Node3D" parent="." unique_id=1641332113]
-
 [node name="MovingCameraLightHober" parent="." unique_id=123708318 instance=ExtResource("3_hdadt")]
 
 [node name="MovingCameraLightAround" parent="." unique_id=1737262761 instance=ExtResource("3_hdadt")]

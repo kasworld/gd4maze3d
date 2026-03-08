@@ -4,9 +4,7 @@ const PlayerNumber :int = 0
 const CharacterCount :int = 2
 
 var player :Crawler
-
-func get_current_tower() -> Tower:
-	return $TowerContainer.get_child(0)
+var main_tower :Tower
 
 func on_viewport_size_changed() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
@@ -21,8 +19,8 @@ func on_viewport_size_changed() -> void:
 	$TimedMessage.init(vp_size.y*0.05 , msgrect, "%s %s" % [
 			ProjectSettings.get_setting("application/config/name"),
 			ProjectSettings.get_setting("application/config/version") ] )
-	if get_current_tower():
-		get_current_tower().cur_storey.get_mini_map().update_size()
+	if main_tower:
+		main_tower.cur_storey.get_mini_map().update_size()
 func timed_message_hidden(_s :String) -> void:
 	pass
 
@@ -32,8 +30,8 @@ func _ready() -> void:
 	$TimedMessage.panel_hidden.connect(timed_message_hidden)
 	$TimedMessage.show_message("",0)
 
-	var tw :Tower = preload("res://tower/tower.tscn").instantiate().init(0, 3,3, 1.0, false)
-	$TowerContainer.add_child(tw)
+	main_tower = preload("res://tower/tower.tscn").instantiate().init(0, 3,3, 1.0, false)
+	add_child(main_tower)
 
 	for i in CharacterCount:
 		add_crawler(i)
@@ -58,7 +56,7 @@ func _process(_delta: float) -> void:
 
 	var t := Time.get_unix_time_from_system() /2.3
 	var r := (Storey.GridSize*Storey.CellSize.x).length()
-	var h := get_current_tower().calc_height() *2
+	var h := main_tower.calc_height() *2
 	if $MovingCameraLightHober.is_current_camera():
 		$MovingCameraLightHober.move_hober_around_z(t, Vector3.ZERO, r, h )
 	elif $MovingCameraLightAround.is_current_camera():
@@ -69,11 +67,11 @@ func enter_next_storey(old_storey :Storey) -> void:
 		print_debug("already in Action.EnterStorey")
 		return
 	if old_storey == null:
-		get_current_tower().cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children() , player.crawler_num)
+		main_tower.cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children() , player.crawler_num)
 	else:
-		get_current_tower().move_to_upper_storey()
-		get_current_tower().cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
-	$DecoOrbit.position = get_current_tower().cur_storey.position
+		main_tower.move_to_upper_storey()
+		main_tower.cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
+	$DecoOrbit.position = main_tower.cur_storey.position
 	update_button_text()
 
 func add_crawler(i :int) -> Crawler:
@@ -137,21 +135,21 @@ func _on_button_help_pressed() -> void:
 	$"오른쪽패널".visible = not $"오른쪽패널".visible
 
 func _on_button_minimap_pressed() -> void:
-	get_current_tower().cur_storey.get_mini_map().mode_next()
+	main_tower.cur_storey.get_mini_map().mode_next()
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
-	get_current_tower().view_wallpillar_next()
+	main_tower.view_wallpillar_next()
 	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
-	get_current_tower().next_visible_floor_ceiling()
+	main_tower.next_visible_floor_ceiling()
 
 func _on_button_pillars_pressed() -> void:
-	get_current_tower().view_wallpillar_next()
+	main_tower.view_wallpillar_next()
 
 func _on_button_storey_gap_pressed() -> void:
-	get_current_tower().start_storey_gap_animation()
+	main_tower.start_storey_gap_animation()
 
 func _on_button_auto_move_pressed() -> void:
 	player.set_next_walk_type()
@@ -195,7 +193,7 @@ func _on_button_aps_down_pressed() -> void:
 	player.action_queue.action_per_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
-	enter_next_storey(get_current_tower().cur_storey)
+	enter_next_storey(main_tower.cur_storey)
 
 func _on_button_camera_pressed() -> void:
 	MovingCameraLight.NextCamera()
@@ -206,25 +204,20 @@ func _on_button_fov_up_pressed() -> void:
 func _on_button_fov_down_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().camera_fov_dec()
 
-
-@onready var debuglabel = $"오른쪽패널"/Debug
-@onready var performancelabel = $"오른쪽패널"/Performance
-@onready var infolabel = $"오른쪽패널"/Info
-
 func _on_button_debug_pressed() -> void:
-	debuglabel.visible = !debuglabel.visible
+	$"오른쪽패널"/Debug.visible = !$"오른쪽패널"/Debug.visible
 
 func _on_button_performance_pressed() -> void:
-	performancelabel.visible = !performancelabel.visible
+	$"오른쪽패널"/Performance.visible = !$"오른쪽패널"/Performance.visible
 
 func _on_button_info_pressed() -> void:
-	infolabel.visible = !infolabel.visible
+	$"오른쪽패널"/Info.visible = !$"오른쪽패널"/Info.visible
 
 func update_info() -> void:
-	if debuglabel.visible:
-		debuglabel.text = player.debug_str()
-	if performancelabel.visible:
-		performancelabel.text = """%d FPS (%.2f mspf)
+	if $"오른쪽패널"/Debug.visible:
+		$"오른쪽패널"/Debug.text = player.debug_str()
+	if $"오른쪽패널"/Performance.visible:
+		$"오른쪽패널"/Performance.text = """%d FPS (%.2f mspf)
 Currently rendering: occlusion culling:%s
 %d objects
 %dK primitive indices
@@ -235,14 +228,14 @@ Currently rendering: occlusion culling:%s
 		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME) * 0.001,
 		RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
 		]
-	if infolabel.visible:
-		infolabel.text = """%s\n%s\n%s\n%s""" % [
-			get_current_tower(),
-			get_current_tower().cur_storey.get_mini_map(),
+	if $"오른쪽패널"/Info.visible:
+		$"오른쪽패널"/Info.text = """%s\n%s\n%s\n%s""" % [
+			main_tower,
+			main_tower.cur_storey.get_mini_map(),
 			player,
 			MovingCameraLight.GetCurrentCamera() ]
 
 func update_button_text() -> void:
-	$"왼쪽패널"/ButtonMinimap.text = "2:%s" % get_current_tower().cur_storey.get_mini_map()
+	$"왼쪽패널"/ButtonMinimap.text = "2:%s" % main_tower.cur_storey.get_mini_map()
 	$"왼쪽패널"/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
-	$"왼쪽패널"/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(get_current_tower().view_walls)
+	$"왼쪽패널"/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(main_tower.view_walls)

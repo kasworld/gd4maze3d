@@ -30,7 +30,7 @@ func _ready() -> void:
 	$TimedMessage.panel_hidden.connect(timed_message_hidden)
 	$TimedMessage.show_message("",0)
 
-	main_tower = preload("res://tower/tower.tscn").instantiate().init(0, 3,3, 1.0, false)
+	main_tower = preload("res://tower/tower.tscn").instantiate().init(0, 1.0, false)
 	add_child(main_tower)
 
 	for i in CharacterCount:
@@ -38,14 +38,13 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(PlayerNumber)
 	$MovingCameraLightAround.make_current()
 
-	var orbitr := (Storey.GridSize*Storey.CellSize.x).length() * 3
-	var WorldSize := Vector3(Storey.GridSize.x *Storey.CellSize.x, Storey.CellSize.y, Storey.GridSize.y*Storey.CellSize.z ) * 4
-	#$DecoOrbit.init(WorldSize, 9)
-	$AxisArrow3D.set_size((Storey.GridSize*Storey.CellSize.x).length()/2).set_colors()
+	var ref_len := Tower.ref_tower_size().length()
+	$DecoOrbit.init(Tower.ref_tower_size() * 2, 9)
+	$AxisArrow3D.set_size(ref_len/3).set_colors()
 
-	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, orbitr), orbitr*2)
-	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, orbitr), orbitr*2)
-	$MovingCameraLightAround.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, orbitr), orbitr*2)
+	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, ref_len), ref_len*4)
+	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, ref_len), ref_len*4)
+	$MovingCameraLightAround.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, ref_len), ref_len*4)
 
 	enter_next_storey(null)
 	update_button_text()

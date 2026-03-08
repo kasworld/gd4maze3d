@@ -1,8 +1,14 @@
 extends Node3D
 class_name Tower
 
+const StoreyUp := 3
+const StoreyDown := 3
+
 const AnimationDuration := 3.0
 const StoreyAnimationDuration := 1.5
+
+static func ref_tower_size() -> Vector3:
+	return Vector3(Storey.GridSize.x, StoreyUp + StoreyDown +1 , Storey.GridSize.y) * Storey.CellSize
 
 var tower_animation := SimpleAnimation.new()
 func _process(_delta: float) -> void:
@@ -90,7 +96,7 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
 
-func init(num :int, StoreyUp :int, StoreyDown :int, Gap :float, deco_ani :bool=false) -> Tower:
+func init(num :int, Gap :float, deco_ani :bool=false) -> Tower:
 	tower_num = num
 	VisibleStoreyUp = StoreyUp
 	VisibleStoreyDown = StoreyDown

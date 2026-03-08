@@ -40,7 +40,7 @@ func _ready() -> void:
 
 	var orbitr := (Storey.GridSize*Storey.CellSize.x).length() * 3
 	var WorldSize := Vector3(Storey.GridSize.x *Storey.CellSize.x, Storey.CellSize.y, Storey.GridSize.y*Storey.CellSize.z ) * 4
-	$DecoOrbit.init(WorldSize, 9)
+	#$DecoOrbit.init(WorldSize, 9)
 	$AxisArrow3D.set_size((Storey.GridSize*Storey.CellSize.x).length()/2).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, orbitr), orbitr*2)

@@ -2,7 +2,7 @@ extends Node3D
 class_name Storey
 
 ## maze default settings
-static var GridSize := Vector2i(4,4)*1
+static var GridSize := Vector2i(4,4)
 static var CellSize := Vector3(4.0,3.0,4.0)
 
 var storey_animation := SimpleAnimation.new()
@@ -57,12 +57,12 @@ func _to_string() -> String:
 
 func init(num :int) -> Storey:
 	var grid_size = GridSize + Vector2i(randi_range(-1,1), randi_range(-1,1) )
-	var cell_size = CellSize
-	#var cell_size = CellSize * Vector3(
-		#pow(2, randf()*2 -1 ),
-		#pow(2, randf()*2 -1 ),
-		#pow(2, randf()*2 -1 ),
-	#)
+	#var cell_size = CellSize
+	var cell_size = CellSize * Vector3(
+		pow(1.2, randf()*2 -1 ),
+		pow(1.2, randf()*2 -1 ),
+		pow(1.2, randf()*2 -1 ),
+	)
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,

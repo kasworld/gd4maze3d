@@ -143,18 +143,18 @@ func make_walllines_all() -> void:
 	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
 	for y in MazeSize.y:
 		for x in MazeSize.x :
-			if not storey.get_maze_cells().is_open_dir_at(x,y,EnumDir.Flag.North):
-				add_wall_at_to_walllines( x , y , EnumDir.Dir.North, walllines_all)
-			if not storey.get_maze_cells().is_open_dir_at(x,y,EnumDir.Flag.West):
-				add_wall_at_to_walllines( x , y , EnumDir.Dir.West, walllines_all)
+			if not storey.get_maze_cells().is_open_dir_at(x,y,Maze.Flag.North):
+				add_wall_at_to_walllines( x , y , Maze.Dir.North, walllines_all)
+			if not storey.get_maze_cells().is_open_dir_at(x,y,Maze.Flag.West):
+				add_wall_at_to_walllines( x , y , Maze.Dir.West, walllines_all)
 
 	for x in MazeSize.x :
-		if not storey.get_maze_cells().is_open_dir_at(x,MazeSize.y-1,EnumDir.Flag.South):
-			add_wall_at_to_walllines( x , MazeSize.y-1 , EnumDir.Dir.South, walllines_all)
+		if not storey.get_maze_cells().is_open_dir_at(x,MazeSize.y-1,Maze.Flag.South):
+			add_wall_at_to_walllines( x , MazeSize.y-1 , Maze.Dir.South, walllines_all)
 
 	for y in MazeSize.y:
-		if not storey.get_maze_cells().is_open_dir_at(MazeSize.x-1,y,EnumDir.Flag.East):
-			add_wall_at_to_walllines( MazeSize.x-1 , y , EnumDir.Dir.East, walllines_all)
+		if not storey.get_maze_cells().is_open_dir_at(MazeSize.x-1,y,Maze.Flag.East):
+			add_wall_at_to_walllines( MazeSize.x-1 , y , Maze.Dir.East, walllines_all)
 
 # make wallline by walls_known
 func make_walllines_known() -> void:
@@ -162,30 +162,30 @@ func make_walllines_known() -> void:
 	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
 	for y in MazeSize.y:
 		for x in MazeSize.x :
-			if is_known_wall_at(x,y,EnumDir.Dir.North):
-				add_wall_at_to_walllines( x , y , EnumDir.Dir.North, walllines_known)
-			if is_known_wall_at(x,y,EnumDir.Dir.West):
-				add_wall_at_to_walllines( x , y , EnumDir.Dir.West, walllines_known)
+			if is_known_wall_at(x,y,Maze.Dir.North):
+				add_wall_at_to_walllines( x , y , Maze.Dir.North, walllines_known)
+			if is_known_wall_at(x,y,Maze.Dir.West):
+				add_wall_at_to_walllines( x , y , Maze.Dir.West, walllines_known)
 
 	for x in MazeSize.x :
-		if is_known_wall_at(x,MazeSize.y-1,EnumDir.Dir.South):
-			add_wall_at_to_walllines( x , MazeSize.y-1 , EnumDir.Dir.South, walllines_known)
+		if is_known_wall_at(x,MazeSize.y-1,Maze.Dir.South):
+			add_wall_at_to_walllines( x , MazeSize.y-1 , Maze.Dir.South, walllines_known)
 
 	for y in MazeSize.y:
-		if is_known_wall_at(MazeSize.x-1,y,EnumDir.Dir.East):
-			add_wall_at_to_walllines( MazeSize.x-1 , y , EnumDir.Dir.East, walllines_known)
+		if is_known_wall_at(MazeSize.x-1,y,Maze.Dir.East):
+			add_wall_at_to_walllines( MazeSize.x-1 , y , Maze.Dir.East, walllines_known)
 
 # cell wall[y*2+1][x*2+1]
 # wall wall[y*2][x*2]
-func calc_wall_pos(x :int, y:int, dir :EnumDir.Dir) -> Vector2i:
-	return Vector2i(x*2+1,y*2+1) + EnumDir.DirToVt2[dir]
-func is_known_wall_at(x :int, y:int, dir :EnumDir.Dir) -> bool:
+func calc_wall_pos(x :int, y:int, dir :Maze.Dir) -> Vector2i:
+	return Vector2i(x*2+1,y*2+1) + Maze.DirToVt2[dir]
+func is_known_wall_at(x :int, y:int, dir :Maze.Dir) -> bool:
 	var wpos := calc_wall_pos(x,y,dir)
 	return walls_known[wpos.y][wpos.x] != 0
-func set_known_wall_at(x :int, y:int, dir :EnumDir.Dir):
+func set_known_wall_at(x :int, y:int, dir :Maze.Dir):
 	var wpos := calc_wall_pos(x,y,dir)
 	walls_known[wpos.y][wpos.x] = 1
-func add_known_wall_at(x:int,y :int, dir :EnumDir.Dir) -> void:
+func add_known_wall_at(x:int,y :int, dir :Maze.Dir) -> void:
 	if is_known_wall_at(x,y,dir):
 		return
 	set_known_wall_at(x,y,dir)
@@ -194,17 +194,17 @@ func add_known_wall_at(x:int,y :int, dir :EnumDir.Dir) -> void:
 func update_knonw_walls_by_pos(x:int,y :int) -> void:
 	var walldir := storey.get_maze_cells().get_wall_dir_at(x,y)
 	for d in walldir:
-		add_known_wall_at(x,y,EnumDir.FlagToDir[d])
+		add_known_wall_at(x,y,Maze.FlagToDir[d])
 
-func add_wall_at_to_walllines(x:int,y :int, dir :EnumDir.Dir,wl :PackedVector2Array ) -> void:
+func add_wall_at_to_walllines(x:int,y :int, dir :Maze.Dir,wl :PackedVector2Array ) -> void:
 	match dir:
-		EnumDir.Dir.North:
+		Maze.Dir.North:
 			wl.append_array([Vector2(x,y)*map_scale,Vector2(x+1,y)*map_scale])
-		EnumDir.Dir.West:
+		Maze.Dir.West:
 			wl.append_array([Vector2(x,y)*map_scale,Vector2(x,y+1)*map_scale])
-		EnumDir.Dir.South:
+		Maze.Dir.South:
 			wl.append_array([Vector2(x,y+1)*map_scale,Vector2(x+1,y+1)*map_scale])
-		EnumDir.Dir.East:
+		Maze.Dir.East:
 			wl.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
 
 func get_width() -> float:

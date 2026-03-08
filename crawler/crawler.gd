@@ -18,7 +18,7 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 			storey.get_mini_map().update_char_pos(cr)
 		"ani_turn":
 			rotation = rotation.snappedf(PI/2)
-			dir_src = EnumDir.RadianToDir(rotation.y)
+			dir_src = Maze.RadianToDir(rotation.y)
 		"ani_roll":
 			pass
 	act_character()
@@ -66,7 +66,7 @@ var storey_action_stats :Dictionary
 var storey :Storey
 var pos_src :Vector2i
 var pos_dst :Vector2i
-var dir_src : EnumDir.Dir
+var dir_src : Maze.Dir
 
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
@@ -74,7 +74,7 @@ func getCameraLight() -> MovingCameraLight:
 func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
 	auto_walk_type = walk_type
 	total_action_stats = ActionQueue.new_stats()
-	dir_src = EnumDir.Dir.North
+	dir_src = Maze.Dir.North
 	current_action.clear()
 	crawler_num = n
 	player_num = p_num
@@ -100,7 +100,7 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	storey = st
 	pos_dst = pos
 	rotation.y = 0
-	dir_src = EnumDir.RadianToDir(rotation.y)
+	dir_src = Maze.RadianToDir(rotation.y)
 	storey_action_stats = ActionQueue.new_stats()
 	action_queue.rand_act_speed()
 	rotation = rotation.snappedf(PI/2)
@@ -121,7 +121,7 @@ func handle_action_in_queue() -> bool:
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				pos_dst = pos_src + EnumDir.DirToVt2[dir_src]
+				pos_dst = pos_src + Maze.DirToVt2[dir_src]
 				start_move_animation(storey, pos_src, pos_dst)
 			else :
 				return false # action ignored
@@ -158,8 +158,8 @@ func debug_str() -> String:
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]
 
-func can_move_to_dir(dir :EnumDir.Dir) -> bool:
-	return storey.get_maze_cells().is_open_dir_at(pos_src.x, pos_src.y, EnumDir.DirToFlag[dir] )
+func can_move_to_dir(dir :Maze.Dir) -> bool:
+	return storey.get_maze_cells().is_open_dir_at(pos_src.x, pos_src.y, Maze.DirToFlag[dir] )
 
 var auto_walk_type : Walk
 func set_next_walk_type() -> Crawler:
@@ -185,7 +185,7 @@ func enqueue_auto_walk_action_by_type() -> void:
 
 func walk_right_first() -> bool:
 	# try right
-	if can_move_to_dir(EnumDir.DirTurnRight[dir_src]):
+	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 		return true
@@ -194,12 +194,12 @@ func walk_right_first() -> bool:
 		action_queue.enqueue(ActionQueue.Action.Forward)
 		return true
 	# try left
-	if can_move_to_dir(EnumDir.DirTurnLeft[dir_src]):
+	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 		return true
 	# try backward
-	if can_move_to_dir(EnumDir.DirOpppsite[dir_src]):
+	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
@@ -209,7 +209,7 @@ func walk_right_first() -> bool:
 
 func walk_left_first() -> bool:
 	# try left
-	if can_move_to_dir(EnumDir.DirTurnLeft[dir_src]):
+	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 		return true
@@ -218,12 +218,12 @@ func walk_left_first() -> bool:
 		action_queue.enqueue(ActionQueue.Action.Forward)
 		return true
 	# try right
-	if can_move_to_dir(EnumDir.DirTurnRight[dir_src]):
+	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 		return true
 	# try backward
-	if can_move_to_dir(EnumDir.DirOpppsite[dir_src]):
+	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)

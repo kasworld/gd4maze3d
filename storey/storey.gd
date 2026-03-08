@@ -174,7 +174,7 @@ func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 var line2d_subviewport :SubViewport
 var clockcalendar_sel :int
 # add clock or calendar
-func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
+func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 	if randf() < MakeLine2DWallRate:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
@@ -183,7 +183,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 		$WallDeco.add_child(b)
 		b.position = maze3d.deco_pos_by_dir(x,y,dir)
 		#b.rotate_x(PI/2)
-		b.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
+		b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
 		return
 
 	if randf() < MakeClockCalWallRate:
@@ -199,7 +199,7 @@ func add_wall_deco_at(x :int, y :int, dir :EnumDir.Flag) -> void:
 			n = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
 			n.init(크기기준/2, depth, 크기기준/16, 9.0, false)
 		#n.rotate_x(PI/2)
-		n.rotate_y(EnumDir.DirToRadian(EnumDir.FlagToDir[dir]))
+		n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
 		n.position = maze3d.deco_pos_by_dir(x,y,dir)
 		$WallDeco.add_child(n)
 

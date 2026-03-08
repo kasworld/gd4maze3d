@@ -161,18 +161,18 @@ var pos_list_H_sub :Array
 func make_wall_by_maze() -> void:
 	for y in PreCalced.Grid2D.y:
 		for x in PreCalced.Grid2D.x:
-			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
-				add_wall_at( x , y , EnumDir.Flag.North)
-			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
-				add_wall_at( x , y , EnumDir.Flag.West)
+			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.North):
+				add_wall_at( x , y , Maze.Flag.North)
+			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.West):
+				add_wall_at( x , y , Maze.Flag.West)
 
 	for x in PreCalced.Grid2D.x :
-		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,EnumDir.Flag.South):
-			add_wall_at( x , PreCalced.Grid2D.y , EnumDir.Flag.South)
+		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
+			add_wall_at( x , PreCalced.Grid2D.y , Maze.Flag.South)
 
 	for y in PreCalced.Grid2D.y:
-		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,EnumDir.Flag.East):
-			add_wall_at( PreCalced.Grid2D.x , y , EnumDir.Flag.East)
+		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
+			add_wall_at( PreCalced.Grid2D.x , y , Maze.Flag.East)
 
 	wall_multi_inst_V_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
 	wall_multi_inst_H_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)
@@ -185,14 +185,14 @@ func calc_pos_face_V(x :int, y :int) -> Vector3:
 func calc_pos_face_H(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(calc_grid.unit_size.x/2, calc_grid.unit_size.y/2, 0)
 
-func add_wall_at(x :int, y :int, dir :EnumDir.Flag) -> void:
+func add_wall_at(x :int, y :int, dir :Maze.Flag) -> void:
 	match dir:
-		EnumDir.Flag.West, EnumDir.Flag.East:
+		Maze.Flag.West, Maze.Flag.East:
 			if randf() < MakeSubWallRate:
 				pos_list_V_sub.append(calc_pos_face_V(x,y))
 			else:
 				pos_list_V_main.append(calc_pos_face_V(x,y))
-		EnumDir.Flag.North, EnumDir.Flag.South:
+		Maze.Flag.North, Maze.Flag.South:
 			if randf() < MakeSubWallRate:
 				pos_list_H_sub.append(calc_pos_face_H(x,y))
 			else:
@@ -204,28 +204,28 @@ func make_wall_deco_by_maze(makedeco :Callable) -> void:
 
 	for y in PreCalced.Grid2D.y:
 		for x in PreCalced.Grid2D.x:
-			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.North):
-				makedeco.call(x, y, EnumDir.Flag.North)
-			if not maze_cells.is_open_dir_at(x,y,EnumDir.Flag.West):
-				makedeco.call(x, y, EnumDir.Flag.West)
+			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.North):
+				makedeco.call(x, y, Maze.Flag.North)
+			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.West):
+				makedeco.call(x, y, Maze.Flag.West)
 
 	for x in PreCalced.Grid2D.x :
-		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,EnumDir.Flag.South):
-			makedeco.call(x, PreCalced.Grid2D.y, EnumDir.Flag.South)
+		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
+			makedeco.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
 
 	for y in PreCalced.Grid2D.y:
-		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,EnumDir.Flag.East):
-			makedeco.call(PreCalced.Grid2D.x, y, EnumDir.Flag.East)
+		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
+			makedeco.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
-func deco_pos_by_dir(x :int, y :int, dir :EnumDir.Flag) -> Vector3:
+func deco_pos_by_dir(x :int, y :int, dir :Maze.Flag) -> Vector3:
 	match dir:
-		EnumDir.Flag.West:
+		Maze.Flag.West:
 			return calc_pos_face_V(x,y) + Vector3(WallThick,0,0)
-		EnumDir.Flag.East:
+		Maze.Flag.East:
 			return calc_pos_face_V(x,y) - Vector3(WallThick,0,0)
-		EnumDir.Flag.North:
+		Maze.Flag.North:
 			return calc_pos_face_H(x,y) + Vector3(0,0,WallThick)
-		EnumDir.Flag.South:
+		Maze.Flag.South:
 			return calc_pos_face_H(x,y) - Vector3(0,0,WallThick)
 	assert(false,"invalid dir %s" % dir)
 	return Vector3.ZERO
@@ -324,8 +324,8 @@ func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 		pos,
 		calc_grid.cell_aabb_by_posi(posi),
 		[
-			(v & EnumDir.Flag.West) == 0 , (v & EnumDir.Flag.East) == 0 ,
+			(v & Maze.Flag.West) == 0 , (v & Maze.Flag.East) == 0 ,
 			true, true,
-			(v & EnumDir.Flag.North) == 0 , (v & EnumDir.Flag.South) == 0 ,
+			(v & Maze.Flag.North) == 0 , (v & Maze.Flag.South) == 0 ,
 		],
 		radius)

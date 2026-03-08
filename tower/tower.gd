@@ -75,11 +75,10 @@ func view_wallpillar_next() -> void:
 	view_walls = Maze3D.wallview_next(view_walls)
 	set_wallpillar_view_mode(view_walls)
 
+var visible_storey_up :int = StoreyUp
+var visible_storey_down :int = StoreyDown
+var storey_gap :float = Storey.CellSize.y
 
-var VisibleStoreyUp :int
-var VisibleStoreyDown :int
-
-var StoreyGap :float
 var gap_ani_dir_open : bool = true # true:open, false:close
 var storey_list :Array[Storey]
 var cur_storey :Storey
@@ -90,13 +89,10 @@ func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
 	upper:%d lower:%d
 	%s]" % [storey_list.size(), view_floor_ceiling,
-	VisibleStoreyUp,VisibleStoreyDown, cur_storey ]
+	visible_storey_up,visible_storey_down, cur_storey ]
 
 func init(deco_ani :bool=false) -> Tower:
-	VisibleStoreyUp = StoreyUp
-	VisibleStoreyDown = StoreyDown
-	StoreyGap = Storey.CellSize.y
-	for i in VisibleStoreyUp:
+	for i in visible_storey_up:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
 	if deco_ani:
@@ -117,7 +113,7 @@ func find_storey_by_num(num :int) -> Storey:
 func calc_storey_base_y_pos(storey_index :int) -> float:
 	var rtn :float = storey_list[0].storey_height/2
 	if gap_ani_dir_open:
-		rtn += StoreyGap * storey_index
+		rtn += storey_gap * storey_index
 	for i in storey_index:
 		rtn += storey_list[i].storey_height/2 + storey_list[i+1].storey_height/2
 	return rtn
@@ -148,7 +144,7 @@ func add_new_storey(stnum :int) -> void:
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), StoreyAnimationDuration)
 
 func del_old_storey() -> void:
-	if cur_storey.storey_num > VisibleStoreyDown:
+	if cur_storey.storey_num > visible_storey_down:
 		var st :Storey = storey_list.pop_front()
 		st.storey_animation.start_scale("ani_del", st, Vector3(1,1,1), Vector3(0.1,0.1,0.1), StoreyAnimationDuration)
 

@@ -36,9 +36,9 @@ func init(st :Storey) -> MiniMap:
 	walls_known.resize(storey.maze3d.PreCalced.Grid2D.y*2+1)
 	for cl in walls_known:
 		cl.resize(storey.maze3d.PreCalced.Grid2D.x*2+1)
-	goal = new_label(Color.RED, "Goal", 8)
+	goal = new_label(Color.RED, "Goal", 1)
 	add_child(goal)
-	start = new_label(Color.YELLOW, "Start", 8)
+	start = new_label(Color.YELLOW, "Start", 1)
 	add_child(start)
 	apply_minimap_mode()
 	return self
@@ -47,7 +47,7 @@ func add_chars(char_list :Array, playernum :int) -> MiniMap:
 	player_serial = playernum
 	for ch in char_list:
 		if ch.crawler_num == player_serial:
-			add_character(ch, 8)
+			add_character(ch, 1)
 		else:
 			add_character(ch, 0)
 	apply_minimap_mode()
@@ -85,7 +85,7 @@ func update_size() -> void:
 	position.x = (vp_size.x - get_width())/2
 
 func add_character(achar :Crawler, outline :int) -> void:
-	var ch := new_label(achar.color, "Char\n%d" %[achar.crawler_num] , outline)
+	var ch := new_label(achar.color, "%d" %[achar.crawler_num] , outline)
 	$CharacterContainer.add_child(ch)
 
 func update_char_pos(ch :Crawler) -> void:
@@ -132,7 +132,7 @@ func update_labels() -> void:
 func update_label_pos_size(nd :Label, pos :Vector2i) -> void:
 	nd.position = pos2mapscale(pos)
 	nd.size = Vector2(map_scale-WallThick*2, map_scale-WallThick*2)
-	nd.label_settings.font_size = map_scale/5.0 as int
+	nd.label_settings.font_size = map_scale/2.0 as int
 
 func pos2mapscale(pos :Vector2i) -> Vector2:
 	return pos * map_scale + Vector2(WallThick,WallThick)

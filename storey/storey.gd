@@ -2,7 +2,7 @@ extends Node3D
 class_name Storey
 
 ## maze default settings
-const GridSize := Vector2i(4,4)
+const GridSize := Vector2i(6,6)
 const CellSize := Vector3(4.0,3.0,4.0)
 
 var storey_animation := SimpleAnimation.new()
@@ -54,8 +54,8 @@ func get_mini_map() -> MiniMap:
 var storey_height :float
 
 func _to_string() -> String:
-	return "Storey[%d DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
-		storey_num, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
+	return "Storey[%d %s DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
+		storey_num, maze3d, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
 
 func clamp_rand(v :float) -> float :
 	var rtn := randfn( v, v/2 )

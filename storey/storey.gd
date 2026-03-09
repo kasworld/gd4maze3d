@@ -65,23 +65,22 @@ func init(num :int) -> Storey:
 		pow(1.2, randf()*2 -1 ),
 	)
 	var maze2d := Maze.new(grid_size)
+	var floor_ceiling_height :float = cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
-		).init_setting(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
-		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,
+		).init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
+		).init_floor_ceiling(grid_size*4, floor_ceiling_height, 0.9,
 		Color(NamedColors.random_color(), 0.5),
 		Color(NamedColors.random_color(), 0.5),
 	)
-	storey_height = cell_size.y + cell_size.y *0.01 * 2
+	storey_height = cell_size.y + floor_ceiling_height * 2
 	change_floor_ceiling_colors()
 	add_child(maze3d)
 	if num % 2 ==0 :
-		maze3d.init_with_mat(add_wall_deco_at,
-			TexMat.make_mainwall_mat(),
-			TexMat.make_subwall_mat() )
+		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat() )
 	else:
-		maze3d.init_with_color(add_wall_deco_at,
-			NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color(),
-		)
+		maze3d.init_with_color(
+			NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color())
+	maze3d.init_wall_deco(add_wall_deco_at)
 	storey_num = num
 
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)

@@ -19,20 +19,19 @@ func _to_string() -> String:
 		calc_grid, WallThick,
 	]
 
-
 var PreCalced := {}
 
-func init_setting( grid_size :Vector2i, cell_size :Vector3, wall_thick :float, subwall_rate :float) -> Maze3D:
+func init_setting( maze2d :Maze, cell_size :Vector3, wall_thick :float, subwall_rate :float) -> Maze3D:
 	WallThick = wall_thick
 	MakeSubWallRate = subwall_rate
 
-	var grid3d := CalcGrid3D.xz_Vector2iToVector3i(grid_size,1)
+	maze_cells = maze2d
+	var grid3d := Vector3(maze_cells.width,1,maze_cells.height)
 	var sz := cell_size * (grid3d as Vector3)
 	calc_grid = CalcGrid3D.new(CalcGrid3D.SizeToAABB(sz), grid3d)
-	maze_cells = Maze.new(grid_size)
-	PreCalced.Grid2D = grid_size
+	PreCalced.Grid2D = Vector2i(maze_cells.width,maze_cells.height)
 	PreCalced.PillarSize = Vector3(wall_thick,cell_size.y,wall_thick)
-	PreCalced.SizeV2 = (grid_size as Vector2) * Vector2(cell_size.x, cell_size.z)
+	PreCalced.SizeV2 = (PreCalced.Grid2D as Vector2) * Vector2(cell_size.x, cell_size.z)
 	PreCalced.SizeV3 = calc_grid.boundary.size
 	PreCalced.SizeWithWallV2 = PreCalced.SizeV2 + Vector2(wall_thick, wall_thick)
 	PreCalced.SizeWithWallV3 = Vector3(PreCalced.SizeWithWallV2.x, cell_size.y, PreCalced.SizeWithWallV2.y)

@@ -59,14 +59,14 @@ func _to_string() -> String:
 
 func init(num :int) -> Storey:
 	var grid_size = GridSize + Vector2i(randi_range(-1,1), randi_range(-1,1) )
-	#var cell_size = CellSize
 	var cell_size = CellSize * Vector3(
 		pow(1.2, randf()*2 -1 ),
 		pow(1.2, randf()*2 -1 ),
 		pow(1.2, randf()*2 -1 ),
 	)
+	var maze2d := Maze.new(grid_size)
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
-		).init_setting(grid_size, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
+		).init_setting(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, cell_size.y *0.01, 0.9,
 		Color(NamedColors.random_color(), 0.5),
 		Color(NamedColors.random_color(), 0.5),

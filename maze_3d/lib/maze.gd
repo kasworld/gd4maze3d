@@ -1,5 +1,7 @@
 class_name Maze
 
+# start enum ##################################
+
 static func RadianToDir(rad :float) -> Dir:
 	var dir := snappedi(rad *2/PI, 1)
 	dir = ((dir%4)+4)%4
@@ -131,12 +133,13 @@ const Vt2ToFlag = {
 	 Vector2i(1,0) : Flag.East,
 }
 
+# end enum ###########################
+
 
 # opened dir NOT wall
 var _cells : PackedByteArray
-#var _maze_size : Vector2i
-var _w :int
-var _h :int
+var width :int
+var height :int
 
 func _select_visited(visted_pos :Array) -> int:
 	if randi_range(0,1)==0:
@@ -145,15 +148,14 @@ func _select_visited(visted_pos :Array) -> int:
 		return randi_range(0,visted_pos.size()-1)
 
 func _open_dir_at(x:int,y:int, d :int) -> void:
-	_cells[y*_w+x] |= d
+	_cells[y*width+x] |= d
 
 func _init(msize :Vector2i) -> void:
-	#_maze_size = msize
-	_w = msize.x
-	_h = msize.y
-	_cells.resize(_h*_w)
+	width = msize.x
+	height = msize.y
+	_cells.resize(height*width)
 	var visted_pos := []
-	var pos := Vector2i( randi_range(0,_w-1),randi_range(0,_h-1),)
+	var pos := Vector2i( randi_range(0,width-1),randi_range(0,height-1),)
 	visted_pos.append(pos)
 	while visted_pos.size() > 0:
 		var posidx := _select_visited(visted_pos)
@@ -173,13 +175,13 @@ func _init(msize :Vector2i) -> void:
 			visted_pos.remove_at(posidx)
 
 func is_in(x:int,y:int) -> bool:
-	return x >=0 && y>=0 && x < _w && y < _h
+	return x >=0 && y>=0 && x < width && y < height
 
 func get_cell(x :int, y:int) -> int:
-	return _cells[y*_w+x]
+	return _cells[y*width+x]
 
 func is_open_dir_at(x :int, y :int, dir :Maze.Flag) -> bool:
-	return (_cells[y*_w+x] & dir) != 0
+	return (_cells[y*width+x] & dir) != 0
 
 func get_open_dir_at(x :int, y :int) -> Array[Maze.Flag]:
 	var rtn :Array[Maze.Flag] = []
@@ -189,11 +191,11 @@ func get_open_dir_at(x :int, y :int) -> Array[Maze.Flag]:
 	return rtn
 
 func is_wall_dir_at(x :int, y :int, dir :Maze.Flag) -> bool:
-	return (_cells[y*_w+x] & dir) == 0
+	return (_cells[y*width+x] & dir) == 0
 
 ## enumdir order : North West South East
 func get_wall_alldir_at(x :int, y :int) -> Array[bool]:
-	var v := _cells[y*_w+x]
+	var v := _cells[y*width+x]
 	return [
 		(v & Maze.Flag.North) == 0,
 		(v & Maze.Flag.West) == 0,
@@ -214,12 +216,11 @@ func open_dir_str(x :int , y :int) -> String:
 		rtn += "%s " %[Maze.FlagToStr[d]]
 	return rtn
 
-
 # from_pos -> [ {"pos" : to_pos, "dir" : dir} ]
 func make_move_graph() -> Dictionary:
 	var rtn := {}
-	for y in _h:
-		for x in _w:
+	for y in height:
+		for x in width:
 			var val := []
 			var srcpos := Vector2i(x,y)
 			for fdir in get_open_dir_at(x,y):

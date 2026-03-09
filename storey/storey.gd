@@ -57,12 +57,19 @@ func _to_string() -> String:
 	return "Storey[%d DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
 		storey_num, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
 
+func clamp_rand(v :float) -> float :
+	var rtn := randfn( v, v/2 )
+	return clampf(rtn, v/2 , v *2)
+
 func init(num :int) -> Storey:
-	var grid_size = GridSize + Vector2i(randi_range(-1,1), randi_range(-1,1) )
-	var cell_size = CellSize * Vector3(
-		pow(1.2, randf()*2 -1 ),
-		pow(1.2, randf()*2 -1 ),
-		pow(1.2, randf()*2 -1 ),
+	var grid_size := Vector2i(
+		clamp_rand(GridSize.x),
+		clamp_rand(GridSize.y),
+	)
+	var cell_size := Vector3(
+		clamp_rand(CellSize.x),
+		clamp_rand(CellSize.y),
+		clamp_rand(CellSize.z),
 	)
 	var maze2d := Maze.new(grid_size)
 	var floor_ceiling_height :float = cell_size.y *0.01

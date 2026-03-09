@@ -184,29 +184,21 @@ func is_open_dir_at(x :int, y :int, dir :Maze.Flag) -> bool:
 	return (_cells[y*width+x] & dir) != 0
 
 func get_open_dir_at(x :int, y :int) -> Array[Maze.Flag]:
+	var v := _cells[y*width+x]
 	var rtn :Array[Maze.Flag] = []
 	for d in Maze.FlagList:
-		if is_open_dir_at(x,y,d):
+		if (v & d) != 0:
 			rtn.append(d)
 	return rtn
 
 func is_wall_dir_at(x :int, y :int, dir :Maze.Flag) -> bool:
 	return (_cells[y*width+x] & dir) == 0
 
-## enumdir order : North West South East
-func get_wall_alldir_at(x :int, y :int) -> Array[bool]:
-	var v := _cells[y*width+x]
-	return [
-		(v & Maze.Flag.North) == 0,
-		(v & Maze.Flag.West) == 0,
-		(v & Maze.Flag.South) == 0,
-		(v & Maze.Flag.East) == 0,
-	]
-
 func get_wall_dir_at(x :int, y :int) -> Array[Maze.Flag]:
+	var v := _cells[y*width+x]
 	var rtn :Array[Maze.Flag] = []
 	for d in Maze.FlagList:
-		if is_wall_dir_at(x,y,d):
+		if (v & d) == 0:
 			rtn.append(d)
 	return rtn
 

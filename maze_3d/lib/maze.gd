@@ -134,13 +134,13 @@ const Vt2ToFlag :Dictionary[Vector2i,Flag] = {
 }
 
 # Main function to get all permutations as an array of arrays
-static func generate_all_permutations(array: Array) -> Array:
-	var output: Array = []
+static func generate_all_permutations(array :Array) -> Array:
+	var output :Array = []
 	_recursive_permutation_helper(array, 0, output)
 	return output
 
 # Recursive helper function
-static func _recursive_permutation_helper(array: Array, start_index: int, output: Array) -> void:
+static func _recursive_permutation_helper(array :Array, start_index :int, output :Array) -> void:
 	if start_index == array.size():
 		# Base case: a complete permutation is found, add it to the output
 		# Use .duplicate(true) to ensure a deep copy if elements are complex objects/arrays
@@ -191,28 +191,29 @@ func _init(msize :Vector2i) -> void:
 	width = msize.x
 	height = msize.y
 	_cells.resize(height*width)
-	var visted_pos := []
+	var visted_pos :Array[Vector2i] = []
 	var pos := Vector2i( randi_range(0,width-1),randi_range(0,height-1),)
 	visted_pos.append(pos)
 	while visted_pos.size() > 0:
 		var posidx := _select_visited(visted_pos)
 		pos = visted_pos[posidx]
+		var pos_x := pos.x
+		var pos_y := pos.y
 		var delpos := true
-		#var rnddir := Maze.FlagList.duplicate()
-		#rnddir.shuffle()
-		#for dir in rnddir:
 		for dir in FlagPermutation.pick_random():
 			var npos :Vector2i = pos + Maze.FlagToVt2[dir]
-			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
-				_open_dir_at(pos.x,pos.y, dir)
-				_open_dir_at(npos.x,npos.y, Maze.FlagOpppsite[dir])
+			var npos_x := npos.x
+			var npos_y := npos.y
+			if is_in(npos_x,npos_y) && get_cell(npos_x,npos_y)==0:
+				_open_dir_at(pos_x,pos_y, dir)
+				_open_dir_at(npos_x,npos_y, Maze.FlagOpppsite[dir])
 				visted_pos.append(npos)
 				delpos = false
 				break
 		if delpos:
 			visted_pos.remove_at(posidx)
 
-func is_in(x:int,y:int) -> bool:
+func is_in(x :int,y :int) -> bool:
 	return x >=0 && y>=0 && x < width && y < height
 
 func get_cell(x :int, y:int) -> int:

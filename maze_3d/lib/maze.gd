@@ -5,7 +5,7 @@ class_name Maze
 static func RadianToDir(rad :float) -> Dir:
 	var dir := snappedi(rad *2/PI, 1)
 	dir = ((dir%4)+4)%4
-	var dir2dir := [
+	const dir2dir :Array[Dir]= [
 		Dir.North, # Vector2i(0,-1),
 		Dir.West,  # Vector2i(-1,0),
 		Dir.South, # Vector2i(0,1),
@@ -19,47 +19,47 @@ enum Dir {
 	South = 2,
 	East = 3,
 }
-const DirList = [Dir.North,Dir.West,Dir.South,Dir.East]
+const DirList :Array[Dir] = [Dir.North,Dir.West,Dir.South,Dir.East]
 
-const DirToStr = {
+const DirToStr :Dictionary[Dir,String] = {
 	Dir.North : "North",
 	Dir.West : "West",
 	Dir.South : "South",
 	Dir.East : "East",
 }
-const StrToDir = {
+const StrToDir :Dictionary[String,Dir] = {
 	 "North" : Dir.North ,
 	 "West" : Dir.West ,
 	 "South" : Dir.South ,
 	 "East" : Dir.East ,
 }
 
-const DirOpppsite = {
+const DirOpppsite :Dictionary[Dir,Dir] = {
 	Dir.North : Dir.South,
 	Dir.West : Dir.East,
 	Dir.South : Dir.North,
 	Dir.East : Dir.West,
 }
-const DirTurnLeft = {
+const DirTurnLeft :Dictionary[Dir,Dir] = {
 	Dir.North : Dir.West,
 	Dir.West : Dir.South,
 	Dir.South : Dir.East,
 	Dir.East : Dir.North,
 }
-const DirTurnRight = {
+const DirTurnRight :Dictionary[Dir,Dir] = {
 	Dir.North : Dir.East,
 	Dir.East : Dir.South,
 	Dir.South : Dir.West,
 	Dir.West : Dir.North,
 }
 
-const DirToVt2 = {
+const DirToVt2 :Dictionary[Dir,Vector2i] = {
 	Dir.North : Vector2i(0,-1),
 	Dir.West : Vector2i(-1,0),
 	Dir.South : Vector2i(0, 1),
 	Dir.East : Vector2i(1,0),
 }
-const Vt2ToDir = {
+const Vt2ToDir :Dictionary[Vector2i,Dir] = {
 	 Vector2i(0,-1) : Dir.North,
 	 Vector2i(-1,0) : Dir.West,
 	 Vector2i(0, 1) : Dir.South,
@@ -75,63 +75,100 @@ enum Flag {
 	South = 1 << Dir.South,
 	East = 1 << Dir.East,
 }
-const FlagList = [Flag.North,Flag.West,Flag.South,Flag.East]
+const FlagList :Array[Flag] = [Flag.North,Flag.West,Flag.South,Flag.East]
 
-const FlagToDir = {
+const FlagToDir :Dictionary[Flag,Dir] = {
 	Flag.North : Dir.North,
 	Flag.West : Dir.West,
 	Flag.South : Dir.South,
 	Flag.East : Dir.East,
 }
-const DirToFlag = {
+const DirToFlag :Dictionary[Dir,Flag] = {
 	Dir.North : Flag.North,
 	Dir.West : Flag.West,
 	Dir.South : Flag.South,
 	Dir.East : Flag.East,
 }
-const FlagToStr = {
+const FlagToStr :Dictionary[Flag,String] = {
 	Flag.North : "North",
 	Flag.West : "West",
 	Flag.South : "South",
 	Flag.East : "East",
 }
-const StrToFlag = {
+const StrToFlag :Dictionary[String,Flag] = {
 	 "North" : Flag.North ,
 	 "West" : Flag.West ,
 	 "South" : Flag.South ,
 	 "East" : Flag.East ,
 }
 
-const FlagOpppsite = {
+const FlagOpppsite :Dictionary[Flag,Flag] = {
 	Flag.North : Flag.South,
 	Flag.West : Flag.East,
 	Flag.South : Flag.North,
 	Flag.East : Flag.West,
 }
-const FlagTurnLeft = {
+const FlagTurnLeft :Dictionary[Flag,Flag] = {
 	Flag.North : Flag.West,
 	Flag.West : Flag.South,
 	Flag.South : Flag.East,
 	Flag.East : Flag.North,
 }
-const FlagTurnRight = {
+const FlagTurnRight :Dictionary[Flag,Flag] = {
 	Flag.North : Flag.East,
 	Flag.East : Flag.South,
 	Flag.South : Flag.West,
 	Flag.West : Flag.North,
 }
-const FlagToVt2 = {
+const FlagToVt2 :Dictionary[Flag,Vector2i] = {
 	Flag.North : Vector2i(0,-1),
 	Flag.West : Vector2i(-1,0),
 	Flag.South : Vector2i(0, 1),
 	Flag.East : Vector2i(1,0),
 }
-const Vt2ToFlag = {
+const Vt2ToFlag :Dictionary[Vector2i,Flag] = {
 	 Vector2i(0,-1) : Flag.North,
 	 Vector2i(-1,0) : Flag.West,
 	 Vector2i(0, 1) : Flag.South,
 	 Vector2i(1,0) : Flag.East,
 }
+
+# Main function to get all permutations as an array of arrays
+static func generate_all_permutations(array: Array) -> Array:
+	var output: Array = []
+	_recursive_permutation_helper(array, 0, output)
+	return output
+
+# Recursive helper function
+static func _recursive_permutation_helper(array: Array, start_index: int, output: Array) -> void:
+	if start_index == array.size():
+		# Base case: a complete permutation is found, add it to the output
+		# Use .duplicate(true) to ensure a deep copy if elements are complex objects/arrays
+		output.append(array.duplicate())
+		return
+
+	for i in range(start_index, array.size()):
+		# Swap current element with the element at the start index
+		#array.swap(start_index, i)
+		var tmp = array[start_index]
+		array[start_index] = array[i]
+		array[i] = tmp
+
+		# Recurse for the next index
+		_recursive_permutation_helper(array, start_index + 1, output)
+
+		# Backtrack: swap them back to restore the original array state for the next iteration
+		#array.swap(start_index, i)
+		tmp = array[start_index]
+		array[start_index] = array[i]
+		array[i] = tmp
+
+static var FlagPermutation :Array
+static var DirPermutation :Array
+static func _static_init() -> void:
+	FlagPermutation = generate_all_permutations(FlagList.duplicate())
+	DirPermutation = generate_all_permutations(DirList.duplicate())
+	#print_debug(FlagPermutation, DirPermutation)
 
 # end enum ###########################
 
@@ -161,9 +198,10 @@ func _init(msize :Vector2i) -> void:
 		var posidx := _select_visited(visted_pos)
 		pos = visted_pos[posidx]
 		var delpos := true
-		var rnddir := Maze.FlagList.duplicate()
-		rnddir.shuffle()
-		for dir in rnddir:
+		#var rnddir := Maze.FlagList.duplicate()
+		#rnddir.shuffle()
+		#for dir in rnddir:
+		for dir in FlagPermutation.pick_random():
 			var npos :Vector2i = pos + Maze.FlagToVt2[dir]
 			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
 				_open_dir_at(pos.x,pos.y, dir)

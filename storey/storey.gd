@@ -2,7 +2,7 @@ extends Node3D
 class_name Storey
 
 ## maze default settings
-const GridSize := Vector2i(6,6)
+const GridSize := Vector2i(8,8)
 const CellSize := Vector3(4.0,3.0,4.0)
 
 var storey_animation := SimpleAnimation.new()

@@ -1,6 +1,8 @@
 extends Node3D
 class_name MovingCameraLight
 
+
+
 static var SelfList :Array[MovingCameraLight]
 static var CurrentIndex :int
 ## retuen old
@@ -30,18 +32,27 @@ func set_info_text(s :String) -> MovingCameraLight:
 func get_info_text() -> String:
 	return info_text
 
-var camera_fov := ClampedFloat.new(75,1,179)
+var camera_fov := ClampedFloat.new(50,1,179)
 var light_angle := ClampedFloat.new(45,1,179)
 
 func get_camera() -> Camera3D:
 	return $Camera3D
+
+func calc_z_len_by_fov_size(sz :Vector3) -> float:
+	var fov_rad := deg_to_rad($Camera3D.fov)
+	match $Camera3D.keep_aspect:
+		Camera3D.KEEP_WIDTH:
+			return sz.x/2 / tan(fov_rad/2)
+		Camera3D.KEEP_HEIGHT:
+			return sz.y/2 / tan(fov_rad/2)
+	return sz.z
 
 func get_light() -> SpotLight3D:
 	return $SpotLight3D
 
 func _ready() -> void:
 	SelfList.append(self)
-	camera_fov_reset()
+	fov_reset()
 	light_angle_reset()
 	make_current()
 
@@ -53,14 +64,17 @@ func _to_string() -> String:
 	return "MovingCameraLight %s[camera fov:%s, light angle:%s, rotation:%s, position:%s]" % [
 		info_text, camera_fov,light_angle, rotation_degrees, position ]
 
-func camera_fov_inc() -> void:
+func fov_inc() -> void:
 	$Camera3D.fov = camera_fov.set_up()
 
-func camera_fov_dec() -> void:
+func fov_dec() -> void:
 	$Camera3D.fov = camera_fov.set_down()
 
-func camera_fov_reset() -> void:
+func fov_reset() -> void:
 	$Camera3D.fov = camera_fov.reset()
+
+func fov_set(v :float) -> void:
+	$Camera3D.fov = camera_fov.set_value(v)
 
 func light_angle_inc() -> void:
 	$SpotLight3D.spot_angle = light_angle.set_up()
@@ -70,6 +84,9 @@ func light_angle_dec() -> void:
 
 func light_angle_reset() -> void:
 	$SpotLight3D.spot_angle = light_angle.reset()
+
+func light_angle_set(v :float) -> void:
+	$SpotLight3D.spot_angle = light_angle.set_value(v)
 
 func move_wave_around_y(t :float,  center :Vector3, radius :float, height :float) -> void:
 	position = Vector3( sin(t)*radius, sin(t*1.3)*height, cos(t)*radius ) + center

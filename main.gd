@@ -86,7 +86,7 @@ func add_crawler(i :int) -> Crawler:
 func crawler_goal_reached(st :Storey, _cr :Crawler) -> void:
 	enter_next_storey.call_deferred(st)
 
-var key2fn = {
+var key2fn :Dictionary[Key, Callable]= {
 	KEY_ESCAPE:_on_button_esc_pressed,
 	KEY_1:_on_button_help_pressed,
 	KEY_2:_on_button_minimap_pressed,
@@ -198,10 +198,10 @@ func _on_button_camera_pressed() -> void:
 	MovingCameraLight.NextCamera()
 
 func _on_button_fov_up_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().camera_fov_inc()
+	MovingCameraLight.GetCurrentCamera().fov_inc()
 
 func _on_button_fov_down_pressed() -> void:
-	MovingCameraLight.GetCurrentCamera().camera_fov_dec()
+	MovingCameraLight.GetCurrentCamera().fov_dec()
 
 func _on_button_debug_pressed() -> void:
 	$"오른쪽패널"/Debug.visible = !$"오른쪽패널"/Debug.visible

@@ -52,6 +52,29 @@ func cell_aabb_by_posi(posi :Vector3i) -> AABB:
 		unit_size,
 	)
 
+## fn(index:int, xi:int, yi:int, zi:int) -> void [br]
+## for z : for y : for x:
+func iter_ixyz(fn :Callable) -> void:
+	var index := 0
+	for zi in grid_size.z:
+		for yi in grid_size.y:
+			for xi in grid_size.x:
+				fn.call(index,xi,yi,zi)
+				index += 1
+
+func rate_posi(posi :Vector3i) -> Vector3:
+	return (posi as Vector3) / (grid_size as Vector3 - Vector3.ONE)
+
+func rate_xi(xi :int) -> float:
+	return float(xi) / float(grid_size.x-1)
+
+func rate_yi(yi :int) -> float:
+	return float(yi) / float(grid_size.y-1)
+
+func rate_zi(zi :int) -> float:
+	return float(zi) / float(grid_size.z-1)
+
+
 ## inverse get_n_th_posi
 func get_index_by_posi_xyz(x :int, y :int, z :int=0) -> int:
 	return x + (y *grid_size.x) + (z * grid_size.x * grid_size.y)

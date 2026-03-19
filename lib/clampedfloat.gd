@@ -14,14 +14,14 @@ func get_value() -> float:
 func set_value(v :float) -> float:
 	_value = clampf(v, _vmin, _vmax)
 	return _value
-func set_up() -> float:
-	_value = clampf(_value *1.1, _vmin, _vmax)
+func set_up(rate :float=1.1) -> float:
+	_value = clampf(_value *rate, _vmin, _vmax)
 	return _value
 func set_max() -> float:
 	_value = _vmax
 	return _value
-func set_down() -> float:
-	_value = clampf(_value /1.1, _vmin, _vmax)
+func set_down(rate :float=1.1) -> float:
+	_value = clampf(_value /rate, _vmin, _vmax)
 	return _value
 func set_min() -> float:
 	_value = _vmin

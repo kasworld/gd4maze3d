@@ -2,7 +2,7 @@ class_name FlyNode3D
 
 # for free fly camera
 
-const Key2Info := {
+const Key2Info :Dictionary[Key,Array] = {
 	KEY_UP: ["rotation", "x", PI/180],
 	KEY_DOWN: ["rotation", "x", -PI/180],
 	KEY_LEFT: ["rotation", "y", PI/180],

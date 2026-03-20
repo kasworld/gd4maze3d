@@ -61,16 +61,19 @@ func clamp_rand(v :float) -> float :
 	var rtn := randfn( v, v/2 )
 	return clampf(rtn, v/2 , v *2)
 
-func init(num :int) -> Storey:
-	var grid_size := Vector2i(
-		clamp_rand(GridSize.x),
-		clamp_rand(GridSize.y),
-	)
-	var cell_size := Vector3(
-		clamp_rand(CellSize.x),
-		clamp_rand(CellSize.y),
-		clamp_rand(CellSize.z),
-	)
+func init(num :int, make_random :bool = false) -> Storey:
+	var grid_size := GridSize
+	var cell_size := CellSize
+	if make_random :
+		grid_size = Vector2i(
+			clamp_rand(GridSize.x),
+			clamp_rand(GridSize.y),
+		)
+		cell_size = Vector3(
+			clamp_rand(CellSize.x),
+			clamp_rand(CellSize.y),
+			clamp_rand(CellSize.z),
+		)
 	var maze2d := Maze.new(grid_size)
 	var floor_ceiling_height :float = cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(

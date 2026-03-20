@@ -90,6 +90,29 @@ func init_floor_ceiling(grid_count :Vector2i, height :float, size_rate :float, c
 	$Ceiling.position.y += calc_grid.unit_size.y/2 +height/2
 	return self
 
+func get_floor() -> TileGrid:
+	return $Floor
+func get_ceiling() -> TileGrid:
+	return $Ceiling
+
+func open_tile_grid_cell(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
+	var xcount :int = tg.calc_grid.grid_size.x / maze_cells.width
+	var ycount :int = tg.calc_grid.grid_size.y / maze_cells.height
+	for y in ycount:
+		for x in xcount:
+			var tile_pos_x := cell_pos_x * xcount +x
+			var tile_pos_y := cell_pos_y * ycount +y
+			var rad := 0.0
+			if open :
+				rad = PI/2
+			var index :int = tg.get_index_by_xy(tile_pos_x, tile_pos_y)
+			tg.set_inst_rotation( index, Vector3.RIGHT, rad)
+
+func open_floor_cell(cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
+	open_tile_grid_cell($Floor, cell_pos_x,cell_pos_y, open)
+func open_ceiling_cell(cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
+	open_tile_grid_cell($Ceiling, cell_pos_x,cell_pos_y, open)
+
 func init_wall_deco(makedeco :Callable) -> void:
 	if not makedeco.is_valid():
 		return
@@ -106,10 +129,6 @@ func init_wall_deco(makedeco :Callable) -> void:
 		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
 			makedeco.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
-func get_floor() -> TileGrid:
-	return $Floor
-func get_ceiling() -> TileGrid:
-	return $Ceiling
 
 func make_box_pillas() -> void:
 	var pos_list :Array = []

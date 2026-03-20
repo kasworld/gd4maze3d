@@ -21,7 +21,6 @@ func _to_string() -> String:
 
 var PreCalced := {}
 
-
 static func SwapXZ(src :Vector3) -> Vector3:
 	return Vector3(src.z,src.y,src.x)
 
@@ -107,7 +106,6 @@ func init_wall_deco(makedeco :Callable) -> void:
 		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
 			makedeco.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
-
 func get_floor() -> TileGrid:
 	return $Floor
 func get_ceiling() -> TileGrid:
@@ -135,10 +133,10 @@ func make_cylinder_pillas() -> void:
 				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
 	var mesh := CylinderMesh.new()
 	mesh.material = pillar_capsule_mat
-	mesh.bottom_radius = WallThick
-	mesh.top_radius = WallThick
+	mesh.bottom_radius = WallThick/1.5
+	mesh.top_radius = WallThick/1.5
 	mesh.height = calc_grid.unit_size.y
-	#mesh.radial_segments = 8
+	mesh.radial_segments = 8
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
 		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape_capsule(rtn, pos_list)
@@ -280,7 +278,7 @@ func view_pillars(v :PillarView) -> void:
 			$CapsulePillars.visible = true
 			$BoxPillars.visible = false
 
-enum WallPillarView {Long, Short, ShortWithPillarBox, ShortWithPillarCapsule, Off, OffWithPillarBox, OffWithPillarCapsule}
+enum WallPillarView {Long, Short, ShortWithPillarBox, ShortWithPillarCylinder, Off, OffWithPillarBox, OffWithPillarCylinder}
 static func wallview2str(vd :WallPillarView) -> String:
 	return WallPillarView.keys()[vd]
 static func wallview_next(a :WallPillarView) -> WallPillarView:
@@ -300,7 +298,7 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
 			view_pillars(PillarView.Box)
-		WallPillarView.ShortWithPillarCapsule:
+		WallPillarView.ShortWithPillarCylinder:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
 			view_pillars(PillarView.Capsule)
@@ -310,7 +308,7 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 		WallPillarView.OffWithPillarBox:
 			view_walls(WallView.Off)
 			view_pillars(PillarView.Box)
-		WallPillarView.OffWithPillarCapsule:
+		WallPillarView.OffWithPillarCylinder:
 			view_walls(WallView.Off)
 			view_pillars(PillarView.Capsule)
 

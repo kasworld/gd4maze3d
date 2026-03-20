@@ -133,41 +133,11 @@ const Vt2ToFlag :Dictionary[Vector2i,Flag] = {
 	 Vector2i(1,0) : Flag.East,
 }
 
-# Main function to get all permutations as an array of arrays
-static func generate_all_permutations(array :Array) -> Array:
-	var output :Array = []
-	_recursive_permutation_helper(array, 0, output)
-	return output
-
-# Recursive helper function
-static func _recursive_permutation_helper(array :Array, start_index :int, output :Array) -> void:
-	if start_index == array.size():
-		# Base case: a complete permutation is found, add it to the output
-		# Use .duplicate(true) to ensure a deep copy if elements are complex objects/arrays
-		output.append(array.duplicate())
-		return
-
-	for i in range(start_index, array.size()):
-		# Swap current element with the element at the start index
-		#array.swap(start_index, i)
-		var tmp = array[start_index]
-		array[start_index] = array[i]
-		array[i] = tmp
-
-		# Recurse for the next index
-		_recursive_permutation_helper(array, start_index + 1, output)
-
-		# Backtrack: swap them back to restore the original array state for the next iteration
-		#array.swap(start_index, i)
-		tmp = array[start_index]
-		array[start_index] = array[i]
-		array[i] = tmp
-
 static var FlagPermutation :Array
 static var DirPermutation :Array
 static func _static_init() -> void:
-	FlagPermutation = generate_all_permutations(FlagList.duplicate())
-	DirPermutation = generate_all_permutations(DirList.duplicate())
+	FlagPermutation = Permutation.Array(FlagList.duplicate())
+	DirPermutation = Permutation.Array(DirList.duplicate())
 	#print_debug(FlagPermutation, DirPermutation)
 
 # end enum ###########################

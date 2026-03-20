@@ -153,7 +153,7 @@ func debug_str() -> String:
 	return "total:%s\nin storey:%s\n%s [%s]\n%s (%d, %d) -> (%d, %d)" % [
 		ActionQueue.stats2str(total_action_stats),
 		ActionQueue.stats2str(storey_action_stats),
-		ActionQueue.action2str(current_action.Action), action_queue,
+		current_action, action_queue,
 		rotation_degrees,
 		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
 		]

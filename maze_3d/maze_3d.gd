@@ -78,7 +78,7 @@ func init_with_color(comain :Color, cosub :Color, copillarbox :Color, copillarca
 
 func exec_make() -> void:
 	make_box_pillas()
-	make_capsule_pillas()
+	make_cylinder_pillas()
 	make_wall_by_maze()
 
 func init_floor_ceiling(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
@@ -127,16 +127,18 @@ func make_box_pillas() -> void:
 	pos_multimeshshape(rtn, pos_list)
 	$BoxPillars.add_child(rtn)
 
-func make_capsule_pillas() -> void:
+func make_cylinder_pillas() -> void:
 	var pos_list :Array = []
 	for y in PreCalced.Grid2D.y+1:
 		for x in PreCalced.Grid2D.x+1:
 			pos_list.append(
 				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
-	var mesh := CapsuleMesh.new()
+	var mesh := CylinderMesh.new()
 	mesh.material = pillar_capsule_mat
-	mesh.radius = WallThick/2
+	mesh.bottom_radius = WallThick
+	mesh.top_radius = WallThick
 	mesh.height = calc_grid.unit_size.y
+	#mesh.radial_segments = 8
 	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
 		).init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape_capsule(rtn, pos_list)

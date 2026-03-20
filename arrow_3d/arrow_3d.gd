@@ -25,3 +25,8 @@ func set_color(co :Color) -> Arrow3D:
 	$Body.mesh.material.albedo_color = co
 	$Head.mesh.material.albedo_color = co
 	return self
+
+func set_material(mat :Material) -> Arrow3D:
+	$Body.mesh.material = mat
+	$Head.mesh.material = mat
+	return self

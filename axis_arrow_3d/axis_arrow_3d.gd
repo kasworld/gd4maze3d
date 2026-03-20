@@ -5,8 +5,20 @@ var colors := [Color.RED, Color.GREEN, Color.BLUE]
 var label_text := ["X", "Y", "Z"]
 func set_colors(colist :Array = colors) -> AxisArrow3D:
 	for i in 3:
-		$Arrows.get_child(i).set_color(colist[i])
+		$Arrows.get_child(i).set_material( make_color_material(colist[i]) )
 	return self
+
+func make_color_material(co :Color) -> StandardMaterial3D:
+	var mat := MultiMeshShape.make_color_material()
+	mat = MultiMeshShape.make_color_material(1.0)
+	mat.metallic = 1.0
+	mat.clearcoat_enabled = true
+	mat.refraction_enabled = true
+	mat.rim_enabled = true
+	mat.albedo_color = co
+	mat.emission_enabled = true
+	mat.emission = co
+	return mat
 
 func set_label_text(text_list :Array = label_text) -> AxisArrow3D:
 	for i in 3:

@@ -96,47 +96,30 @@ func get_ceiling() -> TileGrid:
 	return $Ceiling
 
 
-func make_stair(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, dir :Maze.Dir) -> void:
-	var xcount :int = tg.calc_grid.grid_size.x / maze_cells.width
-	var ycount :int = tg.calc_grid.grid_size.y / maze_cells.height
-	var step_x := calc_grid.unit_size.x / (xcount+1)
-	var step_y := calc_grid.unit_size.y / (ycount+1)
-	for y in ycount:
-		for x in xcount:
-			var tile_pos_x := cell_pos_x * xcount +x
-			var tile_pos_y := cell_pos_y * ycount +y
-			var index :int = tg.get_index_by_xy(tile_pos_x, tile_pos_y)
+func calc_tile_count(tg :TileGrid) -> Vector2:
+	return Vector2( float(tg.calc_grid.grid_size.x) / maze_cells.width, float(tg.calc_grid.grid_size.y) / maze_cells.height)
+
+func make_stair(tg :TileGrid, cell_posi :Vector2i, dir :Maze.Dir) -> void:
+	var count := calc_tile_count(tg)
+	var step_x := calc_grid.unit_size.x / (count.x+1)
+	var step_y := calc_grid.unit_size.y / (count.y+1)
+	for y in count.y:
+		for x in count.x:
+			var tile_pos := cell_posi as Vector2 * count + Vector2(x,y)
+			var index :int = tg.get_index_by_xy(tile_pos.x as int, tile_pos.y as int)
 			var t := tg.multimesh.get_instance_transform(index)
 			match dir:
 				Maze.Dir.North:
 					t.origin.z = step_y * (y+1)
 				Maze.Dir.South:
-					t.origin.z = step_y * (ycount - y)
+					t.origin.z = step_y * (count.y - y)
 				Maze.Dir.East:
-					t.origin.z = step_x * (xcount - x)
+					t.origin.z = step_x * (count.x - x)
 				Maze.Dir.West:
 					t.origin.z = step_x * (x+1)
 				_ :
 					assert(false, "invalid dir %s" % dir)
 			tg.multimesh.set_instance_transform(index, t)
-
-func open_tile_grid_cell(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
-	var xcount :int = tg.calc_grid.grid_size.x / maze_cells.width
-	var ycount :int = tg.calc_grid.grid_size.y / maze_cells.height
-	var rad := 0.0
-	if open :
-		rad = PI/2
-	for y in ycount:
-		for x in xcount:
-			var tile_pos_x := cell_pos_x * xcount +x
-			var tile_pos_y := cell_pos_y * ycount +y
-			var index :int = tg.get_index_by_xy(tile_pos_x, tile_pos_y)
-			tg.set_inst_rotation( index, Vector3.RIGHT, rad)
-
-func open_floor_cell(cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
-	open_tile_grid_cell($Floor, cell_pos_x,cell_pos_y, open)
-func open_ceiling_cell(cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
-	open_tile_grid_cell($Ceiling, cell_pos_x,cell_pos_y, open)
 
 func init_wall_deco(makedeco :Callable) -> void:
 	if not makedeco.is_valid():
@@ -284,6 +267,8 @@ func view_floor_ceiling(v :FloorCeiling) -> void:
 		FloorCeiling.Both:
 			$Floor.visible = true
 			$Ceiling.visible = true
+static func view_floor_ceiling_next(a :FloorCeiling) -> FloorCeiling:
+	return (a +1) % FloorCeiling.keys().size() as FloorCeiling
 
 func set_wall_size_long(b :bool) -> void:
 	if b:

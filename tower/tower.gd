@@ -68,8 +68,7 @@ func stop_demo_random() -> void:
 func _on_timer_demo_random_timeout() -> void:
 	demo_random_list.pick_random().call()
 func next_visible_floor_ceiling() -> void:
-	view_floor_ceiling += 1
-	view_floor_ceiling %= Maze3D.FloorCeiling.size()
+	view_floor_ceiling = Maze3D.view_floor_ceiling_next(view_floor_ceiling)
 	set_floor_ceiling_visible(view_floor_ceiling)
 func view_wallpillar_next() -> void:
 	view_walls = Maze3D.wallview_next(view_walls)

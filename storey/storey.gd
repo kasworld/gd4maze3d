@@ -66,8 +66,8 @@ func init(num :int, make_random :bool = false) -> Storey:
 	var cell_size := CellSize
 	if make_random :
 		grid_size = Vector2i(
-			clamp_rand(GridSize.x),
-			clamp_rand(GridSize.y),
+			clamp_rand(GridSize.x) as int,
+			clamp_rand(GridSize.y) as int,
 		)
 		cell_size = Vector3(
 			clamp_rand(CellSize.x),
@@ -103,8 +103,8 @@ func init(num :int, make_random :bool = false) -> Storey:
 	구석자리목록.shuffle()
 	start_pos = 구석자리목록.pop_front()
 	goal_pos = 구석자리목록.pop_front()
-	maze3d.make_stair(maze3d.get_floor(), start_pos.x,start_pos.y, maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random())
-	maze3d.make_stair(maze3d.get_ceiling(), goal_pos.x,goal_pos.y, Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()])
+	maze3d.make_stair(maze3d.get_floor(), start_pos, maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random())
+	maze3d.make_stair(maze3d.get_ceiling(), goal_pos, Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()])
 
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num

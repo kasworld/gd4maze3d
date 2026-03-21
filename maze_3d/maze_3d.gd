@@ -83,7 +83,7 @@ func exec_make() -> void:
 func init_floor_ceiling(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
 	var net_size :Vector2 = PreCalced.SizeWithWallV2
 	$Floor.init_tile_grid_with_box( Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_floor)
-	$Floor.rotation.x = -PI/2
+	$Floor.rotation.x = PI/2
 	$Floor.position.y -= calc_grid.unit_size.y/2 +height/2
 	$Ceiling.init_tile_grid_with_box(Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_ceiling)
 	$Ceiling.rotation.x = PI/2
@@ -95,16 +95,30 @@ func get_floor() -> TileGrid:
 func get_ceiling() -> TileGrid:
 	return $Ceiling
 
-func open_tile_grid_cell(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
+
+func make_stair(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
 	var xcount :int = tg.calc_grid.grid_size.x / maze_cells.width
 	var ycount :int = tg.calc_grid.grid_size.y / maze_cells.height
+	var step_y := calc_grid.unit_size.y / ycount
 	for y in ycount:
 		for x in xcount:
 			var tile_pos_x := cell_pos_x * xcount +x
 			var tile_pos_y := cell_pos_y * ycount +y
-			var rad := 0.0
-			if open :
-				rad = PI/2
+			var index :int = tg.get_index_by_xy(tile_pos_x, tile_pos_y)
+			var t := tg.multimesh.get_instance_transform(index)
+			t.origin.z = step_y * y
+			tg.multimesh.set_instance_transform(index, t)
+
+func open_tile_grid_cell(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
+	var xcount :int = tg.calc_grid.grid_size.x / maze_cells.width
+	var ycount :int = tg.calc_grid.grid_size.y / maze_cells.height
+	var rad := 0.0
+	if open :
+		rad = PI/2
+	for y in ycount:
+		for x in xcount:
+			var tile_pos_x := cell_pos_x * xcount +x
+			var tile_pos_y := cell_pos_y * ycount +y
 			var index :int = tg.get_index_by_xy(tile_pos_x, tile_pos_y)
 			tg.set_inst_rotation( index, Vector3.RIGHT, rad)
 

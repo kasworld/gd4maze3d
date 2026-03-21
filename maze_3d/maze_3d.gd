@@ -109,9 +109,9 @@ func make_stair(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, dir :Maze.Dir) -
 			var t := tg.multimesh.get_instance_transform(index)
 			match dir:
 				Maze.Dir.North:
-					t.origin.z = step_y * (y+1)
-				Maze.Dir.South:
 					t.origin.z = step_y * (ycount - y)
+				Maze.Dir.South:
+					t.origin.z = step_y * (y+1)
 				Maze.Dir.East:
 					t.origin.z = step_x * (x+1)
 				Maze.Dir.West:

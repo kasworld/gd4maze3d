@@ -114,23 +114,28 @@ static func HeapLoop(array :Array) -> Array:
 			i += 1
 	return output
 
-#// i acts similarly to a stack pointer
-	#i := 1;
-	#while i < n do
-		#if  c[i] < i then
-			#if i is even then
-				#swap(A[0], A[i])
-			#else
-				#swap(A[c[i]], A[i])
-			#end if
-			#output(A)
-			#// Swap has occurred ending the while-loop. Simulate the increment of the while-loop counter
-			#c[i] += 1
-			#// Simulate recursive call reaching the base case by bringing the pointer to the base case analog in the array
-			#i := 1
-		#else
-			#// Calling permutations(i+1, A) has ended as the while-loop terminated. Reset the state and simulate popping the stack by incrementing the pointer.
-			#c[i] := 0
-			#i += 1
-		#end if
-	#end while
+
+static func HeapLoopPByte(array :PackedByteArray) -> Array:
+	var output :Array = [array.duplicate()]
+	var c :Array[int] = []
+	c.resize(array.size())
+	for i in array.size():
+		c[i] = 0
+	var i := 1
+	while i < array.size():
+		if c[i] < i:
+			if i % 2 == 0: # swap array[0] array[i]
+				var tmp = array[0]
+				array[0] = array[i]
+				array[i] = tmp
+			else : # swap array[ c[i] ] array[i]
+				var tmp = array[c[i]]
+				array[c[i]] = array[i]
+				array[i] = tmp
+			output.append(array.duplicate())
+			c[i] += 1
+			i =1
+		else:
+			c[i] = 0
+			i += 1
+	return output

@@ -83,7 +83,7 @@ func init(num :int, make_random :bool = false) -> Storey:
 		Color(NamedColors.random_color(), 0.9),
 	)
 	storey_height = cell_size.y + floor_ceiling_height * 2
-	change_floor_ceiling_colors()
+	#change_floor_ceiling_colors()
 	add_child(maze3d)
 	if num % 2 ==0 :
 		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat() )

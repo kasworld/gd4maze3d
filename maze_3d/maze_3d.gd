@@ -96,17 +96,26 @@ func get_ceiling() -> TileGrid:
 	return $Ceiling
 
 
-func make_stair(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
+func make_stair(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, dir :Maze.Dir) -> void:
 	var xcount :int = tg.calc_grid.grid_size.x / maze_cells.width
 	var ycount :int = tg.calc_grid.grid_size.y / maze_cells.height
-	var step_y := calc_grid.unit_size.y / ycount
+	var step_x := calc_grid.unit_size.x / (xcount+1)
+	var step_y := calc_grid.unit_size.y / (ycount+1)
 	for y in ycount:
 		for x in xcount:
 			var tile_pos_x := cell_pos_x * xcount +x
 			var tile_pos_y := cell_pos_y * ycount +y
 			var index :int = tg.get_index_by_xy(tile_pos_x, tile_pos_y)
 			var t := tg.multimesh.get_instance_transform(index)
-			t.origin.z = step_y * y
+			match dir:
+				Maze.Dir.North:
+					t.origin.z = step_y * (y+1)
+				Maze.Dir.South:
+					t.origin.z = step_y * (ycount - y)
+				Maze.Dir.East:
+					t.origin.z = step_x * (x+1)
+				Maze.Dir.West:
+					t.origin.z = step_x * (xcount - x)
 			tg.multimesh.set_instance_transform(index, t)
 
 func open_tile_grid_cell(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:

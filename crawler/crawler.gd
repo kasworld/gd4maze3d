@@ -159,7 +159,7 @@ func debug_str() -> String:
 		]
 
 func can_move_to_dir(dir :Maze.Dir) -> bool:
-	return storey.get_maze_cells().is_open_dir_at(pos_src.x, pos_src.y, Maze.DirToFlag[dir] )
+	return storey.get_maze_cells().is_open_flag_at(pos_src.x, pos_src.y, Maze.DirToFlag[dir] )
 
 var auto_walk_type : Walk
 func set_next_walk_type() -> Crawler:

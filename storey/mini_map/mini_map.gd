@@ -143,17 +143,17 @@ func make_walllines_all() -> void:
 	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
 	for y in MazeSize.y:
 		for x in MazeSize.x :
-			if not storey.get_maze_cells().is_open_dir_at(x,y,Maze.Flag.North):
+			if not storey.get_maze_cells().is_open_flag_at(x,y,Maze.Flag.North):
 				add_wall_at_to_walllines( x , y , Maze.Dir.North, walllines_all)
-			if not storey.get_maze_cells().is_open_dir_at(x,y,Maze.Flag.West):
+			if not storey.get_maze_cells().is_open_flag_at(x,y,Maze.Flag.West):
 				add_wall_at_to_walllines( x , y , Maze.Dir.West, walllines_all)
 
 	for x in MazeSize.x :
-		if not storey.get_maze_cells().is_open_dir_at(x,MazeSize.y-1,Maze.Flag.South):
+		if not storey.get_maze_cells().is_open_flag_at(x,MazeSize.y-1,Maze.Flag.South):
 			add_wall_at_to_walllines( x , MazeSize.y-1 , Maze.Dir.South, walllines_all)
 
 	for y in MazeSize.y:
-		if not storey.get_maze_cells().is_open_dir_at(MazeSize.x-1,y,Maze.Flag.East):
+		if not storey.get_maze_cells().is_open_flag_at(MazeSize.x-1,y,Maze.Flag.East):
 			add_wall_at_to_walllines( MazeSize.x-1 , y , Maze.Dir.East, walllines_all)
 
 # make wallline by walls_known
@@ -192,7 +192,7 @@ func add_known_wall_at(x:int,y :int, dir :Maze.Dir) -> void:
 	add_wall_at_to_walllines(x,y,dir,walllines_known)
 	queue_redraw()
 func update_knonw_walls_by_pos(x:int,y :int) -> void:
-	var walldir := storey.get_maze_cells().get_wall_dir_at(x,y)
+	var walldir := storey.get_maze_cells().get_wall_flag_at(x,y)
 	for d in walldir:
 		add_known_wall_at(x,y,Maze.FlagToDir[d])
 

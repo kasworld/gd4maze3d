@@ -109,13 +109,15 @@ func make_stair(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, dir :Maze.Dir) -
 			var t := tg.multimesh.get_instance_transform(index)
 			match dir:
 				Maze.Dir.North:
-					t.origin.z = step_y * (ycount - y)
-				Maze.Dir.South:
 					t.origin.z = step_y * (y+1)
+				Maze.Dir.South:
+					t.origin.z = step_y * (ycount - y)
 				Maze.Dir.East:
-					t.origin.z = step_x * (x+1)
-				Maze.Dir.West:
 					t.origin.z = step_x * (xcount - x)
+				Maze.Dir.West:
+					t.origin.z = step_x * (x+1)
+				_ :
+					assert(false, "invalid dir %s" % dir)
 			tg.multimesh.set_instance_transform(index, t)
 
 func open_tile_grid_cell(tg :TileGrid, cell_pos_x :int, cell_pos_y :int, open :bool) -> void:
@@ -141,15 +143,15 @@ func init_wall_deco(makedeco :Callable) -> void:
 		return
 	for y in PreCalced.Grid2D.y:
 		for x in PreCalced.Grid2D.x:
-			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.North):
+			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.North):
 				makedeco.call(x, y, Maze.Flag.North)
-			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.West):
+			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.West):
 				makedeco.call(x, y, Maze.Flag.West)
 	for x in PreCalced.Grid2D.x :
-		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
+		if not maze_cells.is_open_flag_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
 			makedeco.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
 	for y in PreCalced.Grid2D.y:
-		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
+		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
 			makedeco.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
 
@@ -216,17 +218,17 @@ var pos_list_H_sub :Array
 func make_wall_by_maze() -> void:
 	for y in PreCalced.Grid2D.y:
 		for x in PreCalced.Grid2D.x:
-			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.North):
+			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.North):
 				add_wall_at( x , y , Maze.Flag.North)
-			if not maze_cells.is_open_dir_at(x,y,Maze.Flag.West):
+			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.West):
 				add_wall_at( x , y , Maze.Flag.West)
 
 	for x in PreCalced.Grid2D.x :
-		if not maze_cells.is_open_dir_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
+		if not maze_cells.is_open_flag_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
 			add_wall_at( x , PreCalced.Grid2D.y , Maze.Flag.South)
 
 	for y in PreCalced.Grid2D.y:
-		if not maze_cells.is_open_dir_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
+		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
 			add_wall_at( PreCalced.Grid2D.x , y , Maze.Flag.East)
 
 	wall_multi_inst_V_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)

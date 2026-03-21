@@ -2,7 +2,7 @@ extends Node3D
 class_name Storey
 
 ## maze default settings
-const GridSize := Vector2i(8,8)
+const GridSize := Vector2i(4,4)
 const CellSize := Vector3(4.0,3.0,4.0)
 
 var storey_animation := SimpleAnimation.new()
@@ -79,8 +79,8 @@ func init(num :int, make_random :bool = false) -> Storey:
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, floor_ceiling_height, 0.9,
-		Color(NamedColors.random_color(), 0.5),
-		Color(NamedColors.random_color(), 0.5),
+		Color(NamedColors.random_color(), 0.9),
+		Color(NamedColors.random_color(), 0.9),
 	)
 	storey_height = cell_size.y + floor_ceiling_height * 2
 	change_floor_ceiling_colors()
@@ -97,14 +97,14 @@ func init(num :int, make_random :bool = false) -> Storey:
 	var 구석자리목록 :Array[Vector2i] = []
 	for y in maze3d.PreCalced.Grid2D.y:
 		for x in maze3d.PreCalced.Grid2D.x:
-			if maze3d.maze_cells.get_open_dir_at(x,y).size() == 1:
+			if maze3d.maze_cells.get_open_flag_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
 
 	구석자리목록.shuffle()
 	start_pos = 구석자리목록.pop_front()
 	goal_pos = 구석자리목록.pop_front()
-	maze3d.make_stair(maze3d.get_floor(), start_pos.x,start_pos.y, Maze.DirList.pick_random())
-	maze3d.make_stair(maze3d.get_ceiling(), goal_pos.x,goal_pos.y, Maze.DirList.pick_random())
+	maze3d.make_stair(maze3d.get_floor(), start_pos.x,start_pos.y, maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random())
+	maze3d.make_stair(maze3d.get_ceiling(), goal_pos.x,goal_pos.y, Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()])
 
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num
@@ -124,6 +124,7 @@ func init(num :int, make_random :bool = false) -> Storey:
 	return self
 
 func change_floor_ceiling_colors() -> void:
+	return
 	maze3d.get_floor().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
 	maze3d.get_ceiling().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
 

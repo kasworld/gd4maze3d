@@ -154,7 +154,7 @@ func _select_visited(visted_pos :Array) -> int:
 	else:
 		return randi_range(0,visted_pos.size()-1)
 
-func _open_dir_at(x:int,y:int, d :int) -> void:
+func _open_flag_at(x:int,y:int, d :Flag) -> void:
 	_cells[y*width+x] |= d
 
 func _init(msize :Vector2i) -> void:
@@ -170,13 +170,13 @@ func _init(msize :Vector2i) -> void:
 		var pos_x := pos.x
 		var pos_y := pos.y
 		var delpos := true
-		for dir in FlagPermutation.pick_random():
-			var npos :Vector2i = pos + Maze.FlagToVt2[dir]
+		for flag in FlagPermutation.pick_random():
+			var npos :Vector2i = pos + Maze.FlagToVt2[flag]
 			var npos_x := npos.x
 			var npos_y := npos.y
 			if is_in(npos_x,npos_y) && get_cell(npos_x,npos_y)==0:
-				_open_dir_at(pos_x,pos_y, dir)
-				_open_dir_at(npos_x,npos_y, Maze.FlagOpppsite[dir])
+				_open_flag_at(pos_x,pos_y, flag)
+				_open_flag_at(npos_x,npos_y, Maze.FlagOpppsite[flag])
 				visted_pos.append(npos)
 				delpos = false
 				break
@@ -189,10 +189,18 @@ func is_in(x :int,y :int) -> bool:
 func get_cell(x :int, y:int) -> int:
 	return _cells[y*width+x]
 
-func is_open_dir_at(x :int, y :int, dir :Maze.Flag) -> bool:
-	return (_cells[y*width+x] & dir) != 0
+func is_open_flag_at(x :int, y :int, flag :Maze.Flag) -> bool:
+	return (_cells[y*width+x] & flag) != 0
 
-func get_open_dir_at(x :int, y :int) -> Array[Maze.Flag]:
+func get_open_dir_at(x :int, y :int) -> Array[Maze.Dir]:
+	var v := _cells[y*width+x]
+	var rtn :Array[Maze.Dir] = []
+	for flag in Maze.FlagList:
+		if (v & flag) != 0:
+			rtn.append( FlagToDir[flag])
+	return rtn
+
+func get_open_flag_at(x :int, y :int) -> Array[Maze.Flag]:
 	var v := _cells[y*width+x]
 	var rtn :Array[Maze.Flag] = []
 	for d in Maze.FlagList:
@@ -200,10 +208,18 @@ func get_open_dir_at(x :int, y :int) -> Array[Maze.Flag]:
 			rtn.append(d)
 	return rtn
 
-func is_wall_dir_at(x :int, y :int, dir :Maze.Flag) -> bool:
-	return (_cells[y*width+x] & dir) == 0
+func is_wall_flag_at(x :int, y :int, flag :Maze.Flag) -> bool:
+	return (_cells[y*width+x] & flag) == 0
 
-func get_wall_dir_at(x :int, y :int) -> Array[Maze.Flag]:
+func get_wall_dir_at(x :int, y :int) -> Array[Maze.Dir]:
+	var v := _cells[y*width+x]
+	var rtn :Array[Maze.Dir] = []
+	for flag in Maze.FlagList:
+		if (v & flag) == 0:
+			rtn.append( FlagToDir[flag])
+	return rtn
+
+func get_wall_flag_at(x :int, y :int) -> Array[Maze.Flag]:
 	var v := _cells[y*width+x]
 	var rtn :Array[Maze.Flag] = []
 	for d in Maze.FlagList:
@@ -211,9 +227,9 @@ func get_wall_dir_at(x :int, y :int) -> Array[Maze.Flag]:
 			rtn.append(d)
 	return rtn
 
-func open_dir_str(x :int , y :int) -> String:
+func open_flag_str(x :int , y :int) -> String:
 	var rtn := ""
-	for d in get_open_dir_at(x,y):
+	for d in get_open_flag_at(x,y):
 		rtn += "%s " %[Maze.FlagToStr[d]]
 	return rtn
 
@@ -224,7 +240,7 @@ func make_move_graph() -> Dictionary:
 		for x in width:
 			var val := []
 			var srcpos := Vector2i(x,y)
-			for fdir in get_open_dir_at(x,y):
+			for fdir in get_open_flag_at(x,y):
 				var topos :Vector2i = srcpos + Maze.FlagToVt2[fdir]
 				val.append({"pos":topos, "dir": Maze.FlagToStr[fdir] })
 			rtn[srcpos] = val

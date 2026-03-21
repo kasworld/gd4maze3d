@@ -136,8 +136,8 @@ const Vt2ToFlag :Dictionary[Vector2i,Flag] = {
 static var FlagPermutation :Array
 static var DirPermutation :Array
 static func _static_init() -> void:
-	FlagPermutation = Permutation.Array(FlagList.duplicate())
-	DirPermutation = Permutation.Array(DirList.duplicate())
+	FlagPermutation = Permutation.HeapLoop(FlagList.duplicate())
+	DirPermutation = Permutation.HeapLoop(DirList.duplicate())
 	#print_debug(FlagPermutation, DirPermutation)
 
 # end enum ###########################

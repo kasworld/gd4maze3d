@@ -124,7 +124,6 @@ func init(num :int, make_random :bool = false) -> Storey:
 	return self
 
 func change_floor_ceiling_colors() -> void:
-	return
 	maze3d.get_floor().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
 	maze3d.get_ceiling().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
 

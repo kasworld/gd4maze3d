@@ -4,85 +4,33 @@ class_name Tower
 const StoreyUp := 3
 const StoreyDown := 3
 
-const AnimationDuration := 3.0
 const StoreyAnimationDuration := 1.5
 
 static func ref_tower_size() -> Vector3:
 	return Vector3(Storey.GridSize.x, StoreyUp + StoreyDown +1 , Storey.GridSize.y) * Storey.CellSize
 
-var tower_animation := SimpleAnimation.new()
-func _process(_delta: float) -> void:
-	tower_animation.handle_animation()
-
-func tower_animation_ended(_node :Node3D, _ani :Dictionary) -> void:
-	if tower_animation.is_empty():
-		if randi_range(0,5) == 0:
-			start_reset_all_animation()
-		else:
-			start_all_animation()
-
-func animate_shift_in_storey(st :Storey, axis :int) -> void:
-	tower_animation.start_move_subfield( "ani_shift_in", st, axis, st.position[axis], 0.0, AnimationDuration )
-
-func start_reset_all_animation() -> void:
-	shift_count = 0
-	tower_animation.start_rotation("ani_rot", self, rotation, Vector3.ZERO, AnimationDuration)
-	for st in storey_list:
-		tower_animation.start_rotation("ani_rot", st, st.rotation, Vector3.ZERO, AnimationDuration)
-		animate_shift_in_storey(st, Vector3.Axis.AXIS_X)
-		animate_shift_in_storey(st, Vector3.Axis.AXIS_Z)
-
-var shift_count := 0
-func start_all_animation() -> void:
-	shift_count += 1
-	var diff :float = [PI/2,-PI/2].pick_random()
-	var subfield :int = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Y, Vector3.Axis.AXIS_Z].pick_random()
-	tower_animation.start_rotation_subfield("ani_rot", self, subfield , rotation[subfield], rotation[subfield] + diff, AnimationDuration)
-	for st in storey_list:
-		diff = [PI/2,-PI/2].pick_random()
-		subfield = Vector3.Axis.AXIS_Y
-		tower_animation.start_rotation_subfield("ani_rot", st, subfield, st.rotation[subfield], st.rotation[subfield] + diff, AnimationDuration)
-		if shift_count % 2 == 0 :
-			if not is_zero_approx(st.position.x):
-				animate_shift_in_storey(st, Vector3.Axis.AXIS_X)
-			if not is_zero_approx(st.position.y):
-				animate_shift_in_storey(st, Vector3.Axis.AXIS_Z)
-		else:
-			diff = (Storey.GridSize*Storey.CellSize.x).length() /2
-			subfield = [Vector3.Axis.AXIS_X, Vector3.Axis.AXIS_Z].pick_random()
-			tower_animation.start_move_subfield("ani_shift_out", st, subfield, st.position[subfield], st.position[subfield] + diff, AnimationDuration)
-
-func init_tower_animaion() -> void:
-	tower_animation.animation_ended.connect(tower_animation_ended)
-	start_all_animation()
-
-var demo_random_list = [
-	next_visible_floor_ceiling,
-	view_wallpillar_next,
-	start_storey_gap_animation,
-]
-func start_demo_random() -> void:
-	$TimerDemoRandom.start()
-func stop_demo_random() -> void:
-	$TimerDemoRandom.stop()
-func _on_timer_demo_random_timeout() -> void:
-	demo_random_list.pick_random().call()
-func next_visible_floor_ceiling() -> void:
-	view_floor_ceiling = Maze3D.view_floor_ceiling_next(view_floor_ceiling)
-	set_floor_ceiling_visible(view_floor_ceiling)
-func view_wallpillar_next() -> void:
-	view_walls = Maze3D.wallview_next(view_walls)
-	set_wallpillar_view_mode(view_walls)
-
 var visible_storey_up :int = StoreyUp
 var visible_storey_down :int = StoreyDown
 var storey_gap :float = Storey.CellSize.y
-
 var gap_ani_dir_open : bool = true # true:open, false:close
 var storey_list :Array[Storey]
 var cur_storey :Storey
+
 var view_floor_ceiling := Maze3D.FloorCeiling.Both
+func next_visible_floor_ceiling() -> void:
+	view_floor_ceiling = Maze3D.view_floor_ceiling_next(view_floor_ceiling)
+	set_floor_ceiling_visible(view_floor_ceiling)
+func set_floor_ceiling_visible(v :Maze3D.FloorCeiling) -> void:
+	for i in storey_list.size():
+		storey_list[i].get_maze3d().view_floor_ceiling(v)
+
 var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ShortWithPillarBox
+func view_wallpillar_next() -> void:
+	view_walls = Maze3D.wallview_next(view_walls)
+	set_wallpillar_view_mode(view_walls)
+func set_wallpillar_view_mode(w :Maze3D.WallPillarView) -> void:
+	for i in storey_list.size():
+		storey_list[i].get_maze3d().set_wallpillar_view_mode(w)
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
@@ -90,12 +38,10 @@ func _to_string() -> String:
 	%s]" % [storey_list.size(), view_floor_ceiling,
 	visible_storey_up,visible_storey_down, cur_storey ]
 
-func init(deco_ani :bool=false) -> Tower:
+func init() -> Tower:
 	for i in visible_storey_up:
 		add_new_storey(i)
 	cur_storey = storey_list[0]
-	if deco_ani:
-		init_tower_animaion()
 	return self
 
 func move_to_upper_storey() -> void:
@@ -156,11 +102,3 @@ func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 			st.queue_free()
 		"ani_gap", "ani_add_move":
 			pass
-
-func set_floor_ceiling_visible(v :Maze3D.FloorCeiling) -> void:
-	for i in storey_list.size():
-		storey_list[i].get_maze3d().view_floor_ceiling(v)
-
-func set_wallpillar_view_mode(w :Maze3D.WallPillarView) -> void:
-	for i in storey_list.size():
-		storey_list[i].get_maze3d().set_wallpillar_view_mode(w)

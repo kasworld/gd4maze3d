@@ -39,7 +39,6 @@ func _ready() -> void:
 	$MovingCameraLightAround.make_current()
 
 	var ref_len := Tower.ref_tower_size().length()
-	#$DecoOrbit.init(Tower.ref_tower_size() * 2, 9)
 	$AxisArrow3D.set_size(ref_len/3).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, ref_len), ref_len*4)
@@ -49,17 +48,17 @@ func _ready() -> void:
 	enter_next_storey(null)
 	update_button_text()
 
-
 func _process(_delta: float) -> void:
 	update_info()
 
 	var t := Time.get_unix_time_from_system() /2.3
 	var r := Tower.ref_tower_size().length()
 	var h := Tower.ref_tower_size().y *2
+	var pos_center := main_tower.cur_storey.global_position
 	if $MovingCameraLightHober.is_current_camera():
-		$MovingCameraLightHober.move_hober_around_z(t, Vector3.ZERO, r, h )
+		$MovingCameraLightHober.move_hober_around_z(t, pos_center, r, h )
 	elif $MovingCameraLightAround.is_current_camera():
-		$MovingCameraLightAround.move_wave_around_y(t, Vector3.ZERO, r, h )
+		$MovingCameraLightAround.move_wave_around_y(t, pos_center, r, h )
 
 func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
@@ -70,7 +69,6 @@ func enter_next_storey(old_storey :Storey) -> void:
 	else:
 		main_tower.move_to_upper_storey()
 		main_tower.cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
-	$DecoOrbit.position = main_tower.cur_storey.position
 	update_button_text()
 
 func add_crawler(i :int) -> Crawler:

@@ -1,8 +1,6 @@
 extends Node3D
 class_name MovingCameraLight
 
-
-
 static var SelfList :Array[MovingCameraLight]
 static var CurrentIndex :int
 ## retuen old
@@ -120,6 +118,9 @@ func set_center_pos_far(center :Vector3, pos :Vector3, far :float) -> void:
 	look_at_from_position(position, center)
 	$Camera3D.far = far
 	$SpotLight3D.spot_range = far
+
+func set_center(center :Vector3) -> void:
+	look_at_from_position(position, center)
 
 func make_current() -> void:
 	var idx := FindCameraIndex(self)

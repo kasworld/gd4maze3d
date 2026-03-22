@@ -117,7 +117,7 @@ static func HeapLoop(array :Array) -> Array:
 
 static func HeapLoopPByte(array :PackedByteArray) -> Array:
 	var output :Array = [array.duplicate()]
-	var c :Array[int] = []
+	var c :PackedByteArray = []
 	c.resize(array.size())
 	for i in array.size():
 		c[i] = 0

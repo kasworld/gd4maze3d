@@ -83,7 +83,6 @@ func init(num :int, make_random :bool = false) -> Storey:
 		Color(NamedColors.random_color(), 0.9),
 	)
 	storey_height = cell_size.y + floor_ceiling_height * 2
-	#change_floor_ceiling_colors()
 	add_child(maze3d)
 	if num % 2 ==0 :
 		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat() )
@@ -122,10 +121,6 @@ func init(num :int, make_random :bool = false) -> Storey:
 
 	add_bouncing(BouncingCount , 크기기준 /20)
 	return self
-
-func change_floor_ceiling_colors() -> void:
-	maze3d.get_floor().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
-	maze3d.get_ceiling().set_tile_color_8way(NamedColors.color_list, randi_range(0,7))
 
 var bouncing_list :Array
 func add_bouncing(n :int, radius :float) -> void:

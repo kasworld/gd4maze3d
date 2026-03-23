@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bjerikk5cct56"]
+
+[ext_resource type="Script" uid="uid://dif8hwtpvqvve" path="res://maze_3d/maze_mini_map/maze_mini_map.gd" id="1_0lkpa"]
+
+[node name="MazeMiniMap" type="Node2D" unique_id=24304330]
+script = ExtResource("1_0lkpa")

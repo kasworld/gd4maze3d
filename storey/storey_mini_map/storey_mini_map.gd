@@ -27,7 +27,7 @@ func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
 func init_storey(st :Storey) -> StoreyMiniMap:
-	init(st.maze3d.maze_cells)
+	set_maze(st.maze3d.maze_cells)
 	storey = st
 	walls_known = []
 	walls_known.resize(storey.maze3d.PreCalced.Grid2D.y*2+1)
@@ -66,11 +66,10 @@ func apply_minimap_mode() -> void:
 				ch.visible = true
 			queue_redraw()
 
-func update_size(rt :Rect2) -> StoreyMiniMap:
+func update_size(rt :Rect2) -> void:
 	super(rt)
 	make_walllines_known()
 	update_labels()
-	return self
 
 func add_character(achar :Crawler, outline :int) -> void:
 	var ch := new_label(achar.color, "%d" %[achar.crawler_num] , outline)

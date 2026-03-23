@@ -9,21 +9,19 @@ var walllines_all :PackedVector2Array =[]
 func _to_string() -> String:
 	return "Minimap"
 
-func init(mz :Maze) -> MazeMiniMap:
+func set_maze(mz :Maze) -> void:
 	maze = mz
-	return self
 
 func get_width() -> float:
 	return maze.width * map_scale
 func get_height() -> float:
 	return maze.height * map_scale
 
-func update_size(rt :Rect2) -> MazeMiniMap:
+func update_size(rt :Rect2) -> void:
 	map_scale = min( rt.size.x / maze.width , rt.size.y / maze.height )
 	WallThick = max(1, map_scale*0.1)
 	make_walllines_all()
 	position = rt.position
-	return self
 
 func pos2mapscale(pos :Vector2i) -> Vector2:
 	return pos * map_scale + Vector2(WallThick,WallThick)

@@ -1,6 +1,26 @@
 extends Node3D
 class_name Storey
 
+static func MakeSubViewport(n2d :Node2D, size_pixel:Vector2i) -> SubViewport:
+	var sv := SubViewport.new()
+	sv.size = size_pixel
+	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	sv.transparent_bg = true
+	sv.add_child(n2d)
+	return sv
+
+static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshInstance3D:
+	var sp := MeshInstance3D.new()
+	sp.mesh = PlaneMesh.new()
+	sp.mesh.size = mesh_size
+	sp.mesh.orientation = PlaneMesh.FACE_Z
+	sp.material_override = StandardMaterial3D.new()
+	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
+	sp.material_override.albedo_texture = svp.get_texture()
+	return sp
+
+
 ## maze default settings
 const GridSize := Vector2i(4,4)
 const CellSize := Vector3(4.0,3.0,4.0)
@@ -185,7 +205,7 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 		if line2d_subviewport == null:
 			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
 			$WallDeco.add_child(line2d_subviewport)
-		var b := make_plane_from_subviewport(line2d_subviewport)
+		var b := MakePlaneSubViewport(line2d_subviewport, Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y))
 		$WallDeco.add_child(b)
 		b.position = maze3d.deco_pos_by_dir(x,y,dir)
 		#b.rotate_x(PI/2)
@@ -212,21 +232,4 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var l2d :MoveLine2D = preload("res://move_line_2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
 	l2d.start()
-	var sv := SubViewport.new()
-	sv.size = size_pixel
-	#sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	#sv.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
-	sv.transparent_bg = true
-	sv.add_child(l2d)
-	return sv
-
-func make_plane_from_subviewport(sv :SubViewport) -> MeshInstance3D:
-	var mesh := PlaneMesh.new()
-	mesh.size = Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y)
-	mesh.orientation = PlaneMesh.FACE_Z
-	var sp := MeshInstance3D.new()
-	sp.mesh = mesh
-	sp.material_override = StandardMaterial3D.new()
-	sp.material_override.transparency = StandardMaterial3D.TRANSPARENCY_ALPHA
-	sp.material_override.albedo_texture = sv.get_texture()
-	return sp
+	return  MakeSubViewport(l2d,size_pixel)

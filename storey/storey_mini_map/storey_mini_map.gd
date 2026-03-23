@@ -16,8 +16,11 @@ func set_minimap_mod(m :MiniMapView) -> void:
 	apply_minimap_mode()
 
 var minimap_mode :MiniMapView = MiniMapView.Off
+
 var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
+
+
 ## obj must has func get_posi() -> Vector2i:
 var obj_to_label :Dictionary[Node,Label] = {}
 var label_visible_in_known_map_view :Array[Label] = []
@@ -103,15 +106,6 @@ func new_label(co:Color, text :String, outline :int) -> Label:
 		stb.border_width_top = outline
 	lb.add_theme_stylebox_override("normal", stb)
 	return lb
-
-#func add_chars(char_list :Array, playernum :int) -> void:
-	#player_serial = playernum
-	#for ch in char_list:
-		#if ch.crawler_num == player_serial:
-			#add_obj(ch, 1)
-		#else:
-			#add_obj(ch, 0)
-	#apply_minimap_mode()
 
 
 # make wallline by walls_known

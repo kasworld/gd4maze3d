@@ -1,5 +1,5 @@
 extends MazeMiniMap
-class_name MiniMap
+class_name StoreyMiniMap
 
 enum MiniMapView {Off, Known, Full}
 static func minimapview2str(vd :MiniMapView) -> String:
@@ -26,7 +26,7 @@ var player_serial :int
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init_storey(st :Storey) -> MiniMap:
+func init_storey(st :Storey) -> StoreyMiniMap:
 	init(st.maze3d.maze_cells)
 	storey = st
 	walls_known = []
@@ -40,7 +40,7 @@ func init_storey(st :Storey) -> MiniMap:
 	apply_minimap_mode()
 	return self
 
-func add_chars(char_list :Array, playernum :int) -> MiniMap:
+func add_chars(char_list :Array, playernum :int) -> StoreyMiniMap:
 	player_serial = playernum
 	for ch in char_list:
 		if ch.crawler_num == player_serial:
@@ -66,7 +66,7 @@ func apply_minimap_mode() -> void:
 				ch.visible = true
 			queue_redraw()
 
-func update_size(rt :Rect2) -> MiniMap:
+func update_size(rt :Rect2) -> StoreyMiniMap:
 	super(rt)
 	make_walllines_known()
 	update_labels()

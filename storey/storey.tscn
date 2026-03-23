@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dp0yfx2i1wsf4" path="res://storey/storey.gd" id="1_vfl4n"]
 [ext_resource type="PackedScene" uid="uid://bg7pvk7ens3l8" path="res://places_things/text_mark.tscn" id="2_wtqod"]
-[ext_resource type="PackedScene" uid="uid://dauu5e87kykn" path="res://storey/mini_map/mini_map.tscn" id="4_16v43"]
+[ext_resource type="PackedScene" uid="uid://dauu5e87kykn" path="res://storey/storey_mini_map/storey_mini_map.tscn" id="4_16v43"]
 
 [node name="Storey" type="Node3D" unique_id=1370983570]
 script = ExtResource("1_vfl4n")

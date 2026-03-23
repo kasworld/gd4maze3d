@@ -68,7 +68,7 @@ func get_maze_cells() -> Maze:
 func get_char_list() -> Array:
 	return $CharacterContainer.get_children()
 
-func get_mini_map() -> MiniMap:
+func get_mini_map() -> StoreyMiniMap:
 	return $MiniMap
 
 var storey_height :float

@@ -36,7 +36,7 @@ func calc_wall_pos(x :int, y:int, dir :Maze.Dir) -> Vector2i:
 	return Vector2i(x*2+1,y*2+1) + Maze.DirToVt2[dir]
 
 # make wallline by maze
-func make_walllines_all() -> void:
+func make_all_walllines() -> void:
 	walllines = []
 	for y in maze.height:
 		for x in maze.width:
@@ -52,6 +52,25 @@ func make_walllines_all() -> void:
 	for y in maze.height:
 		if not maze.is_open_flag_at(maze.width -1, y, Maze.Flag.East):
 			add_wall_at_to_walllines(maze.width -1, y, Maze.Dir.East)
+
+# make wallline by walls_known
+func make_walllines_known() -> void:
+	walllines = []
+	for y in maze.height:
+		for x in maze.width:
+			if is_wall_at(x, y, Maze.Dir.North):
+				add_wall_at_to_walllines(x, y, Maze.Dir.North)
+			if is_wall_at(x, y, Maze.Dir.West):
+				add_wall_at_to_walllines(x, y, Maze.Dir.West)
+
+	for x in maze.width :
+		if is_wall_at(x, maze.height-1, Maze.Dir.South):
+			add_wall_at_to_walllines(x, maze.height-1, Maze.Dir.South)
+
+	for y in maze.height:
+		if is_wall_at(maze.width-1, y, Maze.Dir.East):
+			add_wall_at_to_walllines(maze.width-1, y, Maze.Dir.East)
+
 
 func add_wall_at_to_walllines(x :int, y :int, dir :Maze.Dir) -> void:
 	match dir:

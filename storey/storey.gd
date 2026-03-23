@@ -126,9 +126,9 @@ func init(num :int, make_random :bool = false) -> Storey:
 	maze3d.make_stair(maze3d.get_ceiling(), goal_pos, Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()])
 
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
-	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num
+	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num, start_pos
 		).position = maze3d.mazepos2storeypos(start_pos, 0)
-	$EndMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Goal %d" % storey_num
+	$EndMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Goal %d" % storey_num, goal_pos
 		).position = maze3d.mazepos2storeypos(goal_pos, 0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
@@ -137,7 +137,9 @@ func init(num :int, make_random :bool = false) -> Storey:
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
-	$MiniMap.init_storey(self)
+	$MiniMap.init_storey(maze2d)
+	$MiniMap.add_obj($StartMark, "Start", $StartMark.get_color(), 1, true)
+	$MiniMap.add_obj($EndMark, "Goal", $EndMark.get_color(), 1, true)
 
 	add_bouncing(BouncingCount , 크기기준 /20)
 	return self
@@ -156,11 +158,12 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 		ch.reparent($CharacterContainer)
 		if ch.crawler_num == playernum:
 			ch.enter_storey(old_storey, self, start_pos)
+			$MiniMap.add_obj(ch, "%d" % ch.crawler_num, ch.get_color(), 1, true)
 		else:
 			var p := CalcGrid3D.xz_Vector3iToVector2i(maze3d.calc_grid.rand_posi())
 			ch.enter_storey(old_storey, self, p)
+			$MiniMap.add_obj(ch, "%d" % ch.crawler_num, ch.get_color(), 0, false)
 
-	$MiniMap.add_chars(char_list, playernum)
 	var rt := get_viewport().get_visible_rect()
 	$MiniMap.update_size(rt)
 	if old_storey != null:

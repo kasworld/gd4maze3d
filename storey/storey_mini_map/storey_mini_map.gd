@@ -16,27 +16,20 @@ func set_minimap_mod(m :MiniMapView) -> void:
 	apply_minimap_mode()
 
 var minimap_mode :MiniMapView = MiniMapView.Off
-var storey :Storey
 var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
-var goal :Label
-var start :Label
-var player_serial :int
-
+## obj must has func get_posi() -> Vector2i:
+var obj_to_label :Dictionary[Node,Label] = {}
+var label_visible_in_known_map_view :Array[Label] = []
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init_storey(st :Storey) -> StoreyMiniMap:
-	set_maze(st.maze3d.maze_cells)
-	storey = st
+func init_storey(mz :Maze) -> StoreyMiniMap:
+	set_maze(mz)
 	walls_known = []
-	walls_known.resize(storey.maze3d.PreCalced.Grid2D.y*2+1)
+	walls_known.resize(maze.height*2+1)
 	for cl in walls_known:
-		cl.resize(storey.maze3d.PreCalced.Grid2D.x*2+1)
-	goal = new_label(Color.RED, "Goal", 1)
-	add_child(goal)
-	start = new_label(Color.YELLOW, "Start", 1)
-	add_child(start)
+		cl.resize(maze.width*2+1)
 	apply_minimap_mode()
 	return self
 
@@ -46,38 +39,42 @@ func apply_minimap_mode() -> void:
 			hide()
 		MiniMapView.Known:
 			show()
-			for ch in $CharacterContainer.get_children():
+			for ch in $Container.get_children():
 				ch.visible = false
-			$CharacterContainer.get_child(player_serial).visible = true
+			for lb in label_visible_in_known_map_view:
+				lb.visible = true
 			queue_redraw()
 		MiniMapView.Full:
 			show()
-			for ch in $CharacterContainer.get_children():
+			for ch in $Container.get_children():
 				ch.visible = true
 			queue_redraw()
 
 func update_size(rt :Rect2) -> void:
 	super(rt)
 	make_walllines_known()
-	update_labels()
+	for nd in obj_to_label:
+		var lb := obj_to_label[nd]
+		var posi :Vector2i = nd.get_posi()
+		update_label_pos_size(lb, posi)
 
-func add_chars(char_list :Array, playernum :int) -> void:
-	player_serial = playernum
-	for ch in char_list:
-		if ch.crawler_num == player_serial:
-			add_character(ch, 1)
-		else:
-			add_character(ch, 0)
-	apply_minimap_mode()
+func update_label_pos_size(lb :Label, posi :Vector2i) -> void:
+	lb.position = posi_to_mappos(posi)
+	lb.size = Vector2(map_scale-WallThick*2, map_scale-WallThick*2)
+	lb.label_settings.font_size = map_scale/2.0 as int
 
-func add_character(achar :Crawler, outline :int) -> void:
-	var ch := new_label(achar.color, "%d" %[achar.crawler_num] , outline)
-	$CharacterContainer.add_child(ch)
+func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_map_view :bool = false) -> void:
+	var lb := new_label(co, txt , outline)
+	$Container.add_child(lb)
+	obj_to_label[node] = lb
+	if visible_in_known_map_view:
+		label_visible_in_known_map_view.append(lb)
 
-func update_char_pos(ch :Crawler) -> void:
-	$CharacterContainer.get_child(ch.crawler_num).position = pos2mapscale( ch.pos_src )
-	if ch.crawler_num == player_serial:
-		update_knonw_walls_by_pos(ch.pos_src.x, ch.pos_src.y)
+func update_obj_pos(node :Node, update_know_wall :bool = false) -> void:
+	var posi :Vector2i = node.get_posi()
+	obj_to_label[node].position = posi_to_mappos(posi)
+	if update_know_wall:
+		update_knonw_walls_by_pos(posi.x, posi.y)
 
 func new_label(co:Color, text :String, outline :int) -> Label:
 	var co_txt :Color
@@ -107,16 +104,14 @@ func new_label(co:Color, text :String, outline :int) -> Label:
 	lb.add_theme_stylebox_override("normal", stb)
 	return lb
 
-func update_labels() -> void:
-	update_label_pos_size(goal,storey.goal_pos)
-	update_label_pos_size(start,storey.start_pos)
-	for ch in $CharacterContainer.get_children():
-		update_label_pos_size(ch,storey.start_pos)
-
-func update_label_pos_size(nd :Label, pos :Vector2i) -> void:
-	nd.position = pos2mapscale(pos)
-	nd.size = Vector2(map_scale-WallThick*2, map_scale-WallThick*2)
-	nd.label_settings.font_size = map_scale/2.0 as int
+#func add_chars(char_list :Array, playernum :int) -> void:
+	#player_serial = playernum
+	#for ch in char_list:
+		#if ch.crawler_num == player_serial:
+			#add_obj(ch, 1)
+		#else:
+			#add_obj(ch, 0)
+	#apply_minimap_mode()
 
 
 # make wallline by walls_known

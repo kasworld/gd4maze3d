@@ -23,7 +23,7 @@ func update_size(rt :Rect2) -> void:
 	make_walllines_all()
 	position = rt.position
 
-func pos2mapscale(pos :Vector2i) -> Vector2:
+func posi_to_mappos(pos :Vector2i) -> Vector2:
 	return pos * map_scale + Vector2(WallThick,WallThick)
 
 # make wallline by maze

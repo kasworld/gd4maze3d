@@ -3,7 +3,12 @@ class_name TextMark
 
 var font = preload("res://font/HakgyoansimBareondotumR.ttf")
 
-func init(fsize :float, fdepth :float, co:Color, text :String) -> TextMark:
+var posi :Vector2i
+func get_posi() -> Vector2i:
+	return posi
+
+func init(fsize :float, fdepth :float, co:Color, text :String, posi_a :Vector2i) -> TextMark:
+	posi = posi_a
 	mesh = TextMesh.new()
 	mesh.font = font
 	mesh.depth = fdepth
@@ -15,6 +20,9 @@ func init(fsize :float, fdepth :float, co:Color, text :String) -> TextMark:
 
 func get_text() -> String:
 	return mesh.text
+
+func get_color() -> Color:
+	return mesh.material.albedo_color
 
 var auto_rotate :bool = true
 func _process(delta: float) -> void:

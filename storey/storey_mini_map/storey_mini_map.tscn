@@ -6,4 +6,4 @@
 script = ExtResource("1_cjdgf")
 metadata/_custom_type_script = "uid://dif8hwtpvqvve"
 
-[node name="CharacterContainer" type="Node2D" parent="." unique_id=1806330950]
+[node name="Container" type="Node2D" parent="." unique_id=1806330950]

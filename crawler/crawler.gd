@@ -15,7 +15,7 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 					crawler_goal_reached.emit(storey, cr)
 					return
 				storey.놓인것들줍기(cr)
-			storey.get_mini_map().update_char_pos(cr)
+			storey.get_mini_map().update_obj_pos(cr, cr.crawler_num == player_num)
 		"ani_turn":
 			rotation = rotation.snappedf(PI/2)
 			dir_src = Maze.RadianToDir(rotation.y)
@@ -59,7 +59,6 @@ var current_action : Dictionary # [Action, APS, Args]
 
 var crawler_num :int
 var player_num :int
-var color :Color
 
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
@@ -71,6 +70,11 @@ var dir_src : Maze.Dir
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
 
+func get_posi() -> Vector2i:
+	return pos_src
+func get_color() -> Color:
+	return $MeshInstance3D.mesh.material.albedo_color
+
 func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
 	auto_walk_type = walk_type
 	total_action_stats = ActionQueue.new_stats()
@@ -78,7 +82,6 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	current_action.clear()
 	crawler_num = n
 	player_num = p_num
-	color = co
 	$MeshInstance3D.mesh.material.albedo_color = co
 	$MeshInstance3D.mesh.height = 0.2*LaneW
 	$MeshInstance3D.mesh.top_radius = 0.01*LaneW
@@ -99,6 +102,7 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.enqueue_with_speed(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
 	storey = st
 	pos_dst = pos
+	pos_src = pos
 	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
 	storey_action_stats = ActionQueue.new_stats()

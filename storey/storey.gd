@@ -137,7 +137,7 @@ func init(num :int, make_random :bool = false) -> Storey:
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
-	$MiniMap.init(self)
+	$MiniMap.init_storey(self)
 
 	add_bouncing(BouncingCount , 크기기준 /20)
 	return self
@@ -161,7 +161,8 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 			ch.enter_storey(old_storey, self, p)
 
 	$MiniMap.add_chars(char_list, playernum)
-	$MiniMap.update_size()
+	var rt := get_viewport().get_visible_rect()
+	$MiniMap.update_size(rt)
 	if old_storey != null:
 		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)
 		old_storey.get_mini_map().visible = false

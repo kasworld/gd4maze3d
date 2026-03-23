@@ -1,4 +1,4 @@
-extends Node2D
+extends MazeMiniMap
 class_name MiniMap
 
 enum MiniMapView {Off, Known, Full}
@@ -16,10 +16,7 @@ func set_minimap_mod(m :MiniMapView) -> void:
 	apply_minimap_mode()
 
 var minimap_mode :MiniMapView = MiniMapView.Off
-var map_scale :float = 20
-var WallThick :float = 2
 var storey :Storey
-var walllines_all :PackedVector2Array =[]
 var walllines_known :PackedVector2Array =[]
 var walls_known : Array[PackedByteArray] # as bool array
 var goal :Label
@@ -29,8 +26,8 @@ var player_serial :int
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
-func init(st :Storey) -> MiniMap:
-	#minimap_mode = viewmode
+func init_storey(st :Storey) -> MiniMap:
+	init(st.maze3d.maze_cells)
 	storey = st
 	walls_known = []
 	walls_known.resize(storey.maze3d.PreCalced.Grid2D.y*2+1)
@@ -69,20 +66,11 @@ func apply_minimap_mode() -> void:
 				ch.visible = true
 			queue_redraw()
 
-#func _ready() -> void:
-	#update_size()
-
-func update_size() -> void:
-	var vp_size := get_viewport().get_visible_rect().size
-	map_scale = min( vp_size.x / storey.maze3d.PreCalced.Grid2D.x , vp_size.y / storey.maze3d.PreCalced.Grid2D.y )
-	WallThick = map_scale*0.1
-	if WallThick < 1 :
-		WallThick = 1
-	make_walllines_all()
+func update_size(rt :Rect2) -> MiniMap:
+	super(rt)
 	make_walllines_known()
 	update_labels()
-	position.y = (vp_size.y - get_height())/2
-	position.x = (vp_size.x - get_width())/2
+	return self
 
 func add_character(achar :Crawler, outline :int) -> void:
 	var ch := new_label(achar.color, "%d" %[achar.crawler_num] , outline)
@@ -134,51 +122,25 @@ func update_label_pos_size(nd :Label, pos :Vector2i) -> void:
 	nd.size = Vector2(map_scale-WallThick*2, map_scale-WallThick*2)
 	nd.label_settings.font_size = map_scale/2.0 as int
 
-func pos2mapscale(pos :Vector2i) -> Vector2:
-	return pos * map_scale + Vector2(WallThick,WallThick)
-
-# make wallline by maze
-func make_walllines_all() -> void:
-	walllines_all = []
-	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
-	for y in MazeSize.y:
-		for x in MazeSize.x :
-			if not storey.get_maze_cells().is_open_flag_at(x,y,Maze.Flag.North):
-				add_wall_at_to_walllines( x , y , Maze.Dir.North, walllines_all)
-			if not storey.get_maze_cells().is_open_flag_at(x,y,Maze.Flag.West):
-				add_wall_at_to_walllines( x , y , Maze.Dir.West, walllines_all)
-
-	for x in MazeSize.x :
-		if not storey.get_maze_cells().is_open_flag_at(x,MazeSize.y-1,Maze.Flag.South):
-			add_wall_at_to_walllines( x , MazeSize.y-1 , Maze.Dir.South, walllines_all)
-
-	for y in MazeSize.y:
-		if not storey.get_maze_cells().is_open_flag_at(MazeSize.x-1,y,Maze.Flag.East):
-			add_wall_at_to_walllines( MazeSize.x-1 , y , Maze.Dir.East, walllines_all)
 
 # make wallline by walls_known
 func make_walllines_known() -> void:
 	walllines_known = []
-	var MazeSize :Vector2i= storey.maze3d.PreCalced.Grid2D
-	for y in MazeSize.y:
-		for x in MazeSize.x :
-			if is_known_wall_at(x,y,Maze.Dir.North):
-				add_wall_at_to_walllines( x , y , Maze.Dir.North, walllines_known)
-			if is_known_wall_at(x,y,Maze.Dir.West):
-				add_wall_at_to_walllines( x , y , Maze.Dir.West, walllines_known)
+	for y in maze.height:
+		for x in maze.width:
+			if is_known_wall_at(x, y, Maze.Dir.North):
+				add_wall_at_to_walllines(x, y, Maze.Dir.North, walllines_known)
+			if is_known_wall_at(x, y, Maze.Dir.West):
+				add_wall_at_to_walllines(x, y, Maze.Dir.West, walllines_known)
 
-	for x in MazeSize.x :
-		if is_known_wall_at(x,MazeSize.y-1,Maze.Dir.South):
-			add_wall_at_to_walllines( x , MazeSize.y-1 , Maze.Dir.South, walllines_known)
+	for x in maze.width :
+		if is_known_wall_at(x, maze.height-1, Maze.Dir.South):
+			add_wall_at_to_walllines(x, maze.height-1, Maze.Dir.South, walllines_known)
 
-	for y in MazeSize.y:
-		if is_known_wall_at(MazeSize.x-1,y,Maze.Dir.East):
-			add_wall_at_to_walllines( MazeSize.x-1 , y , Maze.Dir.East, walllines_known)
+	for y in maze.height:
+		if is_known_wall_at(maze.width-1, y, Maze.Dir.East):
+			add_wall_at_to_walllines(maze.width-1, y, Maze.Dir.East, walllines_known)
 
-# cell wall[y*2+1][x*2+1]
-# wall wall[y*2][x*2]
-func calc_wall_pos(x :int, y:int, dir :Maze.Dir) -> Vector2i:
-	return Vector2i(x*2+1,y*2+1) + Maze.DirToVt2[dir]
 func is_known_wall_at(x :int, y:int, dir :Maze.Dir) -> bool:
 	var wpos := calc_wall_pos(x,y,dir)
 	return walls_known[wpos.y][wpos.x] != 0
@@ -192,25 +154,9 @@ func add_known_wall_at(x:int,y :int, dir :Maze.Dir) -> void:
 	add_wall_at_to_walllines(x,y,dir,walllines_known)
 	queue_redraw()
 func update_knonw_walls_by_pos(x:int,y :int) -> void:
-	var walldir := storey.get_maze_cells().get_wall_flag_at(x,y)
+	var walldir := maze.get_wall_flag_at(x,y)
 	for d in walldir:
 		add_known_wall_at(x,y,Maze.FlagToDir[d])
-
-func add_wall_at_to_walllines(x:int,y :int, dir :Maze.Dir,wl :PackedVector2Array ) -> void:
-	match dir:
-		Maze.Dir.North:
-			wl.append_array([Vector2(x,y)*map_scale,Vector2(x+1,y)*map_scale])
-		Maze.Dir.West:
-			wl.append_array([Vector2(x,y)*map_scale,Vector2(x,y+1)*map_scale])
-		Maze.Dir.South:
-			wl.append_array([Vector2(x,y+1)*map_scale,Vector2(x+1,y+1)*map_scale])
-		Maze.Dir.East:
-			wl.append_array([Vector2(x+1,y)*map_scale,Vector2(x+1,y+1)*map_scale])
-
-func get_width() -> float:
-	return storey.maze3d.PreCalced.Grid2D.x * map_scale
-func get_height() -> float:
-	return storey.maze3d.PreCalced.Grid2D.y * map_scale
 
 func _draw() -> void:
 	match minimap_mode:

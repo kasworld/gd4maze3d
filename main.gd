@@ -7,7 +7,8 @@ var player :Crawler
 var main_tower :Tower
 
 func on_viewport_size_changed() -> void:
-	var vp_size := get_viewport().get_visible_rect().size
+	var rt := get_viewport().get_visible_rect()
+	var vp_size := rt.size
 	var 짧은길이 :float = min(vp_size.x, vp_size.y)
 	var panel_size := Vector2(vp_size.x/2 - 짧은길이/2, vp_size.y)
 	$"왼쪽패널".size = panel_size
@@ -20,7 +21,7 @@ func on_viewport_size_changed() -> void:
 			ProjectSettings.get_setting("application/config/name"),
 			ProjectSettings.get_setting("application/config/version") ] )
 	if main_tower:
-		main_tower.cur_storey.get_mini_map().update_size()
+		main_tower.cur_storey.get_mini_map().update_size(rt)
 func timed_message_hidden(_s :String) -> void:
 	pass
 

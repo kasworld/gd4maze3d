@@ -40,16 +40,6 @@ func init_storey(st :Storey) -> StoreyMiniMap:
 	apply_minimap_mode()
 	return self
 
-func add_chars(char_list :Array, playernum :int) -> StoreyMiniMap:
-	player_serial = playernum
-	for ch in char_list:
-		if ch.crawler_num == player_serial:
-			add_character(ch, 1)
-		else:
-			add_character(ch, 0)
-	apply_minimap_mode()
-	return self
-
 func apply_minimap_mode() -> void:
 	match minimap_mode:
 		MiniMapView.Off:
@@ -70,6 +60,15 @@ func update_size(rt :Rect2) -> void:
 	super(rt)
 	make_walllines_known()
 	update_labels()
+
+func add_chars(char_list :Array, playernum :int) -> void:
+	player_serial = playernum
+	for ch in char_list:
+		if ch.crawler_num == player_serial:
+			add_character(ch, 1)
+		else:
+			add_character(ch, 0)
+	apply_minimap_mode()
 
 func add_character(achar :Crawler, outline :int) -> void:
 	var ch := new_label(achar.color, "%d" %[achar.crawler_num] , outline)
@@ -95,8 +94,6 @@ func new_label(co:Color, text :String, outline :int) -> Label:
 	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lb.label_settings = LabelSettings.new()
 	lb.label_settings.font_color = Color(co_txt, 0.5)
-	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lb.text = text
 	var stb := StyleBoxFlat.new()
 	stb.bg_color = Color(co, 0.5)

@@ -17,16 +17,13 @@ func set_minimap_mod(m :MiniMapView) -> void:
 
 var minimap_mode :MiniMapView = MiniMapView.Off
 
-#var walllines_known :PackedVector2Array =[]
-#var walls_known : Array[PackedByteArray] # as bool array
-
 var wall_lines_all := WallLines.new()
 var wall_lines_known := WallLines.new()
-
 
 ## obj must has func get_posi() -> Vector2i:
 var obj_to_label :Dictionary[Node,Label] = {}
 var label_visible_in_known_map_view :Array[Label] = []
+
 func _to_string() -> String:
 	return "Minimap %s" % [minimapview2str(minimap_mode) ]
 
@@ -67,8 +64,8 @@ func update_size(rt :Rect2) -> void:
 
 func update_label_pos_size(lb :Label, posi :Vector2i) -> void:
 	lb.position = wall_lines_all.posi_to_mappos(posi)
-	lb.size = Vector2(wall_lines_all.map_scale-wall_lines_all.WallThick*2, wall_lines_all.map_scale-wall_lines_all.WallThick*2)
-	lb.label_settings.font_size = wall_lines_all.map_scale/2.0 as int
+	lb.size = Vector2(wall_lines_all.map_scale - wall_lines_all.WallThick*2, wall_lines_all.map_scale - wall_lines_all.WallThick*2)
+	lb.label_settings.font_size = max(1, wall_lines_all.map_scale/max(2,lb.text.length()) as int )
 
 func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_map_view :bool = false) -> void:
 	var lb := new_label(co, txt , outline)
@@ -81,7 +78,8 @@ func update_obj_pos(node :Node, update_know_wall :bool = false) -> void:
 	var posi :Vector2i = node.get_posi()
 	obj_to_label[node].position = wall_lines_all.posi_to_mappos(posi)
 	if update_know_wall:
-		wall_lines_known.update_walls_by_pos(posi.x, posi.y)
+		if wall_lines_known.update_walls_by_pos(posi.x, posi.y):
+			queue_redraw()
 
 func new_label(co:Color, text :String, outline :int) -> Label:
 	var co_txt :Color

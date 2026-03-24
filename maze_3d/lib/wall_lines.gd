@@ -98,7 +98,9 @@ func add_wall_at(x :int, y :int, dir :Maze.Dir) -> bool:
 	add_wall_at_to_walllines(x,y,dir)
 	return true # need redraw
 
-func update_walls_by_pos(x :int, y :int) -> void:
+func update_walls_by_pos(x :int, y :int) -> bool:
 	var walldir := maze.get_wall_flag_at(x,y)
+	var need_redraw :bool = false
 	for d in walldir:
-		add_wall_at(x,y,Maze.FlagToDir[d])
+		need_redraw = need_redraw or add_wall_at(x,y,Maze.FlagToDir[d])
+	return need_redraw

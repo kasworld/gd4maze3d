@@ -22,6 +22,9 @@ var minimap_mode :MiniMapView = MiniMapView.Off
 var maze2d_helper := Maze2DHelper.new()
 var wall_lines_all := WallLines.new()
 var wall_lines_known := WallLines.new()
+var line_color := Color(Color.WHITE,0.5)
+func set_color(co :Color) -> void:
+	line_color = co
 
 func _to_string() -> String:
 	return "StoreyMiniMap %s" % [minimapview2str(minimap_mode) ]
@@ -68,8 +71,8 @@ func update_obj_pos(node :Node, update_know_wall :bool = false) -> void:
 func _draw() -> void:
 	match minimap_mode:
 		MiniMapView.Full:
-			draw_multiline(wall_lines_all.walllines, Color(Color.WHITE,0.5), maze2d_helper.wall_thick)
+			draw_multiline(wall_lines_all.walllines, line_color, maze2d_helper.wall_thick)
 		MiniMapView.Known:
 			if wall_lines_known.walllines.size() == 0 :
 				return
-			draw_multiline(wall_lines_known.walllines, Color(Color.WHITE,0.5), maze2d_helper.wall_thick)
+			draw_multiline(wall_lines_known.walllines, line_color, maze2d_helper.wall_thick)

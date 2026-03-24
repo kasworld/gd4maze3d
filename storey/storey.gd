@@ -249,5 +249,7 @@ func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 func make_minimap_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var mm :MazeMiniMap = preload("res://maze_3d/maze_mini_map/maze_mini_map.tscn").instantiate()
 	mm.set_maze(maze3d.maze_cells)
+	mm.set_color(Color.WHITE)
 	mm.update_size(size_pixel)
+	mm.position.x = size_pixel.x/2 - mm.maze2d_helper.get_width()/2
 	return  MakeSubViewport(mm,size_pixel)

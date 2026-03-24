@@ -32,22 +32,18 @@ func _process(delta: float) -> void:
 		mb.bounce(delta)
 
 var DonutCapsuleCount :int
-var MakeLine2DWallRate :float
-var MakeClockCalWallRate :float
+var WallDecoRate :float
 var BouncingCount :int
 func setting_default() -> Storey:
 	DonutCapsuleCount = max(2, GridSize.x*GridSize.y/20.0)
-	MakeLine2DWallRate = 1.0/(GridSize.x*GridSize.y)
-	MakeClockCalWallRate = 1.0/(GridSize.x*GridSize.y)
+	WallDecoRate = 4.0/(GridSize.x*GridSize.y)
 	BouncingCount = 10
 	return self
 func setting_simple() -> Storey:
 	DonutCapsuleCount = 0
-	MakeLine2DWallRate = 0
-	MakeClockCalWallRate = 0
+	WallDecoRate = 0
 	BouncingCount = 0
 	return self
-
 
 var maze3d :Maze3D
 var storey_num :int
@@ -74,8 +70,8 @@ func get_mini_map() -> StoreyMiniMap:
 var storey_height :float
 
 func _to_string() -> String:
-	return "Storey[%d %s DonutCapsuleCount%s MakeLine2DWallRate%s MakeClockCalWallRate%s BouncingCount%s]" % [
-		storey_num, maze3d, DonutCapsuleCount,MakeLine2DWallRate,MakeClockCalWallRate,BouncingCount]
+	return "Storey[%d %s DonutCapsuleCount%s WallDecoRate%s BouncingCount%s]" % [
+		storey_num, maze3d, DonutCapsuleCount, WallDecoRate, BouncingCount]
 
 func clamp_rand(v :float) -> float :
 	var rtn := randfn( v, v/2 )
@@ -202,38 +198,56 @@ func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 
 
 var line2d_subviewport :SubViewport
-var clockcalendar_sel :int
+var minimap_subviewport :SubViewport
 # add clock or calendar
 func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
-	if randf() < MakeLine2DWallRate:
-		if line2d_subviewport == null:
-			line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
-			$WallDeco.add_child(line2d_subviewport)
-		var b := MakePlaneSubViewport(line2d_subviewport, Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y))
-		$WallDeco.add_child(b)
-		b.position = maze3d.deco_pos_by_dir(x,y,dir)
-		#b.rotate_x(PI/2)
-		b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
-		return
+	if randf() < WallDecoRate:
+		match randi_range(0,3):
+			0:
+				if line2d_subviewport == null:
+					line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
+					$WallDeco.add_child(line2d_subviewport)
+				var b := MakePlaneSubViewport(line2d_subviewport, Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y))
+				$WallDeco.add_child(b)
+				b.position = maze3d.deco_pos_by_dir(x,y,dir)
+				#b.rotate_x(PI/2)
+				b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+			1:
+				if minimap_subviewport == null:
+					minimap_subviewport = make_minimap_subvuewport(Vector2i(2000,1500))
+					$WallDeco.add_child(minimap_subviewport)
+				var b := MakePlaneSubViewport(minimap_subviewport, Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y))
+				$WallDeco.add_child(b)
+				b.position = maze3d.deco_pos_by_dir(x,y,dir)
+				#b.rotate_x(PI/2)
+				b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+			2:
+				var depth := 0.1
+				var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
+				var n :Node3D = preload("res://calendar_3d/calendar_3d.tscn").instantiate()
+				n.init(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y, depth, 크기기준/12, false)
+				#n.rotate_x(PI/2)
+				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+				n.position = maze3d.deco_pos_by_dir(x,y,dir)
+				$WallDeco.add_child(n)
+			3:
+				var depth := 0.1
+				var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
+				var n :Node3D = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
+				n.init(크기기준/2, depth, 크기기준/16, 9.0, false)
+				#n.rotate_x(PI/2)
+				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+				n.position = maze3d.deco_pos_by_dir(x,y,dir)
+				$WallDeco.add_child(n)
 
-	if randf() < MakeClockCalWallRate:
-		var n :Node3D
-		var depth := 0.1
-		var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
-		clockcalendar_sel +=1
-		if clockcalendar_sel % 2 == 0:
-			n = preload("res://calendar_3d/calendar_3d.tscn").instantiate()
-			n.init(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,
-				depth, 크기기준/12, false)
-		else :
-			n = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
-			n.init(크기기준/2, depth, 크기기준/16, 9.0, false)
-		#n.rotate_x(PI/2)
-		n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
-		n.position = maze3d.deco_pos_by_dir(x,y,dir)
-		$WallDeco.add_child(n)
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var l2d :MoveLine2D = preload("res://move_line_2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
 	l2d.start()
 	return  MakeSubViewport(l2d,size_pixel)
+
+func make_minimap_subvuewport(size_pixel:Vector2i) -> SubViewport:
+	var mm :MazeMiniMap = preload("res://maze_3d/maze_mini_map/maze_mini_map.tscn").instantiate()
+	mm.set_maze(maze3d.maze_cells)
+	mm.update_size(size_pixel)
+	return  MakeSubViewport(mm,size_pixel)

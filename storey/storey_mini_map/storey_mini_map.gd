@@ -24,7 +24,7 @@ var wall_lines_all := WallLines.new()
 var wall_lines_known := WallLines.new()
 
 func _to_string() -> String:
-	return "Minimap %s" % [minimapview2str(minimap_mode) ]
+	return "StoreyMiniMap %s" % [minimapview2str(minimap_mode) ]
 
 func init(mz :Maze) -> StoreyMiniMap:
 	maze2d_helper.set_maze(mz)

@@ -7,7 +7,6 @@ func set_helper(mh :Maze2DHelper) -> void:
 var walls : Array[PackedByteArray] # as bool array
 var walllines :PackedVector2Array = [] # for _draw
 
-
 func _to_string() -> String:
 	return "WallLines %s" % maze2d_helper.maze
 

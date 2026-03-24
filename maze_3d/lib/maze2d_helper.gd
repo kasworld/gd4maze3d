@@ -4,6 +4,9 @@ var maze :Maze
 var map_scale :float = 20
 var wall_thick :float = 2
 
+func _to_string() -> String:
+	return "Maze2DHelper %s" % maze
+
 func posi_to_mappos(pos :Vector2i) -> Vector2:
 	return pos * map_scale + Vector2(wall_thick,wall_thick)
 

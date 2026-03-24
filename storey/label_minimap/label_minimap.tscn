@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bl37xniip3cwv"]
+
+[ext_resource type="Script" uid="uid://ydusvqxtqvde" path="res://storey/label_minimap/label_minimap.gd" id="1_o5r7k"]
+
+[node name="LabelMiniMap" type="Node2D" unique_id=207661360]
+script = ExtResource("1_o5r7k")
+
+[node name="Container" type="Node2D" parent="." unique_id=1527807863]

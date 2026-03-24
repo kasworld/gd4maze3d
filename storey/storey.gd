@@ -137,7 +137,7 @@ func init(num :int, make_random :bool = false) -> Storey:
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
-	$MiniMap.init_storey(maze2d)
+	$MiniMap.init(maze2d)
 	$MiniMap.add_obj($StartMark, "Start", $StartMark.get_color(), 1, true)
 	$MiniMap.add_obj($EndMark, "Goal", $EndMark.get_color(), 1, true)
 

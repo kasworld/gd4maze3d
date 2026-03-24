@@ -15,4 +15,4 @@ func update_size(rt :Rect2) -> void:
 	position = rt.position
 
 func _draw() -> void:
-	draw_multiline(wall_lines_all.walllines,Color(Color.WHITE,0.5),wall_lines_all.WallThick)
+	draw_multiline(wall_lines_all.walllines,Color(Color.WHITE,0.5),wall_lines_all.wall_thick)

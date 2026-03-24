@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://dauu5e87kykn"]
 
 [ext_resource type="Script" uid="uid://c5acpnacwwm66" path="res://storey/storey_mini_map/storey_mini_map.gd" id="1_cjdgf"]
+[ext_resource type="PackedScene" uid="uid://bl37xniip3cwv" path="res://storey/label_minimap/label_minimap.tscn" id="2_mui64"]
 
 [node name="StoreyMiniMap" type="Node2D" unique_id=1301986182]
 script = ExtResource("1_cjdgf")
 
-[node name="Container" type="Node2D" parent="." unique_id=1806330950]
+[node name="LabelMiniMap" parent="." unique_id=207661360 instance=ExtResource("2_mui64")]

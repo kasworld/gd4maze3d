@@ -49,12 +49,11 @@ func apply_minimap_mode() -> void:
 			$LabelMiniMap.show_all()
 			queue_redraw()
 
-func update_size(rt :Rect2) -> void:
-	maze2d_helper.update_size(rt)
+func update_size(sz :Vector2) -> void:
+	maze2d_helper.update_size(sz)
 	wall_lines_all.make_all_walllines()
 	wall_lines_known.make_walllines_known()
-	position = rt.position
-	$LabelMiniMap.update_size(rt)
+	$LabelMiniMap.update_size()
 
 func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_map_view :bool = false) -> void:
 	$LabelMiniMap.add_obj(node,txt,co,outline,visible_in_known_map_view)

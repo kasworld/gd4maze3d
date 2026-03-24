@@ -17,7 +17,7 @@ func show_known() -> void:
 	for lb in label_visible_in_known_map_view:
 		lb.visible = true
 
-func update_size(rt :Rect2) -> void:
+func update_size() -> void:
 	for nd in obj_to_label:
 		var lb := obj_to_label[nd]
 		var posi :Vector2i = nd.get_posi()

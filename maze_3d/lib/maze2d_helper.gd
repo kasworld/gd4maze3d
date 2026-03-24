@@ -19,6 +19,6 @@ func get_width() -> float:
 func get_height() -> float:
 	return maze.height * map_scale
 
-func update_size(rt :Rect2) -> void:
-	map_scale = min( rt.size.x / maze.width , rt.size.y / maze.height )
+func update_size(sz :Vector2) -> void:
+	map_scale = min( sz.x / maze.width , sz.y / maze.height )
 	wall_thick = max(1, map_scale*0.1)

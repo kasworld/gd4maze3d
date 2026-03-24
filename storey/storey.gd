@@ -165,7 +165,7 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 			$MiniMap.add_obj(ch, "%d" % ch.crawler_num, ch.get_color(), 0, false)
 
 	var rt := get_viewport().get_visible_rect()
-	$MiniMap.update_size(rt)
+	$MiniMap.update_size(rt.size)
 	if old_storey != null:
 		$MiniMap.set_minimap_mod(old_storey.get_mini_map().minimap_mode)
 		old_storey.get_mini_map().visible = false

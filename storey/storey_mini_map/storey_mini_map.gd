@@ -59,6 +59,7 @@ func update_size(rt :Rect2) -> void:
 	wall_lines_all.make_all_walllines()
 	wall_lines_known.update_size(rt)
 	wall_lines_known.make_walllines_known()
+	position = rt.position
 	for nd in obj_to_label:
 		var lb := obj_to_label[nd]
 		var posi :Vector2i = nd.get_posi()

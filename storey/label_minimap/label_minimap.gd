@@ -9,14 +9,6 @@ var maze2d_helper :Maze2DHelper
 func set_helper(mh :Maze2DHelper) -> void:
 	maze2d_helper = mh
 
-#var maze :Maze
-#var maze2d_helper.map_scale :float = 20
-#var maze2d_helper.wall_thick :float = 2
-#func posi_to_mappos(pos :Vector2i) -> Vector2:
-	#return pos * maze2d_helper.map_scale + Vector2(maze2d_helper.wall_thick,maze2d_helper.wall_thick)
-#func set_maze(mz :Maze) -> void:
-	#maze = mz
-
 func show_all(b :bool = true) -> void:
 	for ch in $Container.get_children():
 		ch.visible = b

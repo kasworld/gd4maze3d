@@ -1,9 +1,5 @@
 class_name WallLines
 
-#var maze :Maze
-#var map_scale :float = 20
-#var WallThick :float = 2
-
 var maze2d_helper :Maze2DHelper
 func set_helper(mh :Maze2DHelper) -> void:
 	maze2d_helper = mh
@@ -20,21 +16,6 @@ func init_walls() -> void:
 	walls.resize(maze2d_helper.maze.height*2+1)
 	for cl in walls:
 		cl.resize(maze2d_helper.maze.width*2+1)
-
-#func set_maze(mz :Maze) -> void:
-	#maze = mz
-#
-#func get_width() -> float:
-	#return maze.width * map_scale
-#func get_height() -> float:
-	#return maze.height * map_scale
-#
-#func update_size(rt :Rect2) -> void:
-	#map_scale = min( rt.size.x / maze.width , rt.size.y / maze.height )
-	#WallThick = max(1, map_scale*0.1)
-#
-#func posi_to_mappos(pos :Vector2i) -> Vector2:
-	#return pos * map_scale + Vector2(WallThick,WallThick)
 
 # cell wall[y*2+1][x*2+1]
 # wall wall[y*2][x*2]

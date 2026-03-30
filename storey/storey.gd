@@ -20,6 +20,9 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 	sp.material_override.albedo_texture = svp.get_texture()
 	return sp
 
+static func ClampfRand(v :float) -> float :
+	var rtn := randfn( v, v/2 )
+	return clampf(rtn, v/2 , v *2)
 
 ## maze default settings
 const GridSize := Vector2i(4,4)
@@ -36,7 +39,7 @@ var WallDecoRate :float
 var BouncingCount :int
 func setting_default() -> Storey:
 	DonutCapsuleCount = max(2, GridSize.x*GridSize.y/20.0)
-	WallDecoRate = 4.0/(GridSize.x*GridSize.y)
+	WallDecoRate = 2.0/(GridSize.x*GridSize.y)
 	BouncingCount = 10
 	return self
 func setting_simple() -> Storey:
@@ -73,22 +76,19 @@ func _to_string() -> String:
 	return "Storey[%d %s DonutCapsuleCount%s WallDecoRate%s BouncingCount%s]" % [
 		storey_num, maze3d, DonutCapsuleCount, WallDecoRate, BouncingCount]
 
-func clamp_rand(v :float) -> float :
-	var rtn := randfn( v, v/2 )
-	return clampf(rtn, v/2 , v *2)
 
 func init(num :int, make_random :bool = false) -> Storey:
 	var grid_size := GridSize
 	var cell_size := CellSize
 	if make_random :
 		grid_size = Vector2i(
-			clamp_rand(GridSize.x) as int,
-			clamp_rand(GridSize.y) as int,
+			ClampfRand(GridSize.x) as int,
+			ClampfRand(GridSize.y) as int,
 		)
 		cell_size = Vector3(
-			clamp_rand(CellSize.x),
-			clamp_rand(CellSize.y),
-			clamp_rand(CellSize.z),
+			ClampfRand(CellSize.x),
+			ClampfRand(CellSize.y),
+			ClampfRand(CellSize.z),
 		)
 	var maze2d := Maze.new(grid_size)
 	var floor_ceiling_height :float = cell_size.y *0.01

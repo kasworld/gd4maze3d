@@ -21,7 +21,9 @@ func on_viewport_size_changed() -> void:
 			ProjectSettings.get_setting("application/config/name"),
 			ProjectSettings.get_setting("application/config/version") ] )
 	if main_tower:
-		main_tower.cur_storey.get_mini_map().update_size(rt.size)
+		var minimap := main_tower.cur_storey.get_mini_map()
+		minimap.update_size(rt.size)
+		minimap.position = rt.get_center() - minimap.get_size()/2
 func timed_message_hidden(_s :String) -> void:
 	pass
 

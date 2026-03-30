@@ -58,6 +58,9 @@ func update_size(sz :Vector2) -> void:
 	wall_lines_known.make_walllines_known()
 	$LabelMiniMap.update_size()
 
+func get_size() -> Vector2:
+	return maze2d_helper.get_size()
+
 func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_map_view :bool = false) -> void:
 	$LabelMiniMap.add_obj(node,txt,co,outline,visible_in_known_map_view)
 

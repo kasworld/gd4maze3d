@@ -251,5 +251,5 @@ func make_minimap_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	mm.set_maze(maze3d.maze_cells)
 	mm.set_color(Color.WHITE)
 	mm.update_size(size_pixel)
-	mm.position.x = size_pixel.x/2 - mm.maze2d_helper.get_width()/2
+	mm.position = size_pixel as Vector2 /2  - mm.maze2d_helper.get_size()/2
 	return  MakeSubViewport(mm,size_pixel)

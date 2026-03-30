@@ -21,11 +21,15 @@ func on_viewport_size_changed() -> void:
 			ProjectSettings.get_setting("application/config/name"),
 			ProjectSettings.get_setting("application/config/version") ] )
 	if main_tower:
-		var minimap := main_tower.cur_storey.get_mini_map()
-		minimap.update_size(rt.size)
-		minimap.position = rt.get_center() - minimap.get_size()/2
+		update_minimap()
 func timed_message_hidden(_s :String) -> void:
 	pass
+
+func update_minimap() -> void:
+	var rt := get_viewport().get_visible_rect()
+	var minimap := main_tower.cur_storey.get_mini_map()
+	minimap.update_size(rt.size)
+	minimap.position = rt.get_center() - minimap.get_size()/2
 
 func _ready() -> void:
 	on_viewport_size_changed()
@@ -73,6 +77,7 @@ func enter_next_storey(old_storey :Storey) -> void:
 		main_tower.move_to_upper_storey()
 		main_tower.cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
 	update_button_text()
+	update_minimap()
 
 func add_crawler(i :int) -> Crawler:
 	var cr :Crawler = preload("res://crawler/crawler.tscn").instantiate()

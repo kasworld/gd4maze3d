@@ -8,7 +8,7 @@ func _to_string() -> String:
 	return "Maze2DHelper %s" % maze
 
 func posi_to_mappos(pos :Vector2i) -> Vector2:
-	return pos * map_scale + Vector2(wall_thick,wall_thick)
+	return pos * map_scale + Vector2(wall_thick,wall_thick)/2
 
 func set_maze(mz :Maze) -> void:
 	maze = mz

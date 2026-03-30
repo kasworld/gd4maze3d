@@ -25,8 +25,8 @@ func update_size() -> void:
 
 func update_label_pos_size(lb :Label, posi :Vector2i) -> void:
 	lb.position = maze2d_helper.posi_to_mappos(posi)
-	lb.size = Vector2(maze2d_helper.map_scale - maze2d_helper.wall_thick*2, maze2d_helper.map_scale - maze2d_helper.wall_thick*2)
-	lb.label_settings.font_size = max(1, maze2d_helper.map_scale/max(2,lb.text.length()) as int )
+	lb.size = Vector2(maze2d_helper.map_scale - maze2d_helper.wall_thick, maze2d_helper.map_scale - maze2d_helper.wall_thick)
+	lb.label_settings.font_size = max(1, maze2d_helper.map_scale/max(2.0,lb.text.length()/1.5) as int )
 
 func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_map_view :bool = false) -> void:
 	var lb := new_label(co, txt , outline)

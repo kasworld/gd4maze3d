@@ -22,7 +22,7 @@ var colors := {
 var calendar_labels := []
 
 func get_color_mat(co: Color)->Material:
-	var mat := MultiMeshShape.make_color_material()
+	var mat := MultiMeshShape.MakeMultiMeshColorMaterial()
 	mat.albedo_color = co
 	#mat.metallic = 1
 	#mat.clearcoat = true

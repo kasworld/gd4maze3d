@@ -1,6 +1,24 @@
 extends MultiMeshInstance3D
 class_name MultiMeshShape
 
+## for multimesh use only
+static func MakeMultiMeshColorMaterial(alpha :float = 1.0) -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	# draw call 이 TRANSPARENCY_ALPHA 인 경우만 줄어든다. 버그인가?
+	if alpha >= 1.0:
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+	else:
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = Color(Color.WHITE,alpha)
+	mat.vertex_color_use_as_albedo = true
+
+	#mat.metallic = 1.0
+	##mat.roughness = 0.5
+	#mat.clearcoat_enabled = true
+	#mat.refraction_enabled = true
+	#mat.rim_enabled = true
+	return mat
+
 # example usage ################################################################
 
 func init_집중선(r :float, start:float, end:float, depth :float, count :int, co :Color, alpha :float = 1.0) -> MultiMeshShape:
@@ -9,7 +27,7 @@ func init_집중선(r :float, start:float, end:float, depth :float, count :int, 
 	구분선.size = Vector3(길이, depth/10, depth )
 	var cell각도 := 2.0*PI / count
 	var radius := r-길이/2
-	구분선.material = make_color_material(alpha)
+	구분선.material = MakeMultiMeshColorMaterial(alpha)
 	init_with_color_mesh(구분선, count)
 	for i in count:
 		var rad := cell각도 *i + cell각도/2
@@ -22,7 +40,7 @@ func init_집중선(r :float, start:float, end:float, depth :float, count :int, 
 func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :float = 1.0, gaprate :float = 0.1) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(sz.x, sz.y / count * (1-gaprate) , sz.z)
-	mesh.material = make_color_material(alpha)
+	mesh.material = MakeMultiMeshColorMaterial(alpha)
 	init_with_color_mesh(mesh, count)
 	for i in count:
 		var rate := (i as float) / (count as float)
@@ -33,7 +51,7 @@ func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :fl
 
 func init_wire_box(box_size :Vector3, wire_width :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
-	mesh.material = make_color_material(alpha)
+	mesh.material = MakeMultiMeshColorMaterial(alpha)
 	init_with_color_mesh(mesh, 12, false)
 	set_color_all(co)
 	var wire_scale := Vector3(wire_width, wire_width, box_size.z)
@@ -68,7 +86,7 @@ func init_wire_box(box_size :Vector3, wire_width :float, co :Color, alpha :float
 
 func init_spheres_by_point_list(point_list :Array, point_radius :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
 	var sp_mesh := SphereMesh.new()
-	sp_mesh.material = make_color_material(alpha)
+	sp_mesh.material = MakeMultiMeshColorMaterial(alpha)
 	sp_mesh.radius = point_radius
 	sp_mesh.height = point_radius*2
 	return init_meshs_by_point_list(sp_mesh, point_list, co)
@@ -82,7 +100,7 @@ func init_meshs_by_point_list(mesh :Mesh, point_list :Array, co :Color) -> Multi
 
 func multi_line_by_pos(pos_list:Array, wire_width :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
-	mesh.material = make_color_material(alpha)
+	mesh.material = MakeMultiMeshColorMaterial(alpha)
 	return multi_mesh_line_by_pos(mesh, pos_list, wire_width, co)
 
 func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :Color) -> MultiMeshShape:
@@ -108,22 +126,6 @@ func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :C
 
 # color functions
 
-static func make_color_material(alpha :float = 1.0) -> StandardMaterial3D:
-	var mat := StandardMaterial3D.new()
-	# draw call 이 TRANSPARENCY_ALPHA 인 경우만 줄어든다. 버그인가?
-	if alpha >= 1.0:
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
-	else:
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = Color(Color.WHITE,alpha)
-	mat.vertex_color_use_as_albedo = true
-
-	#mat.metallic = 1.0
-	##mat.roughness = 0.5
-	#mat.clearcoat_enabled = true
-	#mat.refraction_enabled = true
-	#mat.rim_enabled = true
-	return mat
 
 func set_color_all(color :Color) -> MultiMeshShape:
 	for i in multimesh.visible_instance_count:

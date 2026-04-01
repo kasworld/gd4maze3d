@@ -12,7 +12,7 @@ func init(mz :Maze3D, r :float,spd :float, co :Color) -> MazeBall:
 	speed = spd
 	mesh = BoxMesh.new()
 	mesh.size = Vector3(radius*2,radius*2,radius/2)
-	mesh.material = MultiMeshShape.make_color_material()
+	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial()
 	mesh.material.albedo_color = co
 	mesh.material.metallic = 1.0
 	mesh.material.clearcoat_enabled = true

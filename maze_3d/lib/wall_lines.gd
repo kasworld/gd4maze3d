@@ -88,5 +88,5 @@ func update_walls_by_pos(x :int, y :int) -> bool:
 	var walldir := maze2d_helper.maze.get_wall_flag_at(x,y)
 	var need_redraw :bool = false
 	for d in walldir:
-		need_redraw = need_redraw or add_wall_at(x,y,Maze.FlagToDir[d])
+		need_redraw = add_wall_at(x,y,Maze.FlagToDir[d]) or need_redraw
 	return need_redraw

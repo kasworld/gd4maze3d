@@ -233,7 +233,6 @@ func set_position_all(pos :Vector3) -> MultiMeshShape:
 
 func set_inst_rotate(i :int, axis :Vector3, rot :float) -> void:
 	var t := multimesh.get_instance_transform(i)
-	t = Transform3D(Basis(), t.origin)
 	t = t.rotated_local(axis, rot)
 	multimesh.set_instance_transform(i, t)
 

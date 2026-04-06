@@ -234,11 +234,12 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 				var depth := 0.1
 				var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 				var n :Node3D = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
-				n.init(크기기준/2, depth, 크기기준/16, 9.0, false)
+				n.init(크기기준/2, depth, 크기기준/16, false)
 				#n.rotate_x(PI/2)
 				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
 				n.position = maze3d.deco_pos_by_dir(x,y,dir)
 				$WallDeco.add_child(n)
+				n.update_clock(Time.get_unix_time_from_system(), 9.0)
 
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:

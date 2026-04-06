@@ -19,10 +19,7 @@ var colors := {
 	clockbg = Color(0.5,0.5,0.5,0.5), # Color.BLACK.lightened(0.3),
 }
 
-var tz_shift :float
-
-func init(r :float, d :float, fsize :float, tzs :float = 9.0, backplane:bool=true) -> AnalogClock3D:
-	tz_shift = tzs
+func init(r :float, d :float, fsize :float, backplane:bool=true) -> AnalogClock3D:
 	$BackPlane.mesh.height = d*0.5
 	$BackPlane.mesh.top_radius = r
 	$BackPlane.mesh.bottom_radius = r
@@ -130,11 +127,9 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String) -> MeshI
 	sp.mesh = mesh
 	return sp
 
-func _process(_delta: float) -> void:
-	update_clock()
-
-func update_clock():
-	var ms := Time.get_unix_time_from_system()
+## ms : Time.get_unix_time_from_system() , tz_shift : 9
+func update_clock(ms :float , tz_shift :float):
+	#var ms := Time.get_unix_time_from_system()
 	var second := ms - int(ms/60)*60
 	ms = ms / 60
 	var minute := ms - int(ms/60)*60

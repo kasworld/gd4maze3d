@@ -239,7 +239,7 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
 				n.position = maze3d.deco_pos_by_dir(x,y,dir)
 				$WallDeco.add_child(n)
-				n.update_clock(Time.get_unix_time_from_system(), 9.0)
+				n.update_clock(AnalogClock3D.get_localtime_from_system())
 
 
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:

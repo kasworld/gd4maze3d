@@ -32,7 +32,7 @@ func update():
 	http_request.request(url_to_get)
 
 # reload on next request, ignore modify date check
-func force_update()->void:
+func force_update() -> void:
 	last_modified = ""
 	update()
 
@@ -47,7 +47,7 @@ func _http_request_completed(result: int, response_code: int, headers: PackedStr
 		last_modified = ""
 		fail_to_get.call()
 
-func key_value_from_header(key: String ,headers: PackedStringArray )->String:
+func key_value_from_header(key: String ,headers: PackedStringArray ) -> String:
 	var keyLen := len(key)
 	for i in headers:
 		if i.left(keyLen) == key:

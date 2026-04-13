@@ -1,6 +1,11 @@
 extends Node3D
 class_name AnalogClock3D
 
+## with time zone applied
+static func get_localtime_from_system() -> float:
+	var tz := Time.get_time_zone_from_system()
+	return Time.get_unix_time_from_system() +tz["bias"]*60
+
 enum BarAlign {In, Mid, Out}
 
 var font := preload("res://font/HakgyoansimBareondotumR.ttf")
@@ -114,17 +119,17 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String) -> MeshI
 	return sp
 
 ## ms : Time.get_unix_time_from_system() , tz_shift : 9
-func update_clock(ms :float, tz_shift :float):
-	var hands_rad := calc_rad_for_hand(ms, tz_shift)
+func update_clock(ms :float):
+	var hands_rad := calc_rad_for_hand(ms)
 	$SecondBase.rotation.z = -hands_rad[2]
 	$MinuteBase.rotation.z = -hands_rad[1]
 	$HourBase.rotation.z = -hands_rad[0]
 
 ## [hour, minute, second]
-func calc_rad_for_hand(ms :float, tz_shift :float) -> Array[float]:
+func calc_rad_for_hand(ms :float) -> Array[float]:
 	var second := ms - int(ms/60)*60
 	ms = ms / 60
 	var minute := ms - int(ms/60)*60
 	ms = ms / 60
-	var hour := ms - int(ms/24)*24 + tz_shift
+	var hour := ms - int(ms/24)*24
 	return [PI/6.0*hour, PI/30.0*minute, PI/30.0*second]

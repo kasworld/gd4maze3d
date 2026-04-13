@@ -29,12 +29,12 @@ var day_repeat_list :Array
 ]
 """
 
-func clear()->void:
+func clear() -> void:
 	day_repeat_list.clear()
 	data_dict.clear()
 
 # return true if added
-func add_day_repeat_data(k :String, v :String)->bool:
+func add_day_repeat_data(k :String, v :String) -> bool:
 	var klist := k.split("/", false,1)
 	if klist.size() != 2:
 		return false
@@ -45,7 +45,7 @@ func add_day_repeat_data(k :String, v :String)->bool:
 	day_repeat_list.append( [ klist[0], repeat_day.to_int(), v ] )
 	return true
 
-func make(text:String)->void:
+func make(text:String) -> void:
 	clear()
 	var lines := text.strip_edges().split("\n", false,0)
 	for s in lines :
@@ -64,7 +64,7 @@ func make(text:String)->void:
 			data_dict[key].append(value)
 #	print_debug(day_repeat_list)
 
-func get_daystringlist()->Array[String]:
+func get_daystringlist() -> Array[String]:
 	var rtn :Array[String] = []
 	var addkey := func(key):
 		if data_dict.get(key) == null:
@@ -92,7 +92,7 @@ func get_daystringlist()->Array[String]:
 	return rtn
 
 # string must YYYY-MM-DD no time zone
-func calc_day_diff(from :String, to :String)->int:
-	var from_tick := Time.get_unix_time_from_datetime_string (from)
-	var to_tick := Time.get_unix_time_from_datetime_string (to)
-	return (to_tick-from_tick)/(24*60*60)
+func calc_day_diff(from :String, to :String) -> int:
+	var from_tick := Time.get_unix_time_from_datetime_string(from)
+	var to_tick := Time.get_unix_time_from_datetime_string(to)
+	return (to_tick-from_tick)/(24.0*60*60) as int

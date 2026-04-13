@@ -2,6 +2,9 @@ class_name AnimateGradient
 
 var color_fn :Callable
 
+func _to_string() -> String:
+	return "AnimateGradient[%s %s]" % [color_list, color_rate]
+
 func _init(color_fn_a :Callable = NamedColors.random_color) -> void:
 	set_color_fn(color_fn_a)
 	color_list = [color_fn.call(),color_fn.call()]

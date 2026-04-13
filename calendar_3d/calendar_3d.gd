@@ -1,6 +1,19 @@
 extends Node3D
 class_name Calendar3D
 
+## with time zone applied
+static func get_localtime_from_system() -> float:
+	var tz := Time.get_time_zone_from_system()
+	return Time.get_unix_time_from_system() +tz["bias"]*60
+
+static func make_unix_time(year :int, month :int, day :int) -> int:
+	return Time.get_unix_time_from_datetime_dict({
+		"year" : year,
+		"month" : month,
+		"day" : day,
+	})
+
+
 var font := preload("res://font/HakgyoansimBareondotumR.ttf")
 const weekdaystring := ["일","월","화","수","목","금","토"]
 var colors := {
@@ -48,7 +61,7 @@ func init(w :float, h:float,d:float, fsize :float, backplane:bool=true) -> Calen
 		$BackplaneBox.mesh.material.albedo_color = colors.calbg
 		$BackplaneBox.mesh.size = Vector3(w, h, d*0.5)
 	init_calendar(w, h,d, fsize)
-	update_calendar(get_localtime_from_system())
+	update_calendar(get_localtime_from_system() as int)
 	return self
 
 func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
@@ -78,18 +91,7 @@ func set_mesh_color(sp:MeshInstance3D, co:Color) -> void:
 func set_mesh_text(sp:MeshInstance3D, text :String) -> void:
 	sp.mesh.text = text
 
-## with time zone applied
-static func get_localtime_from_system() -> int:
-	var tz := Time.get_time_zone_from_system()
-	var today :int = int(Time.get_unix_time_from_system()) +tz["bias"]*60
-	return today
 
-static func make_unix_time(year :int, month :int, day :int) -> int:
-	return Time.get_unix_time_from_datetime_dict({
-		"year" : year,
-		"month" : month,
-		"day" : day,
-	})
 
 func update_calendar(unix_time :int) -> void:
 	var datetime_dict := Time.get_date_dict_from_unix_time(unix_time)
@@ -126,8 +128,8 @@ func update_calendar(unix_time :int) -> void:
 var old_time_dict = {"day":0} # datetime dict
 func update_calender_if_day_changed() -> void:
 	var today := get_localtime_from_system()
-	var time_now_dict := Time.get_date_dict_from_unix_time(today)
+	var time_now_dict := Time.get_date_dict_from_unix_time(today as int)
 	# date changed, update datelabel, calendar
 	if old_time_dict["day"] != time_now_dict["day"]:
 		old_time_dict = time_now_dict
-		update_calendar(today)
+		update_calendar(today as int)

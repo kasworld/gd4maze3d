@@ -11,7 +11,6 @@ var color_list :PackedColorArray
 var velocity_list :PackedVector2Array
 var init_point_list :PackedVector2Array
 var move_speed :float
-var auto_move :bool
 
 func init_with_random(ln_count :int, pt_count :int, w:float, dsize :Vector2, amovespd :float = 1.0/60.0 ) -> MoveLine2D:
 	point_count = pt_count
@@ -49,17 +48,7 @@ func init_with_copy(other :MoveLine2D) -> MoveLine2D:
 		$LineContainer.add_child(ln)
 	return self
 
-func start() -> void:
-	auto_move = true
-
-func stop() -> void:
-	auto_move = false
-
-func _process(_delta: float) -> void:
-	if auto_move:
-		move_1_step()
-
-func move_1_step() -> void:
+func process_animation(_delta: float) -> void:
 	var old_line_points = $LineContainer.get_child(line_cursor).points.duplicate()
 	line_cursor +=1
 	line_cursor %= $LineContainer.get_child_count()

@@ -33,6 +33,8 @@ func _process(delta: float) -> void:
 	storey_animation.handle_animation()
 	for mb in bouncing_list:
 		mb.bounce(delta)
+	for l2d in move_line_2d_list:
+		l2d.process_animation(delta)
 
 var DonutCapsuleCount :int
 var WallDecoRate :float
@@ -241,10 +243,10 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 				$WallDeco.add_child(n)
 				n.update_clock(AnalogClock3D.get_localtime_from_system())
 
-
+var move_line_2d_list :Array = []
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var l2d :MoveLine2D = preload("res://move_line_2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)
-	l2d.start()
+	move_line_2d_list.append(l2d)
 	return  MakeSubViewport(l2d,size_pixel)
 
 func make_minimap_subvuewport(size_pixel:Vector2i) -> SubViewport:

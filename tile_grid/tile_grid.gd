@@ -43,6 +43,8 @@ func make_ani_tile_rotate_z(aniname :String, from :float, to :float, dur_sec :fl
 var calc_grid :CalcGrid3D
 var pos_list :Array
 
+# color functions
+
 func get_index_by_xy(x :int, y :int) -> int:
 	return calc_grid.get_index_by_posi_xyz(x,y)
 
@@ -125,6 +127,21 @@ func draw_vline_color(x :int, y1 :int, y2 :int, co :Color):
 
 # init functions
 
+func init_tile_grid_by_texture2d(tg_size :Vector3, texture2d :Texture2D, pixel_rate :float = 0.8) -> TileGrid:
+	var image := texture2d.get_image()
+	if image.is_compressed():
+		image.decompress()
+	var image_size := image.get_size()
+	var image_scale :float = min(tg_size.x/image_size.x, tg_size.y/image_size.y)
+	var prop_size := Vector3(image_size.x*image_scale, image_size.y*image_scale, tg_size.z)
+	init_tile_grid_with_box(prop_size, image_size, pixel_rate, Color(Color.WHITE, 0.9))
+	calc_grid.iter_ixyz(func(_index:int,xi:int,yi:int,_zi:int):
+		var co :Color = image.get_pixel(xi,yi)
+		set_tile_color_at(xi,image_size.y-yi-1,co)
+		)
+	return self
+
+
 func init_tile_grid_with_box(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color) -> TileGrid:
 	var calc_grid_a := MakeCalcGrid(total_size,grid_count)
 	var mesh := BoxMesh.new()
@@ -136,8 +153,9 @@ func init_tile_grid_with_box(total_size :Vector3, grid_count :Vector2i, gap_rate
 func init_tile_grid_with_cylinder(total_size :Vector3, grid_count :Vector2i, gap_rate :float, radial_segments :int, co :Color) -> TileGrid:
 	var calc_grid_a := MakeCalcGrid(total_size,grid_count)
 	var mesh := CylinderMesh.new()
-	mesh.top_radius = calc_grid_a.unit_size.length() / 2 * gap_rate
-	mesh.bottom_radius = calc_grid_a.unit_size.length() / 2 * gap_rate
+	var v2 := Vector2(calc_grid_a.unit_size.x, calc_grid_a.unit_size.y)
+	mesh.top_radius = v2.length() / 2 * gap_rate
+	mesh.bottom_radius = v2.length() / 2 * gap_rate
 	mesh.height = calc_grid_a.unit_size.z
 	mesh.radial_segments = radial_segments
 	mesh.material = MakeMultiMeshColorMaterial(co.a)

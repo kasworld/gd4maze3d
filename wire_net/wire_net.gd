@@ -49,7 +49,7 @@ func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wir
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(net_size.x, wire_width, wire_height)
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
-	$WireH.init_with_color_mesh(mesh, h_count)
+	$WireH.init_with_color_mesh(mesh, h_count, false)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	for i in h_count:
 		var pos := Vector3(net_size.x/2, net_size.y/(h_count-1)* i, 0) + pos_shift
@@ -65,7 +65,7 @@ func init_wire_V(net_size :Vector2, grid_count :Vector2i, wire_width :float, wir
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(wire_width, net_size.y, wire_height)
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
-	$WireV.init_with_color_mesh(mesh, v_count)
+	$WireV.init_with_color_mesh(mesh, v_count, false)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	for i in v_count:
 		var pos := Vector3( net_size.x/(v_count-1)* i, net_size.y/2, 0) + pos_shift

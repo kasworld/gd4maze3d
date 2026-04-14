@@ -64,7 +64,7 @@ func make_hands(r :float, d:float)->void:
 func make_dial_line_multi(r :float, d:float, align :BarAlign):
 	var mesh := BoxMesh.new()
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial()
-	$DialBars.init_with_color_mesh(mesh, 360, 1.0)
+	$DialBars.init_with_color_mesh(mesh, 360, false)
 	$DialBars.set_gradient_color_all(colors.dial_1,colors.dial_1)
 	# Set the transform of the instances.
 	var bar_height := d*0.2

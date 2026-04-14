@@ -191,9 +191,7 @@ func init_with_mesh( mesh :Mesh, count :int,
 		_init_position_all(pos)
 	return self
 
-func init_with_color_mesh( mesh :Mesh, count :int,
-		callinit_transform :bool = true,
-		pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
+func init_with_color_mesh( mesh :Mesh, count :int, callinit_transform :bool = true, pos :Vector3 = Vector3.ZERO) -> MultiMeshShape:
 	_init_multimesh(mesh)
 	multimesh.use_colors = true # before set instance_count
 	# Then resize (otherwise, changing the format is not allowed).

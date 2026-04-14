@@ -97,8 +97,8 @@ func init(num :int, make_random :bool = false) -> Storey:
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(
 		).init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y)
 		).init_floor_ceiling(grid_size*4, floor_ceiling_height, 0.9,
-		Color(NamedColors.random_color(), 0.9),
-		Color(NamedColors.random_color(), 0.9),
+		Color(NamedColors.random_color(), 0.5),
+		Color(NamedColors.random_color(), 0.5),
 	)
 	storey_height = cell_size.y + floor_ceiling_height * 2
 	add_child(maze3d)

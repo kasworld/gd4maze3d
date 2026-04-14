@@ -82,10 +82,10 @@ func exec_make() -> void:
 
 func init_floor_ceiling(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
 	var net_size :Vector2 = PreCalced.SizeWithWallV2
-	$Floor.init_tile_grid_with_box( Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_floor)
+	$Floor.init_tile_grid_with_box( Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_floor, true)
 	$Floor.rotation.x = PI/2
 	$Floor.position.y -= calc_grid.unit_size.y/2 +height/2
-	$Ceiling.init_tile_grid_with_box(Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_ceiling)
+	$Ceiling.init_tile_grid_with_box(Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_ceiling, true)
 	$Ceiling.rotation.x = PI/2
 	$Ceiling.position.y += calc_grid.unit_size.y/2 +height/2
 	return self

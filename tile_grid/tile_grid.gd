@@ -134,7 +134,7 @@ func init_tile_grid_by_texture2d(tg_size :Vector3, texture2d :Texture2D, pixel_r
 	var image_size := image.get_size()
 	var image_scale :float = min(tg_size.x/image_size.x, tg_size.y/image_size.y)
 	var prop_size := Vector3(image_size.x*image_scale, image_size.y*image_scale, tg_size.z)
-	init_tile_grid_with_box(prop_size, image_size, pixel_rate, Color(Color.WHITE, 0.9))
+	init_tile_grid_with_box(prop_size, image_size, pixel_rate, Color.WHITE, true)
 	calc_grid.iter_ixyz(func(_index:int,xi:int,yi:int,_zi:int):
 		var co :Color = image.get_pixel(xi,yi)
 		set_tile_color_at(xi,image_size.y-yi-1,co)
@@ -142,15 +142,15 @@ func init_tile_grid_by_texture2d(tg_size :Vector3, texture2d :Texture2D, pixel_r
 	return self
 
 
-func init_tile_grid_with_box(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color) -> TileGrid:
+func init_tile_grid_with_box(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color, transparent :bool = false) -> TileGrid:
 	var calc_grid_a := MakeCalcGrid(total_size,grid_count)
 	var mesh := BoxMesh.new()
 	mesh.size = calc_grid_a.unit_size *gap_rate
-	mesh.material = MakeMultiMeshColorMaterial(co.a)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	init_tile_grid_with_mesh(mesh, calc_grid_a, co)
 	return self
 
-func init_tile_grid_with_cylinder(total_size :Vector3, grid_count :Vector2i, gap_rate :float, radial_segments :int, co :Color) -> TileGrid:
+func init_tile_grid_with_cylinder(total_size :Vector3, grid_count :Vector2i, gap_rate :float, radial_segments :int, co :Color, transparent :bool = false) -> TileGrid:
 	var calc_grid_a := MakeCalcGrid(total_size,grid_count)
 	var mesh := CylinderMesh.new()
 	var v2 := Vector2(calc_grid_a.unit_size.x, calc_grid_a.unit_size.y)
@@ -158,28 +158,28 @@ func init_tile_grid_with_cylinder(total_size :Vector3, grid_count :Vector2i, gap
 	mesh.bottom_radius = v2.length() / 2 * gap_rate
 	mesh.height = calc_grid_a.unit_size.z
 	mesh.radial_segments = radial_segments
-	mesh.material = MakeMultiMeshColorMaterial(co.a)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	init_tile_grid_with_mesh(mesh, calc_grid_a, co)
 	tile_rotation_x = PI/2
 	return self
 
-func init_tile_grid_with_plane(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color) -> TileGrid:
+func init_tile_grid_with_plane(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color, transparent :bool = false) -> TileGrid:
 	var calc_grid_a := MakeCalcGrid(total_size,grid_count)
 	var mesh := PlaneMesh.new()
 	mesh.size = Vector2(calc_grid_a.unit_size.x,calc_grid_a.unit_size.y) *gap_rate
-	mesh.material = MakeMultiMeshColorMaterial(co.a)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	init_tile_grid_with_mesh(mesh, calc_grid_a, co)
 	tile_rotation_x = PI/2
 	return self
 
-func init_tile_grid_with_sphere(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color) -> TileGrid:
+func init_tile_grid_with_sphere(total_size :Vector3, grid_count :Vector2i, gap_rate :float, co :Color, transparent :bool = false) -> TileGrid:
 	var calc_grid_a := MakeCalcGrid(total_size,grid_count)
 	var mesh := SphereMesh.new()
 	mesh.radius = calc_grid_a.unit_size.x *gap_rate /2
 	mesh.height = calc_grid_a.unit_size.y *gap_rate
 	mesh.radial_segments = 4
 	mesh.rings = 1
-	mesh.material = MakeMultiMeshColorMaterial(co.a)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	init_tile_grid_with_mesh(mesh, calc_grid_a, co)
 	return self
 

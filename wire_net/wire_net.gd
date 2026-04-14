@@ -39,16 +39,16 @@ func start_V_rotate_y(aniname :String, from :float, to :float, dur_sec :float) -
 var h_count :int
 var v_count :int
 
-func init(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, alpha :float = 1.0) -> WireNet:
-	init_wire_H(net_size,grid_count,wire_width,wire_height,co,alpha)
-	init_wire_V(net_size,grid_count,wire_width,wire_height,co,alpha)
+func init(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
+	init_wire_H(net_size,grid_count,wire_width,wire_height,co,transparent)
+	init_wire_V(net_size,grid_count,wire_width,wire_height,co,transparent)
 	return self
 
-func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, alpha :float = 1.0) -> WireNet:
+func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
 	h_count = grid_count.y
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(net_size.x, wire_width, wire_height)
-	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(alpha)
+	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
 	$WireH.init_with_color_mesh(mesh, h_count)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	for i in h_count:
@@ -60,11 +60,11 @@ func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wir
 	return self
 
 
-func init_wire_V(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, alpha :float = 1.0) -> WireNet:
+func init_wire_V(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
 	v_count = grid_count.x
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(wire_width, net_size.y, wire_height)
-	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(alpha)
+	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
 	$WireV.init_with_color_mesh(mesh, v_count)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	for i in v_count:

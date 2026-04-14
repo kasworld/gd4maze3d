@@ -2,14 +2,11 @@ extends MultiMeshInstance3D
 class_name MultiMeshShape
 
 ## for multimesh use only
-static func MakeMultiMeshColorMaterial(alpha :float = 1.0) -> StandardMaterial3D:
+static func MakeMultiMeshColorMaterial(transparent :bool = false, co :Color = Color.WHITE) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	# draw call 이 TRANSPARENCY_ALPHA 인 경우만 줄어든다. 버그인가?
-	if alpha >= 1.0:
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
-	else:
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = Color(Color.WHITE,alpha)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
+	mat.albedo_color = co # Color.WHITE #Color(Color.WHITE,transparent)
 	mat.vertex_color_use_as_albedo = true
 
 	#mat.metallic = 1.0
@@ -21,13 +18,13 @@ static func MakeMultiMeshColorMaterial(alpha :float = 1.0) -> StandardMaterial3D
 
 # example usage ################################################################
 
-func init_집중선(r :float, start:float, end:float, depth :float, count :int, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+func init_집중선(r :float, start:float, end:float, depth :float, count :int, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var 구분선 := BoxMesh.new()
 	var 길이 := r*(end-start)
 	구분선.size = Vector3(길이, depth/10, depth )
 	var cell각도 := 2.0*PI / count
 	var radius := r-길이/2
-	구분선.material = MakeMultiMeshColorMaterial(alpha)
+	구분선.material = MakeMultiMeshColorMaterial(transparent)
 	init_with_color_mesh(구분선, count)
 	for i in count:
 		var rad := cell각도 *i + cell각도/2
@@ -37,10 +34,10 @@ func init_집중선(r :float, start:float, end:float, depth :float, count :int, 
 		set_inst_color(i, co)
 	return self
 
-func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :float = 1.0, gaprate :float = 0.1) -> MultiMeshShape:
+func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, transparent :bool = false, gaprate :float = 0.1) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(sz.x, sz.y / count * (1-gaprate) , sz.z)
-	mesh.material = MakeMultiMeshColorMaterial(alpha)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	init_with_color_mesh(mesh, count)
 	for i in count:
 		var rate := (i as float) / (count as float)
@@ -49,9 +46,9 @@ func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, alpha :fl
 		set_inst_color(i, lerp(co1, co2, rate) )
 	return self
 
-func init_wire_box(box_size :Vector3, wire_width :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+func init_wire_box(box_size :Vector3, wire_width :float, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
-	mesh.material = MakeMultiMeshColorMaterial(alpha)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	init_with_color_mesh(mesh, 12, false)
 	set_color_all(co)
 	var wire_scale := Vector3(wire_width, wire_width, box_size.z)
@@ -84,9 +81,9 @@ func init_wire_box(box_size :Vector3, wire_width :float, co :Color, alpha :float
 			i += 1
 	return self
 
-func init_spheres_by_point_list(point_list :Array, point_radius :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+func init_spheres_by_point_list(point_list :Array, point_radius :float, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var sp_mesh := SphereMesh.new()
-	sp_mesh.material = MakeMultiMeshColorMaterial(alpha)
+	sp_mesh.material = MakeMultiMeshColorMaterial(transparent)
 	sp_mesh.radius = point_radius
 	sp_mesh.height = point_radius*2
 	return init_meshs_by_point_list(sp_mesh, point_list, co)
@@ -98,9 +95,9 @@ func init_meshs_by_point_list(mesh :Mesh, point_list :Array, co :Color) -> Multi
 		multimesh.set_instance_transform(i, Transform3D(Basis(), point_list[i]))
 	return self
 
-func multi_line_by_pos(pos_list:Array, wire_width :float, co :Color, alpha :float = 1.0) -> MultiMeshShape:
+func multi_line_by_pos(pos_list:Array, wire_width :float, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
-	mesh.material = MakeMultiMeshColorMaterial(alpha)
+	mesh.material = MakeMultiMeshColorMaterial(transparent)
 	return multi_mesh_line_by_pos(mesh, pos_list, wire_width, co)
 
 func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :Color) -> MultiMeshShape:

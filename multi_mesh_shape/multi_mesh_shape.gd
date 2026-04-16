@@ -25,7 +25,7 @@ func init_집중선(r :float, start:float, end:float, depth :float, count :int, 
 	var cell각도 := 2.0*PI / count
 	var radius := r-길이/2
 	구분선.material = MakeMultiMeshColorMaterial(transparent)
-	init_with_color_mesh(구분선, count)
+	init_with_color_mesh(구분선, count, false)
 	for i in count:
 		var rad := cell각도 *i + cell각도/2
 		#set_inst_rotation(i, Vector3.BACK, rad)
@@ -38,7 +38,7 @@ func init_bar_gauge_y(count :int, sz :Vector3, co1 :Color, co2 :Color, transpare
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(sz.x, sz.y / count * (1-gaprate) , sz.z)
 	mesh.material = MakeMultiMeshColorMaterial(transparent)
-	init_with_color_mesh(mesh, count)
+	init_with_color_mesh(mesh, count, true)
 	for i in count:
 		var rate := (i as float) / (count as float)
 		var pos3d := Vector3(0,rate*sz.y,0) # grow upward

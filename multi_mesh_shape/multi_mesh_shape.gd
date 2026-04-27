@@ -18,10 +18,10 @@ static func MakeMultiMeshColorMaterial(transparent :bool = false, co :Color = Co
 
 # example usage ################################################################
 
-func init_집중선(r :float, start:float, end:float, depth :float, count :int, co :Color, transparent :bool = false) -> MultiMeshShape:
+func init_집중선(r :float, start:float, end:float, width :float, depth :float, count :int, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var 구분선 := BoxMesh.new()
 	var 길이 := r*(end-start)
-	구분선.size = Vector3(길이, depth/10, depth )
+	구분선.size = Vector3(길이, width, depth )
 	var cell각도 := 2.0*PI / count
 	var radius := r-길이/2
 	구분선.material = MakeMultiMeshColorMaterial(transparent)
@@ -81,31 +81,35 @@ func init_wire_box(box_size :Vector3, wire_width :float, co :Color, transparent 
 			i += 1
 	return self
 
-func init_spheres_by_point_list(point_list :Array, point_radius :float, co :Color, transparent :bool = false) -> MultiMeshShape:
+## sphere position list
+func init_spheres_by_position_list(position_list :Array, sphere_radius :float, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var sp_mesh := SphereMesh.new()
 	sp_mesh.material = MakeMultiMeshColorMaterial(transparent)
-	sp_mesh.radius = point_radius
-	sp_mesh.height = point_radius*2
-	return init_meshs_by_point_list(sp_mesh, point_list, co)
+	sp_mesh.radius = sphere_radius
+	sp_mesh.height = sphere_radius*2
+	return init_meshs_by_position_list(sp_mesh, position_list, co)
 
-func init_meshs_by_point_list(mesh :Mesh, point_list :Array, co :Color) -> MultiMeshShape:
-	init_with_color_mesh(mesh, point_list.size(), false)
+## instance position list
+func init_meshs_by_position_list(mesh :Mesh, position_list :Array, co :Color) -> MultiMeshShape:
+	init_with_color_mesh(mesh, position_list.size(), false)
 	set_color_all(co)
-	for i in point_list.size():
-		multimesh.set_instance_transform(i, Transform3D(Basis(), point_list[i]))
+	for i in position_list.size():
+		multimesh.set_instance_transform(i, Transform3D(Basis(), position_list[i]))
 	return self
 
-func multi_line_by_pos(pos_list:Array, wire_width :float, co :Color, transparent :bool = false) -> MultiMeshShape:
+## line_list : Array[[position, position]]
+func multi_by_line_list(line_list:Array, wire_width :float, co :Color, transparent :bool = false) -> MultiMeshShape:
 	var mesh := BoxMesh.new()
 	mesh.material = MakeMultiMeshColorMaterial(transparent)
-	return multi_mesh_line_by_pos(mesh, pos_list, wire_width, co)
+	return multi_mesh_by_line_list(mesh, line_list, wire_width, co)
 
-func multi_mesh_line_by_pos(mesh :Mesh, pos_list:Array, wire_width :float, co :Color) -> MultiMeshShape:
-	init_with_color_mesh(mesh, pos_list.size(), false)
+## line_list : Array[[position, position]]
+func multi_mesh_by_line_list(mesh :Mesh, line_list:Array, wire_width :float, co :Color) -> MultiMeshShape:
+	init_with_color_mesh(mesh, line_list.size(), false)
 	set_color_all(co)
-	for i in pos_list.size():
-		var p1 :Vector3 = pos_list[i][0]
-		var p2 :Vector3 = pos_list[i][1]
+	for i in line_list.size():
+		var p1 :Vector3 = line_list[i][0]
+		var p2 :Vector3 = line_list[i][1]
 		var center := (p1+p2)/2
 		var l := p1.distance_to(p2)
 		var wire_scale := Vector3(wire_width, wire_width, l)
@@ -181,9 +185,7 @@ func calc_visible_rate() -> float:
 
 # init functions
 
-func init_with_mesh( mesh :Mesh, count :int,
-		callinit_transform :bool = true,
-		pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
+func init_with_mesh( mesh :Mesh, count :int, callinit_transform :bool = true, pos :Vector3 = Vector3.ZERO ) -> MultiMeshShape:
 	_init_multimesh(mesh)
 	# Then resize (otherwise, changing the format is not allowed).
 	_set_count(count)

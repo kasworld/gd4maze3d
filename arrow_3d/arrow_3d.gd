@@ -30,3 +30,7 @@ func set_material(mat :Material) -> Arrow3D:
 	$Body.mesh.material = mat
 	$Head.mesh.material = mat
 	return self
+
+## body len + head len
+func get_length() -> float:
+	return $Body.mesh.height + $Head.mesh.height

@@ -64,14 +64,26 @@ func iter_ixyz(fn :Callable) -> void:
 func rate_posi(posi :Vector3i) -> Vector3:
 	return (posi as Vector3) / (grid_size as Vector3 - Vector3.ONE)
 
+## return 0.0 ~ 1.0
 func rate_xi(xi :int) -> float:
 	return float(xi) / float(grid_size.x-1)
 
+## return 0.0 ~ 1.0
 func rate_yi(yi :int) -> float:
 	return float(yi) / float(grid_size.y-1)
 
+## return 0.0 ~ 1.0
 func rate_zi(zi :int) -> float:
 	return float(zi) / float(grid_size.z-1)
+
+func xi_by_rate(xrate :float) -> int:
+	return xrate * (grid_size.x -1) as int
+
+func yi_by_rate(yrate :float) -> int:
+	return yrate * (grid_size.y -1) as int
+
+func zi_by_rate(zrate :float) -> int:
+	return zrate * (grid_size.z -1) as int
 
 
 ## inverse get_n_th_posi

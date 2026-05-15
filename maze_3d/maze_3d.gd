@@ -81,42 +81,42 @@ func exec_make() -> void:
 	make_wall_by_maze()
 
 func init_floor_ceiling(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
+	var grid_count_3d := Vector3i(grid_count.x, 1, grid_count.y)
 	var net_size :Vector2 = PreCalced.SizeWithWallV2
-	$Floor.init_tile_grid_with_box( Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_floor, true)
-	$Floor.rotation.x = PI/2
+	$Floor.init_plot3d_box(Vector3(net_size.x, height, net_size.y), grid_count_3d, size_rate, true).fill_all(co_floor)
+	#$Floor.rotation.x = PI/2
 	$Floor.position.y -= calc_grid.unit_size.y/2 +height/2
-	$Ceiling.init_tile_grid_with_box(Vector3(net_size.x, net_size.y, height), grid_count, size_rate, co_ceiling, true)
-	$Ceiling.rotation.x = PI/2
+	$Ceiling.init_plot3d_box(Vector3(net_size.x, height, net_size.y), grid_count_3d, size_rate, true).fill_all(co_ceiling)
+	#$Ceiling.rotation.x = PI/2
 	$Ceiling.position.y += calc_grid.unit_size.y/2 +height/2
 	return self
 
-func get_floor() -> TileGrid:
+func get_floor() -> Plot3D:
 	return $Floor
-func get_ceiling() -> TileGrid:
+func get_ceiling() -> Plot3D:
 	return $Ceiling
 
+func calc_tile_count(tg :Plot3D) -> Vector2:
+	return Vector2( float(tg.calc_grid.grid_size.x) / maze_cells.width, float(tg.calc_grid.grid_size.z) / maze_cells.height)
 
-func calc_tile_count(tg :TileGrid) -> Vector2:
-	return Vector2( float(tg.calc_grid.grid_size.x) / maze_cells.width, float(tg.calc_grid.grid_size.y) / maze_cells.height)
-
-func make_stair(tg :TileGrid, cell_posi :Vector2i, dir :Maze.Dir) -> void:
+func make_stair(tg :Plot3D, cell_posi :Vector2i, dir :Maze.Dir) -> void:
 	var count := calc_tile_count(tg)
 	var step_x := calc_grid.unit_size.x / (count.x+1)
 	var step_y := calc_grid.unit_size.y / (count.y+1)
 	for y in count.y:
 		for x in count.x:
 			var tile_pos := cell_posi as Vector2 * count + Vector2(x,y)
-			var index :int = tg.get_index_by_xy(tile_pos.x as int, tile_pos.y as int)
+			var index :int = tg.calc_grid.get_index_by_posi_xyz(tile_pos.x as int, 0, tile_pos.y as int)
 			var t := tg.multimesh.get_instance_transform(index)
 			match dir:
 				Maze.Dir.North:
-					t.origin.z = step_y * (y+1)
+					t.origin.y = step_y * (y+1)
 				Maze.Dir.South:
-					t.origin.z = step_y * (count.y - y)
+					t.origin.y = step_y * (count.y - y)
 				Maze.Dir.East:
-					t.origin.z = step_x * (count.x - x)
+					t.origin.y = step_x * (count.x - x)
 				Maze.Dir.West:
-					t.origin.z = step_x * (x+1)
+					t.origin.y = step_x * (x+1)
 				_ :
 					assert(false, "invalid dir %s" % dir)
 			tg.multimesh.set_instance_transform(index, t)

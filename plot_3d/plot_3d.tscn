@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://btil787jb7edu"]
+
+[ext_resource type="Script" uid="uid://bkxsm4uu8aye4" path="res://plot_3d/plot_3d.gd" id="1_55qrc"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_55qrc"]
+resource_local_to_scene = true
+
+[node name="Plot3D" type="MultiMeshInstance3D" unique_id=1200192443]
+multimesh = SubResource("MultiMesh_55qrc")
+script = ExtResource("1_55qrc")
+metadata/_custom_type_script = "uid://brthvnlbu6c53"

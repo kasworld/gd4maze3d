@@ -176,64 +176,56 @@ func pos_multimeshshape(mms :MultiMeshShape, pos_list :Array) -> void:
 		var t := Transform3D(Basis(), pos_list[i])
 		mms.multimesh.set_instance_transform(i,t)
 
-func make_wall_multi_shape(mat :Material, sz :Vector3, pos_list :Array) -> MultiMeshShape:
+func make_wall_multi_shape(mms :MultiMeshShape, mat :Material, sz :Vector3, pos_list :Array) -> void:
 	var mesh := BoxMesh.new()
 	mesh.size = sz
 	mesh.material = mat
-	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
-		).init_with_mesh(mesh, pos_list.size())
-	pos_multimeshshape(rtn, pos_list)
-	$WallContainer.add_child(rtn)
-	return rtn
+	mms.init_with_mesh(mesh, pos_list.size())
+	pos_multimeshshape(mms, pos_list)
 
-var wall_multi_inst_V_main :MultiMeshShape
-var wall_multi_inst_H_main :MultiMeshShape
-var wall_multi_inst_V_sub :MultiMeshShape
-var wall_multi_inst_H_sub :MultiMeshShape
-var pos_list_V_main :Array
-var pos_list_H_main :Array
-var pos_list_V_sub :Array
-var pos_list_H_sub :Array
 func make_wall_by_maze() -> void:
+	var pos_list_V_main :Array
+	var pos_list_H_main :Array
+	var pos_list_V_sub :Array
+	var pos_list_H_sub :Array
+	var add_wall_at := func(x :int, y :int, dir :Maze.Flag) -> void:
+		match dir:
+			Maze.Flag.West, Maze.Flag.East:
+				if randf() < MakeSubWallRate:
+					pos_list_V_sub.append(calc_pos_face_V(x,y))
+				else:
+					pos_list_V_main.append(calc_pos_face_V(x,y))
+			Maze.Flag.North, Maze.Flag.South:
+				if randf() < MakeSubWallRate:
+					pos_list_H_sub.append(calc_pos_face_H(x,y))
+				else:
+					pos_list_H_main.append(calc_pos_face_H(x,y))
+
 	for y in PreCalced.Grid2D.y:
 		for x in PreCalced.Grid2D.x:
 			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.North):
-				add_wall_at( x , y , Maze.Flag.North)
+				add_wall_at.call(x, y, Maze.Flag.North)
 			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.West):
-				add_wall_at( x , y , Maze.Flag.West)
+				add_wall_at.call(x, y, Maze.Flag.West)
 
 	for x in PreCalced.Grid2D.x :
 		if not maze_cells.is_open_flag_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
-			add_wall_at( x , PreCalced.Grid2D.y , Maze.Flag.South)
+			add_wall_at.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
 
 	for y in PreCalced.Grid2D.y:
 		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
-			add_wall_at( PreCalced.Grid2D.x , y , Maze.Flag.East)
+			add_wall_at.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
-	wall_multi_inst_V_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
-	wall_multi_inst_H_main = make_wall_multi_shape(main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)
-	wall_multi_inst_V_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_sub)
-	wall_multi_inst_H_sub = make_wall_multi_shape(sub_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_sub)
+	make_wall_multi_shape($WallContainer/VMain, main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
+	make_wall_multi_shape($WallContainer/HMain, main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)
+	make_wall_multi_shape($WallContainer/VSub, sub_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_sub)
+	make_wall_multi_shape($WallContainer/HSub, sub_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_sub)
 
 func calc_pos_face_V(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, calc_grid.unit_size.y/2, calc_grid.unit_size.z/2)
 
 func calc_pos_face_H(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(calc_grid.unit_size.x/2, calc_grid.unit_size.y/2, 0)
-
-func add_wall_at(x :int, y :int, dir :Maze.Flag) -> void:
-	match dir:
-		Maze.Flag.West, Maze.Flag.East:
-			if randf() < MakeSubWallRate:
-				pos_list_V_sub.append(calc_pos_face_V(x,y))
-			else:
-				pos_list_V_main.append(calc_pos_face_V(x,y))
-		Maze.Flag.North, Maze.Flag.South:
-			if randf() < MakeSubWallRate:
-				pos_list_H_sub.append(calc_pos_face_H(x,y))
-			else:
-				pos_list_H_main.append(calc_pos_face_H(x,y))
-
 
 func deco_pos_by_dir(x :int, y :int, dir :Maze.Flag) -> Vector3:
 	match dir:
@@ -268,15 +260,15 @@ static func view_floor_ceiling_next(a :FloorCeiling) -> FloorCeiling:
 
 func set_wall_size_long(b :bool) -> void:
 	if b:
-		wall_multi_inst_H_main.multimesh.mesh.size = PreCalced.WallSize_H_Long
-		wall_multi_inst_H_sub.multimesh.mesh.size = PreCalced.WallSize_H_Long
-		wall_multi_inst_V_main.multimesh.mesh.size = PreCalced.WallSize_V_Long
-		wall_multi_inst_V_sub.multimesh.mesh.size = PreCalced.WallSize_V_Long
+		$WallContainer/HMain.multimesh.mesh.size = PreCalced.WallSize_H_Long
+		$WallContainer/HSub.multimesh.mesh.size = PreCalced.WallSize_H_Long
+		$WallContainer/VMain.multimesh.mesh.size = PreCalced.WallSize_V_Long
+		$WallContainer/VSub.multimesh.mesh.size = PreCalced.WallSize_V_Long
 	else:
-		wall_multi_inst_H_main.multimesh.mesh.size = PreCalced.WallSize_H_Short
-		wall_multi_inst_H_sub.multimesh.mesh.size = PreCalced.WallSize_H_Short
-		wall_multi_inst_V_main.multimesh.mesh.size = PreCalced.WallSize_V_Short
-		wall_multi_inst_V_sub.multimesh.mesh.size = PreCalced.WallSize_V_Short
+		$WallContainer/HMain.multimesh.mesh.size = PreCalced.WallSize_H_Short
+		$WallContainer/HSub.multimesh.mesh.size = PreCalced.WallSize_H_Short
+		$WallContainer/VMain.multimesh.mesh.size = PreCalced.WallSize_V_Short
+		$WallContainer/VSub.multimesh.mesh.size = PreCalced.WallSize_V_Short
 
 enum WallView {Off, Short, Long}
 func view_walls(v :WallView) -> void:

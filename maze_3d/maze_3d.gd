@@ -147,10 +147,8 @@ func make_box_pillas() -> void:
 	var mesh := BoxMesh.new()
 	mesh.material = pillar_box_mat
 	mesh.size = PreCalced.PillarSize
-	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
-		).init_with_mesh(mesh, pos_list.size())
-	pos_multimeshshape(rtn, pos_list)
-	$BoxPillars.add_child(rtn)
+	$BoxPillars.init_with_mesh(mesh, pos_list.size())
+	pos_multimeshshape($BoxPillars, pos_list)
 
 func make_cylinder_pillas() -> void:
 	var pos_list :Array = []
@@ -164,10 +162,8 @@ func make_cylinder_pillas() -> void:
 	mesh.top_radius = WallThick/1.5
 	mesh.height = calc_grid.unit_size.y
 	mesh.radial_segments = 8
-	var rtn : MultiMeshShape = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate(
-		).init_with_mesh(mesh, pos_list.size())
-	pos_multimeshshape_capsule(rtn, pos_list)
-	$CapsulePillars.add_child(rtn)
+	$CapsulePillars.init_with_mesh(mesh, pos_list.size())
+	pos_multimeshshape_capsule($CapsulePillars, pos_list)
 
 func pos_multimeshshape_capsule(mms :MultiMeshShape, pos_list :Array) -> void:
 	for i in pos_list.size():

@@ -2,11 +2,18 @@
 
 [ext_resource type="Script" uid="uid://dcw2hfmbwc2pm" path="res://maze_3d/maze_3d.gd" id="1_0k1os"]
 [ext_resource type="PackedScene" uid="uid://btil787jb7edu" path="res://plot_3d/plot_3d.tscn" id="2_2b0r0"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_7je7j"]
-resource_local_to_scene = true
+[ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="3_7je7j"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_wt25u"]
+resource_local_to_scene = true
+
+[sub_resource type="MultiMesh" id="MultiMesh_7o0nl"]
+resource_local_to_scene = true
+
+[sub_resource type="MultiMesh" id="MultiMesh_dvc8l"]
+resource_local_to_scene = true
+
+[sub_resource type="MultiMesh" id="MultiMesh_7je7j"]
 resource_local_to_scene = true
 
 [node name="Maze3D" type="Node3D" unique_id=1197400707]
@@ -14,14 +21,16 @@ script = ExtResource("1_0k1os")
 
 [node name="WallContainer" type="Node3D" parent="." unique_id=1744184575]
 
-[node name="CapsulePillars" type="Node3D" parent="." unique_id=460614937]
-visible = false
-
-[node name="BoxPillars" type="Node3D" parent="." unique_id=1013896200]
-visible = false
-
 [node name="Floor" parent="." unique_id=1200192443 instance=ExtResource("2_2b0r0")]
-multimesh = SubResource("MultiMesh_7je7j")
+multimesh = SubResource("MultiMesh_wt25u")
 
 [node name="Ceiling" parent="." unique_id=814222085 instance=ExtResource("2_2b0r0")]
-multimesh = SubResource("MultiMesh_wt25u")
+multimesh = SubResource("MultiMesh_7o0nl")
+
+[node name="BoxPillars" parent="." unique_id=211187273 instance=ExtResource("3_7je7j")]
+visible = false
+multimesh = SubResource("MultiMesh_dvc8l")
+
+[node name="CapsulePillars" parent="." unique_id=1088320687 instance=ExtResource("3_7je7j")]
+visible = false
+multimesh = SubResource("MultiMesh_7je7j")

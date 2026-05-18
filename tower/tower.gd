@@ -76,12 +76,25 @@ func set_all_storey_position() -> void:
 		var new_y := calc_storey_base_y_pos(i)
 		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
+var make_random :bool = false
 func add_new_storey() -> void:
 	var stnum := 0
 	if storey_list.size() != 0:
 		stnum = storey_list[-1].storey_num +1
+	var grid_size := Storey.GridSize
+	var cell_size := Storey.CellSize
+	if make_random :
+		grid_size = Vector2i(
+			Storey.ClampfRand(Storey.GridSize.x) as int,
+			Storey.ClampfRand(Storey.GridSize.y) as int,
+		)
+		cell_size = Vector3(
+			Storey.ClampfRand(Storey.CellSize.x),
+			Storey.ClampfRand(Storey.CellSize.y),
+			Storey.ClampfRand(Storey.CellSize.z),
+		)
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
-	st.setting_default().init(stnum)
+	st.setting_default().init(stnum, grid_size, cell_size)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)

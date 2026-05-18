@@ -79,19 +79,7 @@ func _to_string() -> String:
 		storey_num, maze3d, DonutCapsuleCount, WallDecoRate, BouncingCount]
 
 
-func init(num :int, make_random :bool = false) -> Storey:
-	var grid_size := GridSize
-	var cell_size := CellSize
-	if make_random :
-		grid_size = Vector2i(
-			ClampfRand(GridSize.x) as int,
-			ClampfRand(GridSize.y) as int,
-		)
-		cell_size = Vector3(
-			ClampfRand(CellSize.x),
-			ClampfRand(CellSize.y),
-			ClampfRand(CellSize.z),
-		)
+func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	var maze2d := Maze.new(grid_size)
 	var floor_ceiling_height :float = cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate(

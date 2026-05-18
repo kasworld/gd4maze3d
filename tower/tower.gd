@@ -40,13 +40,13 @@ func _to_string() -> String:
 
 func init() -> Tower:
 	for i in visible_storey_up:
-		add_new_storey(i)
+		add_new_storey()
 	cur_storey = storey_list[0]
 	return self
 
 func move_to_upper_storey() -> void:
 	del_old_storey()
-	add_new_storey(storey_list[-1].storey_num +1)
+	add_new_storey()
 	cur_storey = find_storey_by_num(cur_storey.storey_num +1)
 
 func find_storey_by_num(num :int) -> Storey:
@@ -76,7 +76,10 @@ func set_all_storey_position() -> void:
 		var new_y := calc_storey_base_y_pos(i)
 		st.storey_animation.start_move_subfield("ani_add_move", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
-func add_new_storey(stnum :int) -> void:
+func add_new_storey() -> void:
+	var stnum := 0
+	if storey_list.size() != 0:
+		stnum = storey_list[-1].storey_num +1
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
 	st.setting_default().init(stnum)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)

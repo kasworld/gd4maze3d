@@ -45,7 +45,7 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(PlayerNumber)
 	$MovingCameraLightAround.make_current()
 
-	var ref_len := Tower.ref_tower_size().length()
+	var ref_len := main_tower.tower_size().length()
 	$AxisArrow3D.set_size(ref_len/3).set_colors()
 
 	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, ref_len), ref_len*4)
@@ -59,8 +59,8 @@ func _process(_delta: float) -> void:
 	update_info()
 
 	var t := Time.get_unix_time_from_system() /2.3
-	var r := Tower.ref_tower_size().length()
-	var h := Tower.ref_tower_size().y *2
+	var r := main_tower.tower_size().length()
+	var h := main_tower.tower_size().y *2
 	var pos_center := main_tower.cur_storey.global_position
 	if $MovingCameraLightHober.is_current_camera():
 		$MovingCameraLightHober.move_hober_around_z(t, pos_center, r, h )

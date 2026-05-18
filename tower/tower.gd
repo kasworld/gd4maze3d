@@ -6,8 +6,9 @@ const StoreyDown := 3
 
 const StoreyAnimationDuration := 1.5
 
-static func ref_tower_size() -> Vector3:
-	return Vector3(Storey.GridSize.x, StoreyUp + StoreyDown +1 , Storey.GridSize.y) * Storey.CellSize
+var max_storey_grid :Vector2i = Storey.GridSize
+func tower_size() -> Vector3:
+	return Vector3(max_storey_grid.x, StoreyUp + StoreyDown +1 , max_storey_grid.y) * Storey.CellSize
 
 var visible_storey_up :int = StoreyUp
 var visible_storey_down :int = StoreyDown
@@ -98,6 +99,8 @@ func add_new_storey() -> void:
 			ClampfRand(Storey.CellSize.y),
 			ClampfRand(Storey.CellSize.z),
 		)
+	if grid_size > max_storey_grid:
+		max_storey_grid = grid_size
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
 	st.setting_default().init(stnum, grid_size, cell_size)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)

@@ -20,9 +20,6 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 	sp.material_override.albedo_texture = svp.get_texture()
 	return sp
 
-static func ClampfRand(v :float) -> float :
-	var rtn := randfn( v, v/2 )
-	return clampf(rtn, v/2 , v *2)
 
 ## maze default settings
 const GridSize := Vector2i(4,4)

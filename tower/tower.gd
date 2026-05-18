@@ -88,7 +88,10 @@ func add_new_storey() -> void:
 	var stnum := 0
 	if storey_list.size() != 0:
 		stnum = storey_list[-1].storey_num +1
-		grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + Vector2i(1,1)
+		if randi_range(0,1) == 0:
+			grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + Vector2i(1,0)
+		else:
+			grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + Vector2i(0,1)
 	if make_storey_size_random :
 		grid_size = Vector2i(
 			ClampfRand(Storey.GridSize.x) as int,

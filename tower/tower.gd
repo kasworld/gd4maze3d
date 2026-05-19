@@ -105,7 +105,7 @@ func add_new_storey() -> void:
 	if grid_size > max_storey_grid:
 		max_storey_grid = grid_size
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
-	st.setting_default().init(stnum, grid_size, cell_size)
+	st.set_param(grid_size).init(stnum, grid_size, cell_size)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
 	st.get_maze3d().set_wallpillar_view_mode(view_walls)
 	storey_list.append(st)

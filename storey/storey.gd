@@ -33,18 +33,13 @@ func _process(delta: float) -> void:
 	for l2d in move_line_2d_list:
 		l2d.process_animation(delta)
 
-var DonutCapsuleCount :int
-var WallDecoRate :float
-var BouncingCount :int
-func setting_default() -> Storey:
-	DonutCapsuleCount = max(2, GridSize.x*GridSize.y/20.0)
-	WallDecoRate = 2.0/(GridSize.x*GridSize.y)
+var DonutCapsuleCount :int = 0
+var WallDecoRate :float = 0
+var BouncingCount :int = 0
+func set_param(grid_size) -> Storey:
+	DonutCapsuleCount = max(2, grid_size.x*grid_size.y/20.0)
+	WallDecoRate = 2.0/(grid_size.x*grid_size.y)
 	BouncingCount = 10
-	return self
-func setting_simple() -> Storey:
-	DonutCapsuleCount = 0
-	WallDecoRate = 0
-	BouncingCount = 0
 	return self
 
 var maze3d :Maze3D

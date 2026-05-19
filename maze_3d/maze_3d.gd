@@ -100,25 +100,26 @@ func calc_tile_count(tg :Plot3D) -> Vector2:
 	return Vector2( float(tg.calc_grid.grid_size.x) / maze_cells.width, float(tg.calc_grid.grid_size.z) / maze_cells.height)
 
 func make_stair(tg :Plot3D, cell_posi :Vector2i, dir :Maze.Dir) -> void:
-	var count := calc_tile_count(tg)
-	var step_x := calc_grid.unit_size.x / (count.x+1)
-	var step_y := calc_grid.unit_size.y / (count.y+1)
-	for y in count.y:
-		for x in count.x:
-			var tile_pos := cell_posi as Vector2 * count + Vector2(x,y)
+	var tile_count := calc_tile_count(tg)
+	var step_x := calc_grid.unit_size.y / (tile_count.x+1)
+	var step_y := calc_grid.unit_size.y / (tile_count.y+1)
+	for y in tile_count.y:
+		for x in tile_count.x:
+			var tile_pos := cell_posi as Vector2 * tile_count + Vector2(x,y)
 			var index :int = tg.calc_grid.get_index_by_posi_xyz(tile_pos.x as int, 0, tile_pos.y as int)
 			var t := tg.multimesh.get_instance_transform(index)
 			match dir:
 				Maze.Dir.North:
-					t.origin.y = step_y * (y+1)
+					t.origin.y = -step_y * (y+1)
 				Maze.Dir.South:
-					t.origin.y = step_y * (count.y - y)
+					t.origin.y = -step_y * (tile_count.y - y)
 				Maze.Dir.East:
-					t.origin.y = step_x * (count.x - x)
+					t.origin.y = -step_x * (tile_count.x - x)
 				Maze.Dir.West:
-					t.origin.y = step_x * (x+1)
+					t.origin.y = -step_x * (x+1)
 				_ :
 					assert(false, "invalid dir %s" % dir)
+			#t.origin.y -= calc_grid.unit_size.z
 			tg.multimesh.set_instance_transform(index, t)
 
 func init_wall_deco(makedeco :Callable) -> void:

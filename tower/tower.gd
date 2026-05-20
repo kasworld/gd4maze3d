@@ -94,13 +94,13 @@ func add_new_storey() -> void:
 			grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + Vector2i(0,1)
 	if make_storey_size_random :
 		grid_size = Vector2i(
-			ClampfRand(Storey.GridSize.x) as int,
-			ClampfRand(Storey.GridSize.y) as int,
+			ClampfRand(grid_size.x) as int,
+			ClampfRand(grid_size.y) as int,
 		)
 		cell_size = Vector3(
-			ClampfRand(Storey.CellSize.x),
-			ClampfRand(Storey.CellSize.y),
-			ClampfRand(Storey.CellSize.z),
+			ClampfRand(cell_size.x),
+			ClampfRand(cell_size.y),
+			ClampfRand(cell_size.z),
 		)
 	if grid_size > max_storey_grid:
 		max_storey_grid = grid_size

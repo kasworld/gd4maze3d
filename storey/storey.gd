@@ -20,7 +20,6 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 	sp.material_override.albedo_texture = svp.get_texture()
 	return sp
 
-
 ## maze default settings
 const GridSize := Vector2i(2,2)
 const CellSize := Vector3(4.0,3.0,4.0)
@@ -69,7 +68,6 @@ var storey_height :float
 func _to_string() -> String:
 	return "Storey[%d %s DonutCapsuleCount%s WallDecoRate%s BouncingCount%s]" % [
 		storey_num, maze3d, DonutCapsuleCount, WallDecoRate, BouncingCount]
-
 
 func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	var maze2d := Maze.new(grid_size)

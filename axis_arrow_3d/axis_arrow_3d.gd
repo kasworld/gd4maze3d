@@ -38,6 +38,9 @@ func set_size(l :float, body_width :float = 0, head_width :float = 0, body_rate 
 	return self
 
 func set_label(font_size :float, label_pos_rate :float) -> AxisArrow3D:
+	if font_size > 4096:
+		font_size = 4095
+	#print_debug(font_size)
 	var l :float = $Arrows/ArrowX.get_length()
 	for i in 3:
 		$Labels.get_child(i).position[i] = l * label_pos_rate

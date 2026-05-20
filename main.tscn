@@ -185,6 +185,7 @@ modulate = Color(1, 1, 1, 0.498039)
 theme = SubResource("Theme_lquwl")
 
 [node name="AxisArrow3D" parent="." unique_id=2079731285 instance=ExtResource("6_7mycd")]
+visible = false
 
 [node name="MovingCameraLightHober" parent="." unique_id=123708318 instance=ExtResource("3_hdadt")]
 

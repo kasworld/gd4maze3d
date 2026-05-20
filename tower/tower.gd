@@ -82,16 +82,16 @@ static func ClampfRand(v :float) -> float :
 	var rtn := randfn( v, v/2 )
 	return clampf(rtn, v/2 , v *2)
 
+var size_inc_list := ListIter.new(
+	[Vector2i(1,0),Vector2i(1,0),Vector2i(0,1),Vector2i(0,1)]
+)
 func add_new_storey() -> void:
 	var grid_size := Storey.GridSize
 	var cell_size := Storey.CellSize
 	var stnum := 0
 	if storey_list.size() != 0:
 		stnum = storey_list[-1].storey_num +1
-		if randi_range(0,1) == 0:
-			grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + Vector2i(1,0)
-		else:
-			grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + Vector2i(0,1)
+		grid_size = storey_list[-1].maze3d.PreCalced.Grid2D + size_inc_list.get_current_and_step_next()
 	if make_storey_size_random :
 		grid_size = Vector2i(
 			ClampfRand(grid_size.x) as int,

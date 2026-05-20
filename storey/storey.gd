@@ -110,9 +110,9 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	놓인것들.set_at(goal_pos, $EndMark)
 
 	add_donut_capsule(DonutCapsuleCount, 구석자리목록)
-	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/50
+	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/30
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-maze3d.WallThick*2, 0, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
+	$Label3D.position = Vector3(-maze3d.WallThick*2, storey_height/2, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
 	$MiniMap.init(maze2d)
 	$MiniMap.add_obj($StartMark, "Start", $StartMark.get_color(), 1, true)
 	$MiniMap.add_obj($EndMark, "Goal", $EndMark.get_color(), 1, true)

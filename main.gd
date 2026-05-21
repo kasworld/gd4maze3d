@@ -31,6 +31,14 @@ func update_minimap() -> void:
 	minimap.update_size(rt.size)
 	minimap.position = rt.get_center() - minimap.get_size()/2
 
+func update_camera() -> void:
+	var ref_len := main_tower.tower_size().length()
+	$AxisArrow3D.set_size(ref_len/3).set_colors()
+	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, ref_len), ref_len*4)
+	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, ref_len), ref_len*4)
+	$MovingCameraLightAround.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, ref_len), ref_len*4)
+
+
 func _ready() -> void:
 	on_viewport_size_changed()
 	get_viewport().size_changed.connect(on_viewport_size_changed)
@@ -45,19 +53,10 @@ func _ready() -> void:
 	player = $CharacterContainer.get_child(PlayerNumber)
 	$MovingCameraLightAround.make_current()
 
-	var ref_len := main_tower.tower_size().length()
-	$AxisArrow3D.set_size(ref_len/3).set_colors()
-
-	$FixedCameraLight.set_center_pos_far(Vector3.ZERO, 	Vector3(0, 0, ref_len), ref_len*4)
-	$MovingCameraLightHober.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, ref_len), ref_len*4)
-	$MovingCameraLightAround.set_center_pos_far( Vector3.ZERO, Vector3(0, 0, ref_len), ref_len*4)
-
 	enter_next_storey(null)
-	update_button_text()
 
 func _process(_delta: float) -> void:
 	update_info()
-
 	var t := Time.get_unix_time_from_system() /2.3
 	var r := main_tower.tower_size().length()
 	var h := main_tower.tower_size().y *2
@@ -78,6 +77,7 @@ func enter_next_storey(old_storey :Storey) -> void:
 		main_tower.cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
 	update_button_text()
 	update_minimap()
+	update_camera()
 
 func add_crawler(i :int) -> Crawler:
 	var cr :Crawler = preload("res://crawler/crawler.tscn").instantiate()

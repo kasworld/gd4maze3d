@@ -19,7 +19,7 @@ static func make_subwall_mat() -> StandardMaterial3D:
 	mat.uv1_scale = Vector3(3, 2, 1)
 	#mat.uv1_scale = Vector3(maze3d_setting.LaneW/2, maze3d_setting.StoryH/2, 1)
 	return mat
-	
+
 static var wall_mat_dict = {
 	aluminium = preload("res://test_materials/aluminium.tres"),
 	#blue = preload("res://test_materials/blue.tres"),

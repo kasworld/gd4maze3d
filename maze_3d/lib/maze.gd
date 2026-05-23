@@ -148,12 +148,6 @@ var _cells : PackedByteArray
 var width :int
 var height :int
 
-func _select_visited(visted_pos :Array) -> int:
-	if randi_range(0,1)==0:
-		return visted_pos.size()-1
-	else:
-		return randi_range(0,visted_pos.size()-1)
-
 func _open_flag_at(x:int,y:int, d :Flag) -> void:
 	_cells[y*width+x] |= d
 
@@ -165,18 +159,14 @@ func _init(msize :Vector2i) -> void:
 	var pos := Vector2i( randi_range(0,width-1),randi_range(0,height-1),)
 	visted_pos.append(pos)
 	while visted_pos.size() > 0:
-		var posidx := _select_visited(visted_pos)
+		var posidx := visted_pos.size()-1 if randi_range(0,1)==0 else randi_range(0,visted_pos.size()-1)
 		pos = visted_pos[posidx]
-		var pos_x := pos.x
-		var pos_y := pos.y
 		var delpos := true
 		for flag in FlagPermutation.pick_random():
 			var npos :Vector2i = pos + Maze.FlagToVt2[flag]
-			var npos_x := npos.x
-			var npos_y := npos.y
-			if is_in(npos_x,npos_y) && get_cell(npos_x,npos_y)==0:
-				_open_flag_at(pos_x,pos_y, flag)
-				_open_flag_at(npos_x,npos_y, Maze.FlagOpppsite[flag])
+			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
+				_open_flag_at(pos.x, pos.y, flag)
+				_open_flag_at(npos.x, npos.y, Maze.FlagOpppsite[flag])
 				visted_pos.append(npos)
 				delpos = false
 				break

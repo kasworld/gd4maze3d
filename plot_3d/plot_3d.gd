@@ -69,10 +69,21 @@ func clear() -> void:
 	plotted.clear()
 
 func fill_all(co :Color) -> Plot3D:
+	clear()
+	if co.a <= 0.0 :
+		return
+	var index := 0
 	for zi in calc_grid.grid_size.z:
 		for yi in calc_grid.grid_size.y:
 			for xi in calc_grid.grid_size.x:
-				plot_at(Vector3i(xi,yi,zi), co)
+				var posi = Vector3i(xi,yi,zi)
+				plotted[posi] = index
+				var pos := calc_grid.posi_to_lanepos(posi)
+				var t := Transform3D(Basis(), pos)
+				multimesh.set_instance_transform(index,t)
+				multimesh.set_instance_color(index, co)
+				index += 1
+	set_visible_count(plotted.size())
 	return self
 
 func plot_at(posi :Vector3i, co :Color) -> void:

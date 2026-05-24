@@ -21,7 +21,7 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 	return sp
 
 ## maze default settings
-const GridSize := Vector2i(2,2)
+const GridSize := Vector2i(2,2) * 128
 const CellSize := Vector3(4.0,3.0,4.0)
 
 var storey_animation := SimpleAnimation.new()

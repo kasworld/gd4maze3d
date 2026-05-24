@@ -69,9 +69,10 @@ func clear() -> void:
 	plotted.clear()
 
 func fill_all(co :Color) -> Plot3D:
-	for i in calc_grid.get_grid_count():
-		var posi := calc_grid.get_n_th_posi(i)
-		plot_at(posi, co)
+	for zi in calc_grid.grid_size.z:
+		for yi in calc_grid.grid_size.y:
+			for xi in calc_grid.grid_size.x:
+				plot_at(Vector3i(xi,yi,zi), co)
 	return self
 
 func plot_at(posi :Vector3i, co :Color) -> void:

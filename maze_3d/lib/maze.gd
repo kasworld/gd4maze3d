@@ -152,7 +152,6 @@ func _open_flag_at(x:int,y:int, d :Flag) -> void:
 	_cells[y*width+x] |= d
 
 func _init(msize :Vector2i) -> void:
-	var sw := StopWatch.new("make maze")
 	width = msize.x
 	height = msize.y
 	_cells.resize(height*width)
@@ -173,7 +172,6 @@ func _init(msize :Vector2i) -> void:
 				break
 		if delpos:
 			visted_pos.remove_at(posidx)
-	print_debug(sw.split("end"))
 func is_in(x :int,y :int) -> bool:
 	return x >=0 && y>=0 && x < width && y < height
 

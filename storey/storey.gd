@@ -140,7 +140,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 
 	add_bouncing(BouncingCount , 크기기준 /20)
 	sw.split("add_bouncing")
-	print_debug(sw)
+	#print_debug(sw)
 	return self
 
 var bouncing_list :Array

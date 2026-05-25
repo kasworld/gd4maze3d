@@ -133,11 +133,11 @@ const Vt2ToFlag :Dictionary[Vector2i,Flag] = {
 	 Vector2i(1,0) : Flag.East,
 }
 
+#static var FlagPermutationIter :ListIter
 static var FlagPermutation :Array
-static var DirPermutation :Array
 static func _static_init() -> void:
+	#FlagPermutationIter = ListIter.new(Permutation.HeapLoop(FlagList.duplicate()))
 	FlagPermutation = Permutation.HeapLoop(FlagList.duplicate())
-	DirPermutation = Permutation.HeapLoop(DirList.duplicate())
 	#print_debug(FlagPermutation, DirPermutation)
 
 # end enum ###########################
@@ -163,6 +163,7 @@ func _init(msize :Vector2i) -> void:
 		pos = visted_pos[posidx]
 		var delpos := true
 		for flag in FlagPermutation.pick_random():
+		#for flag in FlagPermutationIter.get_and_next():
 			var npos :Vector2i = pos + FlagToVt2[flag]
 			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
 				_open_flag_at(pos.x, pos.y, flag)

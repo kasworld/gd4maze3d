@@ -9,7 +9,7 @@ static func MakeCalcGrid(total_size :Vector3, cell_count :Vector3i) -> CalcGrid3
 
 var calc_grid :CalcGrid3D
 ## posi to instance index
-var plotted :Dictionary[Vector3i,int] = {}
+var posi_to_index :Dictionary[Vector3i,int] = {}
 
 func init_plot3d_by_texture2d_face_z(total_size: Vector3, texture2d :Texture2D, cell_scale :float = 1.0) -> Plot3D:
 	var image := texture2d.get_image()
@@ -66,7 +66,7 @@ func init_plot3d_mesh_calcgrid(mesh :Mesh, cg :CalcGrid3D) -> Plot3D:
 
 func clear() -> void:
 	set_visible_count(0)
-	plotted.clear()
+	posi_to_index.clear()
 
 func fill_all(co :Color) -> Plot3D:
 	clear()
@@ -77,46 +77,53 @@ func fill_all(co :Color) -> Plot3D:
 		for yi in calc_grid.grid_size.y:
 			for xi in calc_grid.grid_size.x:
 				var posi = Vector3i(xi,yi,zi)
-				plotted[posi] = index
+				posi_to_index[posi] = index
 				var pos := calc_grid.posi_to_lanepos(posi)
 				var t := Transform3D(Basis(), pos)
 				multimesh.set_instance_transform(index,t)
 				multimesh.set_instance_color(index, co)
 				index += 1
-	set_visible_count(plotted.size())
+	set_visible_count(posi_to_index.size())
 	return self
 
 func plot_at(posi :Vector3i, co :Color) -> void:
 	if co.a <= 0.0 :
 		return
 	var pos := calc_grid.posi_to_lanepos(posi)
-	var index := plotted.size()
-	if plotted.has(posi):
-		index = plotted[posi]
-	plotted[posi] = index
+	var index := posi_to_index.size()
+	if posi_to_index.has(posi):
+		index = posi_to_index[posi]
+	posi_to_index[posi] = index
 	var t := Transform3D(Basis(), pos)
 	multimesh.set_instance_transform(index,t)
 	multimesh.set_instance_color(index, co)
-	set_visible_count(plotted.size())
+	set_visible_count(posi_to_index.size())
 
 ## return success or fail
 func del_at(posi :Vector3i) -> bool:
-	if not plotted.has(posi):
+	if not posi_to_index.has(posi):
 		return false
-	var todel_index := plotted[posi]
-	plotted.erase(posi)
-	set_visible_count(plotted.size())
-	if plotted.size() == 0:
+	var todel_index := posi_to_index[posi]
+	posi_to_index.erase(posi)
+	set_visible_count(posi_to_index.size())
+	if posi_to_index.size() == 0:
 		return true
-	var last_index := plotted.size()
+	var last_index := posi_to_index.size()
 	copy_instance(last_index, todel_index)
+	var new_posi := index_to_posi(todel_index)
+	posi_to_index[new_posi] = todel_index
 	return true
 
-func copy_instance(from:int, to:int) -> void:
-	var from_tr := multimesh.get_instance_transform(from)
-	multimesh.set_instance_transform(to, from_tr)
-	var from_co := multimesh.get_instance_color(from)
-	multimesh.set_instance_color(to, from_co)
+func copy_instance(from_index:int, to_index:int) -> void:
+	var from_tr := multimesh.get_instance_transform(from_index)
+	multimesh.set_instance_transform(to_index, from_tr)
+	var from_co := multimesh.get_instance_color(from_index)
+	multimesh.set_instance_color(to_index, from_co)
+
+func index_to_posi(index :int) -> Vector3i:
+	var t := multimesh.get_instance_transform(index)
+	var pos := t.origin
+	return calc_grid.lanepos_to_posi(pos)
 
 ## include x2
 func draw_x_line(x1 :int, x2 :int, y :int, z :int, co :Color):
@@ -189,17 +196,17 @@ func draw_texture2d_face_x(posi :Vector3i, texture2d :Texture2D) -> void:
 ## for animation
 var cell_rotation_x :float:
 	set(rad):
-		for i in plotted.size():
+		for i in posi_to_index.size():
 			set_inst_rotation(i, Vector3.RIGHT, rad)
 
 var cell_rotation_y :float:
 	set(rad):
-		for i in plotted.size():
+		for i in posi_to_index.size():
 			set_inst_rotation(i, Vector3.UP, rad)
 
 var cell_rotation_z :float:
 	set(rad):
-		for i in plotted.size():
+		for i in posi_to_index.size():
 			set_inst_rotation(i, Vector3.FORWARD, rad)
 
 func make_ani_cell_rotate(aniname :String, axis :int, from :float, to :float, dur_sec :float) -> Dictionary:

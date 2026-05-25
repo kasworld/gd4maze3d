@@ -99,6 +99,22 @@ func get_ceiling() -> Plot3D:
 func calc_tile_count(tg :Plot3D) -> Vector2:
 	return Vector2( float(tg.calc_grid.grid_size.x) / maze_cells.width, float(tg.calc_grid.grid_size.z) / maze_cells.height)
 
+func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> void:
+	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
+	wn.init(
+		Vector2(calc_grid.unit_size.x, calc_grid.unit_size.z),
+		Vector2i(1,4),
+		calc_grid.unit_size.y/5,
+		calc_grid.unit_size.y/20,
+		co,
+		false)
+	wn.position = calc_grid.posi_to_lanepos(cell_posi)
+	wn.wire_H_rotation_x = PI/4
+	wn.rotation.x = PI/4
+	wn.rotation.y = Maze.DirToRadian(dir)
+	add_child(wn)
+
+
 func make_stair(tg :Plot3D, cell_posi :Vector2i, dir :Maze.Dir) -> void:
 	var tile_count := calc_tile_count(tg)
 	var step_x := calc_grid.unit_size.y / (tile_count.x+1)

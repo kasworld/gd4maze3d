@@ -6,6 +6,8 @@ static func random_color(clist = color_list) -> Color:
 static func iter_color(i :int) -> Color:
 	return color_list[i%color_list.size()]
 
+static var RandomIter := ListIter.new(NamedColors.color_list)
+
 static func filter_light_color_list(l :float= 0.5) -> Array:
 	var rtn := []
 	for i in color_list:

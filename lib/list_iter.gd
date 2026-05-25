@@ -53,7 +53,7 @@ func next() -> void:
 func get_current() -> Variant:
 	return iter_data[curser]
 
-func get_current_and_step_next() -> Variant:
+func get_and_next() -> Variant:
 	var rtn = get_current()
 	next()
 	return rtn

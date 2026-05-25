@@ -21,7 +21,7 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 	return sp
 
 ## maze default settings
-const GridSize := Vector2i(2,2)
+const GridSize := Vector2i(2,2) * 128
 const CellSize := Vector3(4.0,3.0,4.0)
 
 var storey_animation := SimpleAnimation.new()
@@ -69,23 +69,30 @@ func _to_string() -> String:
 	return "Storey[%d %s DonutCapsuleCount%s WallDecoRate%s BouncingCount%s]" % [
 		storey_num, maze3d, DonutCapsuleCount, WallDecoRate, BouncingCount]
 
+
 func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
+	var sw := StopWatch.new("storey")
 	var maze2d := Maze.new(grid_size)
+	sw.split("maze2d")
 	var floor_ceiling_height :float = cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate()
 	maze3d.init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y))
+	sw.split("maze3d init_params")
 	maze3d.init_floor_ceiling(grid_size, floor_ceiling_height, 0.9,
-		Color(NamedColors.random_color(), 0.5),
-		Color(NamedColors.random_color(), 0.5),
+		Color(NamedColors.RandomIter.get_and_next(), 0.5),
+		Color(NamedColors.RandomIter.get_and_next(), 0.5),
 	)
+	sw.split("maze3d init_floor_ceiling")
 	storey_height = cell_size.y + floor_ceiling_height * 2
 	add_child(maze3d)
 	if num % 2 ==0 :
 		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat() )
 	else:
 		maze3d.init_with_color(
-			NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color(), NamedColors.random_color())
+			NamedColors.RandomIter.get_and_next(), NamedColors.RandomIter.get_and_next(), NamedColors.RandomIter.get_and_next(), NamedColors.RandomIter.get_and_next())
+	sw.split("maze3d init_with_material")
 	maze3d.init_wall_deco(add_wall_deco_at)
+	sw.split("maze3d init_wall_deco")
 	storey_num = num
 
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)
@@ -94,36 +101,44 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 		for x in maze3d.PreCalced.Grid2D.x:
 			if maze3d.maze_cells.get_open_flag_at(x,y).size() == 1:
 				구석자리목록.append(Vector2i(x,y))
+	sw.split("구석자리목록")
 
 	구석자리목록.shuffle()
-	start_pos = 구석자리목록.pop_front()
-	goal_pos = 구석자리목록.pop_front()
+	sw.split("구석자리목록 shuffle")
+	start_pos = 구석자리목록.pop_back()
+	goal_pos = 구석자리목록.pop_back()
 	# floor
-	maze3d.add_stair( Vector3i(start_pos.x, -1, start_pos.y) , maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random(), NamedColors.random_color() )
+	maze3d.add_stair( Vector3i(start_pos.x, -1, start_pos.y) , maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random(), NamedColors.RandomIter.get_and_next() )
 	maze3d.make_stair_hole( maze3d.get_floor(), start_pos )
 
 	# ceiling
-	maze3d.add_stair(Vector3i(goal_pos.x, 0, goal_pos.y), Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()], NamedColors.random_color() )
+	maze3d.add_stair(Vector3i(goal_pos.x, 0, goal_pos.y), Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()], NamedColors.RandomIter.get_and_next() )
 	maze3d.make_stair_hole(maze3d.get_ceiling(), goal_pos)
+	sw.split("maze3d add_stair")
 
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
-	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num, start_pos
+	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.RandomIter.get_and_next(), "Start %d" % storey_num, start_pos
 		).position = maze3d.mazepos2storeypos(start_pos, 0)
-	$EndMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Goal %d" % storey_num, goal_pos
+	$EndMark.init(크기기준*0.2, 크기기준/100, NamedColors.RandomIter.get_and_next(), "Goal %d" % storey_num, goal_pos
 		).position = maze3d.mazepos2storeypos(goal_pos, 0)
 	놓인것들.set_at(start_pos, $StartMark)
 	놓인것들.set_at(goal_pos, $EndMark)
+	sw.split("mark")
 
 	add_donut_capsule(DonutCapsuleCount, 구석자리목록)
+	sw.split("add_donut_capsule")
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/30
 	$Label3D.text = "%d" % storey_num
 	$Label3D.position = Vector3(-maze3d.WallThick*2, storey_height/2, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
+	sw.split("Label3D")
 	$MiniMap.init(maze2d)
 	$MiniMap.add_obj($StartMark, "Start", $StartMark.get_color(), 1, true)
 	$MiniMap.add_obj($EndMark, "Goal", $EndMark.get_color(), 1, true)
+	sw.split("MiniMap")
 
 	add_bouncing(BouncingCount , 크기기준 /20)
-
+	sw.split("add_bouncing")
+	print_debug(sw)
 	return self
 
 var bouncing_list :Array
@@ -131,7 +146,7 @@ func add_bouncing(n :int, radius :float) -> void:
 	bouncing_list = []
 	for i in n:
 		var mb :MazeBall = preload("res://maze_3d/maze_ball/maze_ball.tscn").instantiate(
-			).init(maze3d, radius, radius*10, NamedColors.random_color())
+			).init(maze3d, radius, radius*10, NamedColors.RandomIter.get_and_next())
 		$BouncingContainer.add_child(mb)
 		bouncing_list.append(mb)
 
@@ -165,15 +180,15 @@ func 놓인것들줍기(ch :Crawler) -> void:
 		ft.queue_free()
 
 func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
+	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 	for i in n:
-		if 구석자리목록.size() <= 0:
+		var p = 구석자리목록.pop_back()
+		if p == null:
 			break
-		var p = 구석자리목록.pop_front()
 		if 놓인것들.get_at(p) != null:
 			continue
-		var co :Color = NamedColors.random_color()
+		var co :Color = NamedColors.RandomIter.get_and_next()
 		var pobj
-		var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 		if randi()%2 ==0:
 			pobj = preload("res://places_things/capsule.tscn").instantiate().init(크기기준*0.3, 크기기준*0.05, co)
 		else:

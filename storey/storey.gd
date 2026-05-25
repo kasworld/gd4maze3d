@@ -100,11 +100,11 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	goal_pos = 구석자리목록.pop_front()
 	# floor
 	maze3d.add_stair( Vector3i(start_pos.x, -1, start_pos.y) , maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random(), NamedColors.random_color() )
-	maze3d.get_floor().del_at(Vector3i(start_pos.x, 0, start_pos.y))
+	maze3d.make_stair_hole( maze3d.get_floor(), start_pos )
 
 	# ceiling
 	maze3d.add_stair(Vector3i(goal_pos.x, 0, goal_pos.y), Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()], NamedColors.random_color() )
-	maze3d.get_ceiling().del_at(Vector3i(goal_pos.x, 0, goal_pos.y))
+	maze3d.make_stair_hole(maze3d.get_ceiling(), goal_pos)
 
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 	$StartMark.init(크기기준*0.2, 크기기준/100, NamedColors.random_color(), "Start %d" % storey_num, start_pos

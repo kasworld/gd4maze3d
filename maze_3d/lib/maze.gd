@@ -144,11 +144,13 @@ static func _static_init() -> void:
 var _cells : PackedByteArray
 var width :int
 var height :int
+var rect2i :Rect2i
 
 func _open_flag_at(x:int,y:int, d :Flag) -> void:
 	_cells[y*width+x] |= d
 
 func _init(msize :Vector2i) -> void:
+	rect2i = Rect2i(Vector2i.ZERO, msize)
 	width = msize.x
 	height = msize.y
 	_cells.resize(height*width)
@@ -161,7 +163,7 @@ func _init(msize :Vector2i) -> void:
 		var delpos := true
 		for flag in FlagPermutation.pick_random():
 			var npos :Vector2i = pos + FlagToVt2[flag]
-			if is_in(npos.x,npos.y) && get_cell(npos.x,npos.y)==0:
+			if rect2i.has_point(npos) && get_cell(npos.x,npos.y)==0:
 				_open_flag_at(pos.x, pos.y, flag)
 				_open_flag_at(npos.x, npos.y, FlagOpppsite[flag])
 				visted_pos.append(npos)
@@ -170,8 +172,8 @@ func _init(msize :Vector2i) -> void:
 		if delpos:
 			visted_pos.remove_at(posidx)
 
-func is_in(x :int,y :int) -> bool:
-	return x >=0 && y>=0 && x < width && y < height
+#func is_in(x :int,y :int) -> bool:
+	#return x >=0 && y>=0 && x < width && y < height
 
 func get_cell(x :int, y:int) -> int:
 	return _cells[y*width+x]

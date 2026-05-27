@@ -4,6 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://btil787jb7edu" path="res://plot_3d/plot_3d.tscn" id="2_2b0r0"]
 [ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="3_7je7j"]
 
+[sub_resource type="MultiMesh" id="MultiMesh_7je7j"]
+resource_local_to_scene = true
+
 [sub_resource type="MultiMesh" id="MultiMesh_wt25u"]
 resource_local_to_scene = true
 
@@ -25,36 +28,33 @@ resource_local_to_scene = true
 [sub_resource type="MultiMesh" id="MultiMesh_ql2o8"]
 resource_local_to_scene = true
 
-[sub_resource type="MultiMesh" id="MultiMesh_wt04w"]
-resource_local_to_scene = true
-
 [node name="Maze3D" type="Node3D" unique_id=1197400707]
 script = ExtResource("1_0k1os")
 
 [node name="WallContainer" type="Node3D" parent="." unique_id=1744184575]
 
 [node name="VMain" parent="WallContainer" unique_id=211187273 instance=ExtResource("3_7je7j")]
-multimesh = SubResource("MultiMesh_wt25u")
+multimesh = SubResource("MultiMesh_7je7j")
 
 [node name="HMain" parent="WallContainer" unique_id=491936474 instance=ExtResource("3_7je7j")]
-multimesh = SubResource("MultiMesh_7o0nl")
+multimesh = SubResource("MultiMesh_wt25u")
 
 [node name="VSub" parent="WallContainer" unique_id=174405396 instance=ExtResource("3_7je7j")]
-multimesh = SubResource("MultiMesh_dvc8l")
+multimesh = SubResource("MultiMesh_7o0nl")
 
 [node name="HSub" parent="WallContainer" unique_id=1774872961 instance=ExtResource("3_7je7j")]
-multimesh = SubResource("MultiMesh_d2cqh")
+multimesh = SubResource("MultiMesh_dvc8l")
 
 [node name="Floor" parent="." unique_id=1200192443 instance=ExtResource("2_2b0r0")]
-multimesh = SubResource("MultiMesh_f705r")
+multimesh = SubResource("MultiMesh_d2cqh")
 
 [node name="Ceiling" parent="." unique_id=814222085 instance=ExtResource("2_2b0r0")]
-multimesh = SubResource("MultiMesh_8b0s3")
+multimesh = SubResource("MultiMesh_f705r")
 
 [node name="BoxPillars" parent="." unique_id=1384246334 instance=ExtResource("3_7je7j")]
 visible = false
-multimesh = SubResource("MultiMesh_ql2o8")
+multimesh = SubResource("MultiMesh_8b0s3")
 
 [node name="CapsulePillars" parent="." unique_id=1088320687 instance=ExtResource("3_7je7j")]
 visible = false
-multimesh = SubResource("MultiMesh_wt04w")
+multimesh = SubResource("MultiMesh_ql2o8")

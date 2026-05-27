@@ -80,7 +80,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate()
 	maze3d.init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y))
 	sw.split("maze3d init_params")
-	maze3d.init_floor_ceiling(grid_size, floor_ceiling_height, 0.9,
+	maze3d.init_floor_ceiling_plane(grid_size, floor_ceiling_height, 0.9,
 		Color(RandomColorIter.get_and_next(), 0.5),
 		Color(RandomColorIter.get_and_next(), 0.5),
 	)

@@ -99,13 +99,12 @@ func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> void:
 	wn.init(
 		Vector2(calc_grid.unit_size.x*0.7, calc_grid.unit_size.z),
 		Vector2i(2,6),
-		calc_grid.unit_size.y/5,
 		calc_grid.unit_size.y/20,
+		calc_grid.unit_size.y/5,
 		co,
 		false)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
-	wn.wire_H_rotation_x = -PI/4
-	wn.wire_V_rotation_y = PI/2
+	wn.wire_H_rotation_x = PI/4
 	wn.rotation.x = -PI/4
 	wn.rotation.y = Maze.DirToRadian(dir)
 	add_child(wn)

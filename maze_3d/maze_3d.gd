@@ -103,13 +103,12 @@ func init_floor_ceiling_plane(grid_count :Vector2i, height :float, size_rate :fl
 	$Ceiling.cell_rotation_x = PI
 	return self
 
-
 func get_floor() -> Plot3D:
 	return $Floor
 func get_ceiling() -> Plot3D:
 	return $Ceiling
 
-func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> void:
+func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
 	wn.init(
 		Vector2(calc_grid.unit_size.x*0.7, calc_grid.unit_size.z),
@@ -123,6 +122,7 @@ func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> void:
 	wn.rotation.x = -PI/4
 	wn.rotation.y = Maze.DirToRadian(dir)
 	add_child(wn)
+	return wn
 
 func calc_tile_count(tg :Plot3D) -> Vector2i:
 	return Vector2( tg.calc_grid.grid_size.x / maze_cells.width, tg.calc_grid.grid_size.z / maze_cells.height)

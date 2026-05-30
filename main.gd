@@ -70,11 +70,13 @@ func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")
 		return
+	var chars_tomove :Array
 	if old_storey == null:
-		main_tower.cur_storey.chars_enter_storey(old_storey, $CharacterContainer.get_children() , player.crawler_num)
+		chars_tomove = $CharacterContainer.get_children()
 	else:
 		main_tower.move_to_upper_storey()
-		main_tower.cur_storey.chars_enter_storey(old_storey, old_storey.get_char_list() , player.crawler_num)
+		chars_tomove = old_storey.get_char_list()
+	main_tower.cur_storey.chars_enter_storey(old_storey, chars_tomove , player.crawler_num)
 	update_button_text()
 	update_minimap()
 	update_camera()

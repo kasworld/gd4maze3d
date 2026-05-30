@@ -46,15 +46,15 @@ func set_param(grid_size) -> Storey:
 var maze3d :Maze3D
 var storey_num :int
 
-var start_pos :Vector2i
+var start_posi :Vector2i
 var start_dir :Maze.Dir
 var start_color :Color
-var goal_pos :Vector2i
+var goal_posi :Vector2i
 var goal_dir :Maze.Dir
 var goal_color :Color
 
 func is_goal_pos(p :Vector2i) -> bool:
-	return goal_pos == p
+	return goal_posi == p
 
 func get_goal_pos() -> Vector3:
 	return $EndMark.position
@@ -122,24 +122,24 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 
 	var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 	# floor
-	start_pos = 구석자리목록.pop_back()
+	start_posi = 구석자리목록.pop_back()
 	start_color = RandomColorIter.get_and_next()
-	start_dir = maze2d.get_open_dir_at(start_pos.x,start_pos.y).pick_random()
-	maze3d.add_stair( Vector3i(start_pos.x, -1, start_pos.y) , start_dir , start_color)
-	maze3d.make_stair_hole( maze3d.get_floor(), start_pos )
-	$StartMark.init(크기기준*0.2, 크기기준/100, start_color, "Start %d" % storey_num, start_pos
-		).position = maze3d.mazepos2storeypos(start_pos, 0)
-	놓인것들.set_at(start_pos, $StartMark)
+	start_dir = maze2d.get_open_dir_at(start_posi.x,start_posi.y).pick_random()
+	maze3d.add_stair( Vector3i(start_posi.x, -1, start_posi.y) , start_dir , start_color)
+	maze3d.make_stair_hole( maze3d.get_floor(), start_posi )
+	$StartMark.init(크기기준*0.2, 크기기준/100, start_color, "Start %d" % storey_num, start_posi
+		).position = maze3d.mazepos2storeypos(start_posi, 0)
+	놓인것들.set_at(start_posi, $StartMark)
 	# ceiling
-	goal_pos = 구석자리목록.pop_back()
+	goal_posi = 구석자리목록.pop_back()
 	goal_color = RandomColorIter.get_and_next()
-	goal_dir = Maze.DirOpppsite[maze2d.get_open_dir_at(goal_pos.x,goal_pos.y).pick_random()]
-	maze3d.add_stair(Vector3i(goal_pos.x, 0, goal_pos.y), goal_dir, goal_color )
-	maze3d.make_stair_hole(maze3d.get_ceiling(), goal_pos)
+	goal_dir = Maze.DirOpppsite[maze2d.get_open_dir_at(goal_posi.x,goal_posi.y).pick_random()]
+	maze3d.add_stair(Vector3i(goal_posi.x, 0, goal_posi.y), goal_dir, goal_color )
+	maze3d.make_stair_hole(maze3d.get_ceiling(), goal_posi)
 	sw.split("maze3d add_stair")
-	$EndMark.init(크기기준*0.2, 크기기준/100, goal_color, "Goal %d" % storey_num, goal_pos
-		).position = maze3d.mazepos2storeypos(goal_pos, 0)
-	놓인것들.set_at(goal_pos, $EndMark)
+	$EndMark.init(크기기준*0.2, 크기기준/100, goal_color, "Goal %d" % storey_num, goal_posi
+		).position = maze3d.mazepos2storeypos(goal_posi, 0)
+	놓인것들.set_at(goal_posi, $EndMark)
 	sw.split("mark")
 
 	add_donut_capsule(DonutCapsuleCount, 구석자리목록)
@@ -171,7 +171,7 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 	for ch in char_list:
 		ch.reparent($CharacterContainer)
 		if ch.crawler_num == playernum:
-			ch.enter_storey(old_storey, self, start_pos)
+			ch.enter_storey(old_storey, self, start_posi)
 			$MiniMap.add_obj(ch, "%d" % ch.crawler_num, ch.get_color(), 1, true)
 		else:
 			var p := CalcGrid3D.xz_Vector3iToVector2i(maze3d.calc_grid.rand_posi())

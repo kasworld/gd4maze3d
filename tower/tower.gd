@@ -114,6 +114,11 @@ func add_new_storey() -> void:
 	set_all_storey_position()
 	st.storey_animation.animation_ended.connect(storey_animation_ended)
 	st.storey_animation.start_scale("ani_add", st, Vector3(0.1,0.1,0.1), Vector3(1,1,1), StoreyAnimationDuration)
+	if storey_list.size() > 1:
+		var last_st := storey_list[-2]
+		var diff := (last_st.goal_pos - st.start_pos)
+		st.position.x = last_st.position.x + diff.x * cell_size.x
+		st.position.z = last_st.position.z + diff.y * cell_size.z
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > visible_storey_down:

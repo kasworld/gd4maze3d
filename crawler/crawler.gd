@@ -97,6 +97,9 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	$MovingCameraLight.get_light().light_energy = 1
 	return self
 
+func reset_scale() -> void:
+	$MeshInstance3D.scale = Vector3(0.5,1,1)
+
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.clear()
 	action_queue.enqueue_with_speed(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})

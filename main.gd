@@ -77,6 +77,8 @@ func enter_next_storey(old_storey :Storey) -> void:
 		main_tower.move_to_upper_storey()
 		chars_tomove = old_storey.get_char_list()
 	main_tower.cur_storey.chars_enter_storey(old_storey, chars_tomove , player.crawler_num)
+	for ch in chars_tomove:
+		ch.reset_scale()
 	update_button_text()
 	update_minimap()
 	update_camera()

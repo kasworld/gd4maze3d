@@ -117,8 +117,9 @@ func add_new_storey() -> void:
 	if storey_list.size() > 1:
 		var last_st := storey_list[-2]
 		var diff := last_st.get_goal_pos() - st.get_start_pos()
-		st.position.x = last_st.position.x + diff.x
-		st.position.z = last_st.position.z + diff.z
+		var dir_vt := Maze.DirToVt2[last_st.goal_dir]
+		st.position.x = last_st.position.x + diff.x + dir_vt.x * cell_size.x
+		st.position.z = last_st.position.z + diff.z + dir_vt.y * cell_size.z
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num > visible_storey_down:

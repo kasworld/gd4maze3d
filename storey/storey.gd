@@ -50,6 +50,12 @@ var goal_pos :Vector2i
 func is_goal_pos(p :Vector2i) -> bool:
 	return goal_pos == p
 
+func get_goal_pos() -> Vector3:
+	return $EndMark.position
+
+func get_start_pos() -> Vector3:
+	return $StartMark.position
+
 var wall_info_all :Array
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들
 

@@ -51,8 +51,9 @@ func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wir
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
 	$WireH.init_with_color_mesh(mesh, h_count, false)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
+	var unit_y := net_size.y/(h_count-1) if h_count > 1 else 0.0
 	for i in h_count:
-		var pos := Vector3(net_size.x/2, net_size.y/(h_count-1)* i, 0) + pos_shift
+		var pos := Vector3(net_size.x/2, unit_y * i, 0) + pos_shift
 		var t := Transform3D(Basis(), pos)
 		$WireH.multimesh.set_instance_transform(i,t)
 	set_color_H(co)
@@ -67,8 +68,9 @@ func init_wire_V(net_size :Vector2, grid_count :Vector2i, wire_width :float, wir
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
 	$WireV.init_with_color_mesh(mesh, v_count, false)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
+	var unit_x := net_size.x/(v_count-1) if v_count > 1 else 0.0
 	for i in v_count:
-		var pos := Vector3( net_size.x/(v_count-1)* i, net_size.y/2, 0) + pos_shift
+		var pos := Vector3( unit_x * i, net_size.y/2, 0) + pos_shift
 		var t := Transform3D(Basis(), pos)
 		$WireV.multimesh.set_instance_transform(i,t)
 	set_color_V(co)

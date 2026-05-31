@@ -111,7 +111,7 @@ func get_ceiling() -> Plot3D:
 func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
 	wn.init(
-		Vector2(calc_grid.unit_size.x*0.7, calc_grid.unit_size.z),
+		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.z),
 		Vector2i(2,6),
 		calc_grid.unit_size.y/20,
 		calc_grid.unit_size.y/5,
@@ -126,9 +126,16 @@ func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 
 func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
-	wn.init(
-		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.y),
+	wn.init_wire_H(
+		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.y*0.8),
 		Vector2i(0,6),
+		calc_grid.unit_size.y/30,
+		calc_grid.unit_size.y/30,
+		co,
+		false)
+	wn.init_wire_V(
+		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.y),
+		Vector2i(2,6),
 		calc_grid.unit_size.y/30,
 		calc_grid.unit_size.y/30,
 		co,

@@ -125,7 +125,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	start_posi = 구석자리목록.pop_back()
 	start_color = RandomColorIter.get_and_next()
 	start_dir = maze2d.get_open_dir_at(start_posi.x,start_posi.y).pick_random()
-	maze3d.add_stair( Vector3i(start_posi.x, -1, start_posi.y) , start_dir , start_color)
+	maze3d.add_ladder( Vector3i(start_posi.x, -1, start_posi.y) , start_dir , start_color)
 	maze3d.make_stair_hole( maze3d.get_floor(), start_posi )
 	$StartMark.init(크기기준*0.2, 크기기준/100, start_color, "Start %d" % storey_num, start_posi
 		).position = maze3d.mazepos2storeypos(start_posi, 0)
@@ -134,7 +134,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	goal_posi = 구석자리목록.pop_back()
 	goal_color = RandomColorIter.get_and_next()
 	goal_dir = Maze.DirOpppsite[maze2d.get_open_dir_at(goal_posi.x,goal_posi.y).pick_random()]
-	maze3d.add_stair(Vector3i(goal_posi.x, 0, goal_posi.y), goal_dir, goal_color )
+	maze3d.add_ladder(Vector3i(goal_posi.x, 0, goal_posi.y), goal_dir, goal_color )
 	maze3d.make_stair_hole(maze3d.get_ceiling(), goal_posi)
 	sw.split("maze3d add_stair")
 	$EndMark.init(크기기준*0.2, 크기기준/100, goal_color, "Goal %d" % storey_num, goal_posi

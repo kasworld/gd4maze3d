@@ -40,7 +40,7 @@ func _to_string() -> String:
 	visible_storey_up,visible_storey_down, cur_storey ]
 
 func init() -> Tower:
-	for i in visible_storey_up:
+	for i in visible_storey_up+1:
 		add_new_storey()
 	cur_storey = storey_list[0]
 	return self
@@ -123,7 +123,7 @@ func add_new_storey() -> void:
 		st.position.z = last_st.position.z + diff.z + dir_vt.y * cell_size.z
 
 func del_old_storey() -> void:
-	if cur_storey.storey_num > visible_storey_down:
+	if cur_storey.storey_num >= visible_storey_down:
 		var st :Storey = storey_list.pop_front()
 		st.storey_animation.start_scale("ani_del", st, Vector3(1,1,1), Vector3(0.1,0.1,0.1), StoreyAnimationDuration)
 

@@ -13,7 +13,6 @@ func tower_size() -> Vector3:
 var visible_storey_up :int = StoreyUp
 var visible_storey_down :int = StoreyDown
 var storey_gap :float = Storey.CellSize.y
-var gap_ani_dir_open : bool = true # true:open, false:close
 var storey_list :Array[Storey]
 var cur_storey :Storey
 
@@ -58,18 +57,10 @@ func find_storey_by_num(num :int) -> Storey:
 
 func calc_storey_base_y_pos(storey_index :int) -> float:
 	var rtn :float = storey_list[0].storey_height/2
-	if gap_ani_dir_open:
-		rtn += storey_gap * storey_index
+	rtn += storey_gap * storey_index
 	for i in storey_index:
 		rtn += storey_list[i].storey_height/2 + storey_list[i+1].storey_height/2
 	return rtn
-
-func start_storey_gap_animation() -> void:
-	gap_ani_dir_open = not gap_ani_dir_open
-	for i in storey_list.size():
-		var st := storey_list[i]
-		var new_y = calc_storey_base_y_pos(i)
-		st.storey_animation.start_move_subfield("ani_gap", st, Vector3.Axis.AXIS_Y, st.position.y, new_y, StoreyAnimationDuration)
 
 func set_all_storey_position() -> void:
 	for i in storey_list.size():
@@ -117,10 +108,8 @@ func add_new_storey() -> void:
 	if storey_list.size() > 1:
 		var last_st := storey_list[-2]
 		var diff := last_st.get_goal_pos() - st.get_start_pos()
-		#var dir_vt := Maze.DirToVt2[last_st.goal_dir] # + Maze.DirToVt2[st.start_dir]
-		var dir_vt := Vector2.ZERO #  Maze.DirToVt2[last_st.goal_dir] # + Maze.DirToVt2[st.start_dir]
-		st.position.x = last_st.position.x + diff.x + dir_vt.x * cell_size.x
-		st.position.z = last_st.position.z + diff.z + dir_vt.y * cell_size.z
+		st.position.x = last_st.position.x + diff.x
+		st.position.z = last_st.position.z + diff.z
 
 func del_old_storey() -> void:
 	if cur_storey.storey_num >= visible_storey_down:
@@ -134,5 +123,5 @@ func storey_animation_ended(st :Node3D, ani :Dictionary) -> void:
 		"ani_del":
 			remove_child(st)
 			st.queue_free()
-		"ani_gap", "ani_add_move":
+		"ani_add_move":
 			pass

@@ -121,7 +121,7 @@ var key2fn :Dictionary[Key, Callable]= {
 	KEY_DELETE:_on_button_fov_down_pressed,
 	KEY_ENTER:_on_button_storey_up_pressed,
 	KEY_C: _on_button_camera_pressed,
-	KEY_O: _on_button_storey_gap_pressed,
+	KEY_O: _on_button_axis_arrow_pressed,
 }
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -157,8 +157,8 @@ func _on_button_floor_ceiling_pressed() -> void:
 func _on_button_pillars_pressed() -> void:
 	main_tower.view_wallpillar_next()
 
-func _on_button_storey_gap_pressed() -> void:
-	main_tower.start_storey_gap_animation()
+func _on_button_axis_arrow_pressed() -> void:
+	$AxisArrow3D.visible = not $AxisArrow3D.visible
 
 func _on_button_auto_move_pressed() -> void:
 	player.set_next_walk_type()

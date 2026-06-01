@@ -145,9 +145,9 @@ layout_mode = 2
 text = "C: Camera"
 alignment = 0
 
-[node name="ButtonStoreyGap" type="Button" parent="왼쪽패널" unique_id=623524988]
+[node name="ButtonAxis" type="Button" parent="왼쪽패널" unique_id=623524988]
 layout_mode = 2
-text = "O: StoreyGap Open/Close"
+text = "O: AxisArrow Show/Hide"
 alignment = 0
 
 [node name="오른쪽패널" type="VBoxContainer" parent="." unique_id=1197709989]
@@ -216,4 +216,4 @@ theme = SubResource("Theme_lquwl")
 [connection signal="pressed" from="왼쪽패널/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonCamera" to="." method="_on_button_camera_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonStoreyGap" to="." method="_on_button_storey_gap_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAxis" to="." method="_on_button_storey_gap_pressed"]

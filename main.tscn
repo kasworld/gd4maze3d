@@ -84,26 +84,32 @@ columns = 3
 [node name="ButtonRollLeft" type="Button" parent="왼쪽패널/ButtonMove" unique_id=1129439817]
 layout_mode = 2
 text = "A:RollLeft"
+alignment = 0
 
 [node name="ButtonForward" type="Button" parent="왼쪽패널/ButtonMove" unique_id=1908888114]
 layout_mode = 2
 text = "↑:Forward"
+alignment = 0
 
 [node name="ButtonRollRight" type="Button" parent="왼쪽패널/ButtonMove" unique_id=885419356]
 layout_mode = 2
 text = "D:RollRight"
+alignment = 0
 
 [node name="ButtonLeft" type="Button" parent="왼쪽패널/ButtonMove" unique_id=92665886]
 layout_mode = 2
 text = "←:Left"
+alignment = 0
 
 [node name="ButtonBackward" type="Button" parent="왼쪽패널/ButtonMove" unique_id=113807449]
 layout_mode = 2
 text = "↓:Backward"
+alignment = 0
 
 [node name="ButtonRight" type="Button" parent="왼쪽패널/ButtonMove" unique_id=411700817]
 layout_mode = 2
 text = "→:Right"
+alignment = 0
 
 [node name="ButtonFovUP" type="Button" parent="왼쪽패널/ButtonMove" unique_id=1120036512]
 layout_mode = 2

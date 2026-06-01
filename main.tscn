@@ -105,32 +105,36 @@ text = "↓:Backward"
 layout_mode = 2
 text = "→:Right"
 
-[node name="ButtonFovUP" type="Button" parent="왼쪽패널" unique_id=1120036512]
+[node name="GridContainer" type="GridContainer" parent="왼쪽패널" unique_id=875834508]
+layout_mode = 2
+columns = 3
+
+[node name="ButtonFovUP" type="Button" parent="왼쪽패널/GridContainer" unique_id=1120036512]
 layout_mode = 2
 text = "Ins:FovUp"
 alignment = 0
 
-[node name="ButtonAPSMax" type="Button" parent="왼쪽패널" unique_id=1101307849]
+[node name="ButtonAPSMax" type="Button" parent="왼쪽패널/GridContainer" unique_id=1101307849]
 layout_mode = 2
 text = "Home:APSMax"
 alignment = 0
 
-[node name="ButtonAPSUp" type="Button" parent="왼쪽패널" unique_id=1705135231]
+[node name="ButtonAPSUp" type="Button" parent="왼쪽패널/GridContainer" unique_id=1705135231]
 layout_mode = 2
 text = "PgUp:APSUp"
 alignment = 0
 
-[node name="ButtonFovDown" type="Button" parent="왼쪽패널" unique_id=172927274]
+[node name="ButtonFovDown" type="Button" parent="왼쪽패널/GridContainer" unique_id=172927274]
 layout_mode = 2
 text = "Del:FOVDown"
 alignment = 0
 
-[node name="ButtonAPSMin" type="Button" parent="왼쪽패널" unique_id=389300895]
+[node name="ButtonAPSMin" type="Button" parent="왼쪽패널/GridContainer" unique_id=389300895]
 layout_mode = 2
 text = "End:APSMin"
 alignment = 0
 
-[node name="ButtonAPSDown" type="Button" parent="왼쪽패널" unique_id=797861952]
+[node name="ButtonAPSDown" type="Button" parent="왼쪽패널/GridContainer" unique_id=797861952]
 layout_mode = 2
 text = "PgDn:APSDown"
 alignment = 0
@@ -208,12 +212,12 @@ theme = SubResource("Theme_lquwl")
 [connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonLeft" to="." method="_on_button_left_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonBackward" to="." method="_on_button_backward_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonRight" to="." method="_on_button_right_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
+[connection signal="pressed" from="왼쪽패널/GridContainer/ButtonFovUP" to="." method="_on_button_fov_up_pressed"]
+[connection signal="pressed" from="왼쪽패널/GridContainer/ButtonAPSMax" to="." method="_on_button_aps_max_pressed"]
+[connection signal="pressed" from="왼쪽패널/GridContainer/ButtonAPSUp" to="." method="_on_button_aps_up_pressed"]
+[connection signal="pressed" from="왼쪽패널/GridContainer/ButtonFovDown" to="." method="_on_button_fov_down_pressed"]
+[connection signal="pressed" from="왼쪽패널/GridContainer/ButtonAPSMin" to="." method="_on_button_aps_min_pressed"]
+[connection signal="pressed" from="왼쪽패널/GridContainer/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonCamera" to="." method="_on_button_camera_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonAxis" to="." method="_on_button_storey_gap_pressed"]

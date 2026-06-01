@@ -109,51 +109,18 @@ func get_ceiling() -> Plot3D:
 	return $Ceiling
 
 func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
-	wn.init_wire_H(
-		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.z*0.9),
-		Vector2i(2,6),
-		calc_grid.unit_size.y/20,
-		calc_grid.unit_size.y/5,
-		co,
-		false)
-	wn.init_wire_V(
-		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.z),
-		Vector2i(2,6),
-		calc_grid.unit_size.y/30,
-		calc_grid.unit_size.y/30,
-		co,
-		false)
+	var wn :MazeStair = preload("res://maze_3d/maze_stair/maze_stair.tscn").instantiate()
+	wn.init_stair(calc_grid.unit_size, dir, co)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
-	wn.wire_H_rotation_x = PI/4
-	wn.rotation.x = -PI/4
-	wn.rotation.y = Maze.DirToRadian(dir)
 	add_child(wn)
 	return wn
 
 func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
-	wn.init_wire_H(
-		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.y*0.8),
-		Vector2i(0,6),
-		calc_grid.unit_size.y/30,
-		calc_grid.unit_size.y/30,
-		co,
-		false)
-	wn.init_wire_V(
-		Vector2(calc_grid.unit_size.x*0.5, calc_grid.unit_size.y),
-		Vector2i(2,6),
-		calc_grid.unit_size.y/30,
-		calc_grid.unit_size.y/30,
-		co,
-		false)
+	var wn :MazeLadder = preload("res://maze_3d/maze_ladder/maze_ladder.tscn").instantiate()
+	wn.init_ladder(calc_grid.unit_size, dir, co)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
-	#wn.wire_H_rotation_x = PI/4
-	#wn.rotation.x = -PI/4
-	wn.rotation.y = Maze.DirToRadian(dir)
 	add_child(wn)
 	return wn
-
 
 func calc_tile_count(tg :Plot3D) -> Vector2i:
 	return Vector2i( tg.calc_grid.grid_size.x / maze_cells.width, tg.calc_grid.grid_size.z / maze_cells.height)

@@ -1,25 +1,6 @@
 [gd_scene format=3 uid="uid://bqcycxshrffmd"]
 
 [ext_resource type="Script" uid="uid://4dwgetwo054e" path="res://wire_net/wire_net.gd" id="1_vsprm"]
-[ext_resource type="Script" uid="uid://brthvnlbu6c53" path="res://multi_mesh_shape/multi_mesh_shape.gd" id="2_x5rn3"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_x5rn3"]
-resource_local_to_scene = true
-
-[sub_resource type="MultiMesh" id="MultiMesh_ne6td"]
-resource_local_to_scene = true
 
 [node name="WireNet" type="Node3D" unique_id=1227882558]
 script = ExtResource("1_vsprm")
-
-[node name="WireH" type="MultiMeshInstance3D" parent="." unique_id=1476916219]
-visible = false
-multimesh = SubResource("MultiMesh_x5rn3")
-script = ExtResource("2_x5rn3")
-metadata/_custom_type_script = "uid://brthvnlbu6c53"
-
-[node name="WireV" type="MultiMeshInstance3D" parent="." unique_id=1609560527]
-visible = false
-multimesh = SubResource("MultiMesh_ne6td")
-script = ExtResource("2_x5rn3")
-metadata/_custom_type_script = "uid://brthvnlbu6c53"

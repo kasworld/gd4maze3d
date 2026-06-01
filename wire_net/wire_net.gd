@@ -1,27 +1,30 @@
 extends Node3D
 class_name WireNet
 
+var WireH :MultiMeshShape
+var WireV :MultiMeshShape
+
 func get_wire_H() -> MultiMeshShape:
-	return $WireH
+	return WireH
 func get_wire_V() -> MultiMeshShape:
-	return $WireV
+	return WireV
 
 func set_color_H(co :Color) -> void:
-	$WireH.set_color_all(co)
+	WireH.set_color_all(co)
 
 func set_color_V(co :Color) -> void:
-	$WireV.set_color_all(co)
+	WireV.set_color_all(co)
 
 ## for animation
 var wire_H_rotation_x :float:
 	set(rad):
 		for i in h_count:
-			$WireH.set_inst_rotation(i, Vector3.RIGHT, rad)
+			WireH.set_inst_rotation(i, Vector3.RIGHT, rad)
 
 var wire_V_rotation_y :float:
 	set(rad):
 		for i in v_count:
-			$WireV.set_inst_rotation(i, Vector3.UP, rad)
+			WireV.set_inst_rotation(i, Vector3.UP, rad)
 
 func make_ani_rotate(aniname :String, hv :int, from :float, to :float, dur_sec :float) -> Dictionary:
 	return SimpleAnimation.MakeAnimation(
@@ -45,34 +48,35 @@ func init(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_heigh
 	return self
 
 func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
+	WireH = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate()
 	h_count = grid_count.y
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(net_size.x, wire_width, wire_height)
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
-	$WireH.init_with_color_mesh(mesh, h_count, false)
+	WireH.init_with_color_mesh(mesh, h_count, false)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	var unit_y := net_size.y/(h_count-1) if h_count > 1 else 0.0
 	for i in h_count:
 		var pos := Vector3(net_size.x/2, unit_y * i, 0) + pos_shift
 		var t := Transform3D(Basis(), pos)
-		$WireH.multimesh.set_instance_transform(i,t)
+		WireH.multimesh.set_instance_transform(i,t)
 	set_color_H(co)
-	$WireH.visible = true
+	add_child(WireH)
 	return self
 
-
 func init_wire_V(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
+	WireV = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate()
 	v_count = grid_count.x
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(wire_width, net_size.y, wire_height)
 	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial(transparent)
-	$WireV.init_with_color_mesh(mesh, v_count, false)
+	WireV.init_with_color_mesh(mesh, v_count, false)
 	var pos_shift := -Vector3(net_size.x, net_size.y, 0)/2
 	var unit_x := net_size.x/(v_count-1) if v_count > 1 else 0.0
 	for i in v_count:
 		var pos := Vector3( unit_x * i, net_size.y/2, 0) + pos_shift
 		var t := Transform3D(Basis(), pos)
-		$WireV.multimesh.set_instance_transform(i,t)
+		WireV.multimesh.set_instance_transform(i,t)
 	set_color_V(co)
-	$WireV.visible = true
+	add_child(WireV)
 	return self

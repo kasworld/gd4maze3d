@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cevthlkq5mw1p"]
+
+[ext_resource type="Script" uid="uid://ciq86gmtq06oj" path="res://maze_3d/maze_stair/maze_stair.gd" id="1_j1mqd"]
+
+[node name="MazeStair" type="Node3D" unique_id=1448779233]
+script = ExtResource("1_j1mqd")
+metadata/_custom_type_script = "uid://4dwgetwo054e"

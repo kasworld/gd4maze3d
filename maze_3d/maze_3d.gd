@@ -80,8 +80,10 @@ func exec_make() -> void:
 	make_cylinder_pillas()
 	make_wall_by_maze()
 
-func init_floor_ceiling_box(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
-	var grid_count_3d := Vector3i(grid_count.x, 1, grid_count.y)
+var floor_ceiling_tile_per_cell :Vector2i
+func init_floor_ceiling_box(tile_per_cell :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
+	floor_ceiling_tile_per_cell = tile_per_cell
+	var grid_count_3d := Vector3i(tile_per_cell.x * maze_cells.width, 1, tile_per_cell.y *maze_cells.height)
 	var net_size :Vector2 = PreCalced.SizeV2
 	$Floor.init_plot3d_box(Vector3(net_size.x, height, net_size.y), grid_count_3d, size_rate, true).fill_all(co_floor)
 	$Floor.position.y -= calc_grid.unit_size.y/2 +height/2
@@ -89,9 +91,10 @@ func init_floor_ceiling_box(grid_count :Vector2i, height :float, size_rate :floa
 	$Ceiling.position.y += calc_grid.unit_size.y/2 +height/2
 	return self
 
-func init_floor_ceiling_plane(grid_count :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
+func init_floor_ceiling_plane(tile_per_cell :Vector2i, height :float, size_rate :float, co_floor :Color, co_ceiling :Color) -> Maze3D:
+	floor_ceiling_tile_per_cell = tile_per_cell
+	var grid_count_3d := Vector3i(tile_per_cell.x * maze_cells.width, 1, tile_per_cell.y *maze_cells.height)
 	var net_size :Vector2 = PreCalced.SizeV2
-	var grid_count_3d := Vector3i(grid_count.x, 1, grid_count.y)
 	var cg = Plot3D.MakeCalcGrid(Vector3(net_size.x, height, net_size.y), grid_count_3d)
 	var mesh := PlaneMesh.new()
 	mesh.size = Vector2(cg.unit_size.x,cg.unit_size.z) *size_rate
@@ -122,14 +125,10 @@ func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	add_child(wn)
 	return wn
 
-func calc_tile_count(tg :Plot3D) -> Vector2i:
-	return Vector2i( tg.calc_grid.grid_size.x / maze_cells.width, tg.calc_grid.grid_size.z / maze_cells.height)
-
 func make_stair_hole(tg :Plot3D, cell_posi :Vector2i) -> void:
-	var tile_count := calc_tile_count(tg)
-	for y in tile_count.y:
-		for x in tile_count.x:
-			var tile_pos := Vector3i(cell_posi.x * tile_count.x + x , 0, cell_posi.y * tile_count.y + y )
+	for y in floor_ceiling_tile_per_cell.y:
+		for x in floor_ceiling_tile_per_cell.x:
+			var tile_pos := Vector3i(cell_posi.x * floor_ceiling_tile_per_cell.x + x , 0, cell_posi.y * floor_ceiling_tile_per_cell.y + y )
 			tg.del_at( tile_pos)
 
 func init_wall_deco(makedeco :Callable) -> void:

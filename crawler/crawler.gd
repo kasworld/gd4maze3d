@@ -70,7 +70,7 @@ var dir_src : Maze.Dir
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
 
-func get_posi() -> Vector2i:
+func get_minimap_posi() -> Vector2i:
 	return pos_src
 func get_color() -> Color:
 	return $MeshInstance3D.mesh.material.albedo_color

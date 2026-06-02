@@ -1,7 +1,7 @@
 extends Node2D
 class_name LabelMiniMap
 
-## obj must has func get_posi() -> Vector2i:
+## obj must has func get_minimap_posi() -> Vector2i:
 var obj_to_label :Dictionary[Node,Label] = {}
 var label_visible_in_known_map_view :Array[Label] = []
 
@@ -20,7 +20,7 @@ func show_known() -> void:
 func update_size() -> void:
 	for nd in obj_to_label:
 		var lb := obj_to_label[nd]
-		var posi :Vector2i = nd.get_posi()
+		var posi :Vector2i = nd.get_minimap_posi()
 		update_label_pos_size(lb, posi)
 
 func update_label_pos_size(lb :Label, posi :Vector2i) -> void:
@@ -36,7 +36,7 @@ func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_
 		label_visible_in_known_map_view.append(lb)
 
 func update_obj_pos(node :Node) -> void:
-	var posi :Vector2i = node.get_posi()
+	var posi :Vector2i = node.get_minimap_posi()
 	obj_to_label[node].position = maze2d_helper.posi_to_mappos(posi)
 
 func new_label(co:Color, text :String, outline :int) -> Label:

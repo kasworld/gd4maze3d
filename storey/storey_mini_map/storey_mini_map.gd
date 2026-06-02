@@ -66,7 +66,7 @@ func add_obj(node :Node, txt :String, co :Color, outline :int, visible_in_known_
 
 func update_obj_pos(node :Node, update_know_wall :bool = false) -> void:
 	$LabelMiniMap.update_obj_pos(node)
-	var posi :Vector2i = node.get_posi()
+	var posi :Vector2i = node.get_minimap_posi()
 	if update_know_wall:
 		if wall_lines_known.update_walls_by_pos(posi.x, posi.y):
 			queue_redraw()

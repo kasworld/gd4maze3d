@@ -4,7 +4,7 @@ class_name TextMark
 var font = preload("res://font/HakgyoansimBareondotumR.ttf")
 
 var posi :Vector2i
-func get_posi() -> Vector2i:
+func get_minimap_posi() -> Vector2i:
 	return posi
 
 func init(fsize :float, fdepth :float, co:Color, text :String, posi_a :Vector2i) -> TextMark:

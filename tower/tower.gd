@@ -2,13 +2,13 @@ extends Node3D
 class_name Tower
 
 const StoreyUp := 3
-const StoreyDown := 3
+const StoreyDown := 32
 
 const StoreyAnimationDuration := 1.5
 
 var max_storey_grid :Vector2i = Storey.GridSize
 func tower_size() -> Vector3:
-	return Vector3(max_storey_grid.x, StoreyUp + StoreyDown +1 , max_storey_grid.y) * Storey.CellSize
+	return Vector3(max_storey_grid.x, storey_list.size() , max_storey_grid.y) * Storey.CellSize
 
 var visible_storey_up :int = StoreyUp
 var visible_storey_down :int = StoreyDown

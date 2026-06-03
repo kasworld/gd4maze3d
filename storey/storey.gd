@@ -237,7 +237,7 @@ var minimap_subviewport :SubViewport
 # add clock or calendar
 func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 	if randf() < WallDecoRate:
-		match randi_range(0,3):
+		match randi_range(0,4):
 			0:
 				if line2d_subviewport == null:
 					line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
@@ -275,6 +275,17 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 				n.position = maze3d.deco_pos_by_dir(x,y,dir)
 				$WallDeco.add_child(n)
 				n.update_clock(AnalogClock3D.get_localtime_from_system())
+			4: # make bookcase
+				var n :Node3D = preload("res://wire_net/wire_net.tscn").instantiate()
+				n.init(
+					Vector2(maze3d.calc_grid.unit_size.x,maze3d.calc_grid.unit_size.y),
+					Vector2i(4,8),
+					maze3d.WallThick /4, maze3d.WallThick *2,
+					RandomColorIter.get_and_next(),
+					)
+				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+				n.position = maze3d.deco_pos_by_dir(x,y,dir)
+				$WallDeco.add_child(n)
 
 var move_line_2d_list :Array = []
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:

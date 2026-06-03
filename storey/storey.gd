@@ -234,10 +234,11 @@ func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 
 var line2d_subviewport :SubViewport
 var minimap_subviewport :SubViewport
-# add clock or calendar
+## add wall deco
+var deco_order :int = 0
 func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 	if randf() < WallDecoRate:
-		match randi_range(0,4):
+		match deco_order %5:
 			0:
 				if line2d_subviewport == null:
 					line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
@@ -280,14 +281,14 @@ func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 				n.init(
 					Vector2(maze3d.calc_grid.unit_size.x-maze3d.WallThick*2,maze3d.calc_grid.unit_size.y),
 					Vector2i(4,8),
-					maze3d.WallThick /4, maze3d.WallThick ,
+					maze3d.WallThick /4, maze3d.WallThick*2 ,
 					RandomColorIter.get_and_next(),
 					)
 				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
 				var wall_shift := Maze.FlagToVt2[dir_flag]*maze3d.WallThick/2
 				n.position = maze3d.deco_pos_by_dir(x,y,dir_flag) - Vector3(wall_shift.x,0,wall_shift.y)
 				$WallDeco.add_child(n)
-
+		deco_order += 1
 var move_line_2d_list :Array = []
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var l2d :MoveLine2D = preload("res://move_line_2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)

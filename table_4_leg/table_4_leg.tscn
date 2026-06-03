@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bwaj5dqdyqfjo"]
+
+[ext_resource type="Script" uid="uid://d0wpjxedvpn5m" path="res://table_4_leg/table_4_leg.gd" id="1_j25h5"]
+
+[node name="Table4Leg" type="Node3D" unique_id=589738467]
+script = ExtResource("1_j25h5")

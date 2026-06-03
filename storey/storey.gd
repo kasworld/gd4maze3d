@@ -57,10 +57,10 @@ func is_goal_pos(p :Vector2i) -> bool:
 	return goal_posi == p
 
 func get_goal_pos() -> Vector3:
-	return $EndMark.position
+	return maze3d.mazepos2storeypos(goal_posi, 0)
 
 func get_start_pos() -> Vector3:
-	return $StartMark.position
+	return maze3d.mazepos2storeypos(start_posi, 0)
 
 var wall_info_all :Array
 var 놓인것들 :PlacedThings # 배치된 capsule, donut tree start goal 들

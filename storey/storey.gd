@@ -160,14 +160,19 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 
 func add_table4leg(posi_list :Array[Vector2i]) -> void:
 	var unit_size := maze3d.calc_grid.unit_size
-	for i in posi_list.size():
+	for posi in posi_list:
 		var t4l :Table4Leg = preload("res://table_4_leg/table_4_leg.tscn").instantiate()
 		t4l.init(
 			Vector3(unit_size.x/2,unit_size.y/50,unit_size.z/2),
 			Vector3(unit_size.x/50,unit_size.y/4,unit_size.z/50),
 			RandomColorIter.get_and_next(),RandomColorIter.get_and_next())
 		add_child(t4l)
-		t4l.position = maze3d.mazepos2storeypos(posi_list[i], -unit_size.y/2 + t4l.boundary.size.y/2)
+		var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) )
+		t4l.position = Vector3(
+			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 0, randi_range(-1,1) ),
+			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 1, -1 ),
+			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 2, randi_range(-1,1) )
+			)
 
 var bouncing_list :Array
 func add_bouncing(n :int, radius :float) -> void:

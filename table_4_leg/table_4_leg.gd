@@ -28,15 +28,18 @@ func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) ->
 		var leg := make_box(leg_size,co_leg)
 		legs.append(leg)
 		add_child(leg)
-	legs[0].position = Vector3(calc_axis_align_inner(boundary, leg_size, 0, -1), calc_axis_align_inner(boundary, leg_size, 1, -1), calc_axis_align_inner(boundary, leg_size, 2, -1),)
-	legs[1].position = Vector3(calc_axis_align_inner(boundary, leg_size, 0, -1), calc_axis_align_inner(boundary, leg_size, 1, -1), calc_axis_align_inner(boundary, leg_size, 2, 1),)
-	legs[2].position = Vector3(calc_axis_align_inner(boundary, leg_size, 0, 1), calc_axis_align_inner(boundary, leg_size, 1, -1), calc_axis_align_inner(boundary, leg_size, 2, 1),)
-	legs[3].position = Vector3(calc_axis_align_inner(boundary, leg_size, 0, 1), calc_axis_align_inner(boundary, leg_size, 1, -1), calc_axis_align_inner(boundary, leg_size, 2, -1),)
+	legs[0].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, -1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, -1),)
+	legs[1].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, -1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, 1),)
+	legs[2].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, 1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, 1),)
+	legs[3].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, 1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, -1),)
 	return self
 
-## axis : x:0, y:1, z:2, axis_sign : 1,-1
-static func calc_axis_align_inner(aabb :AABB, inner_box_size :Vector3, axis :int, dir :int) -> float:
-	if dir > 0: # align +
-		return aabb.end[axis] - inner_box_size[axis]/2
-	else : # align -
-		return aabb.position[axis] + inner_box_size[axis]/2
+## axis : x:0, y:1, z:2, axis_sign : 1,0,-1
+static func CalcAxisAlignInner(aabb :AABB, inner_box_size :Vector3, axis :int, dir :int) -> float:
+	match dir:
+		-1: # align -
+			return aabb.position[axis] + inner_box_size[axis]/2
+		1: # align +
+			return aabb.end[axis] - inner_box_size[axis]/2
+		_: # align center
+			return aabb.get_center()[axis]

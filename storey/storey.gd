@@ -168,7 +168,7 @@ func add_table4leg(posi_list :Array[Vector2i]) -> void:
 			Vector3(thick,unit_size.y/4 * randfn(1,0.5), thick),
 			RandomColorIter.get_and_next(),RandomColorIter.get_and_next())
 		add_child(t4l)
-		var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) )
+		var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) ).grow(-maze3d.WallThick)
 		t4l.position = Vector3(
 			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 0, randi_range(-1,1) ),
 			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 1, -1 ),
@@ -235,7 +235,7 @@ func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 var line2d_subviewport :SubViewport
 var minimap_subviewport :SubViewport
 # add clock or calendar
-func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
+func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 	if randf() < WallDecoRate:
 		match randi_range(0,4):
 			0:
@@ -244,26 +244,26 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 					$WallDeco.add_child(line2d_subviewport)
 				var b := MakePlaneSubViewport(line2d_subviewport, Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y))
 				$WallDeco.add_child(b)
-				b.position = maze3d.deco_pos_by_dir(x,y,dir)
+				b.position = maze3d.deco_pos_by_dir(x,y,dir_flag)
 				#b.rotate_x(PI/2)
-				b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+				b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
 			1:
 				if minimap_subviewport == null:
 					minimap_subviewport = make_minimap_subvuewport(Vector2i(2000,1500))
 					$WallDeco.add_child(minimap_subviewport)
 				var b := MakePlaneSubViewport(minimap_subviewport, Vector2(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y))
 				$WallDeco.add_child(b)
-				b.position = maze3d.deco_pos_by_dir(x,y,dir)
+				b.position = maze3d.deco_pos_by_dir(x,y,dir_flag)
 				#b.rotate_x(PI/2)
-				b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
+				b.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
 			2:
 				var depth := 0.1
 				var 크기기준 :float = min(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y,maze3d.calc_grid.unit_size.z)
 				var n :Node3D = preload("res://calendar_3d/calendar_3d.tscn").instantiate()
 				n.init(maze3d.calc_grid.unit_size.x, maze3d.calc_grid.unit_size.y, depth, 크기기준/12, false)
 				#n.rotate_x(PI/2)
-				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
-				n.position = maze3d.deco_pos_by_dir(x,y,dir)
+				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
+				n.position = maze3d.deco_pos_by_dir(x,y,dir_flag)
 				$WallDeco.add_child(n)
 			3:
 				var depth := 0.1
@@ -271,20 +271,21 @@ func add_wall_deco_at(x :int, y :int, dir :Maze.Flag) -> void:
 				var n :Node3D = preload("res://analog_clock_3d/analog_clock_3d.tscn").instantiate()
 				n.init(크기기준/2, depth, 크기기준/16, false)
 				#n.rotate_x(PI/2)
-				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
-				n.position = maze3d.deco_pos_by_dir(x,y,dir)
+				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
+				n.position = maze3d.deco_pos_by_dir(x,y,dir_flag)
 				$WallDeco.add_child(n)
 				n.update_clock(AnalogClock3D.get_localtime_from_system())
 			4: # make bookcase
 				var n :Node3D = preload("res://wire_net/wire_net.tscn").instantiate()
 				n.init(
-					Vector2(maze3d.calc_grid.unit_size.x,maze3d.calc_grid.unit_size.y),
+					Vector2(maze3d.calc_grid.unit_size.x-maze3d.WallThick*2,maze3d.calc_grid.unit_size.y),
 					Vector2i(4,8),
-					maze3d.WallThick /4, maze3d.WallThick *2,
+					maze3d.WallThick /4, maze3d.WallThick ,
 					RandomColorIter.get_and_next(),
 					)
-				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir]))
-				n.position = maze3d.deco_pos_by_dir(x,y,dir)
+				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
+				var wall_shift := Maze.FlagToVt2[dir_flag]*maze3d.WallThick/2
+				n.position = maze3d.deco_pos_by_dir(x,y,dir_flag) - Vector3(wall_shift.x,0,wall_shift.y)
 				$WallDeco.add_child(n)
 
 var move_line_2d_list :Array = []

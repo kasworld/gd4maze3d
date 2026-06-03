@@ -152,11 +152,22 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	$MiniMap.add_obj($StartMark, "Start", start_color, 1, true)
 	$MiniMap.add_obj($EndMark, "Goal", goal_color, 1, true)
 	sw.split("MiniMap")
-
+	add_table4leg(구석자리목록)
 	add_bouncing(BouncingCount , 크기기준 /20)
 	sw.split("add_bouncing")
 	#print_debug(sw)
 	return self
+
+func add_table4leg(posi_list :Array[Vector2i]) -> void:
+	var unit_size := maze3d.calc_grid.unit_size
+	for i in posi_list.size():
+		var t4l :Table4Leg = preload("res://table_4_leg/table_4_leg.tscn").instantiate()
+		t4l.init(
+			Vector3(unit_size.x/2,unit_size.y/50,unit_size.z/2),
+			Vector3(unit_size.x/50,unit_size.y/4,unit_size.z/50),
+			RandomColorIter.get_and_next(),RandomColorIter.get_and_next())
+		add_child(t4l)
+		t4l.position = maze3d.mazepos2storeypos(posi_list[i], -unit_size.y/2 + t4l.boundary.size.y/2)
 
 var bouncing_list :Array
 func add_bouncing(n :int, radius :float) -> void:

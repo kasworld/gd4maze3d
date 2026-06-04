@@ -278,12 +278,14 @@ func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 				n.update_clock(AnalogClock3D.get_localtime_from_system())
 			4: # make bookcase
 				var n :Node3D = preload("res://wire_net/wire_net.tscn").instantiate()
+				var net_size := Vector2(maze3d.calc_grid.unit_size.x-maze3d.WallThick*2,maze3d.calc_grid.unit_size.y)
 				n.init(
-					Vector2(maze3d.calc_grid.unit_size.x-maze3d.WallThick*2,maze3d.calc_grid.unit_size.y),
+					net_size,
 					Vector2i(4,8),
 					maze3d.WallThick /4, maze3d.WallThick*2 ,
 					RandomColorIter.get_and_next(),
 					)
+				#print_debug(net_size, n.size)
 				n.rotate_y(Maze.DirToRadian(Maze.FlagToDir[dir_flag]))
 				var wall_shift := Maze.FlagToVt2[dir_flag]*maze3d.WallThick/2
 				n.position = maze3d.deco_pos_by_dir(x,y,dir_flag) - Vector3(wall_shift.x,0,wall_shift.y)

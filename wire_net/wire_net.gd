@@ -41,7 +41,10 @@ func start_V_rotate_y(aniname :String, from :float, to :float, dur_sec :float) -
 
 var h_count :int
 var v_count :int
+
 var size := Vector3.ZERO
+func get_size() -> Vector3:
+	return size
 
 func init(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
 	init_wire_H(net_size,grid_count,wire_width,wire_height,co,transparent)

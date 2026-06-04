@@ -52,7 +52,12 @@ func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshIns
 	sp.mesh = mesh
 	return sp
 
+var size := Vector3.ZERO
+func get_size() -> Vector3:
+	return size
+
 func init(w :float, h:float,d:float, fsize :float, backplane:bool=true) -> Calendar3D:
+	size = Vector3(w,h,d)
 	calendar_labels = []
 	for o in $LabelConatiner.get_children():
 		o.queue_free()

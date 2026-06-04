@@ -39,7 +39,7 @@ var WallDecoRate :float = 0
 var BouncingCount :int = 0
 func set_param(grid_size) -> Storey:
 	DonutCapsuleCount = min(100, max(2, grid_size.x*grid_size.y/20.0) )
-	WallDecoRate = 2.0/(grid_size.x*grid_size.y)
+	WallDecoRate = 1.0/20.0
 	BouncingCount = 10
 	return self
 
@@ -235,10 +235,10 @@ func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 var line2d_subviewport :SubViewport
 var minimap_subviewport :SubViewport
 ## add wall deco
-var deco_order :int = 0
+var deco_order := ListIter.new(range(5))
 func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 	if randf() < WallDecoRate:
-		match deco_order %5:
+		match deco_order.get_and_next():
 			0:
 				if line2d_subviewport == null:
 					line2d_subviewport = make_line2d_subvuewport(Vector2i(2000,1500))
@@ -290,7 +290,7 @@ func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 				var wall_shift := Maze.FlagToVt2[dir_flag]*maze3d.WallThick/2
 				n.position = maze3d.deco_pos_by_dir(x,y,dir_flag) - Vector3(wall_shift.x,0,wall_shift.y)
 				$WallDeco.add_child(n)
-		deco_order += 1
+
 var move_line_2d_list :Array = []
 func make_line2d_subvuewport(size_pixel:Vector2i) -> SubViewport:
 	var l2d :MoveLine2D = preload("res://move_line_2d/move_line_2d.tscn").instantiate().init_with_random(300,4,1.5,size_pixel)

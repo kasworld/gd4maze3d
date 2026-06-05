@@ -12,7 +12,7 @@ static func make_box(box_size :Vector3, box_co :Color) -> MeshInstance3D:
 	return box
 
 ## center ZERO
-var boundary :AABB
+var aabb :AABB
 
 var top :MeshInstance3D
 var legs :Array[MeshInstance3D]
@@ -20,18 +20,18 @@ var legs :Array[MeshInstance3D]
 func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) -> Table4Leg:
 	var total_size := top_size
 	total_size.y += leg_size.y
-	boundary = AABB(-total_size/2,total_size)
+	aabb = AABB(-total_size/2,total_size)
 	top = make_box(top_size,co_top)
-	top.position.y = boundary.size.y/2 - top_size.y/2
+	top.position.y = aabb.size.y/2 - top_size.y/2
 	add_child(top)
 	for i in 4:
 		var leg := make_box(leg_size,co_leg)
 		legs.append(leg)
 		add_child(leg)
-	legs[0].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, -1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, -1),)
-	legs[1].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, -1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, 1),)
-	legs[2].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, 1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, 1),)
-	legs[3].position = Vector3(CalcAxisAlignInner(boundary, leg_size, 0, 1), CalcAxisAlignInner(boundary, leg_size, 1, -1), CalcAxisAlignInner(boundary, leg_size, 2, -1),)
+	legs[0].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1),)
+	legs[1].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1),)
+	legs[2].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1),)
+	legs[3].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1),)
 	return self
 
 ## axis : x:0, y:1, z:2, axis_sign : 1,0,-1

@@ -23,12 +23,12 @@ var colors := {
 	clockbg = Color(0.5,0.5,0.5,0.5), # Color.BLACK.lightened(0.3),
 }
 
-var size := Vector3.ZERO
-func get_size() -> Vector3:
-	return size
+## center ZERO
+var aabb :AABB
 
 func init(r :float, d :float, fsize :float, backplane:bool=true) -> AnalogClock3D:
-	size = Vector3(r*2,r*2,d)
+	var size := Vector3(r*2,r*2,d)
+	aabb = AABB(-size/2,size)
 	$BackPlane.mesh.height = d*0.5
 	$BackPlane.mesh.top_radius = r
 	$BackPlane.mesh.bottom_radius = r

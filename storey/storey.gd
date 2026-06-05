@@ -146,7 +146,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	sw.split("add_donut_capsule")
 	$Label3D.pixel_size = maze3d.calc_grid.unit_size.y/30
 	$Label3D.text = "%d" % storey_num
-	$Label3D.position = Vector3(-maze3d.WallThick*2, storey_height/2, -maze3d.WallThick*2) + maze3d.calc_grid.boundary.position
+	$Label3D.position = Vector3(-maze3d.WallThick*2, storey_height/2, -maze3d.WallThick*2) + maze3d.calc_grid.aabb.position
 	sw.split("Label3D")
 	$MiniMap.init(maze2d)
 	$MiniMap.add_obj($StartMark, "Start", start_color, 1, true)
@@ -170,9 +170,9 @@ func add_table4leg(posi_list :Array[Vector2i]) -> void:
 		add_child(t4l)
 		var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) ).grow(-maze3d.WallThick)
 		t4l.position = Vector3(
-			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 0, randi_range(-1,1) ),
-			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 1, -1 ),
-			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.boundary.size, 2, randi_range(-1,1) )
+			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 0, randi_range(-1,1) ),
+			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 1, -1 ),
+			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 2, randi_range(-1,1) )
 			)
 
 var bouncing_list :Array

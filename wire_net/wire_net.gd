@@ -42,9 +42,8 @@ func start_V_rotate_y(aniname :String, from :float, to :float, dur_sec :float) -
 var h_count :int
 var v_count :int
 
-var size := Vector3.ZERO
-func get_size() -> Vector3:
-	return size
+## center ZERO
+var aabb :AABB
 
 func init(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
 	init_wire_H(net_size,grid_count,wire_width,wire_height,co,transparent)
@@ -54,7 +53,8 @@ func init(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_heigh
 func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
 	h_count = grid_count.y
 	var unit_y := net_size.y/(h_count-1) if h_count > 1 else 0.0
-	size = Vector3( max(size.x, net_size.x), max(size.y, net_size.y+wire_width), max(size.z, wire_height) )
+	var size := Vector3( max(aabb.size.x, net_size.x), max(aabb.size.y, net_size.y+wire_width), max(aabb.size.z, wire_height) )
+	aabb = AABB(-size/2, size)
 	WireH = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate()
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(net_size.x, wire_width, wire_height)
@@ -72,7 +72,8 @@ func init_wire_H(net_size :Vector2, grid_count :Vector2i, wire_width :float, wir
 func init_wire_V(net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, co :Color, transparent :bool = false) -> WireNet:
 	v_count = grid_count.x
 	var unit_x := net_size.x/(v_count-1) if v_count > 1 else 0.0
-	size = Vector3( max(size.x, net_size.x+wire_width), max(size.y, net_size.y), max(size.z, wire_height) )
+	var size := Vector3( max(aabb.size.x, net_size.x+wire_width), max(aabb.size.y, net_size.y), max(aabb.size.z, wire_height) )
+	aabb = AABB(-size/2, size)
 	WireV = preload("res://multi_mesh_shape/multi_mesh_shape.tscn").instantiate()
 	var mesh := BoxMesh.new()
 	mesh.size = Vector3(wire_width, net_size.y, wire_height)

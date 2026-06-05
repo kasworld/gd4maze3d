@@ -43,7 +43,7 @@ func init_params( maze2d :Maze, cell_size :Vector3, wall_thick :float, subwall_r
 	PreCalced.Grid2D = Vector2i(maze_cells.width,maze_cells.height)
 	PreCalced.PillarSize = Vector3(wall_thick,cell_size.y,wall_thick)
 	PreCalced.SizeV2 = (PreCalced.Grid2D as Vector2) * Vector2(cell_size.x, cell_size.z)
-	PreCalced.SizeV3 = calc_grid.boundary.size
+	PreCalced.SizeV3 = calc_grid.aabb.size
 	PreCalced.SizeWithWallV2 = PreCalced.SizeV2 + Vector2(wall_thick, wall_thick)
 	PreCalced.SizeWithWallV3 = Vector3(PreCalced.SizeWithWallV2.x, cell_size.y, PreCalced.SizeWithWallV2.y)
 	PreCalced.WallSize_H_Long = Vector3(cell_size.x, cell_size.y, wall_thick)

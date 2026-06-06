@@ -35,11 +35,11 @@ func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) ->
 	return self
 
 ## axis : x:0, y:1, z:2, axis_sign : 1,0,-1
-static func CalcAxisAlignInner(aabb :AABB, inner_box_size :Vector3, axis :int, dir :int) -> float:
+static func CalcAxisAlignInner(out_aabb :AABB, inner_box_size :Vector3, axis :int, dir :int) -> float:
 	match dir:
 		-1: # align -
-			return aabb.position[axis] + inner_box_size[axis]/2
+			return out_aabb.position[axis] + inner_box_size[axis]/2
 		1: # align +
-			return aabb.end[axis] - inner_box_size[axis]/2
+			return out_aabb.end[axis] - inner_box_size[axis]/2
 		_: # align center
-			return aabb.get_center()[axis]
+			return out_aabb.get_center()[axis]

@@ -2,7 +2,7 @@ extends Node3D
 class_name Tower
 
 const StoreyUp := 3
-const StoreyDown := 32
+const StoreyDown := 3
 
 const StoreyAnimationDuration := 1.5
 

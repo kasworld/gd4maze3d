@@ -37,10 +37,12 @@ func _process(delta: float) -> void:
 var DonutCapsuleCount :int = 0
 var WallDecoRate :float = 0
 var BouncingCount :int = 0
+var MaxTableCount :int = 0
 func set_param(grid_size) -> Storey:
 	DonutCapsuleCount = min(100, max(2, grid_size.x*grid_size.y/20.0) )
 	WallDecoRate = 1.0/20.0
 	BouncingCount = 10
+	MaxTableCount = 100
 	return self
 
 var maze3d :Maze3D
@@ -152,28 +154,28 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	$MiniMap.add_obj($StartMark, "Start", start_color, 1, true)
 	$MiniMap.add_obj($EndMark, "Goal", goal_color, 1, true)
 	sw.split("MiniMap")
-	add_table4leg(구석자리목록)
+	for i in min(MaxTableCount,구석자리목록.size()):
+		add_table4leg(구석자리목록[i])
 	add_bouncing(BouncingCount , 크기기준 /20)
 	sw.split("add_bouncing")
 	#print_debug(sw)
 	return self
 
-func add_table4leg(posi_list :Array[Vector2i]) -> void:
+func add_table4leg(posi :Vector2i) -> void:
 	var unit_size := maze3d.calc_grid.unit_size - Vector3(maze3d.WallThick, 0, maze3d.WallThick)
-	for posi in posi_list:
-		var t4l :Table4Leg = preload("res://table_4_leg/table_4_leg.tscn").instantiate()
-		var thick := unit_size.y/50
-		t4l.init(
-			Vector3(unit_size.x * [0.2,0.4,0.6,0.8,1.0].pick_random(), thick, unit_size.z * [0.2,0.4,0.6,0.8,1.0].pick_random()),
-			Vector3(thick, unit_size.y * [0.1,0.2,0.3].pick_random() , thick),
-			RandomColorIter.get_and_next(),RandomColorIter.get_and_next())
-		add_child(t4l)
-		var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) ).grow(-maze3d.WallThick)
-		t4l.position = Vector3(
-			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 0, randi_range(-1,1) ),
-			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 1, -1 ),
-			CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 2, randi_range(-1,1) )
-			)
+	var t4l :Table4Leg = preload("res://table_4_leg/table_4_leg.tscn").instantiate()
+	var thick := unit_size.y/50
+	t4l.init(
+		Vector3(unit_size.x * randf_range(0.2,1.0), thick, unit_size.z * randf_range(0.2,1.0)),
+		Vector3(thick, unit_size.y * randf_range(0.1,0.5) , thick),
+		RandomColorIter.get_and_next(),RandomColorIter.get_and_next())
+	add_child(t4l)
+	var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) ).grow(-maze3d.WallThick)
+	t4l.position = Vector3(
+		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 0, randi_range(-1,1) ),
+		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 1, -1 ),
+		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 2, randi_range(-1,1) )
+		)
 
 var bouncing_list :Array
 func add_bouncing(n :int, radius :float) -> void:

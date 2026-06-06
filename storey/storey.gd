@@ -164,8 +164,8 @@ func add_table4leg(posi_list :Array[Vector2i]) -> void:
 		var t4l :Table4Leg = preload("res://table_4_leg/table_4_leg.tscn").instantiate()
 		var thick := unit_size.y/50
 		t4l.init(
-			Vector3(unit_size.x/2 * randfn(1,0.5), thick, unit_size.z/2 * randfn(1,0.5)),
-			Vector3(thick,unit_size.y/4 * randfn(1,0.5), thick),
+			Vector3(unit_size.x * [0.2,0.4,0.6,0.8,1.0].pick_random(), thick, unit_size.z * [0.2,0.4,0.6,0.8,1.0].pick_random()),
+			Vector3(thick, unit_size.y * [0.1,0.2,0.3].pick_random() , thick),
 			RandomColorIter.get_and_next(),RandomColorIter.get_and_next())
 		add_child(t4l)
 		var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) ).grow(-maze3d.WallThick)

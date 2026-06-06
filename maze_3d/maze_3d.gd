@@ -77,7 +77,6 @@ func init_with_color(comain :Color, cosub :Color, copillarbox :Color, copillarca
 
 func exec_make() -> void:
 	make_box_pillas()
-	make_cylinder_pillas()
 	make_wall_by_maze()
 
 var floor_ceiling_tile_per_cell :Vector2i
@@ -147,7 +146,6 @@ func init_wall_deco(makedeco :Callable) -> void:
 		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
 			makedeco.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
-
 func make_box_pillas() -> void:
 	var pos_list :Array = []
 	for y in PreCalced.Grid2D.y+1:
@@ -159,27 +157,6 @@ func make_box_pillas() -> void:
 	mesh.size = PreCalced.PillarSize
 	$BoxPillars.init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape($BoxPillars, pos_list)
-
-func make_cylinder_pillas() -> void:
-	var pos_list :Array = []
-	for y in PreCalced.Grid2D.y+1:
-		for x in PreCalced.Grid2D.x+1:
-			pos_list.append(
-				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
-	var mesh := CylinderMesh.new()
-	mesh.material = pillar_capsule_mat
-	mesh.bottom_radius = WallThick/1.5
-	mesh.top_radius = WallThick/1.5
-	mesh.height = calc_grid.unit_size.y
-	mesh.radial_segments = 8
-	$CapsulePillars.init_with_mesh(mesh, pos_list.size())
-	pos_multimeshshape_capsule($CapsulePillars, pos_list)
-
-func pos_multimeshshape_capsule(mms :MultiMeshShape, pos_list :Array) -> void:
-	for i in pos_list.size():
-		var t := Transform3D(Basis(), pos_list[i])
-		#t = t.rotated_local(Vector3.LEFT, PI/2)
-		mms.multimesh.set_instance_transform(i,t)
 
 func pos_multimeshshape(mms :MultiMeshShape, pos_list :Array) -> void:
 	for i in pos_list.size():
@@ -292,20 +269,15 @@ func view_walls(v :WallView) -> void:
 			$WallContainer.visible = true
 			set_wall_size_long(true)
 
-enum PillarView {Off, Box, Capsule}
+enum PillarView {Off, Box}
 func view_pillars(v :PillarView) -> void:
 	match v:
 		PillarView.Off:
-			$CapsulePillars.visible = false
 			$BoxPillars.visible = false
 		PillarView.Box:
-			$CapsulePillars.visible = false
 			$BoxPillars.visible = true
-		PillarView.Capsule:
-			$CapsulePillars.visible = true
-			$BoxPillars.visible = false
 
-enum WallPillarView {Long, Short, ShortWithPillarBox, ShortWithPillarCylinder, Off, OffWithPillarBox, OffWithPillarCylinder}
+enum WallPillarView {Long, Short, ShortWithPillarBox, Off, OffWithPillarBox}
 static func wallview2str(vd :WallPillarView) -> String:
 	return WallPillarView.keys()[vd]
 static func wallview_next(a :WallPillarView) -> WallPillarView:
@@ -325,19 +297,12 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
 			view_pillars(PillarView.Box)
-		WallPillarView.ShortWithPillarCylinder:
-			view_walls(WallView.Short)
-			set_wall_size_long(false)
-			view_pillars(PillarView.Capsule)
 		WallPillarView.Off:
 			view_walls(WallView.Off)
 			view_pillars(PillarView.Off)
 		WallPillarView.OffWithPillarBox:
 			view_walls(WallView.Off)
 			view_pillars(PillarView.Box)
-		WallPillarView.OffWithPillarCylinder:
-			view_walls(WallView.Off)
-			view_pillars(PillarView.Capsule)
 
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var posi := calc_grid.lanepos_to_posi(oldpos)

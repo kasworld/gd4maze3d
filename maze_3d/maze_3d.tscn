@@ -25,9 +25,6 @@ resource_local_to_scene = true
 [sub_resource type="MultiMesh" id="MultiMesh_8b0s3"]
 resource_local_to_scene = true
 
-[sub_resource type="MultiMesh" id="MultiMesh_ql2o8"]
-resource_local_to_scene = true
-
 [node name="Maze3D" type="Node3D" unique_id=1197400707]
 script = ExtResource("1_0k1os")
 
@@ -54,7 +51,3 @@ multimesh = SubResource("MultiMesh_f705r")
 [node name="BoxPillars" parent="." unique_id=1384246334 instance=ExtResource("3_7je7j")]
 visible = false
 multimesh = SubResource("MultiMesh_8b0s3")
-
-[node name="CapsulePillars" parent="." unique_id=1088320687 instance=ExtResource("3_7je7j")]
-visible = false
-multimesh = SubResource("MultiMesh_ql2o8")

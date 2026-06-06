@@ -173,7 +173,7 @@ func add_table4leg(posi :Vector2i) -> void:
 	var aabb := maze3d.calc_grid.cell_aabb_by_posi( Vector3i(posi.x, 0, posi.y) ).grow(-maze3d.WallThick)
 	t4l.position = Vector3(
 		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 0, randi_range(-1,1) ),
-		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 1, -1 ),
+		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 1, -1 )-maze3d.WallThick/2,
 		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 2, randi_range(-1,1) )
 		)
 

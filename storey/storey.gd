@@ -112,11 +112,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	storey_num = num
 
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)
-	var 구석자리목록 :Array[Vector2i] = []
-	for y in maze3d.PreCalced.Grid2D.y:
-		for x in maze3d.PreCalced.Grid2D.x:
-			if maze3d.maze_cells.get_open_flag_at(x,y).size() == 1:
-				구석자리목록.append(Vector2i(x,y))
+	var 구석자리목록 :Array[Vector2i] = maze3d.maze_cells.make_posi_list_by_open_count(1)
 	sw.split("구석자리목록")
 
 	구석자리목록.shuffle()

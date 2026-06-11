@@ -234,3 +234,11 @@ func make_move_graph() -> Dictionary:
 				val.append({"pos":topos, "dir": FlagToStr[fdir] })
 			rtn[srcpos] = val
 	return rtn
+
+func make_posi_list_by_open_count(open_count :int) -> Array[Vector2i]:
+	var rtn :Array[Vector2i] = []
+	for y in height:
+		for x in width:
+			if get_open_flag_at(x,y).size() == open_count:
+				rtn.append(Vector2i(x,y))
+	return rtn

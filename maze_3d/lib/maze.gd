@@ -70,10 +70,10 @@ static func DirToRadian(d:Dir) -> float:
 	return deg_to_rad(d *90.0)
 
 enum Flag {
-	North = 1 << Dir.North,
-	West = 1 << Dir.West,
-	South = 1 << Dir.South,
-	East = 1 << Dir.East,
+	North = 1 << Dir.North,	## 0b0001
+	West = 1 << Dir.West,	## 0b0010
+	South = 1 << Dir.South,	## 0b0100
+	East = 1 << Dir.East,	## 0b1000
 }
 const FlagList :Array[Flag] = [Flag.North,Flag.West,Flag.South,Flag.East]
 

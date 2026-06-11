@@ -130,21 +130,22 @@ func make_stair_hole(tg :Plot3D, cell_posi :Vector2i) -> void:
 			var tile_pos := Vector3i(cell_posi.x * floor_ceiling_tile_per_cell.x + x , 0, cell_posi.y * floor_ceiling_tile_per_cell.y + y )
 			tg.del_at( tile_pos)
 
-func init_wall_deco(makedeco :Callable) -> void:
-	if not makedeco.is_valid():
+## func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
+func init_wall_deco(add_wall_deco_at :Callable) -> void:
+	if not add_wall_deco_at.is_valid():
 		return
 	for y in PreCalced.Grid2D.y:
 		for x in PreCalced.Grid2D.x:
 			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.North):
-				makedeco.call(x, y, Maze.Flag.North)
+				add_wall_deco_at.call(x, y, Maze.Flag.North)
 			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.West):
-				makedeco.call(x, y, Maze.Flag.West)
+				add_wall_deco_at.call(x, y, Maze.Flag.West)
 	for x in PreCalced.Grid2D.x :
 		if not maze_cells.is_open_flag_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
-			makedeco.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
+			add_wall_deco_at.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
 	for y in PreCalced.Grid2D.y:
 		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
-			makedeco.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
+			add_wall_deco_at.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
 
 func make_box_pillas() -> void:
 	var pos_list :Array = []
@@ -214,7 +215,8 @@ func calc_pos_face_V(x :int, y :int) -> Vector3:
 func calc_pos_face_H(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(calc_grid.unit_size.x/2, calc_grid.unit_size.y/2, 0)
 
-func deco_pos_by_dir(x :int, y :int, dir :Maze.Flag) -> Vector3:
+## apply WallThick
+func wall_deco_pos_by_dir(x :int, y :int, dir :Maze.Flag) -> Vector3:
 	match dir:
 		Maze.Flag.West:
 			return calc_pos_face_V(x,y) + Vector3(WallThick,0,0)

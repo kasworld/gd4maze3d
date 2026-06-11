@@ -23,3 +23,5 @@ billboard = 1
 [node name="PlacedThings" type="Node3D" parent="." unique_id=1659638123]
 
 [node name="BouncingContainer" type="Node3D" parent="." unique_id=1483671654]
+
+[node name="DoorContainer" type="Node3D" parent="." unique_id=1940459195]

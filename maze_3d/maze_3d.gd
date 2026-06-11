@@ -130,27 +130,10 @@ func make_stair_hole(tg :Plot3D, cell_posi :Vector2i) -> void:
 			var tile_pos := Vector3i(cell_posi.x * floor_ceiling_tile_per_cell.x + x , 0, cell_posi.y * floor_ceiling_tile_per_cell.y + y )
 			tg.del_at( tile_pos)
 
-## func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
-func init_wall_deco(add_wall_deco_at :Callable) -> void:
-	if not add_wall_deco_at.is_valid():
-		return
-	for y in PreCalced.Grid2D.y:
-		for x in PreCalced.Grid2D.x:
-			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.North):
-				add_wall_deco_at.call(x, y, Maze.Flag.North)
-			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.West):
-				add_wall_deco_at.call(x, y, Maze.Flag.West)
-	for x in PreCalced.Grid2D.x :
-		if not maze_cells.is_open_flag_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
-			add_wall_deco_at.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
-	for y in PreCalced.Grid2D.y:
-		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
-			add_wall_deco_at.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
-
 func make_box_pillas() -> void:
 	var pos_list :Array = []
-	for y in PreCalced.Grid2D.y+1:
-		for x in PreCalced.Grid2D.x+1:
+	for y in maze_cells.height+1:
+		for x in maze_cells.width+1:
 			pos_list.append(
 				calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0,calc_grid.unit_size.y/2.0,0) )
 	var mesh := BoxMesh.new()
@@ -180,52 +163,52 @@ func make_wall_by_maze() -> void:
 		match dir:
 			Maze.Flag.West, Maze.Flag.East:
 				if randf() < MakeSubWallRate:
-					pos_list_V_sub.append(calc_pos_face_V(x,y))
+					pos_list_V_sub.append(calc_wall_pos_face_V(x,y))
 				else:
-					pos_list_V_main.append(calc_pos_face_V(x,y))
+					pos_list_V_main.append(calc_wall_pos_face_V(x,y))
 			Maze.Flag.North, Maze.Flag.South:
 				if randf() < MakeSubWallRate:
-					pos_list_H_sub.append(calc_pos_face_H(x,y))
+					pos_list_H_sub.append(calc_wall_pos_face_H(x,y))
 				else:
-					pos_list_H_main.append(calc_pos_face_H(x,y))
+					pos_list_H_main.append(calc_wall_pos_face_H(x,y))
 
-	for y in PreCalced.Grid2D.y:
-		for x in PreCalced.Grid2D.x:
-			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.North):
+	for y in maze_cells.height:
+		for x in maze_cells.width:
+			if maze_cells.is_wall_flag_at(x,y,Maze.Flag.North):
 				add_wall_at.call(x, y, Maze.Flag.North)
-			if not maze_cells.is_open_flag_at(x,y,Maze.Flag.West):
+			if maze_cells.is_wall_flag_at(x,y,Maze.Flag.West):
 				add_wall_at.call(x, y, Maze.Flag.West)
 
-	for x in PreCalced.Grid2D.x :
-		if not maze_cells.is_open_flag_at(x,PreCalced.Grid2D.y-1,Maze.Flag.South):
-			add_wall_at.call(x, PreCalced.Grid2D.y, Maze.Flag.South)
+	for x in maze_cells.width :
+		if maze_cells.is_wall_flag_at(x,maze_cells.height-1,Maze.Flag.South):
+			add_wall_at.call(x, maze_cells.height, Maze.Flag.South)
 
-	for y in PreCalced.Grid2D.y:
-		if not maze_cells.is_open_flag_at(PreCalced.Grid2D.x-1,y,Maze.Flag.East):
-			add_wall_at.call(PreCalced.Grid2D.x, y, Maze.Flag.East)
+	for y in maze_cells.height:
+		if maze_cells.is_wall_flag_at(maze_cells.width-1,y,Maze.Flag.East):
+			add_wall_at.call(maze_cells.width, y, Maze.Flag.East)
 
 	make_wall_multi_shape($WallContainer/VMain, main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
 	make_wall_multi_shape($WallContainer/HMain, main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)
 	make_wall_multi_shape($WallContainer/VSub, sub_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_sub)
 	make_wall_multi_shape($WallContainer/HSub, sub_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_sub)
 
-func calc_pos_face_V(x :int, y :int) -> Vector3:
+func calc_wall_pos_face_V(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, calc_grid.unit_size.y/2, calc_grid.unit_size.z/2)
 
-func calc_pos_face_H(x :int, y :int) -> Vector3:
+func calc_wall_pos_face_H(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(calc_grid.unit_size.x/2, calc_grid.unit_size.y/2, 0)
 
 ## apply WallThick
 func wall_deco_pos_by_dir(x :int, y :int, dir :Maze.Flag) -> Vector3:
 	match dir:
 		Maze.Flag.West:
-			return calc_pos_face_V(x,y) + Vector3(WallThick,0,0)
+			return calc_wall_pos_face_V(x,y) + Vector3(WallThick,0,0)
 		Maze.Flag.East:
-			return calc_pos_face_V(x,y) - Vector3(WallThick,0,0)
+			return calc_wall_pos_face_V(x,y) - Vector3(WallThick,0,0)
 		Maze.Flag.North:
-			return calc_pos_face_H(x,y) + Vector3(0,0,WallThick)
+			return calc_wall_pos_face_H(x,y) + Vector3(0,0,WallThick)
 		Maze.Flag.South:
-			return calc_pos_face_H(x,y) - Vector3(0,0,WallThick)
+			return calc_wall_pos_face_H(x,y) - Vector3(0,0,WallThick)
 	assert(false,"invalid dir %s" % dir)
 	return Vector3.ZERO
 

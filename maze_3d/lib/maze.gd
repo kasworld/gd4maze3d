@@ -242,3 +242,37 @@ func make_posi_list_by_open_count(open_count :int) -> Array[Vector2i]:
 			if get_open_flag_at(x,y).size() == open_count:
 				rtn.append(Vector2i(x,y))
 	return rtn
+
+## func fn_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
+func iter_wall(fn_at :Callable) -> void:
+	if not fn_at.is_valid():
+		return
+	for y in height:
+		for x in width:
+			if is_wall_flag_at(x,y,Maze.Flag.North):
+				fn_at.call(x, y, Maze.Flag.North)
+			if is_wall_flag_at(x,y,Maze.Flag.West):
+				fn_at.call(x, y, Maze.Flag.West)
+	for x in width :
+		if is_wall_flag_at(x,height-1,Maze.Flag.South):
+			fn_at.call(x, height, Maze.Flag.South)
+	for y in height:
+		if is_wall_flag_at(width-1,y,Maze.Flag.East):
+			fn_at.call(width, y, Maze.Flag.East)
+
+## func fn_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
+func iter_open(fn_at :Callable) -> void:
+	if not fn_at.is_valid():
+		return
+	for y in height:
+		for x in width:
+			if is_open_flag_at(x,y,Maze.Flag.North):
+				fn_at.call(x, y, Maze.Flag.North)
+			if is_open_flag_at(x,y,Maze.Flag.West):
+				fn_at.call(x, y, Maze.Flag.West)
+	for x in width :
+		if is_open_flag_at(x,height-1,Maze.Flag.South):
+			fn_at.call(x, height, Maze.Flag.South)
+	for y in height:
+		if is_open_flag_at(width-1,y,Maze.Flag.East):
+			fn_at.call(width, y, Maze.Flag.East)

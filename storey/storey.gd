@@ -160,7 +160,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 
 func add_table4leg(posi :Vector2i) -> void:
 	var unit_size := maze3d.calc_grid.unit_size - Vector3(maze3d.WallThick, 0, maze3d.WallThick)
-	var t4l :Table4Leg = preload("res://table_4_leg/table_4_leg.tscn").instantiate()
+	var t4l :Table4Leg = preload("res://maze_3d/table_4_leg/table_4_leg.tscn").instantiate()
 	var thick := unit_size.y/50
 	t4l.init(
 		Vector3(unit_size.x * randf_range(0.2,1.0), thick, unit_size.z * randf_range(0.2,1.0)),

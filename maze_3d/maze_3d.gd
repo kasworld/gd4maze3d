@@ -188,9 +188,9 @@ func make_door_by_maze() -> void:
 				pos_list_H.append(calc_wall_pos_face_H(x,y))
 	maze_cells.iter_open(add_door_at)
 
-	var csgH := ArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Long, door_mat)
+	var csgH := ArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_mat)
 	bake_door.call_deferred($DoorContainer/HDoor,pos_list_H, csgH)
-	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Long, door_mat)
+	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_mat)
 	bake_door.call_deferred($DoorContainer/VDoor,pos_list_V, csgV)
 func bake_door(mms :MultiMeshShape, pos_list :Array, csg :CSGShape3D) -> void:
 	mms.init_with_mesh(csg.bake_static_mesh(), pos_list.size())

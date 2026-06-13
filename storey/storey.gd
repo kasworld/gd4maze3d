@@ -105,7 +105,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat() )
 	else:
 		maze3d.init_with_color(
-			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
+			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
 	sw.split("maze3d init_with_material")
 	maze3d.maze_cells.iter_wall(add_wall_deco_at)
 	sw.split("maze3d add_wall_deco_at")

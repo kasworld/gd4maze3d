@@ -66,7 +66,7 @@ func init_with_material(matmain :StandardMaterial3D, matsub :StandardMaterial3D)
 	exec_make()
 	return self
 
-func init_with_color(comain :Color, cosub :Color, copillarbox :Color, copillarcapsule :Color) -> Maze3D:
+func init_with_color(comain :Color, cosub :Color, copillarbox :Color) -> Maze3D:
 	sub_wall_mat = MakeColorMaterial(Color( cosub, 0.5), true)
 	main_wall_mat = MakeColorMaterial(comain)
 	pillar_box_mat = MakeColorMaterial(copillarbox)

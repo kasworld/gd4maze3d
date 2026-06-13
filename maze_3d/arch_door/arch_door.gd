@@ -31,7 +31,8 @@ static func MakeArchDoorMesh(size :Vector3, co :Color) -> CSGShape3D:
 	wall.add_child(hole)
 	return wall
 
-static func MakeColorMaterial(co :Color) -> StandardMaterial3D:
+static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
 	var material := StandardMaterial3D.new()
 	material.albedo_color = co
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
 	return material

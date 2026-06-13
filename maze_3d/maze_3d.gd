@@ -4,6 +4,13 @@ class_name Maze3D
 static var darkcolorlist = NamedColors.filter_dark_color_list()
 static var lightcolorlist = NamedColors.filter_light_color_list()
 
+static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = co
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
+	return material
+
+
 var WallThick :float
 var MakeSubWallRate :float
 var calc_grid :CalcGrid3D
@@ -12,7 +19,6 @@ var maze_cells :Maze
 var main_wall_mat :StandardMaterial3D
 var sub_wall_mat :StandardMaterial3D
 var pillar_box_mat :StandardMaterial3D
-var pillar_capsule_mat :StandardMaterial3D
 
 func _to_string() -> String:
 	return "Maze3D[calc_grid:%s wall thick:%.1f]" % [
@@ -57,21 +63,13 @@ func init_with_material(matmain :StandardMaterial3D, matsub :StandardMaterial3D)
 	main_wall_mat = matmain
 	pillar_box_mat = main_wall_mat.duplicate()
 	pillar_box_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
-	pillar_capsule_mat = main_wall_mat.duplicate()
-	pillar_capsule_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
 	exec_make()
 	return self
 
 func init_with_color(comain :Color, cosub :Color, copillarbox :Color, copillarcapsule :Color) -> Maze3D:
-	sub_wall_mat = StandardMaterial3D.new()
-	sub_wall_mat.albedo_color = Color( cosub, 0.5)
-	sub_wall_mat.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
-	main_wall_mat = StandardMaterial3D.new()
-	main_wall_mat.albedo_color = comain
-	pillar_box_mat = StandardMaterial3D.new()
-	pillar_box_mat.albedo_color = copillarbox
-	pillar_capsule_mat = StandardMaterial3D.new()
-	pillar_capsule_mat.albedo_color = copillarcapsule
+	sub_wall_mat = MakeColorMaterial(Color( cosub, 0.5), true)
+	main_wall_mat = MakeColorMaterial(comain)
+	pillar_box_mat = MakeColorMaterial(copillarbox)
 	exec_make()
 	return self
 

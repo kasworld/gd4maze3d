@@ -243,36 +243,36 @@ func make_posi_list_by_open_count(open_count :int) -> Array[Vector2i]:
 				rtn.append(Vector2i(x,y))
 	return rtn
 
-## func fn_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
-func iter_wall(fn_at :Callable) -> void:
-	if not fn_at.is_valid():
+## func wall_fn(x :int, y :int, dir_flag :Maze.Flag) -> void:
+func iter_wall(wall_fn :Callable) -> void:
+	if not wall_fn.is_valid():
 		return
 	for y in height:
 		for x in width:
 			if is_wall_flag_at(x,y,Maze.Flag.North):
-				fn_at.call(x, y, Maze.Flag.North)
+				wall_fn.call(x, y, Maze.Flag.North)
 			if is_wall_flag_at(x,y,Maze.Flag.West):
-				fn_at.call(x, y, Maze.Flag.West)
+				wall_fn.call(x, y, Maze.Flag.West)
 	for x in width :
 		if is_wall_flag_at(x,height-1,Maze.Flag.South):
-			fn_at.call(x, height, Maze.Flag.South)
+			wall_fn.call(x, height, Maze.Flag.South)
 	for y in height:
 		if is_wall_flag_at(width-1,y,Maze.Flag.East):
-			fn_at.call(width, y, Maze.Flag.East)
+			wall_fn.call(width, y, Maze.Flag.East)
 
-## func fn_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
-func iter_open(fn_at :Callable) -> void:
-	if not fn_at.is_valid():
+## func open_fn(x :int, y :int, dir_flag :Maze.Flag) -> void:
+func iter_open(open_fn :Callable) -> void:
+	if not open_fn.is_valid():
 		return
 	for y in height:
 		for x in width:
 			if is_open_flag_at(x,y,Maze.Flag.North):
-				fn_at.call(x, y, Maze.Flag.North)
+				open_fn.call(x, y, Maze.Flag.North)
 			if is_open_flag_at(x,y,Maze.Flag.West):
-				fn_at.call(x, y, Maze.Flag.West)
+				open_fn.call(x, y, Maze.Flag.West)
 	for x in width :
 		if is_open_flag_at(x,height-1,Maze.Flag.South):
-			fn_at.call(x, height, Maze.Flag.South)
+			open_fn.call(x, height, Maze.Flag.South)
 	for y in height:
 		if is_open_flag_at(width-1,y,Maze.Flag.East):
-			fn_at.call(width, y, Maze.Flag.East)
+			open_fn.call(width, y, Maze.Flag.East)

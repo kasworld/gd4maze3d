@@ -192,12 +192,6 @@ func make_door_by_maze() -> void:
 	bake_door.call_deferred($DoorContainer/HDoor,pos_list_H, csgH)
 	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Long, door_mat)
 	bake_door.call_deferred($DoorContainer/VDoor,pos_list_V, csgV)
-
-	#make_door_multi_shape($DoorContainer/VDoor, door_mat, PreCalced.WallSize_V_Long, pos_list_V)
-	#make_door_multi_shape($DoorContainer/HDoor, door_mat, PreCalced.WallSize_H_Long, pos_list_H)
-#func make_door_multi_shape(mms :MultiMeshShape, mat :Material, sz :Vector3, pos_list :Array) -> void:
-	#var csg := ArchDoor.MakeArchDoorMesh(sz, mat)
-	#bake_door.call_deferred(mms,pos_list, csg)
 func bake_door(mms :MultiMeshShape, pos_list :Array, csg :CSGShape3D) -> void:
 	mms.init_with_mesh(csg.bake_static_mesh(), pos_list.size())
 	pos_multimeshshape(mms, pos_list)
@@ -252,6 +246,9 @@ func set_wall_size_long(b :bool) -> void:
 		$WallContainer/VMain.multimesh.mesh.size = PreCalced.WallSize_V_Short
 		$WallContainer/VSub.multimesh.mesh.size = PreCalced.WallSize_V_Short
 
+func view_doors(b :bool) ->void:
+	$DoorContainer.visible = b
+
 enum WallView {Off, Short, Long}
 func view_walls(v :WallView) -> void:
 	match v:
@@ -264,13 +261,8 @@ func view_walls(v :WallView) -> void:
 			$WallContainer.visible = true
 			set_wall_size_long(true)
 
-enum PillarView {Off, Box}
-func view_pillars(v :PillarView) -> void:
-	match v:
-		PillarView.Off:
-			$BoxPillars.visible = false
-		PillarView.Box:
-			$BoxPillars.visible = true
+func view_pillars(b :bool) -> void:
+	$BoxPillars.visible = b
 
 enum WallPillarView {Long, Short, ShortWithPillarBox, Off, OffWithPillarBox}
 static func wallview2str(vd :WallPillarView) -> String:
@@ -283,21 +275,21 @@ func set_wallpillar_view_mode(w :WallPillarView) -> void:
 		WallPillarView.Long:
 			view_walls(WallView.Long)
 			set_wall_size_long(true)
-			view_pillars(PillarView.Off)
+			view_pillars(false)
 		WallPillarView.Short:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
-			view_pillars(PillarView.Off)
+			view_pillars(false)
 		WallPillarView.ShortWithPillarBox:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
-			view_pillars(PillarView.Box)
+			view_pillars(true)
 		WallPillarView.Off:
 			view_walls(WallView.Off)
-			view_pillars(PillarView.Off)
+			view_pillars(false)
 		WallPillarView.OffWithPillarBox:
 			view_walls(WallView.Off)
-			view_pillars(PillarView.Box)
+			view_pillars(true)
 
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var posi := calc_grid.lanepos_to_posi(oldpos)

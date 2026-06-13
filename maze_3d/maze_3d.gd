@@ -169,21 +169,7 @@ func make_wall_by_maze() -> void:
 					pos_list_H_sub.append(calc_wall_pos_face_H(x,y))
 				else:
 					pos_list_H_main.append(calc_wall_pos_face_H(x,y))
-
-	for y in maze_cells.height:
-		for x in maze_cells.width:
-			if maze_cells.is_wall_flag_at(x,y,Maze.Flag.North):
-				add_wall_at.call(x, y, Maze.Flag.North)
-			if maze_cells.is_wall_flag_at(x,y,Maze.Flag.West):
-				add_wall_at.call(x, y, Maze.Flag.West)
-
-	for x in maze_cells.width :
-		if maze_cells.is_wall_flag_at(x,maze_cells.height-1,Maze.Flag.South):
-			add_wall_at.call(x, maze_cells.height, Maze.Flag.South)
-
-	for y in maze_cells.height:
-		if maze_cells.is_wall_flag_at(maze_cells.width-1,y,Maze.Flag.East):
-			add_wall_at.call(maze_cells.width, y, Maze.Flag.East)
+	maze_cells.iter_wall(add_wall_at)
 
 	make_wall_multi_shape($WallContainer/VMain, main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
 	make_wall_multi_shape($WallContainer/HMain, main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)

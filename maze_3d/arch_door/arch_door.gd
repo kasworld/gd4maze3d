@@ -1,31 +1,53 @@
 extends Node3D
 class_name ArchDoor
 
-## face Z+ wall with door
 
+## face Z+ wall with door
 func init(size :Vector3, co :Color) -> ArchDoor:
-	var wall := MakeArchDoorMesh(size,co)
+	var wall := MakeArchDoorMeshH(size,MakeColorMaterial(co))
 	bake.call_deferred(wall)
 	return self
 
-func bake(wall_mesh :CSGShape3D) -> void:
-	$MeshInstance3D.mesh = wall_mesh.bake_static_mesh()
+func bake(csg :CSGShape3D) -> void:
+	$MeshInstance3D.mesh = csg.bake_static_mesh()
 
-static func MakeArchDoorMesh(size :Vector3, co :Color) -> CSGShape3D:
+## face Z+ wall with door
+static func MakeArchDoorMeshH(size :Vector3, mat :StandardMaterial3D) -> CSGShape3D:
 	var wall := CSGBox3D.new()
 	wall.size = size
-	wall.material = MakeColorMaterial(co)
+	wall.material = mat
 	var door_low := CSGBox3D.new()
 	door_low.size = Vector3(size.x/2,size.y/2,size.z)
-	door_low.material = MakeColorMaterial(co)
+	door_low.material = mat
 	door_low.operation = CSGShape3D.OPERATION_SUBTRACTION
 	door_low.position.y = -size.y * 0.25
 	var hole := CSGCylinder3D.new()
-	hole.material = MakeColorMaterial(co)
+	hole.material = mat
 	hole.radius = size.x/4
 	hole.height = size.z *2
 	hole.sides = 64
 	hole.rotate_x(PI/2)
+	hole.operation = CSGShape3D.OPERATION_SUBTRACTION
+	wall.add_child(door_low)
+	wall.add_child(hole)
+	return wall
+
+## face X+ wall with door
+static func MakeArchDoorMeshV(size :Vector3, mat :StandardMaterial3D) -> CSGShape3D:
+	var wall := CSGBox3D.new()
+	wall.size = size
+	wall.material = mat
+	var door_low := CSGBox3D.new()
+	door_low.size = Vector3(size.x,size.y/2,size.z/2)
+	door_low.material = mat
+	door_low.operation = CSGShape3D.OPERATION_SUBTRACTION
+	door_low.position.y = -size.y * 0.25
+	var hole := CSGCylinder3D.new()
+	hole.material = mat
+	hole.radius = size.z/4
+	hole.height = size.x *2
+	hole.sides = 64
+	hole.rotate_z(PI/2)
 	hole.operation = CSGShape3D.OPERATION_SUBTRACTION
 	wall.add_child(door_low)
 	wall.add_child(hole)

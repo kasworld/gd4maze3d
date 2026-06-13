@@ -102,15 +102,16 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	storey_height = cell_size.y + floor_ceiling_height * 2
 	add_child(maze3d)
 	if num % 2 ==0 :
-		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat() )
+		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat(), RandomColorIter.get_and_next() )
 	else:
 		maze3d.init_with_color(
-			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
+			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
 	sw.split("maze3d init_with_material")
 	maze3d.maze_cells.iter_wall(add_wall_deco_at)
 	sw.split("maze3d add_wall_deco_at")
-	maze3d.maze_cells.iter_open(add_open_deco_at)
-	sw.split("maze3d add_open_deco_at")
+	#maze3d.maze_cells.iter_open(add_open_deco_at)
+	maze3d.make_door_by_maze()
+	sw.split("maze3d makedoor")
 	storey_num = num
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)
 	var 구석자리목록 :Array[Vector2i] = maze3d.maze_cells.make_posi_list_by_open_count(1)
@@ -229,16 +230,6 @@ func add_donut_capsule(n :int, 구석자리목록 :Array[Vector2i]) -> void:
 		pobj.position = maze3d.mazepos2storeypos(p, -maze3d.calc_grid.unit_size.y*0.3)
 		$PlacedThings.add_child(pobj)
 		놓인것들.set_at(p,pobj)
-
-func add_open_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
-	var archdoor :ArchDoor = preload("res://maze_3d/arch_door/arch_door.tscn").instantiate()
-	archdoor.init( Vector3(maze3d.calc_grid.unit_size.x-maze3d.WallThick, maze3d.calc_grid.unit_size.y, maze3d.WallThick), RandomColorIter.get_and_next() )
-	if dir_flag == Maze.Flag.East or dir_flag == Maze.Flag.West:
-		archdoor.position = maze3d.calc_wall_pos_face_V(x,y)
-		archdoor.rotation.y = PI/2
-	else:
-		archdoor.position = maze3d.calc_wall_pos_face_H(x,y)
-	$DoorContainer.add_child(archdoor)
 
 var line2d_subviewport :SubViewport
 var minimap_subviewport :SubViewport

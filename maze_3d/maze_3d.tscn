@@ -25,6 +25,12 @@ resource_local_to_scene = true
 [sub_resource type="MultiMesh" id="MultiMesh_8b0s3"]
 resource_local_to_scene = true
 
+[sub_resource type="MultiMesh" id="MultiMesh_ql2o8"]
+resource_local_to_scene = true
+
+[sub_resource type="MultiMesh" id="MultiMesh_wt04w"]
+resource_local_to_scene = true
+
 [node name="Maze3D" type="Node3D" unique_id=1197400707]
 script = ExtResource("1_0k1os")
 
@@ -51,3 +57,11 @@ multimesh = SubResource("MultiMesh_f705r")
 [node name="BoxPillars" parent="." unique_id=1384246334 instance=ExtResource("3_7je7j")]
 visible = false
 multimesh = SubResource("MultiMesh_8b0s3")
+
+[node name="DoorContainer" type="Node3D" parent="." unique_id=1483625774]
+
+[node name="VDoor" parent="DoorContainer" unique_id=1447953381 instance=ExtResource("3_7je7j")]
+multimesh = SubResource("MultiMesh_ql2o8")
+
+[node name="HDoor" parent="DoorContainer" unique_id=2048096635 instance=ExtResource("3_7je7j")]
+multimesh = SubResource("MultiMesh_wt04w")

@@ -19,7 +19,6 @@ var maze_cells :Maze
 var main_wall_mat :StandardMaterial3D
 var sub_wall_mat :StandardMaterial3D
 var pillar_box_mat :StandardMaterial3D
-var door_mat :StandardMaterial3D
 
 func _to_string() -> String:
 	return "Maze3D[calc_grid:%s wall thick:%.1f]" % [
@@ -59,20 +58,18 @@ func init_params( maze2d :Maze, cell_size :Vector3, wall_thick :float, subwall_r
 	PreCalced.WallSize_V_Short = PreCalced.WallSize_V_Long - Vector3(0, 0, wall_thick)
 	return self
 
-func init_with_material(matmain :StandardMaterial3D, matsub :StandardMaterial3D, codoor :Color) -> Maze3D:
+func init_with_material(matmain :StandardMaterial3D, matsub :StandardMaterial3D) -> Maze3D:
 	sub_wall_mat = matsub
 	main_wall_mat = matmain
 	pillar_box_mat = main_wall_mat.duplicate()
 	pillar_box_mat.uv1_scale = Vector3( 3.0/20, 2, 1)
-	door_mat = MakeColorMaterial(codoor)
 	exec_make()
 	return self
 
-func init_with_color(comain :Color, cosub :Color, copillarbox :Color, codoor :Color) -> Maze3D:
+func init_with_color(comain :Color, cosub :Color, copillarbox :Color) -> Maze3D:
 	sub_wall_mat = MakeColorMaterial(Color( cosub, 0.5), true)
 	main_wall_mat = MakeColorMaterial(comain)
 	pillar_box_mat = MakeColorMaterial(copillarbox)
-	door_mat = MakeColorMaterial(codoor)
 	exec_make()
 	return self
 
@@ -177,7 +174,9 @@ func make_wall_multi_shape(mms :MultiMeshShape, mat :Material, sz :Vector3, pos_
 	mms.init_with_mesh(mesh, pos_list.size())
 	pos_multimeshshape(mms, pos_list)
 
-func make_door_by_maze() -> void:
+func make_door_by_maze(co_doorH :Color,co_doorV :Color) -> void:
+	var door_matH := MakeColorMaterial(co_doorH)
+	var door_matV := MakeColorMaterial(co_doorV)
 	var pos_list_V :Array
 	var pos_list_H :Array
 	var add_door_at := func(x :int, y :int, dir :Maze.Flag) -> void:
@@ -187,9 +186,9 @@ func make_door_by_maze() -> void:
 			Maze.Flag.North, Maze.Flag.South:
 				pos_list_H.append(calc_wall_pos_face_H(x,y))
 	maze_cells.iter_open(add_door_at)
-	var csgH := ArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_mat)
+	var csgH := ArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_matH)
 	bake_door.call_deferred($DoorContainer/HDoor,pos_list_H, csgH)
-	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_mat)
+	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_matV)
 	bake_door.call_deferred($DoorContainer/VDoor,pos_list_V, csgV)
 func bake_door(mms :MultiMeshShape, pos_list :Array, csg :CSGShape3D) -> void:
 	var sw := StopWatch.new("%s bake_door" % self)

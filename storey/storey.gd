@@ -99,15 +99,14 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	storey_height = cell_size.y + floor_ceiling_height * 2
 	add_child(maze3d)
 	if num % 2 ==0 :
-		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat(), RandomColorIter.get_and_next() )
+		maze3d.init_with_material(TexMat.make_mainwall_mat(),TexMat.make_subwall_mat())
 	else:
 		maze3d.init_with_color(
-			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
+			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
 	sw.split("maze3d init_with_material")
 	maze3d.maze_cells.iter_wall(add_wall_deco_at)
 	sw.split("maze3d add_wall_deco_at")
-	#maze3d.maze_cells.iter_open(add_open_deco_at)
-	maze3d.make_door_by_maze()
+	maze3d.make_door_by_maze(RandomColorIter.get_and_next() , RandomColorIter.get_and_next() )
 	sw.split("maze3d makedoor")
 	storey_num = num
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)

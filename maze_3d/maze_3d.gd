@@ -187,14 +187,17 @@ func make_door_by_maze() -> void:
 			Maze.Flag.North, Maze.Flag.South:
 				pos_list_H.append(calc_wall_pos_face_H(x,y))
 	maze_cells.iter_open(add_door_at)
-
 	var csgH := ArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_mat)
 	bake_door.call_deferred($DoorContainer/HDoor,pos_list_H, csgH)
 	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_mat)
 	bake_door.call_deferred($DoorContainer/VDoor,pos_list_V, csgV)
 func bake_door(mms :MultiMeshShape, pos_list :Array, csg :CSGShape3D) -> void:
+	var sw := StopWatch.new("%s bake_door" % self)
 	mms.init_with_mesh(csg.bake_static_mesh(), pos_list.size())
+	sw.split("init_with_mesh")
 	pos_multimeshshape(mms, pos_list)
+	sw.split("pos_multimeshshape")
+	#print_debug(sw)
 
 func calc_wall_pos_face_V(x :int, y :int) -> Vector3:
 	return calc_grid.posi_to_linepos(Vector3i(x,0,y)) + Vector3(0, calc_grid.unit_size.y/2, calc_grid.unit_size.z/2)

@@ -36,12 +36,10 @@ func _process(delta: float) -> void:
 
 var DonutCapsuleCount :int = 0
 var WallDecoRate :float = 0
-var BouncingCount :int = 0
 var MaxTableCount :int = 0
 func set_param(grid_size) -> Storey:
 	DonutCapsuleCount = min(100, max(2, grid_size.x*grid_size.y/20.0) )
 	WallDecoRate = 1.0/20.0
-	BouncingCount = 10
 	MaxTableCount = 100
 	return self
 
@@ -82,12 +80,11 @@ func get_mini_map() -> StoreyMiniMap:
 var storey_height :float
 
 func _to_string() -> String:
-	return "Storey[%d %s DonutCapsuleCount%s WallDecoRate%s BouncingCount%s]" % [
-		storey_num, maze3d, DonutCapsuleCount, WallDecoRate, BouncingCount]
-
+	return "Storey[%d %s DonutCapsuleCount%s WallDecoRate%s]" % [
+		storey_num, maze3d, DonutCapsuleCount, WallDecoRate]
 
 func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
-	var sw := StopWatch.new("storey")
+	var sw := StopWatch.new("Storey%s" % storey_num)
 	var maze2d := Maze.new(grid_size)
 	sw.split("maze2d")
 	var floor_ceiling_height :float = cell_size.y *0.01
@@ -154,8 +151,6 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	sw.split("MiniMap")
 	for i in min(MaxTableCount,구석자리목록.size()):
 		add_table4leg(구석자리목록[i])
-	#add_bouncing(BouncingCount , 크기기준 /20)
-	#sw.split("add_bouncing")
 	#print_debug(sw)
 	return self
 
@@ -174,15 +169,6 @@ func add_table4leg(posi :Vector2i) -> void:
 		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 1, -1 )-maze3d.WallThick/2,
 		CalcGrid3D.CalcAxisAlignInner(aabb, t4l.aabb.size, 2, randi_range(-1,1) )
 		)
-
-#var bouncing_list :Array
-#func add_bouncing(n :int, radius :float) -> void:
-	#bouncing_list = []
-	#for i in n:
-		#var mb :MazeBall = preload("res://maze_3d/maze_ball/maze_ball.tscn").instantiate(
-			#).init(maze3d, radius, radius*10, RandomColorIter.get_and_next())
-		#$BouncingContainer.add_child(mb)
-		#bouncing_list.append(mb)
 
 func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) -> void:
 	for ch in char_list:

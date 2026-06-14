@@ -252,6 +252,9 @@ func set_wall_size_long(b :bool) -> void:
 func view_doors(b :bool) ->void:
 	$DoorContainer.visible = b
 
+func view_pillars(b :bool) -> void:
+	$BoxPillars.visible = b
+
 enum WallView {Off, Short, Long}
 func view_walls(v :WallView) -> void:
 	match v:
@@ -264,35 +267,51 @@ func view_walls(v :WallView) -> void:
 			$WallContainer.visible = true
 			set_wall_size_long(true)
 
-func view_pillars(b :bool) -> void:
-	$BoxPillars.visible = b
+enum WallPillarDoorView {AllOff, WallShort, WallLong, WallShortPillar, Pillar, WallShortDoor, WallShortPillarDoor, PillarDoor}
+static func wallpillardoorview2str(vd :WallPillarDoorView) -> String:
+	return WallPillarDoorView.keys()[vd]
+static func wallpillardoorview_next(a :WallPillarDoorView) -> WallPillarDoorView:
+	return (a +1) % WallPillarDoorView.keys().size() as WallPillarDoorView
 
-enum WallPillarView {Long, Short, ShortWithPillarBox, Off, OffWithPillarBox}
-static func wallview2str(vd :WallPillarView) -> String:
-	return WallPillarView.keys()[vd]
-static func wallview_next(a :WallPillarView) -> WallPillarView:
-	return (a +1) % WallPillarView.keys().size() as WallPillarView
-
-func set_wallpillar_view_mode(w :WallPillarView) -> void:
+func set_wallpillardoor_view_mode(w :WallPillarDoorView) -> void:
 	match w:
-		WallPillarView.Long:
+		WallPillarDoorView.AllOff:
+			view_walls(WallView.Off)
+			view_pillars(false)
+			view_doors(false)
+		WallPillarDoorView.WallLong:
 			view_walls(WallView.Long)
 			set_wall_size_long(true)
 			view_pillars(false)
-		WallPillarView.Short:
+			view_doors(false)
+		WallPillarDoorView.WallShort:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
 			view_pillars(false)
-		WallPillarView.ShortWithPillarBox:
+			view_doors(false)
+		WallPillarDoorView.WallShortPillar:
 			view_walls(WallView.Short)
 			set_wall_size_long(false)
 			view_pillars(true)
-		WallPillarView.Off:
-			view_walls(WallView.Off)
-			view_pillars(false)
-		WallPillarView.OffWithPillarBox:
+			view_doors(false)
+		WallPillarDoorView.Pillar:
 			view_walls(WallView.Off)
 			view_pillars(true)
+			view_doors(false)
+		WallPillarDoorView.WallShortDoor:
+			view_walls(WallView.Short)
+			set_wall_size_long(false)
+			view_pillars(false)
+			view_doors(true)
+		WallPillarDoorView.WallShortPillarDoor:
+			view_walls(WallView.Short)
+			set_wall_size_long(false)
+			view_pillars(true)
+			view_doors(true)
+		WallPillarDoorView.PillarDoor:
+			view_walls(WallView.Off)
+			view_pillars(true)
+			view_doors(true)
 
 func bounce_cell(oldpos:Vector3, pos :Vector3, radius :float) -> Dictionary:
 	var posi := calc_grid.lanepos_to_posi(oldpos)

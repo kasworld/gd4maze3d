@@ -24,13 +24,13 @@ func set_floor_ceiling_visible(v :Maze3D.FloorCeiling) -> void:
 	for i in storey_list.size():
 		storey_list[i].get_maze3d().view_floor_ceiling(v)
 
-var view_walls :Maze3D.WallPillarView = Maze3D.WallPillarView.ShortWithPillarBox
-func view_wallpillar_next() -> void:
-	view_walls = Maze3D.wallview_next(view_walls)
-	set_wallpillar_view_mode(view_walls)
-func set_wallpillar_view_mode(w :Maze3D.WallPillarView) -> void:
+var view_wallpillardoor :Maze3D.WallPillarDoorView = Maze3D.WallPillarDoorView.WallShortPillarDoor
+func view_wallpillardoor_next() -> void:
+	view_wallpillardoor = Maze3D.wallpillardoorview_next(view_wallpillardoor)
+	set_wallpillardoor_view_mode(view_wallpillardoor)
+func set_wallpillardoor_view_mode(w :Maze3D.WallPillarDoorView) -> void:
 	for i in storey_list.size():
-		storey_list[i].get_maze3d().set_wallpillar_view_mode(w)
+		storey_list[i].get_maze3d().set_wallpillardoor_view_mode(w)
 
 func _to_string() -> String:
 	return "Tower[total storey %s, view floor ceiling %s
@@ -98,7 +98,7 @@ func add_new_storey() -> void:
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
 	st.set_param(grid_size).init(stnum, grid_size, cell_size)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
-	st.get_maze3d().set_wallpillar_view_mode(view_walls)
+	st.get_maze3d().set_wallpillardoor_view_mode(view_wallpillardoor)
 	storey_list.append(st)
 	add_child(st)
 	st.position.y = calc_storey_base_y_pos(storey_list.size()-1)

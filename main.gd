@@ -148,14 +148,14 @@ func _on_button_minimap_pressed() -> void:
 	update_button_text()
 
 func _on_button_walls_pressed() -> void:
-	main_tower.view_wallpillar_next()
+	main_tower.view_wallpillardoor_next()
 	update_button_text()
 
 func _on_button_floor_ceiling_pressed() -> void:
 	main_tower.next_visible_floor_ceiling()
 
 func _on_button_pillars_pressed() -> void:
-	main_tower.view_wallpillar_next()
+	main_tower.view_wallpillardoor_next()
 
 func _on_button_axis_arrow_pressed() -> void:
 	$AxisArrow3D.visible = not $AxisArrow3D.visible
@@ -247,4 +247,4 @@ Currently rendering: occlusion culling:%s
 func update_button_text() -> void:
 	$"왼쪽패널"/ButtonMinimap.text = "2:%s" % main_tower.cur_storey.get_mini_map()
 	$"왼쪽패널"/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
-	$"왼쪽패널"/ButtonWalls.text = "4:Wall %s" % Maze3D.wallview2str(main_tower.view_walls)
+	$"왼쪽패널"/ButtonWalls.text = "4:Wall %s" % Maze3D.wallpillardoorview2str(main_tower.view_wallpillardoor)

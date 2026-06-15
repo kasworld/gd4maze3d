@@ -277,6 +277,8 @@ func iter_open(open_fn :Callable) -> void:
 
 func get_astar_id(x :int, y:int) -> int:
 	return y*width+x
+func astar_id_to_posi(id :int) -> Vector2i:
+	return Vector2i(id % width, id / width)
 
 var astar :AStar2D
 func init_astar() -> void:

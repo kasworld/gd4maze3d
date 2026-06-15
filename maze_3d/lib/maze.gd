@@ -172,8 +172,6 @@ func _init(msize :Vector2i) -> void:
 		if delpos:
 			visted_pos.remove_at(posidx)
 
-#func is_in(x :int,y :int) -> bool:
-	#return x >=0 && y>=0 && x < width && y < height
 
 func get_cell(x :int, y:int) -> int:
 	return _cells[y*width+x]
@@ -277,11 +275,17 @@ func iter_open(open_fn :Callable) -> void:
 		if is_open_flag_at(width-1,y,Maze.Flag.East):
 			open_fn.call(width, y, Maze.Flag.East)
 
-var astar_grid :AStarGrid2D
+func get_astar_id(x :int, y:int) -> int:
+	return y*width+x
+
+var astar :AStar2D
 func init_astar() -> void:
-	astar_grid = AStarGrid2D.new()
-	astar_grid.region = Rect2i( Vector2i(0,0), Vector2i(width,height))
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
-	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.update()
+	astar = AStar2D.new()
+	for y in height:
+		for x in width:
+			astar.add_point(get_astar_id(x,y), Vector2(x,y))
+	iter_open(func(x :int, y :int, dir_flag :Maze.Flag):
+		astar.connect_points(get_astar_id(x,y),
+			get_astar_id(x + Maze.FlagToVt2[dir_flag].x, y + Maze.FlagToVt2[dir_flag].y))
+	)
+	astar.update()

@@ -290,4 +290,3 @@ func init_astar() -> void:
 		astar.connect_points(get_astar_id(x,y),
 			get_astar_id(x + Maze.FlagToVt2[dir_flag].x, y + Maze.FlagToVt2[dir_flag].y))
 	)
-	astar.update()

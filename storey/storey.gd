@@ -87,6 +87,8 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	var sw := StopWatch.new("Storey%s" % storey_num)
 	var maze2d := Maze.new(grid_size)
 	sw.split("maze2d")
+	maze2d.init_astar()
+	sw.split("maze2d init_astar")
 	var floor_ceiling_height :float = cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate()
 	maze3d.init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y))
@@ -104,13 +106,13 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 		maze3d.init_with_color(
 			RandomColorIter.get_and_next(), RandomColorIter.get_and_next(), RandomColorIter.get_and_next())
 	sw.split("maze3d init_with_material")
-	maze3d.maze_cells.iter_wall(add_wall_deco_at)
+	maze2d.iter_wall(add_wall_deco_at)
 	sw.split("maze3d add_wall_deco_at")
 	maze3d.make_door_by_maze(RandomColorIter.get_and_next() , RandomColorIter.get_and_next() )
 	sw.split("maze3d makedoor")
 	storey_num = num
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)
-	var 구석자리목록 :Array[Vector2i] = maze3d.maze_cells.make_posi_list_by_open_count(1)
+	var 구석자리목록 :Array[Vector2i] = maze2d.make_posi_list_by_open_count(1)
 	sw.split("구석자리목록")
 
 	구석자리목록.shuffle()

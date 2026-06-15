@@ -1,6 +1,6 @@
 class_name ActionQueue
 
-enum Action {EnterStorey, Forward, TurnRight, TurnLeft, RollRight, RollLeft}
+enum Action {EnterStorey, Forward, TurnRight, TurnLeft, TurnRight2, TurnLeft2, RollRight, RollLeft, RollRight2, RollLeft2}
 static func action2str(a :Action) -> String:
 	return Action.keys()[a]
 

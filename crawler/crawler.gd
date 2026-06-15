@@ -136,10 +136,18 @@ func handle_action_in_queue() -> bool:
 			start_turn_animation(PI/2)
 		ActionQueue.Action.TurnRight:
 			start_turn_animation(-PI/2)
+		ActionQueue.Action.TurnLeft2:
+			start_turn_animation(PI)
+		ActionQueue.Action.TurnRight2:
+			start_turn_animation(-PI)
 		ActionQueue.Action.RollRight:
 			start_roll_animation(PI/2)
 		ActionQueue.Action.RollLeft:
 			start_roll_animation(-PI/2)
+		ActionQueue.Action.RollRight2:
+			start_roll_animation(PI)
+		ActionQueue.Action.RollLeft2:
+			start_roll_animation(-PI)
 		ActionQueue.Action.EnterStorey: # for animation only
 			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
@@ -196,16 +204,15 @@ func walk_right_first() -> void:
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 	# try forward
-	if can_move_to_dir(dir_src):
+	elif can_move_to_dir(dir_src):
 		action_queue.enqueue(ActionQueue.Action.Forward)
 	# try left
-	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
+	elif can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 	# try backward
-	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
-		action_queue.enqueue(ActionQueue.Action.TurnLeft)
-		action_queue.enqueue(ActionQueue.Action.TurnLeft)
+	elif can_move_to_dir(Maze.DirOpppsite[dir_src]):
+		action_queue.enqueue(ActionQueue.Action.TurnLeft2)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 
 func walk_left_first() -> void:
@@ -214,14 +221,13 @@ func walk_left_first() -> void:
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 	# try forward
-	if can_move_to_dir(dir_src):
+	elif can_move_to_dir(dir_src):
 		action_queue.enqueue(ActionQueue.Action.Forward)
 	# try right
-	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
+	elif can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 	# try backward
-	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
-		action_queue.enqueue(ActionQueue.Action.TurnRight)
-		action_queue.enqueue(ActionQueue.Action.TurnRight)
+	elif can_move_to_dir(Maze.DirOpppsite[dir_src]):
+		action_queue.enqueue(ActionQueue.Action.TurnRight2)
 		action_queue.enqueue(ActionQueue.Action.Forward)

@@ -190,50 +190,38 @@ func enqueue_auto_walk_action_by_type() -> void:
 		Walk.Off:
 			pass
 
-func walk_right_first() -> bool:
+func walk_right_first() -> void:
 	# try right
 	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
 	# try forward
 	if can_move_to_dir(dir_src):
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
 	# try left
 	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
 	# try backward
 	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
-	assert(false)
-	return false
 
-func walk_left_first() -> bool:
+func walk_left_first() -> void:
 	# try left
 	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
 	# try forward
 	if can_move_to_dir(dir_src):
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
 	# try right
 	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
 	# try backward
 	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
-		return true
-	assert(false)
-	return false

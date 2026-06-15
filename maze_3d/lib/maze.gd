@@ -276,3 +276,12 @@ func iter_open(open_fn :Callable) -> void:
 	for y in height:
 		if is_open_flag_at(width-1,y,Maze.Flag.East):
 			open_fn.call(width, y, Maze.Flag.East)
+
+var astar_grid :AStarGrid2D
+func init_astar() -> void:
+	astar_grid = AStarGrid2D.new()
+	astar_grid.region = Rect2i( Vector2i(0,0), Vector2i(width,height))
+	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar_grid.update()

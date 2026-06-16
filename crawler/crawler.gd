@@ -153,6 +153,7 @@ func handle_action_in_queue() -> bool:
 			if from_storey == null:
 				from_storey = storey
 			start_inter_storey_move_animation(from_storey,storey, pos_src, pos_dst)
+			astar_path_id.clear()
 
 	# update action stats
 	total_action_stats[current_action.Action ] += 1
@@ -200,7 +201,30 @@ func enqueue_auto_walk_action_by_type() -> void:
 		Walk.Off:
 			pass
 
+var astar_path_id :PackedInt64Array
 func walk_astar() -> void:
+	var maze2d := storey.maze3d.maze_cells
+	var cur_id := maze2d.posi_to_astar_id(pos_src.x, pos_src.y)
+	if astar_path_id.is_empty() or astar_path_id[0] != cur_id:
+		var goal_id := maze2d.posi_to_astar_id(storey.goal_posi.x, storey.goal_posi.y)
+		astar_path_id = maze2d.astar.get_id_path(cur_id,goal_id)
+	if astar_path_id.size() <= 1:
+		return
+	var pos_next := maze2d.astar_id_to_posi(astar_path_id[1])
+	var dir_next := Maze.Vt2ToDir[pos_next-pos_src]
+	if dir_src != dir_next:
+		var dir_diff := (dir_next - dir_src +4 ) % 4
+		match dir_diff:
+			1:
+				action_queue.enqueue(ActionQueue.Action.TurnLeft)
+			2:
+				action_queue.enqueue(ActionQueue.Action.TurnRight2)
+			3:
+				action_queue.enqueue(ActionQueue.Action.TurnRight)
+			_:
+				print_debug("dir_src %s dir_next %s dir_diff %s" % [dir_src, dir_next, dir_diff])
+				assert(false) # something wrong
+	action_queue.enqueue(ActionQueue.Action.Forward)
 	return
 
 func walk_right_first() -> void:

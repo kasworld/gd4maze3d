@@ -275,7 +275,7 @@ func iter_open(open_fn :Callable) -> void:
 		if is_open_flag_at(width-1,y,Maze.Flag.East):
 			open_fn.call(width, y, Maze.Flag.East)
 
-func get_astar_id(x :int, y:int) -> int:
+func posi_to_astar_id(x :int, y:int) -> int:
 	return y*width+x
 func astar_id_to_posi(id :int) -> Vector2i:
 	return Vector2i(id % width, id / width)
@@ -285,8 +285,8 @@ func init_astar() -> void:
 	astar = AStar2D.new()
 	for y in height:
 		for x in width:
-			astar.add_point(get_astar_id(x,y), Vector2(x,y))
+			astar.add_point(posi_to_astar_id(x,y), Vector2(x,y))
 	iter_open(func(x :int, y :int, dir_flag :Maze.Flag):
-		astar.connect_points(get_astar_id(x,y),
-			get_astar_id(x + Maze.FlagToVt2[dir_flag].x, y + Maze.FlagToVt2[dir_flag].y))
+		astar.connect_points(posi_to_astar_id(x,y),
+			posi_to_astar_id(x + Maze.FlagToVt2[dir_flag].x, y + Maze.FlagToVt2[dir_flag].y))
 	)

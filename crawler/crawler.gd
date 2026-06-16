@@ -183,7 +183,7 @@ func set_next_walk_type() -> Crawler:
 func set_auto_walk_type(t :Walk) -> void:
 	auto_walk_type = t
 
-enum Walk {Off, RightFirst, LeftFirst}
+enum Walk {Off, RightFirst, LeftFirst, AStar}
 static func walk2str(a :Walk) -> String:
 	return Walk.keys()[a]
 static func walk_next(a :Walk) -> Walk:
@@ -195,23 +195,31 @@ func enqueue_auto_walk_action_by_type() -> void:
 			walk_right_first()
 		Walk.LeftFirst:
 			walk_left_first()
+		Walk.AStar:
+			walk_astar()
 		Walk.Off:
 			pass
+
+func walk_astar() -> void:
+	return
 
 func walk_right_first() -> void:
 	# try right
 	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return
 	# try forward
-	elif can_move_to_dir(dir_src):
+	if can_move_to_dir(dir_src):
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return
 	# try left
-	elif can_move_to_dir(Maze.DirTurnLeft[dir_src]):
+	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return
 	# try backward
-	elif can_move_to_dir(Maze.DirOpppsite[dir_src]):
+	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft2)
 		action_queue.enqueue(ActionQueue.Action.Forward)
 
@@ -220,14 +228,18 @@ func walk_left_first() -> void:
 	if can_move_to_dir(Maze.DirTurnLeft[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnLeft)
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return
 	# try forward
-	elif can_move_to_dir(dir_src):
+	if can_move_to_dir(dir_src):
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return
 	# try right
-	elif can_move_to_dir(Maze.DirTurnRight[dir_src]):
+	if can_move_to_dir(Maze.DirTurnRight[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight)
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return
 	# try backward
-	elif can_move_to_dir(Maze.DirOpppsite[dir_src]):
+	if can_move_to_dir(Maze.DirOpppsite[dir_src]):
 		action_queue.enqueue(ActionQueue.Action.TurnRight2)
 		action_queue.enqueue(ActionQueue.Action.Forward)
+		return

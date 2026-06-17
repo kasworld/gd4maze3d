@@ -26,7 +26,7 @@ func set_down(rate :float=1.1) -> float:
 func set_min() -> float:
 	_value = _vmin
 	return _value
-func set_randfn() -> float:
+func rand_clamp() -> float:
 	_value = clampf(randfn((_vmin+_vmax)/2,(_vmax-_vmin)/4) , _vmin, _vmax)
 	return _value
 func reset() -> float:

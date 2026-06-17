@@ -80,6 +80,7 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	total_action_stats = ActionQueue.new_stats()
 	dir_src = Maze.Dir.North
 	current_action.clear()
+	#action_queue.rand_act_speed()
 	crawler_num = n
 	player_num = p_num
 	$MeshInstance3D.mesh.material.albedo_color = co
@@ -109,7 +110,6 @@ func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
 	storey_action_stats = ActionQueue.new_stats()
-	action_queue.rand_act_speed()
 	rotation = rotation.snappedf(PI/2)
 	act_character()
 

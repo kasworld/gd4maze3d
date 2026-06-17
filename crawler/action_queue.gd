@@ -25,13 +25,14 @@ static func make_action_dictionary(a :Action,s :float, args :={}) -> Dictionary:
 
 const QueueLimit = 10
 var queue :Array
-var action_per_second := ClampedFloat.new(1,0.5,3.0) # sec
+var action_per_second :ClampedFloat
 
-func _init() -> void:
-	rand_act_speed()
+## aps :action_per_second = ClampedFloat.new(aps,aps/range_mod,aps*range_mod)
+func _init(aps :float = 1.0, range_mod :float = 2.0) -> void:
+	action_per_second = ClampedFloat.new(aps,aps/range_mod,aps*range_mod)
 
 func rand_act_speed() -> void:
-	action_per_second.set_randfn()
+	action_per_second.rand_clamp()
 
 func clear() -> void:
 	queue.resize(0)

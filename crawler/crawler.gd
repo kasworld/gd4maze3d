@@ -33,7 +33,7 @@ func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
 
 func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
 	var diff := to.global_position - from.global_position
-	var p1 := from.maze3d.mazepos2storeypos(src, 0) - diff
+	var p1 := to.maze3d.mazepos2storeypos(src, 0) - diff
 	var p2 := to.maze3d.mazepos2storeypos(dst, 0)
 	crawler_animation.start_move("ani_move", self,
 		p1, p2,
@@ -54,7 +54,7 @@ func start_roll_animation(rad :float) -> void:
 func _process(_delta: float) -> void:
 	crawler_animation.handle_animation()
 
-var action_queue := ActionQueue.new()
+var action_queue :ActionQueue
 var current_action : Dictionary # [Action, APS, Args]
 
 var crawler_num :int
@@ -80,7 +80,10 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	total_action_stats = ActionQueue.new_stats()
 	dir_src = Maze.Dir.North
 	current_action.clear()
-	#action_queue.rand_act_speed()
+	if n == p_num:
+		action_queue = ActionQueue.new(2,4)
+	else :
+		action_queue = ActionQueue.new(1,2)
 	crawler_num = n
 	player_num = p_num
 	$MeshInstance3D.mesh.material.albedo_color = co

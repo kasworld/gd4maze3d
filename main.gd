@@ -32,13 +32,13 @@ func update_minimap() -> void:
 	minimap.position = rt.get_center() - minimap.get_size()/2
 
 func update_camera() -> void:
-	var cur_storey_y := main_tower.cur_storey.position.y
-	var ref_len := main_tower.tower_size().length()
+	var cur_storey_pos := main_tower.cur_storey.position
+	var ref_len := main_tower.cur_storey.maze3d.calc_grid.aabb.size.length()
 	$AxisArrow3D.set_size(ref_len/3).set_colors()
-	var center := Vector3(0, cur_storey_y, 0)
-	$FixedCameraLight.set_center_pos_far(center, Vector3(0, cur_storey_y, ref_len), ref_len*4)
-	$MovingCameraLightHober.set_center_pos_far( center, Vector3(0, cur_storey_y, ref_len), ref_len*4)
-	$MovingCameraLightAround.set_center_pos_far( center, Vector3(0, cur_storey_y, ref_len), ref_len*4)
+	var center := cur_storey_pos
+	$FixedCameraLight.set_center_pos_far(center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*4)
+	$MovingCameraLightHober.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*4)
+	$MovingCameraLightAround.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*4)
 
 
 func _ready() -> void:

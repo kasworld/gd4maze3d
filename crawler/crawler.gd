@@ -83,9 +83,9 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	dir_src = Maze.Dir.North
 	current_action.clear()
 	if n == p_num:
-		action_queue = ActionQueue.new(0.3,4.0)
+		action_queue = ActionQueue.new(0.1,2.0)
 	else :
-		action_queue = ActionQueue.new(0.5,2.0)
+		action_queue = ActionQueue.new(0.2,3.0)
 	crawler_num = n
 	player_num = p_num
 	$MeshInstance3D.mesh.material.albedo_color = co

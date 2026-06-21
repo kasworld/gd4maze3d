@@ -27,9 +27,9 @@ const QueueLimit = 10
 var queue :Array
 var action_second :ClampedFloat
 
-## second :action_second = ClampedFloat.new(second,second/range_mod,second*range_mod)
-func _init(second :float = 1.0, range_mod :float = 2.0) -> void:
-	action_second = ClampedFloat.new(second,second/range_mod,second*range_mod)
+## action_second = ClampedFloat.new((min+max)/2,min,max)
+func _init(amin :float = 0.2, amax :float = 2.0) -> void:
+	action_second = ClampedFloat.new((amin+amax)/2,amin,amax)
 
 func rand_action_second() -> void:
 	action_second.rand_clamp()

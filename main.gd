@@ -192,16 +192,16 @@ func _on_button_roll_left_pressed() -> void:
 	player.act_character()
 
 func _on_button_aps_max_pressed() -> void:
-	player.action_queue.action_per_second.set_max()
+	player.action_queue.action_second.set_max()
 
 func _on_button_aps_up_pressed() -> void:
-	player.action_queue.action_per_second.set_up()
+	player.action_queue.action_second.set_up()
 
 func _on_button_aps_min_pressed() -> void:
-	player.action_queue.action_per_second.set_min()
+	player.action_queue.action_second.set_min()
 
 func _on_button_aps_down_pressed() -> void:
-	player.action_queue.action_per_second.set_down()
+	player.action_queue.action_second.set_down()
 
 func _on_button_storey_up_pressed() -> void:
 	enter_next_storey(main_tower.cur_storey)

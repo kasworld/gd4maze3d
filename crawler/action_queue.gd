@@ -19,20 +19,20 @@ static func stats2str(d:Dictionary) -> String:
 static func make_action_dictionary(a :Action,s :float, args :={}) -> Dictionary:
 	return {
 		"Action":a,
-		"APS":s,
+		"Second":s,
 		"Args":args,
 	}
 
 const QueueLimit = 10
 var queue :Array
-var action_per_second :ClampedFloat
+var action_second :ClampedFloat
 
-## aps :action_per_second = ClampedFloat.new(aps,aps/range_mod,aps*range_mod)
-func _init(aps :float = 1.0, range_mod :float = 2.0) -> void:
-	action_per_second = ClampedFloat.new(aps,aps/range_mod,aps*range_mod)
+## second :action_second = ClampedFloat.new(second,second/range_mod,second*range_mod)
+func _init(second :float = 1.0, range_mod :float = 2.0) -> void:
+	action_second = ClampedFloat.new(second,second/range_mod,second*range_mod)
 
-func rand_act_speed() -> void:
-	action_per_second.rand_clamp()
+func rand_action_second() -> void:
+	action_second.rand_clamp()
 
 func clear() -> void:
 	queue.resize(0)
@@ -44,9 +44,9 @@ func pop_front() -> Dictionary:
 	return queue.pop_front()
 
 func enqueue(a :Action, args :={}) -> ActionQueue:
-	return enqueue_with_speed(a, action_per_second.get_value(), args)
+	return enqueue_with_second(a, action_second.get_value(), args)
 
-func enqueue_with_speed(a :Action,s :float, args :={}) -> ActionQueue:
+func enqueue_with_second(a :Action,s :float, args :={}) -> ActionQueue:
 	queue.push_back(make_action_dictionary(a,s,args))
 	return crop()
 
@@ -58,6 +58,6 @@ func crop() -> ActionQueue:
 func _to_string() -> String:
 	var rtn := "ActionQueue["
 	for a in queue:
-		rtn += "%s(%.1f)%s " % [ action2str(a.Action), a.APS, a.Args ]
+		rtn += "%s(%.1f)%s " % [ action2str(a.Action), a.Second, a.Args ]
 	rtn += "]"
 	return rtn

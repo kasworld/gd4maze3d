@@ -29,7 +29,7 @@ func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
 	var p2 := st.maze3d.mazepos2storeypos(dst, y)
 	crawler_animation.start_move("ani_move", self,
 		p1, p2,
-		1.0/current_action.APS)
+		current_action.Second)
 
 func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
 	var from_p := from.global_position + from.maze3d.mazepos2storeypos(src, 0)
@@ -39,25 +39,25 @@ func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, 
 	var p1 := p2 - diff
 	crawler_animation.start_move("ani_move", self,
 		p1, p2,
-		1.0/current_action.APS)
+		current_action.Second)
 
 # rotate y
 func start_turn_animation(rad :float) -> void:
 	crawler_animation.start_rotation("ani_turn", self,
 		rotation, rotation + Vector3(0, rad, 0),
-		1.0/current_action.APS)
+		current_action.Second)
 
 # rotate z
 func start_roll_animation(rad :float) -> void:
 	crawler_animation.start_rotation("ani_roll", self,
 		rotation, rotation + Vector3(0, 0, rad),
-		1.0/current_action.APS)
+		current_action.Second)
 
 func _process(_delta: float) -> void:
 	crawler_animation.handle_animation()
 
 var action_queue :ActionQueue
-var current_action : Dictionary # [Action, APS, Args]
+var current_action : Dictionary # [Action, Second, Args]
 
 var crawler_num :int
 var player_num :int
@@ -83,9 +83,9 @@ func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawl
 	dir_src = Maze.Dir.North
 	current_action.clear()
 	if n == p_num:
-		action_queue = ActionQueue.new(2,4)
+		action_queue = ActionQueue.new(0.3,4.0)
 	else :
-		action_queue = ActionQueue.new(1,2)
+		action_queue = ActionQueue.new(0.5,2.0)
 	crawler_num = n
 	player_num = p_num
 	$MeshInstance3D.mesh.material.albedo_color = co
@@ -108,7 +108,7 @@ func reset_scale() -> void:
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.clear()
-	action_queue.enqueue_with_speed(ActionQueue.Action.EnterStorey ,1.0/2, {"FromStorey":oldstorye})
+	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0, {"FromStorey":oldstorye})
 	storey = st
 	pos_dst = pos
 	pos_src = pos
@@ -167,7 +167,7 @@ func handle_action_in_queue() -> bool:
 
 func _to_string() -> String:
 	return "Crawler[autowalk:%s act %s /sec view roll:%s]" % [
-		walk2str(auto_walk_type), action_queue.action_per_second, rotation_degrees,
+		walk2str(auto_walk_type), action_queue.action_second, rotation_degrees,
 		]
 
 func debug_str() -> String:

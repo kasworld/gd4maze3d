@@ -105,7 +105,7 @@ var key2fn :Dictionary[Key, Callable]= {
 	KEY_3:_on_button_floor_ceiling_pressed,
 	KEY_4:_on_button_walls_pressed,
 	KEY_5:_on_button_pillars_pressed,
-	KEY_6:_on_button_auto_move_pressed,
+	KEY_6:_on_button_walk_type_pressed,
 	KEY_7:_on_button_debug_pressed,
 	KEY_8:_on_button_performance_pressed,
 	KEY_9:_on_button_info_pressed,
@@ -162,8 +162,8 @@ func _on_button_pillars_pressed() -> void:
 func _on_button_axis_arrow_pressed() -> void:
 	$AxisArrow3D.visible = not $AxisArrow3D.visible
 
-func _on_button_auto_move_pressed() -> void:
-	player.set_next_walk_type()
+func _on_button_walk_type_pressed() -> void:
+	player.set_next_walk_mode()
 	update_button_text()
 	player.act_character()
 
@@ -248,5 +248,5 @@ Currently rendering: occlusion culling:%s
 
 func update_button_text() -> void:
 	$"왼쪽패널"/ButtonMinimap.text = "2:%s" % main_tower.cur_storey.get_mini_map()
-	$"왼쪽패널"/ButtonAutoMove.text = "6:Automove %s" % Crawler.walk2str(player.auto_walk_type)
+	$"왼쪽패널"/ButtonWalkType.text = "6:walk mode %s" % Crawler.walk2str(player.walk_mode)
 	$"왼쪽패널"/ButtonWalls.text = "4:Wall %s" % Maze3D.wallpillardoorview2str(main_tower.view_wallpillardoor)

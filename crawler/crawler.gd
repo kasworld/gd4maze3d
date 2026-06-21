@@ -77,8 +77,8 @@ func get_minimap_posi() -> Vector2i:
 func get_color() -> Color:
 	return $MeshInstance3D.mesh.material.albedo_color
 
-func init(walk_type :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
-	auto_walk_type = walk_type
+func init(walk :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
+	walk_mode = walk
 	total_action_stats = ActionQueue.new_stats()
 	dir_src = Maze.Dir.North
 	current_action.clear()
@@ -166,8 +166,8 @@ func handle_action_in_queue() -> bool:
 	return true
 
 func _to_string() -> String:
-	return "Crawler[autowalk:%s act %s /sec view roll:%s]" % [
-		walk2str(auto_walk_type), action_queue.action_second, rotation_degrees,
+	return "Crawler[walk:%s action %ssec view roll:%s]" % [
+		walk2str(walk_mode), action_queue.action_second, rotation_degrees,
 		]
 
 func debug_str() -> String:
@@ -182,28 +182,28 @@ func debug_str() -> String:
 func can_move_to_dir(dir :Maze.Dir) -> bool:
 	return storey.get_maze_cells().is_open_flag_at(pos_src.x, pos_src.y, Maze.DirToFlag[dir] )
 
-var auto_walk_type : Walk
-func set_next_walk_type() -> Crawler:
-	auto_walk_type = walk_next(auto_walk_type)
+var walk_mode : Walk
+func set_next_walk_mode() -> Crawler:
+	walk_mode = walk_next(walk_mode)
 	return self
-func set_auto_walk_type(t :Walk) -> void:
-	auto_walk_type = t
+func set_walk_mode(t :Walk) -> void:
+	walk_mode = t
 
-enum Walk {Off, RightFirst, LeftFirst, AStar}
+enum Walk {Manual, RightFirst, LeftFirst, AStar}
 static func walk2str(a :Walk) -> String:
 	return Walk.keys()[a]
 static func walk_next(a :Walk) -> Walk:
 	return (a +1) % Walk.keys().size() as Walk
 
 func enqueue_auto_walk_action_by_type() -> void:
-	match auto_walk_type:
+	match walk_mode:
 		Walk.RightFirst:
 			walk_right_first()
 		Walk.LeftFirst:
 			walk_left_first()
 		Walk.AStar:
 			walk_astar()
-		Walk.Off:
+		Walk.Manual:
 			pass
 
 var astar_path_id :PackedInt64Array

@@ -92,7 +92,6 @@ func handle_action_in_queue() -> bool:
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				#start_move_animation(storey, pos_src, pos_src + Maze.DirToVt2[dir_src])
 				var dst := pos_src + Maze.DirToVt2[dir_src]
 				crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
 					"ani_move", self, "position",
@@ -121,19 +120,16 @@ func handle_action_in_queue() -> bool:
 		ActionQueue.Action.EnterStorey: # for animation only
 			var data :Dictionary = current_action.Data
 			var from_storey :Storey = data.From if data.From != null else data.To
-			start_inter_storey_move_animation(from_storey, data.To, data.src_v2i, data.dst_v2i)
+			var p2 :Vector3= data.To.maze3d.mazepos2storeypos(data.dst_v2i, 0)
+			var p1 :Vector3= from_storey.maze3d.mazepos2storeypos(data.src_v2i, 0) + from_storey.global_position - data.To.global_position
+			crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
+				"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":data.src_v2i, "dst_v2i" :data.dst_v2i} ))
 			astar_path_id.clear()
 
 	# update action stats
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
-
-func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
-	var p2 := to.maze3d.mazepos2storeypos(dst, 0)
-	var p1 :=  from.maze3d.mazepos2storeypos(src, 0) + from.global_position - to.global_position
-	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
-		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
 
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	if crawler_animation.is_empty():

@@ -67,7 +67,8 @@ func reset_scale() -> void:
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.clear()
-	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0, {"From":oldstorye,"To":st,"dst_v2i":pos})
+	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0,
+		{"From":oldstorye, "To":st, "src_v2i":pos,"dst_v2i":pos})
 	storey = st
 	pos_src = pos
 	rotation.y = 0
@@ -118,10 +119,8 @@ func handle_action_in_queue() -> bool:
 		ActionQueue.Action.RollLeft2:
 			start_roll_animation(-PI)
 		ActionQueue.Action.EnterStorey: # for animation only
-			var from_storey :Storey = current_action.Data.From
-			if from_storey == null:
-				from_storey = current_action.Data.To
-			start_inter_storey_move_animation(from_storey, current_action.Data.To, pos_src, current_action.Data.dst_v2i)
+			var from_storey :Storey = current_action.Data.From if current_action.Data.From != null else current_action.Data.To
+			start_inter_storey_move_animation(from_storey, current_action.Data.To, current_action.Data.src_v2i, current_action.Data.dst_v2i)
 			astar_path_id.clear()
 
 	# update action stats

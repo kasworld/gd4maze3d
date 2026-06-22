@@ -21,7 +21,7 @@ func _process(_delta: float) -> void:
 	crawler_animation.handle_animation()
 
 var action_queue :ActionQueue
-var current_action : Dictionary # [Action, Second, Args]
+var current_action : Dictionary # [Action, Second, Data]
 
 var crawler_num :int
 var player_num :int
@@ -117,10 +117,10 @@ func handle_action_in_queue() -> bool:
 		ActionQueue.Action.RollLeft2:
 			start_roll_animation(-PI)
 		ActionQueue.Action.EnterStorey: # for animation only
-			var from_storey :Storey = current_action.Args.From
+			var from_storey :Storey = current_action.Data.From
 			if from_storey == null:
-				from_storey = current_action.Args.To
-			start_inter_storey_move_animation(from_storey, current_action.Args.To, pos_src, current_action.Args.dst_v2i)
+				from_storey = current_action.Data.To
+			start_inter_storey_move_animation(from_storey, current_action.Data.To, pos_src, current_action.Data.dst_v2i)
 			astar_path_id.clear()
 
 	# update action stats

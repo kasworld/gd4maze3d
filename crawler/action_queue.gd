@@ -20,7 +20,7 @@ static func make_action_dictionary(a :Action,s :float, args :={}) -> Dictionary:
 	return {
 		"Action":a,
 		"Second":s,
-		"Args":args,
+		"Data":args,
 	}
 
 const QueueLimit = 10
@@ -58,6 +58,6 @@ func crop() -> ActionQueue:
 func _to_string() -> String:
 	var rtn := "ActionQueue["
 	for a in queue:
-		rtn += "%s(%.1f)%s " % [ action2str(a.Action), a.Second, a.Args ]
+		rtn += "%s(%.1f)%s " % [ action2str(a.Action), a.Second, a.Data ]
 	rtn += "]"
 	return rtn

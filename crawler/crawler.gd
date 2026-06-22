@@ -85,19 +85,20 @@ func act_character() -> void:
 	if current_action.is_empty() && not action_queue.is_empty():
 		handle_action_in_queue()
 
-func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
-	var p1 := st.maze3d.mazepos2storeypos(src, 0)
-	var p2 := st.maze3d.mazepos2storeypos(dst, 0)
-	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
-		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
-
 # return true on new act
 func handle_action_in_queue() -> bool:
 	current_action = action_queue.pop_front()
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				start_move_animation(storey, pos_src, pos_src + Maze.DirToVt2[dir_src])
+				#start_move_animation(storey, pos_src, pos_src + Maze.DirToVt2[dir_src])
+				var dst := pos_src + Maze.DirToVt2[dir_src]
+				crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
+					"ani_move", self, "position",
+					storey.maze3d.mazepos2storeypos(pos_src, 0),
+					storey.maze3d.mazepos2storeypos(dst, 0),
+					current_action.Second, {"src_v2i":pos_src, "dst_v2i" :dst} ))
+
 			else :
 				return false # action ignored
 		ActionQueue.Action.TurnLeft:
@@ -129,11 +130,8 @@ func handle_action_in_queue() -> bool:
 	return true
 
 func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
-	var from_p := from.global_position + from.maze3d.mazepos2storeypos(src, 0)
-	var to_p := to.global_position + to.maze3d.mazepos2storeypos(dst, 0)
-	var diff := to_p - from_p
 	var p2 := to.maze3d.mazepos2storeypos(dst, 0)
-	var p1 := p2 - diff
+	var p1 :=  from.maze3d.mazepos2storeypos(src, 0) + from.global_position - to.global_position
 	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
 		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
 

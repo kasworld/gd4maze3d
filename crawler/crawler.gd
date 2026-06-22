@@ -4,26 +4,6 @@ class_name Crawler
 signal crawler_goal_reached(st :Storey, cr :Crawler)
 
 var crawler_animation := SimpleAnimation.new()
-func animation_ended(cr :Node3D, ani :Dictionary) -> void:
-	if crawler_animation.is_empty():
-		current_action.clear()
-	match ani.Name:
-		"ani_move":
-			pos_src = pos_dst
-			if cr.crawler_num == player_num:
-				if storey.is_goal_pos(cr.pos_src):
-					crawler_goal_reached.emit(storey, cr)
-					return
-				storey.놓인것들줍기(cr)
-			storey.get_mini_map().update_obj_pos(cr, cr.crawler_num == player_num)
-		"ani_turn":
-			rotation = rotation.snappedf(PI/2)
-			dir_src = Maze.RadianToDir(rotation.y)
-		"ani_roll":
-			pass
-	act_character()
-
-
 
 # rotate y
 func start_turn_animation(rad :float) -> void:
@@ -50,7 +30,7 @@ var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
 var storey :Storey
 var pos_src :Vector2i
-var pos_dst :Vector2i
+#var pos_dst :Vector2i
 var dir_src : Maze.Dir
 
 func getCameraLight() -> MovingCameraLight:
@@ -92,9 +72,9 @@ func reset_scale() -> void:
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.clear()
-	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0, {"FromStorey":oldstorye})
+	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0, {"FromStorey":oldstorye, "dst_v2i":pos})
 	storey = st
-	pos_dst = pos
+	#pos_dst = pos
 	pos_src = pos
 	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
@@ -114,7 +94,8 @@ func act_character() -> void:
 func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
 	var p1 := st.maze3d.mazepos2storeypos(src, 0)
 	var p2 := st.maze3d.mazepos2storeypos(dst, 0)
-	crawler_animation.start_move("ani_move", self, p1, p2, current_action.Second)
+	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
+		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
 
 # return true on new act
 func handle_action_in_queue() -> bool:
@@ -122,8 +103,8 @@ func handle_action_in_queue() -> bool:
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				pos_dst = pos_src + Maze.DirToVt2[dir_src]
-				start_move_animation(storey, pos_src, pos_dst)
+				#pos_dst = pos_src + Maze.DirToVt2[dir_src]
+				start_move_animation(storey, pos_src, pos_src + Maze.DirToVt2[dir_src])
 			else :
 				return false # action ignored
 		ActionQueue.Action.TurnLeft:
@@ -146,7 +127,7 @@ func handle_action_in_queue() -> bool:
 			var from_storey :Storey = current_action.Args.FromStorey
 			if from_storey == null:
 				from_storey = storey
-			start_inter_storey_move_animation(from_storey,storey, pos_src, pos_dst)
+			start_inter_storey_move_animation(from_storey,storey, pos_src, current_action.Args.dst_v2i)
 			astar_path_id.clear()
 
 	# update action stats
@@ -163,18 +144,40 @@ func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, 
 	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
 		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
 
+
+func animation_ended(cr :Node3D, ani :Dictionary) -> void:
+	if crawler_animation.is_empty():
+		current_action.clear()
+	match ani.Name:
+		"ani_move":
+			pos_src = ani.Data.dst_v2i
+			if cr.crawler_num == player_num:
+				if storey.is_goal_pos(cr.pos_src):
+					crawler_goal_reached.emit(storey, cr)
+					return
+				storey.놓인것들줍기(cr)
+			storey.get_mini_map().update_obj_pos(cr, cr.crawler_num == player_num)
+		"ani_turn":
+			rotation = rotation.snappedf(PI/2)
+			dir_src = Maze.RadianToDir(rotation.y)
+		"ani_roll":
+			pass
+	act_character()
+
+
+
 func _to_string() -> String:
 	return "Crawler[walk:%s action %ssec view roll:%s]" % [
 		walk2str(walk_mode), action_queue.action_second, rotation_degrees,
 		]
 
 func debug_str() -> String:
-	return "total:%s\nin storey:%s\n%s [%s]\n%s (%d, %d) -> (%d, %d)" % [
+	return "total:%s\nin storey:%s\n%s [%s]\n%s (%d, %d)" % [
 		ActionQueue.stats2str(total_action_stats),
 		ActionQueue.stats2str(storey_action_stats),
 		current_action, action_queue,
 		rotation_degrees,
-		pos_src.x, pos_src.y, pos_dst.x, pos_dst.y,
+		pos_src.x, pos_src.y,
 		]
 
 func can_move_to_dir(dir :Maze.Dir) -> bool:

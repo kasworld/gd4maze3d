@@ -29,14 +29,14 @@ var player_num :int
 var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
 var storey :Storey
-var pos_src :Vector2i
+var posi_src :Vector2i
 var dir_src : Maze.Dir
 
 func getCameraLight() -> MovingCameraLight:
 	return $MovingCameraLight
 
 func get_minimap_posi() -> Vector2i:
-	return pos_src
+	return posi_src
 func get_color() -> Color:
 	return $MeshInstance3D.mesh.material.albedo_color
 
@@ -65,12 +65,12 @@ func init(walk :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
 func reset_scale() -> void:
 	$MeshInstance3D.scale = Vector3(0.5,1,1)
 
-func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
+func enter_storey(from_storey :Storey, to_storey :Storey, dst_posi :Vector2i) -> void:
 	action_queue.clear()
 	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0,
-		{"From":oldstorye, "To":st, "src_v2i":pos,"dst_v2i":pos})
-	storey = st
-	pos_src = pos
+		{"From":from_storey, "To":to_storey, "src_v2i":dst_posi,"dst_v2i":dst_posi})
+	storey = to_storey
+	posi_src = dst_posi
 	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
 	storey_action_stats = ActionQueue.new_stats()
@@ -92,12 +92,12 @@ func handle_action_in_queue() -> bool:
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				var dst := pos_src + Maze.DirToVt2[dir_src]
+				var dst := posi_src + Maze.DirToVt2[dir_src]
 				crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
 					"ani_move", self, "position",
-					storey.maze3d.mazepos2storeypos(pos_src, 0),
+					storey.maze3d.mazepos2storeypos(posi_src, 0),
 					storey.maze3d.mazepos2storeypos(dst, 0),
-					current_action.Second, {"src_v2i":pos_src, "dst_v2i" :dst} ))
+					current_action.Second, {"src_v2i":posi_src, "dst_v2i" :dst} ))
 
 			else :
 				return false # action ignored
@@ -136,9 +136,9 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 		current_action.clear()
 	match ani.Name:
 		"ani_move":
-			pos_src = ani.Data.dst_v2i
+			posi_src = ani.Data.dst_v2i
 			if cr.crawler_num == player_num:
-				if storey.is_goal_pos(cr.pos_src):
+				if storey.is_goal_pos(cr.posi_src):
 					crawler_goal_reached.emit(storey, cr)
 					return
 				storey.놓인것들줍기(cr)
@@ -161,11 +161,11 @@ func debug_str() -> String:
 		ActionQueue.stats2str(storey_action_stats),
 		current_action, action_queue,
 		rotation_degrees,
-		pos_src.x, pos_src.y,
+		posi_src.x, posi_src.y,
 		]
 
 func can_move_to_dir(dir :Maze.Dir) -> bool:
-	return storey.get_maze_cells().is_open_flag_at(pos_src.x, pos_src.y, Maze.DirToFlag[dir] )
+	return storey.get_maze_cells().is_open_flag_at(posi_src.x, posi_src.y, Maze.DirToFlag[dir] )
 
 var walk_mode : Walk
 func set_next_walk_mode() -> Crawler:
@@ -194,14 +194,14 @@ func enqueue_auto_walk_action_by_type() -> void:
 var astar_path_id :PackedInt64Array
 func walk_astar() -> void:
 	var maze2d := storey.maze3d.maze_cells
-	var cur_id := maze2d.posi_to_astar_id(pos_src.x, pos_src.y)
+	var cur_id := maze2d.posi_to_astar_id(posi_src.x, posi_src.y)
 	if astar_path_id.is_empty() or astar_path_id[0] != cur_id:
 		var goal_id := maze2d.posi_to_astar_id(storey.goal_posi.x, storey.goal_posi.y)
 		astar_path_id = maze2d.astar.get_id_path(cur_id,goal_id)
 	if astar_path_id.size() <= 1:
 		return
 	var pos_next := maze2d.astar_id_to_posi(astar_path_id[1])
-	var dir_next := Maze.Vt2ToDir[pos_next-pos_src]
+	var dir_next := Maze.Vt2ToDir[pos_next-posi_src]
 	if dir_src != dir_next:
 		var dir_diff := (dir_next - dir_src +4 ) % 4
 		match dir_diff:

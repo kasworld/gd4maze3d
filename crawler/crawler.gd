@@ -119,8 +119,9 @@ func handle_action_in_queue() -> bool:
 		ActionQueue.Action.RollLeft2:
 			start_roll_animation(-PI)
 		ActionQueue.Action.EnterStorey: # for animation only
-			var from_storey :Storey = current_action.Data.From if current_action.Data.From != null else current_action.Data.To
-			start_inter_storey_move_animation(from_storey, current_action.Data.To, current_action.Data.src_v2i, current_action.Data.dst_v2i)
+			var data :Dictionary = current_action.Data
+			var from_storey :Storey = data.From if data.From != null else data.To
+			start_inter_storey_move_animation(from_storey, data.To, data.src_v2i, data.dst_v2i)
 			astar_path_id.clear()
 
 	# update action stats

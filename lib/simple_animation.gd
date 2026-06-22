@@ -2,7 +2,7 @@ class_name SimpleAnimation
 
 signal animation_ended(st :Node, ani :Dictionary)
 
-## {Name,  Node, Field(position, rotation, scale), SubField(0,1,2) , From, To , StartTick, DurSec }
+## {Name,  Node, Field(position, rotation, scale), SubField(0,1,2) , From, To , StartTick, DurSec, Data }
 var animation_list :Array[Dictionary]
 
 func get_animation_count() -> int:
@@ -42,7 +42,7 @@ func add_animation(ani :Dictionary) -> Dictionary:
 	animation_list.append(ani)
 	return ani
 
-static func MakeAnimation(name:String, ani_node :Node, field :String, from :Variant, to :Variant, dur_sec :float) -> Dictionary:
+static func MakeAnimation(name:String, ani_node :Node, field :String, from :Variant, to :Variant, dur_sec :float, data :Variant = null) -> Dictionary:
 	return {
 		"Name" : name,
 		"AniNode" : ani_node,
@@ -50,8 +50,9 @@ static func MakeAnimation(name:String, ani_node :Node, field :String, from :Vari
 		"From" : from,
 		"To" : to,
 		"DurSec" : dur_sec,
+		"Data" :data,
 	}
-static func MakeAnimationSubfield(name:String, ani_node :Node, field :String, sub_index :int, from :Variant, to :Variant, dur_sec :float) -> Dictionary:
+static func MakeAnimationSubfield(name:String, ani_node :Node, field :String, sub_index :int, from :Variant, to :Variant, dur_sec :float, data :Variant = null) -> Dictionary:
 	return {
 		"Name" : name,
 		"AniNode" : ani_node,
@@ -60,6 +61,7 @@ static func MakeAnimationSubfield(name:String, ani_node :Node, field :String, su
 		"From" : from,
 		"To" : to,
 		"DurSec" : dur_sec,
+		"Data" :data,
 	}
 
 

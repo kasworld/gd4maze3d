@@ -30,7 +30,6 @@ var total_action_stats :Dictionary
 var storey_action_stats :Dictionary
 var storey :Storey
 var pos_src :Vector2i
-#var pos_dst :Vector2i
 var dir_src : Maze.Dir
 
 func getCameraLight() -> MovingCameraLight:
@@ -58,11 +57,7 @@ func init(walk :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
 	$MeshInstance3D.mesh.bottom_radius = 0.07*LaneW
 	$MeshInstance3D.rotation.x = -PI/2
 	$MeshInstance3D.scale.x = 0.5
-	#$MeshInstance3D.position.x = LaneW*0.1
-	#$MeshInstance3D.position.z = -LaneW*0.1
 	$Label3D.text = "%d" % [ crawler_num ] # for debug
-	#$Label3D.position.x = LaneW*0.05
-	#$MovingCameraLight.position.z = LaneW*0.3
 	crawler_animation.animation_ended.connect(animation_ended)
 	$MovingCameraLight.get_light().light_energy = 1
 	return self
@@ -72,9 +67,8 @@ func reset_scale() -> void:
 
 func enter_storey(oldstorye :Storey, st :Storey, pos :Vector2i) -> void:
 	action_queue.clear()
-	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0, {"FromStorey":oldstorye, "dst_v2i":pos})
+	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0, {"From":oldstorye,"To":st,"dst_v2i":pos})
 	storey = st
-	#pos_dst = pos
 	pos_src = pos
 	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
@@ -103,7 +97,6 @@ func handle_action_in_queue() -> bool:
 	match current_action.Action :
 		ActionQueue.Action.Forward:
 			if can_move_to_dir(dir_src):
-				#pos_dst = pos_src + Maze.DirToVt2[dir_src]
 				start_move_animation(storey, pos_src, pos_src + Maze.DirToVt2[dir_src])
 			else :
 				return false # action ignored
@@ -124,10 +117,10 @@ func handle_action_in_queue() -> bool:
 		ActionQueue.Action.RollLeft2:
 			start_roll_animation(-PI)
 		ActionQueue.Action.EnterStorey: # for animation only
-			var from_storey :Storey = current_action.Args.FromStorey
+			var from_storey :Storey = current_action.Args.From
 			if from_storey == null:
-				from_storey = storey
-			start_inter_storey_move_animation(from_storey,storey, pos_src, current_action.Args.dst_v2i)
+				from_storey = current_action.Args.To
+			start_inter_storey_move_animation(from_storey, current_action.Args.To, pos_src, current_action.Args.dst_v2i)
 			astar_path_id.clear()
 
 	# update action stats
@@ -143,7 +136,6 @@ func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, 
 	var p1 := p2 - diff
 	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
 		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
-
 
 func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 	if crawler_animation.is_empty():
@@ -163,8 +155,6 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 		"ani_roll":
 			pass
 	act_character()
-
-
 
 func _to_string() -> String:
 	return "Crawler[walk:%s action %ssec view roll:%s]" % [

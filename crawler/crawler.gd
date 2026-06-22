@@ -67,14 +67,13 @@ func reset_scale() -> void:
 
 func enter_storey(from_storey :Storey, to_storey :Storey, from_posi :Vector2i, to_posi :Vector2i) -> void:
 	action_queue.clear()
+	storey_action_stats = ActionQueue.new_stats()
+	rotation = rotation.snappedf(PI/2)
 	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0,
 		{"From":from_storey, "To":to_storey, "src_v2i":from_posi,"dst_v2i":to_posi})
 	storey = to_storey
 	posi_src = to_posi
-	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
-	storey_action_stats = ActionQueue.new_stats()
-	rotation = rotation.snappedf(PI/2)
 	act_character()
 
 func act_character() -> void:

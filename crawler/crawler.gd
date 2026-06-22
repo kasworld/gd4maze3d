@@ -23,23 +23,7 @@ func animation_ended(cr :Node3D, ani :Dictionary) -> void:
 			pass
 	act_character()
 
-func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
-	var y := 0
-	var p1 := st.maze3d.mazepos2storeypos(src, y)
-	var p2 := st.maze3d.mazepos2storeypos(dst, y)
-	crawler_animation.start_move("ani_move", self,
-		p1, p2,
-		current_action.Second)
 
-func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
-	var from_p := from.global_position + from.maze3d.mazepos2storeypos(src, 0)
-	var to_p := to.global_position + to.maze3d.mazepos2storeypos(dst, 0)
-	var diff := to_p - from_p
-	var p2 := to.maze3d.mazepos2storeypos(dst, 0)
-	var p1 := p2 - diff
-	crawler_animation.start_move("ani_move", self,
-		p1, p2,
-		current_action.Second)
 
 # rotate y
 func start_turn_animation(rad :float) -> void:
@@ -127,6 +111,11 @@ func act_character() -> void:
 	if current_action.is_empty() && not action_queue.is_empty():
 		handle_action_in_queue()
 
+func start_move_animation(st :Storey, src :Vector2i, dst:Vector2i) -> void:
+	var p1 := st.maze3d.mazepos2storeypos(src, 0)
+	var p2 := st.maze3d.mazepos2storeypos(dst, 0)
+	crawler_animation.start_move("ani_move", self, p1, p2, current_action.Second)
+
 # return true on new act
 func handle_action_in_queue() -> bool:
 	current_action = action_queue.pop_front()
@@ -164,6 +153,15 @@ func handle_action_in_queue() -> bool:
 	total_action_stats[current_action.Action ] += 1
 	storey_action_stats[current_action.Action ] += 1
 	return true
+
+func start_inter_storey_move_animation(from :Storey, to :Storey, src :Vector2i, dst:Vector2i) -> void:
+	var from_p := from.global_position + from.maze3d.mazepos2storeypos(src, 0)
+	var to_p := to.global_position + to.maze3d.mazepos2storeypos(dst, 0)
+	var diff := to_p - from_p
+	var p2 := to.maze3d.mazepos2storeypos(dst, 0)
+	var p1 := p2 - diff
+	crawler_animation.add_animation(SimpleAnimation.MakeAnimation(
+		"ani_move", self, "position", p1, p2, current_action.Second, {"src_v2i":src, "dst_v2i" :dst} ))
 
 func _to_string() -> String:
 	return "Crawler[walk:%s action %ssec view roll:%s]" % [

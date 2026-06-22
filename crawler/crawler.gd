@@ -65,12 +65,12 @@ func init(walk :Walk, n :int, LaneW:float,co :Color, p_num :int=0) -> Crawler:
 func reset_scale() -> void:
 	$MeshInstance3D.scale = Vector3(0.5,1,1)
 
-func enter_storey(from_storey :Storey, to_storey :Storey, dst_posi :Vector2i) -> void:
+func enter_storey(from_storey :Storey, to_storey :Storey, from_posi :Vector2i, to_posi :Vector2i) -> void:
 	action_queue.clear()
 	action_queue.enqueue_with_second(ActionQueue.Action.EnterStorey, 1.0,
-		{"From":from_storey, "To":to_storey, "src_v2i":dst_posi,"dst_v2i":dst_posi})
+		{"From":from_storey, "To":to_storey, "src_v2i":from_posi,"dst_v2i":to_posi})
 	storey = to_storey
-	posi_src = dst_posi
+	posi_src = to_posi
 	rotation.y = 0
 	dir_src = Maze.RadianToDir(rotation.y)
 	storey_action_stats = ActionQueue.new_stats()

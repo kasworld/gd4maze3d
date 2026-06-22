@@ -175,11 +175,11 @@ func chars_enter_storey(old_storey :Storey, char_list :Array, playernum :int) ->
 	for ch in char_list:
 		ch.reparent($CharacterContainer)
 		if ch.crawler_num == playernum:
-			ch.enter_storey(old_storey, self, start_posi)
+			ch.enter_storey(old_storey, self, ch.posi_src, start_posi)
 			$MiniMap.add_obj(ch, "%d" % ch.crawler_num, ch.get_color(), 1, true)
 		else:
 			var p := CalcGrid3D.xz_Vector3iToVector2i(maze3d.calc_grid.rand_posi())
-			ch.enter_storey(old_storey, self, p)
+			ch.enter_storey(old_storey, self, ch.posi_src, p)
 			$MiniMap.add_obj(ch, "%d" % ch.crawler_num, ch.get_color(), 0, false)
 
 	var rt := get_viewport().get_visible_rect()

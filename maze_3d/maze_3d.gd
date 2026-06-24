@@ -109,14 +109,14 @@ func get_ceiling() -> Plot3D:
 	return $Ceiling
 
 func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :MazeStair = preload("res://maze_3d/maze_stair/maze_stair.tscn").instantiate()
+	var wn :PropStair = preload("res://prop_stair/prop_stair.tscn").instantiate()
 	wn.init_stair(calc_grid.unit_size, dir, co)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
 	add_child(wn)
 	return wn
 
 func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :MazeLadder = preload("res://maze_3d/maze_ladder/maze_ladder.tscn").instantiate()
+	var wn :PropLadder = preload("res://prop_ladder/prop_ladder.tscn").instantiate()
 	wn.init_ladder(calc_grid.unit_size, dir, co)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
 	add_child(wn)
@@ -186,9 +186,9 @@ func make_door_by_maze(co_doorH :Color,co_doorV :Color) -> void:
 			Maze.Flag.North, Maze.Flag.South:
 				pos_list_H.append(calc_wall_pos_face_H(x,y))
 	maze_cells.iter_open(add_door_at)
-	var csgH := ArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_matH)
+	var csgH := PropArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_matH)
 	bake_door.call_deferred($DoorContainer/HDoor,pos_list_H, csgH)
-	var csgV := ArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_matV)
+	var csgV := PropArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_matV)
 	bake_door.call_deferred($DoorContainer/VDoor,pos_list_V, csgV)
 func bake_door(mms :MultiMeshShape, pos_list :Array, csg :CSGShape3D) -> void:
 	var sw := StopWatch.new("%s bake_door" % self)

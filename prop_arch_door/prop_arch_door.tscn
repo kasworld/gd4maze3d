@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dk5rol8v1nyei"]
+
+[ext_resource type="Script" uid="uid://bwia6nokwoopd" path="res://prop_arch_door/prop_arch_door.gd" id="1_hsoab"]
+
+[node name="PropArchDoor" type="Node3D" unique_id=1974793707]
+script = ExtResource("1_hsoab")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1900823780]

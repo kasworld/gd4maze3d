@@ -1,5 +1,5 @@
 extends Node3D
-class_name Table4Leg
+class_name PropTable4Leg
 
 ## X-Z table, ie table top face Y axis
 
@@ -17,7 +17,7 @@ var aabb :AABB
 var top :MeshInstance3D
 var legs :Array[MeshInstance3D]
 
-func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) -> Table4Leg:
+func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) -> PropTable4Leg:
 	var total_size := top_size
 	total_size.y += leg_size.y
 	aabb = AABB(-total_size/2,total_size)

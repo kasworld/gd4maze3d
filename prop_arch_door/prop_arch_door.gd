@@ -1,9 +1,8 @@
 extends Node3D
-class_name ArchDoor
-
+class_name PropArchDoor
 
 ## face Z+ wall with door
-func init(size :Vector3, co :Color) -> ArchDoor:
+func init(size :Vector3, co :Color) -> PropArchDoor:
 	var wall := MakeArchDoorMeshH(size,MakeColorMaterial(co))
 	bake.call_deferred(wall)
 	return self

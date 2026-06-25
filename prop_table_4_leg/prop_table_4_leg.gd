@@ -25,21 +25,16 @@ static func make_box(box_size :Vector3, box_mat :StandardMaterial3D) -> CSGShape
 	box.material = box_mat
 	return box
 
-
 static func MakeTableMesh(top_size :Vector3, leg_size :Vector3, mat_top :StandardMaterial3D, mat_leg :StandardMaterial3D) -> CSGShape3D:
-	var aabb := calc_aabb(top_size, leg_size)
 	var top := make_box(top_size,mat_top)
-	var legs := []
-	for i in 4:
+	var y := -leg_size.y/2 - top_size.y/2
+	var x :=  top_size.x/2 - leg_size.x/2
+	var z :=  top_size.z/2 - leg_size.z/2
+	for pos in [Vector3(x, y, z), Vector3(x, y,-z), Vector3(-x, y, z), Vector3(-x, y,-z)]:
 		var leg := make_box(leg_size,mat_leg)
 		leg.operation = CSGShape3D.OPERATION_UNION
-		legs.append(leg)
+		leg.position = pos
 		top.add_child(leg)
-	var pos_adj := -Vector3(0,leg_size.y/2,0)
-	legs[0].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1)) + pos_adj
-	legs[1].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1)) + pos_adj
-	legs[2].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1)) + pos_adj
-	legs[3].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1)) + pos_adj
 	return top
 
 static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
@@ -47,13 +42,3 @@ static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardM
 	material.albedo_color = co
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
 	return material
-
-## axis : x:0, y:1, z:2, axis_sign : 1,0,-1
-static func CalcAxisAlignInner(out_aabb :AABB, inner_box_size :Vector3, axis :int, dir :int) -> float:
-	match dir:
-		-1: # align -
-			return out_aabb.position[axis] + inner_box_size[axis]/2
-		1: # align +
-			return out_aabb.end[axis] - inner_box_size[axis]/2
-		_: # align center
-			return out_aabb.get_center()[axis]

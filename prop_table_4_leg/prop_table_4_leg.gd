@@ -3,36 +3,50 @@ class_name PropTable4Leg
 
 ## X-Z table, ie table top face Y axis
 
-static func make_box(box_size :Vector3, box_co :Color) -> MeshInstance3D:
-	var box := MeshInstance3D.new()
-	box.mesh = BoxMesh.new()
-	box.mesh.size = box_size
-	box.mesh.material = StandardMaterial3D.new()
-	box.mesh.material.albedo_color = box_co
-	return box
-
-## center ZERO
 var aabb :AABB
-
-var top :MeshInstance3D
-var legs :Array[MeshInstance3D]
-
-func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) -> PropTable4Leg:
+static func calc_aabb(top_size :Vector3, leg_size :Vector3) -> AABB:
 	var total_size := top_size
 	total_size.y += leg_size.y
-	aabb = AABB(-total_size/2,total_size)
-	top = make_box(top_size,co_top)
-	top.position.y = aabb.size.y/2 - top_size.y/2
-	add_child(top)
-	for i in 4:
-		var leg := make_box(leg_size,co_leg)
-		legs.append(leg)
-		add_child(leg)
-	legs[0].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1),)
-	legs[1].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1),)
-	legs[2].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1),)
-	legs[3].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1),)
+	return AABB(-total_size/2,total_size)
+
+func init(top_size :Vector3, leg_size :Vector3, co_top :Color, co_leg :Color) -> PropTable4Leg:
+	aabb = calc_aabb(top_size, leg_size)
+	$MeshInstance3D.position = Vector3(0,leg_size.y/2-top_size.y/2,0)
+	var wall := MakeTableMesh(top_size, leg_size, MakeColorMaterial(co_top), MakeColorMaterial(co_leg))
+	bake.call_deferred(wall)
 	return self
+
+func bake(csg :CSGShape3D) -> void:
+	$MeshInstance3D.mesh = csg.bake_static_mesh()
+
+static func make_box(box_size :Vector3, box_mat :StandardMaterial3D) -> CSGShape3D:
+	var box := CSGBox3D.new()
+	box.size = box_size
+	box.material = box_mat
+	return box
+
+
+static func MakeTableMesh(top_size :Vector3, leg_size :Vector3, mat_top :StandardMaterial3D, mat_leg :StandardMaterial3D) -> CSGShape3D:
+	var aabb := calc_aabb(top_size, leg_size)
+	var top := make_box(top_size,mat_top)
+	var legs := []
+	for i in 4:
+		var leg := make_box(leg_size,mat_leg)
+		leg.operation = CSGShape3D.OPERATION_UNION
+		legs.append(leg)
+		top.add_child(leg)
+	var pos_adj := -Vector3(0,leg_size.y/2,0)
+	legs[0].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1)) + pos_adj
+	legs[1].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, -1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1)) + pos_adj
+	legs[2].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, 1)) + pos_adj
+	legs[3].position = Vector3(CalcAxisAlignInner(aabb, leg_size, 0, 1), CalcAxisAlignInner(aabb, leg_size, 1, -1), CalcAxisAlignInner(aabb, leg_size, 2, -1)) + pos_adj
+	return top
+
+static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = co
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
+	return material
 
 ## axis : x:0, y:1, z:2, axis_sign : 1,0,-1
 static func CalcAxisAlignInner(out_aabb :AABB, inner_box_size :Vector3, axis :int, dir :int) -> float:

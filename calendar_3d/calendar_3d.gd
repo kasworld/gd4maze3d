@@ -14,7 +14,18 @@ static func make_unix_time(year :int, month :int, day :int) -> int:
 	})
 
 
-var font := preload("res://font/HakgyoansimBareondotumR.ttf")
+static var font := preload("res://font/HakgyoansimBareondotumR.ttf")
+static func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshInstance3D:
+	var mesh := TextMesh.new()
+	mesh.font = font
+	mesh.depth = fdepth
+	mesh.pixel_size = fsize / 16
+	mesh.text = text
+	mesh.material = mat
+	var sp := MeshInstance3D.new()
+	sp.mesh = mesh
+	return sp
+
 const weekdaystring := ["일","월","화","수","목","금","토"]
 var colors := {
 	weekday = [
@@ -41,16 +52,6 @@ func get_color_mat(co: Color)->Material:
 	#mat.clearcoat = true
 	return mat
 
-func new_text(fsize :float, fdepth :float, mat :Material, text :String)->MeshInstance3D:
-	var mesh := TextMesh.new()
-	mesh.font = font
-	mesh.depth = fdepth
-	mesh.pixel_size = fsize / 16
-	mesh.text = text
-	mesh.material = mat
-	var sp := MeshInstance3D.new()
-	sp.mesh = mesh
-	return sp
 
 ## center ZERO
 var aabb :AABB

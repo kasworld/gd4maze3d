@@ -8,7 +8,17 @@ static func get_localtime_from_system() -> float:
 
 enum BarAlign {In, Mid, Out}
 
-var font := preload("res://font/HakgyoansimBareondotumR.ttf")
+static var font := preload("res://font/HakgyoansimBareondotumR.ttf")
+static func new_text(fsize :float, fdepth :float, mat :Material, text :String) -> MeshInstance3D:
+	var mesh := TextMesh.new()
+	mesh.font = font
+	mesh.depth = fdepth
+	mesh.pixel_size = fsize / 16
+	mesh.text = text
+	mesh.material = mat
+	var sp := MeshInstance3D.new()
+	sp.mesh = mesh
+	return sp
 
 # for calendar
 var colors := {
@@ -112,16 +122,6 @@ func make_dial_text(r :float, d:float, fsize :float, text_list :Array)->void:
 		t.position = Vector3(sin(rad)*r, cos(rad)*r, 0)
 		add_child(t)
 
-func new_text(fsize :float, fdepth :float, mat :Material, text :String) -> MeshInstance3D:
-	var mesh := TextMesh.new()
-	mesh.font = font
-	mesh.depth = fdepth
-	mesh.pixel_size = fsize / 16
-	mesh.text = text
-	mesh.material = mat
-	var sp := MeshInstance3D.new()
-	sp.mesh = mesh
-	return sp
 
 ## ms : Time.get_unix_time_from_system() , tz_shift : 9
 func update_clock(ms :float):

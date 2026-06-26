@@ -2,7 +2,7 @@ extends WireNet
 class_name PropStair
 
 func init_stair(unit_size :Vector3, dir :Maze.Dir, co :Color) -> PropStair:
-	super.init_wire_H(
+	init_wire_H(
 		Vector2(unit_size.x*0.5, unit_size.z*0.9),
 		Vector2i(2,6),
 		unit_size.y/20,

@@ -36,7 +36,7 @@ static func MakeCoinMesh(raidus :float, thick :float, mat :StandardMaterial3D, s
 
 	if not front.is_empty():
 		var front_text := CSGMesh3D.new()
-		front_text.mesh = make_text_mesh(raidus*1.5/back.length(), thick/2, mat, front)
+		front_text.mesh = make_text_mesh(raidus*1.5/back.length(), thick/4, mat, front)
 		front_text.material = mat
 		front_text.operation = CSGShape3D.OPERATION_UNION
 		front_text.rotate_x(-PI/2)
@@ -45,7 +45,7 @@ static func MakeCoinMesh(raidus :float, thick :float, mat :StandardMaterial3D, s
 
 	if not back.is_empty():
 		var back_text := CSGMesh3D.new()
-		back_text.mesh = make_text_mesh(raidus*1.5/back.length(), thick/2, mat, back)
+		back_text.mesh = make_text_mesh(raidus*1.5/back.length(), thick/4, mat, back)
 		back_text.material = mat
 		back_text.operation = CSGShape3D.OPERATION_UNION
 		back_text.rotate_x(PI/2)

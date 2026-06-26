@@ -109,14 +109,14 @@ func get_ceiling() -> Plot3D:
 	return $Ceiling
 
 func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :PropStair = preload("res://prop_stair/prop_stair.tscn").instantiate()
+	var wn :PropStair = preload("res://maze_3d/prop_stair/prop_stair.tscn").instantiate()
 	wn.init_stair(calc_grid.unit_size, dir, co)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
 	add_child(wn)
 	return wn
 
 func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :PropLadder = preload("res://prop_ladder/prop_ladder.tscn").instantiate()
+	var wn :PropLadder = preload("res://maze_3d/prop_ladder/prop_ladder.tscn").instantiate()
 	wn.init_ladder(calc_grid.unit_size, dir, co)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
 	add_child(wn)

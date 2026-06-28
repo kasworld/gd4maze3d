@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://d2srrboixx6es"]
+
+[ext_resource type="Script" uid="uid://4uoc1lncbuts" path="res://prop_focus_lines/prop_focus_lines.gd" id="1_p5amk"]
+
+[node name="PropFocusLines" type="Node3D" unique_id=735822530]
+script = ExtResource("1_p5amk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1986929553]

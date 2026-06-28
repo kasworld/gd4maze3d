@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://jmb1btvtwi1m"]
 
 [ext_resource type="Script" uid="uid://cownvyqjgybgj" path="res://analog_clock_3d/analog_clock_3d.gd" id="1_7heg4"]
-[ext_resource type="PackedScene" uid="uid://cfnbpemvoy1i6" path="res://multi_mesh_shape/multi_mesh_shape.tscn" id="2_rgemn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgemn"]
 resource_local_to_scene = true
@@ -47,9 +46,6 @@ resource_local_to_scene = true
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_mg8ci")
 
-[sub_resource type="MultiMesh" id="MultiMesh_rl30s"]
-resource_local_to_scene = true
-
 [node name="AnalogClock3d" type="Node3D" unique_id=344465629]
 script = ExtResource("1_7heg4")
 
@@ -78,5 +74,4 @@ mesh = SubResource("BoxMesh_7cmrs")
 [node name="SecondHand" type="MeshInstance3D" parent="SecondBase" unique_id=1117284795]
 mesh = SubResource("BoxMesh_1i3f0")
 
-[node name="DialBars" parent="." unique_id=676980182 instance=ExtResource("2_rgemn")]
-multimesh = SubResource("MultiMesh_rl30s")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1476186075]

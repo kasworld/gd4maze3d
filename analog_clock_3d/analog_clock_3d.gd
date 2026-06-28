@@ -55,7 +55,7 @@ func init(r :float, d :float, fsize :float, backplane:bool=true) -> AnalogClock3
 	$Donut.rotation.x = -PI/2
 	$BackPlane.visible = backplane
 	make_hands(r, d)
-	make_dial_line_multi(r*0.88, d, BarAlign.Mid)
+	make_dial_line(r*0.88, d, BarAlign.Mid)
 	make_dial_text(r*0.95, d, fsize*0.8, range(0,60,5))
 	make_dial_text(r*0.8, d, fsize, [12,1,2,3,4,5,6,7,8,9,10,11] )
 	return self
@@ -76,40 +76,55 @@ func make_hands(r :float, d:float)->void:
 	$MinuteBase/MinuteHand.rotation.z = PI/2
 	$SecondBase/SecondHand.rotation.z = PI/2
 
-func make_dial_line_multi(r :float, d:float, align :BarAlign):
-	var mesh := BoxMesh.new()
-	mesh.material = MultiMeshShape.MakeMultiMeshColorMaterial()
-	$DialBars.init_with_color_mesh(mesh, 360, false)
-	$DialBars.set_gradient_color_all(colors.dial_1,colors.dial_1)
-	# Set the transform of the instances.
-	var bar_height := d*0.2
+static func make_csg_box(box_size :Vector3, box_mat :StandardMaterial3D) -> CSGShape3D:
+	var box := CSGBox3D.new()
+	box.size = box_size
+	box.material = box_mat
+	return box
+
+static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = co
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
+	return material
+
+func make_dial_line(radius :float, depth:float, align :BarAlign):
+	var mat := MakeColorMaterial(colors.dial_1, false)
+	var bar_height := depth*0.2
 	var bar_size :Vector3
 	var bar_size_list := [
 		# [ mod int, bar size ]
-		[30, Vector3(r/18,r/180,bar_height)],
-		[6, Vector3(r/24,r/480,bar_height)],
-		[1, Vector3(r/72,r/720,bar_height)],
+		[30, Vector3(radius/18,radius/180,bar_height)],
+		[6, Vector3(radius/24,radius/480,bar_height)],
+		[1, Vector3(radius/72,radius/720,bar_height)],
 	]
-	for i in $DialBars.get_visible_count():
-		var rad := deg_to_rad(i)
-		var bar_center := Vector3(cos(rad)*r, sin(rad)*r,  0)
-		var bar_position := Vector3.ZERO
+	var center := make_csg_box(Vector3.ONE/1000, MakeColorMaterial(Color(0,0,0,0), true) )
+	var bar_position := Vector3.ZERO
+	var rad_step :float = 2*PI / 360
+	for i in 360:
+		var rad :float = rad_step * i
+		var bar_center := Vector3(cos(rad)*radius, sin(rad)*radius,  0)
 		for bs in bar_size_list:
 			if i % bs[0] == 0:
 				bar_size = bs[1]
 				break
 		match align:
 			BarAlign.In :
-				bar_position = bar_center*(1 - bar_size.x/r/2)
+				bar_position = bar_center*(1 - bar_size.x/radius/2)
 			BarAlign.Mid :
 				bar_position = bar_center
 			BarAlign.Out :
-				bar_position = bar_center*(1 + bar_size.x/r/2)
-		# make transform from bar_rotation, bar_position, bar_size
-		var t := Transform3D(Basis(), bar_position)
-		t = t.rotated_local(Vector3.BACK, rad)
-		t = t.scaled_local( bar_size )
-		$DialBars.multimesh.set_instance_transform(i,t)
+				bar_position = bar_center*(1 + bar_size.x/radius/2)
+		var wire := make_csg_box(bar_size, mat)
+		wire.operation = CSGShape3D.OPERATION_UNION
+		wire.rotate_z(rad)
+		wire.position = bar_position
+		center.add_child(wire)
+	bake.call_deferred(center)
+
+func bake(csg :CSGShape3D) -> void:
+	$MeshInstance3D.mesh = csg.bake_static_mesh()
+
 
 func make_dial_text(r :float, d:float, fsize :float, text_list :Array)->void:
 	var mat := StandardMaterial3D.new()

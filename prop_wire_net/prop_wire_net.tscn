@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://cnvvrxi3iywo1"]
+
+[ext_resource type="Script" uid="uid://bekum2sbvqxjo" path="res://prop_wire_net/prop_wire_net.gd" id="1_n2v5x"]
+
+[node name="PropWireNet" type="Node3D" unique_id=1629003360]
+script = ExtResource("1_n2v5x")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=987236097]

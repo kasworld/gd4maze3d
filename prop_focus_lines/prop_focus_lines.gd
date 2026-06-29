@@ -54,6 +54,3 @@ func init(radius :float, bar_size :Vector3, align :Align, step_count :int, rad_r
 
 func bake(csg :CSGShape3D) -> void:
 	$MeshInstance3D.mesh = csg.bake_static_mesh()
-
-func set_color(co :Color) -> void:
-	$MeshInstance3D.mesh.material.albedo_color = co

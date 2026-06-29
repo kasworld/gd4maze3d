@@ -21,7 +21,7 @@ static func MakeDummyCenter() -> CSGShape3D:
 	return center
 
 ## add H wire
-static func AddHWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, mat :StandardMaterial3D) -> CSGShape3D:
+static func AddHWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, mat :StandardMaterial3D, rot := Vector3.ZERO) -> CSGShape3D:
 	# make H wire
 	var h_wire_size := Vector3(net_size.x,wire_width, wire_height)
 	var unit_y := net_size.y/(grid_count.y-1) if grid_count.y > 1 else 0.0
@@ -30,11 +30,12 @@ static func AddHWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i
 		var wire := make_csg_box(h_wire_size, mat)
 		wire.operation = CSGShape3D.OPERATION_UNION
 		wire.position = pos
+		wire.rotation = rot
 		center.add_child(wire)
 	return center
 
 ## add V wire
-static func AddVWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, mat :StandardMaterial3D) -> CSGShape3D:
+static func AddVWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, mat :StandardMaterial3D, rot := Vector3.ZERO) -> CSGShape3D:
 	# make V wire
 	var v_wire_size := Vector3(wire_width, net_size.y, wire_height)
 	var unit_x := net_size.x/(grid_count.x-1) if grid_count.x > 1 else 0.0
@@ -43,6 +44,7 @@ static func AddVWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i
 		var wire := make_csg_box(v_wire_size, mat)
 		wire.operation = CSGShape3D.OPERATION_UNION
 		wire.position = pos
+		wire.rotation = rot
 		center.add_child(wire)
 	return center
 

@@ -109,13 +109,16 @@ func get_ceiling() -> Plot3D:
 	return $Ceiling
 
 func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
-	var wn :WireNet = preload("res://wire_net/wire_net.tscn").instantiate()
 	var unit_size := calc_grid.unit_size
-	wn.init_wire_H(Vector2(unit_size.x*0.5, unit_size.z*0.9),
-		Vector2i(2,6), unit_size.y/20, unit_size.y/5, co, false)
-	wn.init_wire_V(Vector2(unit_size.x*0.5, unit_size.z),
-		Vector2i(2,6), unit_size.y/30, unit_size.y/30, co, false)
-	wn.wire_H_rotation_x = PI/4
+	var center := PropWireNet.MakeDummyCenter()
+	PropWireNet.AddHWire(center,
+		Vector2(unit_size.x*0.5, unit_size.z*0.9),Vector2i(2,6), unit_size.y/20, unit_size.y/5,
+		PropWireNet.MakeColorMaterial(co, false), Vector3(PI/4,0,0))
+	PropWireNet.AddVWire(center,
+		Vector2(unit_size.x*0.5, unit_size.z),Vector2i(2,6), unit_size.y/30, unit_size.y/30,
+		PropWireNet.MakeColorMaterial(co, false))
+	var wn := preload("res://prop_wire_net/prop_wire_net.tscn").instantiate()
+	wn.bake.call_deferred(center)
 	wn.rotation.x = -PI/4
 	wn.rotation.y = Maze.DirToRadian(dir)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)

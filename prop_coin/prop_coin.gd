@@ -8,7 +8,7 @@ func init(radius :float, thick :float, co :Color, side :int = 64, front :String 
 	var center := CSG.MakeDummyCenter()
 	center = CSG.AddCoinCSG(center, radius, thick, CSG.MakeColorMaterial(co), side)
 	center = CSG.SubCoinCSG(center, radius*RRate, thick/2, CSG.MakeColorMaterial(co), side)
-	center = CSG.AddTextCSG(center, radius, thick/2, CSG.MakeColorMaterial(co), front, back)
+	center = CSG.AddCoinTextCSG(center, radius, thick/2, CSG.MakeColorMaterial(co), front, back)
 	bake.call_deferred(center)
 	return self
 

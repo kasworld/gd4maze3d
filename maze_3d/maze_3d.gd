@@ -108,7 +108,7 @@ func get_floor() -> Plot3D:
 func get_ceiling() -> Plot3D:
 	return $Ceiling
 
-func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
+func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> MeshInstance3D:
 	var unit_size := calc_grid.unit_size
 	var center := CSG.MakeDummyCenter()
 	CSG.AddHWire(center,
@@ -117,15 +117,14 @@ func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	CSG.AddVWire(center,
 		Vector2(unit_size.x*0.5, unit_size.z),Vector2i(2,6), unit_size.y/30, unit_size.y/30,
 		CSG.MakeColorMaterial(co, false))
-	var wn := preload("res://prop_wire_net/prop_wire_net.tscn").instantiate()
-	wn.bake.call_deferred(center)
+	var wn := CSG.DefferedBake(center)
 	wn.rotation.x = -PI/4
 	wn.rotation.y = Maze.DirToRadian(dir)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
 	add_child(wn)
 	return wn
 
-func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
+func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> MeshInstance3D:
 	var unit_size := calc_grid.unit_size
 	var mat := CSG.MakeColorMaterial(co, false)
 	var center := CSG.MakeDummyCenter()
@@ -135,8 +134,7 @@ func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	CSG.AddVWire(center,
 		Vector2(unit_size.x*0.5, unit_size.y), Vector2i(2,6), unit_size.y/30, unit_size.y/30,
 		mat)
-	var wn := preload("res://prop_wire_net/prop_wire_net.tscn").instantiate()
-	wn.bake.call_deferred(center)
+	var wn := CSG.DefferedBake(center)
 	wn.rotation.y = Maze.DirToRadian(dir)
 	wn.position = calc_grid.posi_to_lanepos(cell_posi)
 	add_child(wn)

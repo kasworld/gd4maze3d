@@ -1,5 +1,13 @@
 class_name CSG
 
+static func DefferedBake(csg :CSGShape3D) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	bake.call_deferred(mi,csg)
+	return mi
+
+static func bake(mi :MeshInstance3D, csg :CSGShape3D) -> void:
+	mi.mesh = csg.bake_static_mesh()
+
 ## add H wire
 static func AddHWire(center :CSGShape3D, net_size :Vector2, grid_count :Vector2i, wire_width :float, wire_height :float, mat :StandardMaterial3D, rot := Vector3.ZERO) -> CSGShape3D:
 	# make H wire
@@ -53,6 +61,7 @@ static func AddFocusLines(center :CSGShape3D, radius :float, bar_size :Vector3, 
 		center.add_child(wire)
 	return center
 
+## for table with 4 leg make
 static func AddTableTop(center :CSGShape3D, total_size :Vector3, top_thick :float, mat_top :StandardMaterial3D) -> CSGShape3D:
 	var top := MakeCSGBox(Vector3(total_size.x,top_thick,total_size.z),mat_top)
 	top.position = Vector3(0,total_size.y/2-top_thick/2,0)
@@ -60,6 +69,7 @@ static func AddTableTop(center :CSGShape3D, total_size :Vector3, top_thick :floa
 	center.add_child(top)
 	return center
 
+## for table with 4 leg make
 static func AddTableLeg(center :CSGShape3D, total_size :Vector3, top_thick :float, leg_x :float, leg_z :float, mat_leg :StandardMaterial3D) -> CSGShape3D:
 	var leg_size := Vector3(leg_x, total_size.y-top_thick, leg_z)
 	var y := -top_thick/2
@@ -74,6 +84,7 @@ static func AddTableLeg(center :CSGShape3D, total_size :Vector3, top_thick :floa
 
 
 ## face Y+
+## for coin make
 static func AddCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
 	var csg_main := MakeCSGCylinder(raidus, thick, mat, side)
 	center.add_child(csg_main)
@@ -81,6 +92,7 @@ static func AddCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :Sta
 	return center
 
 ## face Y+
+## for coin make
 static func SubCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
 	var csg_front := MakeCSGCylinder(raidus, thick, mat, side)
 	csg_front.position.y = thick
@@ -93,7 +105,8 @@ static func SubCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :Sta
 	return center
 
 ## face Y+
-static func AddTextCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, front :String ="", back :String="") -> CSGShape3D:
+## for coin make
+static func AddCoinTextCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, front :String ="", back :String="") -> CSGShape3D:
 	if not front.is_empty():
 		var front_text := CSGMesh3D.new()
 		front_text.mesh = MakeTextMesh(raidus*1.5/back.length(), thick, mat, front)

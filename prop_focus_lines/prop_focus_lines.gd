@@ -5,22 +5,12 @@ class_name PropFocusLines
 
 enum Align {In,Mid,Out}
 
-static func make_csg_box(box_size :Vector3, box_mat :StandardMaterial3D) -> CSGShape3D:
-	var box := CSGBox3D.new()
-	box.size = box_size
-	box.material = box_mat
-	return box
-
-static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = co
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
-	return material
-
-## make dummy center
-static func MakeDummyCenter() -> CSGShape3D:
-	var center := make_csg_box(Vector3.ONE/1000, MakeColorMaterial(Color(0,0,0,0), true) )
-	return center
+func init(radius :float, bar_size :Vector3, align :Align, step_count :int, rad_range :Array, co :Color, transparent :bool = false) -> PropFocusLines:
+	var mat := MakeColorMaterial(co,transparent)
+	var center := MakeDummyCenter()
+	center = AddFocusLines(center, radius, bar_size, align, step_count, rad_range, mat)
+	bake.call_deferred(center)
+	return self
 
 ## add x-y focus lines, face z+
 ## rad_range : [start,end]
@@ -38,19 +28,29 @@ static func AddFocusLines(center :CSGShape3D, radius :float, bar_size :Vector3, 
 				bar_position = bar_center
 			Align.Out :
 				bar_position = bar_center*(1 + bar_size.x/radius/2)
-		var wire := make_csg_box(bar_size, mat)
+		var wire := MakeCSGBox(bar_size, mat)
 		wire.operation = CSGShape3D.OPERATION_UNION
 		wire.rotate_z(rad)
 		wire.position = bar_position
 		center.add_child(wire)
 	return center
 
-func init(radius :float, bar_size :Vector3, align :Align, step_count :int, rad_range :Array, co :Color, transparent :bool = false) -> PropFocusLines:
-	var mat := MakeColorMaterial(co,transparent)
-	var center := MakeDummyCenter()
-	center = AddFocusLines(center, radius, bar_size, align, step_count, rad_range, mat)
-	bake.call_deferred(center)
-	return self
-
 func bake(csg :CSGShape3D) -> void:
 	$MeshInstance3D.mesh = csg.bake_static_mesh()
+
+static func MakeCSGBox(box_size :Vector3, box_mat :StandardMaterial3D) -> CSGShape3D:
+	var box := CSGBox3D.new()
+	box.size = box_size
+	box.material = box_mat
+	return box
+
+static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = co
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
+	return material
+
+## make dummy center
+static func MakeDummyCenter() -> CSGShape3D:
+	var center := MakeCSGBox(Vector3.ONE/1000, MakeColorMaterial(Color(0,0,0,0), true) )
+	return center

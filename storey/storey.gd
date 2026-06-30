@@ -263,13 +263,13 @@ func add_wall_deco_at(x :int, y :int, dir_flag :Maze.Flag) -> void:
 				$WallDeco.add_child(n)
 				n.update_clock(AnalogClock3D.get_localtime_from_system())
 			4: # make bookcase
-				var center := PropWireNet.MakeDummyCenter()
+				var center := CSG.MakeDummyCenter()
 				var net_size := Vector2(maze3d.calc_grid.unit_size.x-maze3d.WallThick*2,maze3d.calc_grid.unit_size.y)
-				var mat := PropWireNet.MakeColorMaterial(RandomColorIter.get_and_next(), false)
-				PropWireNet.AddHWire(center,
+				var mat := CSG.MakeColorMaterial(RandomColorIter.get_and_next(), false)
+				CSG.AddHWire(center,
 					net_size, Vector2i(4,8), maze3d.WallThick /4, maze3d.WallThick*2 ,
 					mat )
-				PropWireNet.AddVWire(center,
+				CSG.AddVWire(center,
 					net_size, Vector2i(4,8), maze3d.WallThick /4, maze3d.WallThick*2 ,
 					mat)
 				var n = preload("res://prop_wire_net/prop_wire_net.tscn").instantiate()

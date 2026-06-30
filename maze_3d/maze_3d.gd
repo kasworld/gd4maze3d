@@ -110,13 +110,13 @@ func get_ceiling() -> Plot3D:
 
 func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	var unit_size := calc_grid.unit_size
-	var center := PropWireNet.MakeDummyCenter()
-	PropWireNet.AddHWire(center,
+	var center := CSG.MakeDummyCenter()
+	CSG.AddHWire(center,
 		Vector2(unit_size.x*0.5, unit_size.z*0.9),Vector2i(2,6), unit_size.y/20, unit_size.y/5,
-		PropWireNet.MakeColorMaterial(co, false), Vector3(PI/4,0,0))
-	PropWireNet.AddVWire(center,
+		CSG.MakeColorMaterial(co, false), Vector3(PI/4,0,0))
+	CSG.AddVWire(center,
 		Vector2(unit_size.x*0.5, unit_size.z),Vector2i(2,6), unit_size.y/30, unit_size.y/30,
-		PropWireNet.MakeColorMaterial(co, false))
+		CSG.MakeColorMaterial(co, false))
 	var wn := preload("res://prop_wire_net/prop_wire_net.tscn").instantiate()
 	wn.bake.call_deferred(center)
 	wn.rotation.x = -PI/4
@@ -127,12 +127,12 @@ func add_stair(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 
 func add_ladder(cell_posi :Vector3i, dir :Maze.Dir, co :Color) -> WireNet:
 	var unit_size := calc_grid.unit_size
-	var mat := PropWireNet.MakeColorMaterial(co, false)
-	var center := PropWireNet.MakeDummyCenter()
-	PropWireNet.AddHWire(center,
+	var mat := CSG.MakeColorMaterial(co, false)
+	var center := CSG.MakeDummyCenter()
+	CSG.AddHWire(center,
 		Vector2(unit_size.x*0.5, unit_size.y*0.8), Vector2i(0,6), unit_size.y/30, unit_size.y/30,
 		mat )
-	PropWireNet.AddVWire(center,
+	CSG.AddVWire(center,
 		Vector2(unit_size.x*0.5, unit_size.y), Vector2i(2,6), unit_size.y/30, unit_size.y/30,
 		mat)
 	var wn := preload("res://prop_wire_net/prop_wire_net.tscn").instantiate()

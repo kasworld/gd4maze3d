@@ -76,20 +76,8 @@ func make_hands(r :float, d:float)->void:
 	$MinuteBase/MinuteHand.rotation.z = PI/2
 	$SecondBase/SecondHand.rotation.z = PI/2
 
-static func make_csg_box(box_size :Vector3, box_mat :StandardMaterial3D) -> CSGShape3D:
-	var box := CSGBox3D.new()
-	box.size = box_size
-	box.material = box_mat
-	return box
-
-static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = co
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
-	return material
-
 func make_dial_line(radius :float, depth:float, align :BarAlign):
-	var mat := MakeColorMaterial(colors.dial_1, false)
+	var mat := CSG.MakeColorMaterial(colors.dial_1, false)
 	var bar_height := depth*0.2
 	var bar_size :Vector3
 	var bar_size_list := [
@@ -98,7 +86,7 @@ func make_dial_line(radius :float, depth:float, align :BarAlign):
 		[6, Vector3(radius/24,radius/480,bar_height)],
 		[1, Vector3(radius/72,radius/720,bar_height)],
 	]
-	var center := make_csg_box(Vector3.ONE/1000, MakeColorMaterial(Color(0,0,0,0), true) )
+	var center := CSG.MakeDummyCenter()
 	var bar_position := Vector3.ZERO
 	var rad_step :float = 2*PI / 360
 	for i in 360:
@@ -115,7 +103,7 @@ func make_dial_line(radius :float, depth:float, align :BarAlign):
 				bar_position = bar_center
 			BarAlign.Out :
 				bar_position = bar_center*(1 + bar_size.x/radius/2)
-		var wire := make_csg_box(bar_size, mat)
+		var wire := CSG.MakeCSGBox(bar_size, mat)
 		wire.operation = CSGShape3D.OPERATION_UNION
 		wire.rotate_z(rad)
 		wire.position = bar_position

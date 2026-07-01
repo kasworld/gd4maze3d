@@ -89,11 +89,12 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	sw.split("maze2d")
 	maze2d.init_astar()
 	sw.split("maze2d init_astar")
-	var floor_ceiling_height :float = cell_size.y *0.01
+	var wall_thick_rate := 0.05
+	var floor_ceiling_height :float = 0.0 # cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate()
-	maze3d.init_params(maze2d, cell_size, cell_size.y *0.05, 1.0/(grid_size.x*grid_size.y))
+	maze3d.init_params(maze2d, cell_size, cell_size.y *wall_thick_rate, 1.0/(grid_size.x*grid_size.y))
 	sw.split("maze3d init_params")
-	maze3d.init_floor_ceiling_plane(Vector2i(1,1), floor_ceiling_height, 0.9,
+	maze3d.init_floor_ceiling_plane(Vector2i(1,1), floor_ceiling_height, 1.0-wall_thick_rate,
 		Color(RandomColorIter.get_and_next(), 0.5),
 		Color(RandomColorIter.get_and_next(), 0.5),
 	)

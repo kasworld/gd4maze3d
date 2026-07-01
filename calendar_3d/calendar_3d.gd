@@ -45,13 +45,11 @@ var colors := {
 # 1+7x7 : year+month, weekdayname, 6 weeek
 var calendar_labels := []
 
-func get_color_mat(co: Color)->Material:
-	var mat := MultiMeshShape.MakeMultiMeshColorMaterial()
-	mat.albedo_color = co
+static func make_color_mat(co: Color)->Material:
+	var mat := CSG.MakeColorMaterial(co)
 	#mat.metallic = 1
 	#mat.clearcoat = true
 	return mat
-
 
 ## center ZERO
 var aabb :AABB
@@ -74,7 +72,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 	var calc_grid := CalcGrid3D.new( CalcGrid3D.SizeToAABB(Vector3(w,h,d)) , Vector3i(7,8,1))
 	# add year month
 	var fdepth := d * 0.2
-	var mat := get_color_mat(colors.datelabel)
+	var mat := make_color_mat(colors.datelabel)
 	var lb := new_text(fsize, fdepth, mat,"0000년 00월")
 	lb.position = calc_grid.posi_to_lanepos(Vector3(3,7,0))
 	calendar_labels.append(lb)
@@ -84,7 +82,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 		var ln := []
 		for wd in weekdaystring.size():
 			var co :Color = colors.weekday[wd]
-			mat = get_color_mat(co)
+			mat = make_color_mat(co)
 			lb = new_text(fsize,fdepth, mat, weekdaystring[wd])
 			lb.position = calc_grid.posi_to_lanepos(Vector3(wd,7-i,0))
 			ln.append(lb)
@@ -92,7 +90,7 @@ func init_calendar(w :float, h :float, d:float, fsize :float) -> void:
 		calendar_labels.append(ln)
 
 func set_mesh_color(sp:MeshInstance3D, co:Color) -> void:
-	sp.mesh.material = get_color_mat(co)
+	sp.mesh.material = make_color_mat(co)
 
 func set_mesh_text(sp:MeshInstance3D, text :String) -> void:
 	sp.mesh.text = text

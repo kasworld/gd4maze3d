@@ -8,13 +8,13 @@ func set_colors(colist :Array = colors) -> AxisArrow3D:
 		$Arrows.get_child(i).set_material( make_color_material(colist[i]) )
 	return self
 
-func make_color_material(co :Color) -> StandardMaterial3D:
-	var mat := MultiMeshShape.MakeMultiMeshColorMaterial()
+static func make_color_material(co :Color) -> StandardMaterial3D:
+	var mat := CSG.MakeColorMaterial(co)
 	mat.metallic = 1.0
 	mat.clearcoat_enabled = true
 	mat.refraction_enabled = true
 	mat.rim_enabled = true
-	mat.albedo_color = co
+	#mat.albedo_color = co
 	mat.emission_enabled = true
 	mat.emission = co
 	return mat

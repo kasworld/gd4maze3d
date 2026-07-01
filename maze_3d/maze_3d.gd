@@ -4,13 +4,6 @@ class_name Maze3D
 static var darkcolorlist = NamedColors.filter_dark_color_list()
 static var lightcolorlist = NamedColors.filter_light_color_list()
 
-static func MakeColorMaterial(co :Color, transparent :bool = false) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = co
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if transparent else BaseMaterial3D.TRANSPARENCY_DISABLED
-	return material
-
-
 var WallThick :float
 var MakeSubWallRate :float
 var calc_grid :CalcGrid3D
@@ -67,9 +60,9 @@ func init_with_material(matmain :StandardMaterial3D, matsub :StandardMaterial3D)
 	return self
 
 func init_with_color(comain :Color, cosub :Color, copillarbox :Color) -> Maze3D:
-	sub_wall_mat = MakeColorMaterial(Color( cosub, 0.5), true)
-	main_wall_mat = MakeColorMaterial(comain)
-	pillar_box_mat = MakeColorMaterial(copillarbox)
+	sub_wall_mat = CSG.MakeColorMaterial(Color( cosub, 0.5), true)
+	main_wall_mat = CSG.MakeColorMaterial(comain)
+	pillar_box_mat = CSG.MakeColorMaterial(copillarbox)
 	exec_make()
 	return self
 
@@ -193,8 +186,8 @@ func make_wall_multi_shape(mms :MultiMeshShape, mat :Material, sz :Vector3, pos_
 	pos_multimeshshape(mms, pos_list)
 
 func make_door_by_maze(co_doorH :Color,co_doorV :Color) -> void:
-	var door_matH := MakeColorMaterial(co_doorH)
-	var door_matV := MakeColorMaterial(co_doorV)
+	var door_matH := CSG.MakeColorMaterial(co_doorH)
+	var door_matV := CSG.MakeColorMaterial(co_doorV)
 	var pos_list_V :Array
 	var pos_list_H :Array
 	var add_door_at := func(x :int, y :int, dir :Maze.Flag) -> void:

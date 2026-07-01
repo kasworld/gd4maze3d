@@ -108,7 +108,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	sw.split("maze3d init_with_material")
 	maze2d.iter_wall(add_wall_deco_at)
 	sw.split("maze3d add_wall_deco_at")
-	maze3d.make_door_by_maze(RandomColorIter.get_and_next() , RandomColorIter.get_and_next() )
+	maze3d.make_door_by_maze(RandomColorIter.get_and_next() , RandomColorIter.get_and_next(), 0.7)
 	sw.split("maze3d makedoor")
 	storey_num = num
 	놓인것들 = PlacedThings.new(maze3d.PreCalced.Grid2D)

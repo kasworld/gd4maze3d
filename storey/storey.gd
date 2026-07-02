@@ -39,8 +39,10 @@ var WallDecoRate :float = 0
 var MaxTableCount :int = 0
 var DoorHoleRate := 0.9
 var WallThickRate := 0.25
-func set_param(grid_size) -> Storey:
-	DonutCapsuleCount = min(100, max(2, grid_size.x*grid_size.y/20.0) )
+func set_param(aDonutCapsuleCount :int, aWallThickRate := 0.25, aDoorHoleRate := 0.9) -> Storey:
+	DonutCapsuleCount = aDonutCapsuleCount
+	WallThickRate = aWallThickRate
+	DoorHoleRate = aDoorHoleRate
 	WallDecoRate = 1.0/20.0
 	MaxTableCount = 100
 	return self

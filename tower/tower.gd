@@ -97,7 +97,7 @@ func add_new_storey() -> void:
 		max_storey_grid = grid_size
 	var st :Storey = preload("res://storey/storey.tscn").instantiate()
 	var DonutCapsuleCount :int = min(100, max(2, grid_size.x*grid_size.y/20.0) )
-	st.set_param(DonutCapsuleCount, randf_range(0.01,0.25), randf_range(0.5,0.9)).init(stnum, grid_size, cell_size)
+	st.set_param(DonutCapsuleCount).init(stnum, grid_size, cell_size)
 	st.get_maze3d().view_floor_ceiling(view_floor_ceiling)
 	st.get_maze3d().set_wallpillardoor_view_mode(view_wallpillardoor)
 	storey_list.append(st)

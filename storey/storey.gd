@@ -24,7 +24,7 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 
 ## maze default settings
 const GridSize := Vector2i(2,2)
-const CellSize := Vector3(4.0,3.0,4.0)
+const CellSize := Vector3(6.0,3.0,6.0)
 
 var storey_animation := SimpleAnimation.new()
 func _process(delta: float) -> void:
@@ -37,9 +37,9 @@ func _process(delta: float) -> void:
 var DonutCapsuleCount :int = 0
 var WallDecoRate :float = 0
 var MaxTableCount :int = 0
-var DoorHoleRate := 0.9
-var WallThickRate := 0.25
-func set_param(aDonutCapsuleCount :int, aWallThickRate := 0.25, aDoorHoleRate := 0.9) -> Storey:
+var DoorHoleRate := 0.99
+var WallThickRate := 0.5
+func set_param(aDonutCapsuleCount :int, aWallThickRate := WallThickRate, aDoorHoleRate := DoorHoleRate) -> Storey:
 	DonutCapsuleCount = aDonutCapsuleCount
 	WallThickRate = aWallThickRate
 	DoorHoleRate = aDoorHoleRate
@@ -95,7 +95,7 @@ func init(num :int, grid_size := GridSize, cell_size := CellSize) -> Storey:
 	sw.split("maze2d init_astar")
 	var floor_ceiling_height :float = 0.0 # cell_size.y *0.01
 	maze3d = preload("res://maze_3d/maze_3d.tscn").instantiate()
-	maze3d.init_params(maze2d, cell_size, cell_size.y *WallThickRate, 1.0/(grid_size.x*grid_size.y))
+	maze3d.init_params(maze2d, cell_size, cell_size.x *WallThickRate, 1.0/(grid_size.x*grid_size.y))
 	sw.split("maze3d init_params")
 	maze3d.init_floor_ceiling_plane(Vector2i(1,1), floor_ceiling_height, 1.0-WallThickRate,
 		Color(RandomColorIter.get_and_next(), 0.5),

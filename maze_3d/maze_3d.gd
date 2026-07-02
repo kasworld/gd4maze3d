@@ -219,13 +219,13 @@ func calc_wall_pos_face_H(x :int, y :int) -> Vector3:
 func wall_deco_pos_by_dir(x :int, y :int, dir :Maze.Flag) -> Vector3:
 	match dir:
 		Maze.Flag.West:
-			return calc_wall_pos_face_V(x,y) + Vector3(WallThick,0,0)
+			return calc_wall_pos_face_V(x,y) + Vector3(WallThick*0.55,0,0)
 		Maze.Flag.East:
-			return calc_wall_pos_face_V(x,y) - Vector3(WallThick,0,0)
+			return calc_wall_pos_face_V(x,y) - Vector3(WallThick*0.55,0,0)
 		Maze.Flag.North:
-			return calc_wall_pos_face_H(x,y) + Vector3(0,0,WallThick)
+			return calc_wall_pos_face_H(x,y) + Vector3(0,0,WallThick*0.55)
 		Maze.Flag.South:
-			return calc_wall_pos_face_H(x,y) - Vector3(0,0,WallThick)
+			return calc_wall_pos_face_H(x,y) - Vector3(0,0,WallThick*0.55)
 	assert(false,"invalid dir %s" % dir)
 	return Vector3.ZERO
 

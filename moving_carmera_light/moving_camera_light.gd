@@ -23,6 +23,12 @@ static func AllLightOn(b :bool) -> void:
 	for mcl in SelfList:
 		mcl.get_light().visible = b
 
+static func AllLightOffButCurrent() -> void:
+	for mcl in SelfList:
+		mcl.get_light().visible = false
+	SelfList[CurrentIndex].get_light().visible = true
+
+
 var info_text :String
 func set_info_text(s :String) -> MovingCameraLight:
 	info_text = s

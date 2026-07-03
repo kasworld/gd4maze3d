@@ -58,15 +58,17 @@ func process_animation(_delta: float) -> void:
 func move_line(delta: float, ln :Line2D) -> void:
 	var bounced := false
 	var rt := Rect2(Vector2.ZERO, draw_area_size)
+	var points := ln.points
 	for i in velocity_list.size():
-		ln.points[i] += velocity_list[i] *delta
-		var bn := bounce2d(rt,ln.points[i],ln.width/2)
-		ln.points[i] = bn.pos
+		points[i] += velocity_list[i] *delta
+		var bn := bounce2d(rt,points[i],ln.width/2)
+		points[i] = bn.pos
 		# change vel on bounce
 		for j in 2:
 			if bn.bounced[j] != 0 :
 				velocity_list[i][j] = -random_positive(draw_area_size[j]/2)*bn.bounced[j]
 				bounced = true
+	ln.set_points(points)
 	if bounced :
 		color_list = make_color_list(point_count)
 

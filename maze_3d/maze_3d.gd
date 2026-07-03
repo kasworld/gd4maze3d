@@ -41,14 +41,15 @@ func init_params( maze2d :Maze, cell_size :Vector3, wall_thick :float, subwall_r
 	calc_grid = CalcGrid3D.new(CalcGrid3D.SizeToAABB(sz), grid3d)
 	PreCalced.Grid2D = Vector2i(maze_cells.width,maze_cells.height)
 	PreCalced.PillarSize = Vector3(wall_thick,cell_size.y,wall_thick)
-	PreCalced.SizeV2 = (PreCalced.Grid2D as Vector2) * Vector2(cell_size.x, cell_size.z)
 	PreCalced.SizeV3 = calc_grid.aabb.size
+	PreCalced.SizeV2 = Vector2(PreCalced.SizeV3.x, PreCalced.SizeV3.z)
 	PreCalced.SizeWithWallV2 = PreCalced.SizeV2 + Vector2(wall_thick, wall_thick)
 	PreCalced.SizeWithWallV3 = Vector3(PreCalced.SizeWithWallV2.x, cell_size.y, PreCalced.SizeWithWallV2.y)
 	PreCalced.WallSize_H_Long = Vector3(cell_size.x, cell_size.y, wall_thick)
 	PreCalced.WallSize_H_Short = PreCalced.WallSize_H_Long - Vector3(wall_thick, 0, 0)
 	PreCalced.WallSize_V_Long = Vector3(wall_thick, cell_size.y, cell_size.z)
 	PreCalced.WallSize_V_Short = PreCalced.WallSize_V_Long - Vector3(0, 0, wall_thick)
+	#print_debug(PreCalced)
 	return self
 
 func init_with_material(matmain :StandardMaterial3D, matsub :StandardMaterial3D) -> Maze3D:

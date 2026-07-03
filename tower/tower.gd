@@ -24,7 +24,7 @@ func set_floor_ceiling_visible(v :Maze3D.FloorCeiling) -> void:
 	for i in storey_list.size():
 		storey_list[i].get_maze3d().view_floor_ceiling(v)
 
-var view_wallpillardoor :Maze3D.WallPillarDoorView = Maze3D.WallPillarDoorView.WallShortPillarDoor
+var view_wallpillardoor :Maze3D.WallPillarDoorView = Maze3D.WallPillarDoorView.WallPillarDoor
 func view_wallpillardoor_next() -> void:
 	view_wallpillardoor = Maze3D.wallpillardoorview_next(view_wallpillardoor)
 	set_wallpillardoor_view_mode(view_wallpillardoor)

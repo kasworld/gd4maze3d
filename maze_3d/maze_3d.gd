@@ -45,10 +45,8 @@ func init_params( maze2d :Maze, cell_size :Vector3, wall_thick :float, subwall_r
 	PreCalced.SizeV2 = Vector2(PreCalced.SizeV3.x, PreCalced.SizeV3.z)
 	PreCalced.SizeWithWallV2 = PreCalced.SizeV2 + Vector2(wall_thick, wall_thick)
 	PreCalced.SizeWithWallV3 = Vector3(PreCalced.SizeWithWallV2.x, cell_size.y, PreCalced.SizeWithWallV2.y)
-	PreCalced.WallSize_H_Long = Vector3(cell_size.x, cell_size.y, wall_thick)
-	PreCalced.WallSize_H_Short = PreCalced.WallSize_H_Long - Vector3(wall_thick, 0, 0)
-	PreCalced.WallSize_V_Long = Vector3(wall_thick, cell_size.y, cell_size.z)
-	PreCalced.WallSize_V_Short = PreCalced.WallSize_V_Long - Vector3(0, 0, wall_thick)
+	PreCalced.WallSize_H = Vector3(cell_size.x, cell_size.y, wall_thick) - Vector3(wall_thick, 0, 0)
+	PreCalced.WallSize_V = Vector3(wall_thick, cell_size.y, cell_size.z) - Vector3(0, 0, wall_thick)
 	#print_debug(PreCalced)
 	return self
 
@@ -175,10 +173,10 @@ func make_wall_by_maze() -> void:
 				else:
 					pos_list_H_main.append(calc_wall_pos_face_H(x,y))
 	maze_cells.iter_wall(add_wall_at)
-	make_wall_multi_shape($WallContainer/VMain, main_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_main)
-	make_wall_multi_shape($WallContainer/HMain, main_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_main)
-	make_wall_multi_shape($WallContainer/VSub, sub_wall_mat, PreCalced.WallSize_V_Long, pos_list_V_sub)
-	make_wall_multi_shape($WallContainer/HSub, sub_wall_mat, PreCalced.WallSize_H_Long, pos_list_H_sub)
+	make_wall_multi_shape($WallContainer/VMain, main_wall_mat, PreCalced.WallSize_V, pos_list_V_main)
+	make_wall_multi_shape($WallContainer/HMain, main_wall_mat, PreCalced.WallSize_H, pos_list_H_main)
+	make_wall_multi_shape($WallContainer/VSub, sub_wall_mat, PreCalced.WallSize_V, pos_list_V_sub)
+	make_wall_multi_shape($WallContainer/HSub, sub_wall_mat, PreCalced.WallSize_H, pos_list_H_sub)
 func make_wall_multi_shape(mms :MultiMeshShape, mat :Material, sz :Vector3, pos_list :Array) -> void:
 	var mesh := BoxMesh.new()
 	mesh.size = sz
@@ -198,9 +196,9 @@ func make_door_by_maze(co_doorH :Color,co_doorV :Color, hole_rate := 0.8) -> voi
 			Maze.Flag.North, Maze.Flag.South:
 				pos_list_H.append(calc_wall_pos_face_H(x,y))
 	maze_cells.iter_open(add_door_at)
-	var csgH := PropArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H_Short, door_matH, hole_rate)
+	var csgH := PropArchDoor.MakeArchDoorMeshH(PreCalced.WallSize_H, door_matH, hole_rate)
 	bake_door.call_deferred($DoorContainer/HDoor,pos_list_H, csgH)
-	var csgV := PropArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V_Short, door_matV, hole_rate)
+	var csgV := PropArchDoor.MakeArchDoorMeshV(PreCalced.WallSize_V, door_matV, hole_rate)
 	bake_door.call_deferred($DoorContainer/VDoor,pos_list_V, csgV)
 func bake_door(mms :MultiMeshShape, pos_list :Array, csg :CSGShape3D) -> void:
 	var sw := StopWatch.new("%s bake_door" % self)
@@ -248,37 +246,16 @@ func view_floor_ceiling(v :FloorCeiling) -> void:
 static func view_floor_ceiling_next(a :FloorCeiling) -> FloorCeiling:
 	return (a +1) % FloorCeiling.keys().size() as FloorCeiling
 
-func set_wall_size_long(b :bool) -> void:
-	if b:
-		$WallContainer/HMain.multimesh.mesh.size = PreCalced.WallSize_H_Long
-		$WallContainer/HSub.multimesh.mesh.size = PreCalced.WallSize_H_Long
-		$WallContainer/VMain.multimesh.mesh.size = PreCalced.WallSize_V_Long
-		$WallContainer/VSub.multimesh.mesh.size = PreCalced.WallSize_V_Long
-	else:
-		$WallContainer/HMain.multimesh.mesh.size = PreCalced.WallSize_H_Short
-		$WallContainer/HSub.multimesh.mesh.size = PreCalced.WallSize_H_Short
-		$WallContainer/VMain.multimesh.mesh.size = PreCalced.WallSize_V_Short
-		$WallContainer/VSub.multimesh.mesh.size = PreCalced.WallSize_V_Short
-
 func view_doors(b :bool) ->void:
 	$DoorContainer.visible = b
 
 func view_pillars(b :bool) -> void:
 	$BoxPillars.visible = b
 
-enum WallView {Off, Short, Long}
-func view_walls(v :WallView) -> void:
-	match v:
-		WallView.Off:
-			$WallContainer.visible = false
-		WallView.Short:
-			$WallContainer.visible = true
-			set_wall_size_long(false)
-		WallView.Long:
-			$WallContainer.visible = true
-			set_wall_size_long(true)
+func view_walls(b :bool) -> void:
+	$WallContainer.visible = b
 
-enum WallPillarDoorView {AllOff, WallShort, WallLong, WallShortPillar, Pillar, WallShortDoor, WallShortPillarDoor, PillarDoor}
+enum WallPillarDoorView {AllOff, Wall, WallPillar, Pillar, WallDoor, WallPillarDoor, PillarDoor}
 static func wallpillardoorview2str(vd :WallPillarDoorView) -> String:
 	return WallPillarDoorView.keys()[vd]
 static func wallpillardoorview_next(a :WallPillarDoorView) -> WallPillarDoorView:
@@ -287,40 +264,31 @@ static func wallpillardoorview_next(a :WallPillarDoorView) -> WallPillarDoorView
 func set_wallpillardoor_view_mode(w :WallPillarDoorView) -> void:
 	match w:
 		WallPillarDoorView.AllOff:
-			view_walls(WallView.Off)
+			view_walls(false)
 			view_pillars(false)
 			view_doors(false)
-		WallPillarDoorView.WallLong:
-			view_walls(WallView.Long)
-			set_wall_size_long(true)
+		WallPillarDoorView.Wall:
+			view_walls(true)
 			view_pillars(false)
 			view_doors(false)
-		WallPillarDoorView.WallShort:
-			view_walls(WallView.Short)
-			set_wall_size_long(false)
-			view_pillars(false)
-			view_doors(false)
-		WallPillarDoorView.WallShortPillar:
-			view_walls(WallView.Short)
-			set_wall_size_long(false)
+		WallPillarDoorView.WallPillar:
+			view_walls(true)
 			view_pillars(true)
 			view_doors(false)
 		WallPillarDoorView.Pillar:
-			view_walls(WallView.Off)
+			view_walls(false)
 			view_pillars(true)
 			view_doors(false)
-		WallPillarDoorView.WallShortDoor:
-			view_walls(WallView.Short)
-			set_wall_size_long(false)
+		WallPillarDoorView.WallDoor:
+			view_walls(true)
 			view_pillars(false)
 			view_doors(true)
-		WallPillarDoorView.WallShortPillarDoor:
-			view_walls(WallView.Short)
-			set_wall_size_long(false)
+		WallPillarDoorView.WallPillarDoor:
+			view_walls(true)
 			view_pillars(true)
 			view_doors(true)
 		WallPillarDoorView.PillarDoor:
-			view_walls(WallView.Off)
+			view_walls(false)
 			view_pillars(true)
 			view_doors(true)
 

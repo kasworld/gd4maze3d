@@ -24,7 +24,7 @@ static func MakePlaneSubViewport(svp :SubViewport, mesh_size :Vector2) -> MeshIn
 
 ## maze default settings
 const GridSize := Vector2i(2,2)
-const CellSize := Vector3(6.0,3.0,6.0)
+const CellSize := Vector3(4.0,4.0,4.0)
 
 var storey_animation := SimpleAnimation.new()
 func _process(delta: float) -> void:
@@ -38,7 +38,7 @@ var DonutCapsuleCount :int = 0
 var WallDecoRate :float = 0
 var MaxTableCount :int = 0
 var DoorHoleRate := 0.99
-var WallThickRate := 0.5
+var WallThickRate := 0.05
 func set_param(aDonutCapsuleCount :int, aWallThickRate := WallThickRate, aDoorHoleRate := DoorHoleRate) -> Storey:
 	DonutCapsuleCount = aDonutCapsuleCount
 	WallThickRate = aWallThickRate

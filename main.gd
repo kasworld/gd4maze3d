@@ -41,7 +41,6 @@ func update_camera() -> void:
 	$MovingCameraLightHober.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*far_adj)
 	$MovingCameraLightAround.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*far_adj)
 
-
 func _ready() -> void:
 	on_viewport_size_changed()
 	get_viewport().size_changed.connect(on_viewport_size_changed)
@@ -55,7 +54,8 @@ func _ready() -> void:
 		add_crawler(i)
 	player = $CharacterContainer.get_child(PlayerNumber)
 	$MovingCameraLightAround.make_current()
-
+	MovingCameraLight.AllLightOffButCurrent()
+	update_camera()
 	enter_next_storey(null)
 
 func _process(_delta: float) -> void:
@@ -205,6 +205,7 @@ func _on_button_storey_up_pressed() -> void:
 
 func _on_button_camera_pressed() -> void:
 	MovingCameraLight.NextCamera()
+	MovingCameraLight.AllLightOffButCurrent()
 
 func _on_button_fov_up_pressed() -> void:
 	MovingCameraLight.GetCurrentCamera().fov_inc()

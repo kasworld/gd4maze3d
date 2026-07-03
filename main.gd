@@ -36,9 +36,10 @@ func update_camera() -> void:
 	var ref_len := main_tower.cur_storey.maze3d.calc_grid.aabb.size.length()
 	$AxisArrow3D.set_size(ref_len/3).set_colors()
 	var center := cur_storey_pos
-	$FixedCameraLight.set_center_pos_far(center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*4)
-	$MovingCameraLightHober.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*4)
-	$MovingCameraLightAround.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*4)
+	var far_adj := main_tower.storey_list.size()
+	$FixedCameraLight.set_center_pos_far(center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*far_adj)
+	$MovingCameraLightHober.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*far_adj)
+	$MovingCameraLightAround.set_center_pos_far( center, Vector3(0, cur_storey_pos.y, ref_len), ref_len*far_adj)
 
 
 func _ready() -> void:

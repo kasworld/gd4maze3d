@@ -52,11 +52,6 @@ layout_mode = 2
 text = "4:Walls"
 alignment = 0
 
-[node name="ButtonPillars" type="Button" parent="왼쪽패널" unique_id=470464974]
-layout_mode = 2
-text = "5:Pillars"
-alignment = 0
-
 [node name="ButtonWalkType" type="Button" parent="왼쪽패널" unique_id=281784402]
 layout_mode = 2
 text = "6:Automove"
@@ -204,7 +199,6 @@ visible = false
 [connection signal="pressed" from="왼쪽패널/ButtonMinimap" to="." method="_on_button_minimap_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonFloorCeiling" to="." method="_on_button_floor_ceiling_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonWalls" to="." method="_on_button_walls_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonPillars" to="." method="_on_button_pillars_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonWalkType" to="." method="_on_button_walk_type_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonDebug" to="." method="_on_button_debug_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonPerformance" to="." method="_on_button_performance_pressed"]

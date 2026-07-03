@@ -104,7 +104,6 @@ var key2fn :Dictionary[Key, Callable]= {
 	KEY_2:_on_button_minimap_pressed,
 	KEY_3:_on_button_floor_ceiling_pressed,
 	KEY_4:_on_button_walls_pressed,
-	KEY_5:_on_button_pillars_pressed,
 	KEY_6:_on_button_walk_type_pressed,
 	KEY_7:_on_button_debug_pressed,
 	KEY_8:_on_button_performance_pressed,
@@ -155,9 +154,6 @@ func _on_button_walls_pressed() -> void:
 
 func _on_button_floor_ceiling_pressed() -> void:
 	main_tower.next_visible_floor_ceiling()
-
-func _on_button_pillars_pressed() -> void:
-	main_tower.view_wallpillardoor_next()
 
 func _on_button_axis_arrow_pressed() -> void:
 	$AxisArrow3D.visible = not $AxisArrow3D.visible

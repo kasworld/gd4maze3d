@@ -92,46 +92,60 @@ static func AddCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :Sta
 
 ## face Y+
 ## for coin make
-static func SubCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
+static func SubCoinCSGFrontBack(center :CSGShape3D, raidus :float, thick :float, y_shift :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
 	var csg_front := MakeCSGCylinder(raidus, thick, mat, side)
-	csg_front.position.y = thick
+	csg_front.position.y = y_shift
 	csg_front.operation = CSGShape3D.OPERATION_SUBTRACTION
 	center.add_child(csg_front)
 	var csg_back := MakeCSGCylinder(raidus, thick, mat, side)
-	csg_back.position.y = -thick
+	csg_back.position.y = -y_shift
 	csg_back.operation = CSGShape3D.OPERATION_SUBTRACTION
 	center.add_child(csg_back)
 	return center
 
 ## face Y+
 ## for coin make
-static func AddCoinTextCSG(center :CSGShape3D, fsize :float, thick :float, mat :StandardMaterial3D, front_str :String ="", back_str :String="") -> CSGShape3D:
+static func AddCoinCSGFrontBack(center :CSGShape3D, raidus :float, thick :float, y_shift :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
+	var csg_front := MakeCSGCylinder(raidus, thick, mat, side)
+	csg_front.position.y = y_shift
+	csg_front.operation = CSGShape3D.OPERATION_UNION
+	center.add_child(csg_front)
+	var csg_back := MakeCSGCylinder(raidus, thick, mat, side)
+	csg_back.position.y = -y_shift
+	csg_back.operation = CSGShape3D.OPERATION_UNION
+	center.add_child(csg_back)
+	return center
+
+
+## face Y+
+## for coin make
+static func AddCoinTextCSG(center :CSGShape3D, fsize :float, thick :float, y_shift :float, mat :StandardMaterial3D, front_str :String ="", back_str :String="") -> CSGShape3D:
 	if not front_str.is_empty():
 		var front_csg := MakeCSGText(fsize,thick,mat,front_str)
 		front_csg.operation = CSGShape3D.OPERATION_UNION
 		front_csg.rotate_x(-PI/2)
-		front_csg.position.y = thick/2
+		front_csg.position.y = y_shift
 		center.add_child(front_csg)
 	if not back_str.is_empty():
 		var back_csg := MakeCSGText(fsize, thick, mat, back_str)
 		back_csg.operation = CSGShape3D.OPERATION_UNION
 		back_csg.rotate_x(PI/2)
-		back_csg.position.y = -thick/2
+		back_csg.position.y = -y_shift
 		center.add_child(back_csg)
 	return center
 
-static func SubCoinTextCSG(center :CSGShape3D, fsize :float, thick :float, mat :StandardMaterial3D, front_str :String ="", back_str :String="") -> CSGShape3D:
+static func SubCoinTextCSG(center :CSGShape3D, fsize :float, thick :float, y_shift :float, mat :StandardMaterial3D, front_str :String ="", back_str :String="") -> CSGShape3D:
 	if not front_str.is_empty():
 		var front_csg := MakeCSGText(fsize, thick, mat, front_str)
 		front_csg.operation = CSGShape3D.OPERATION_SUBTRACTION
 		front_csg.rotate_x(-PI/2)
-		front_csg.position.y = thick/2
+		front_csg.position.y = y_shift
 		center.add_child(front_csg)
 	if not back_str.is_empty():
 		var back_csg := MakeCSGText(fsize, thick, mat, back_str)
 		back_csg.operation = CSGShape3D.OPERATION_SUBTRACTION
 		back_csg.rotate_x(PI/2)
-		back_csg.position.y = -thick/2
+		back_csg.position.y = -y_shift
 		center.add_child(back_csg)
 	return center
 

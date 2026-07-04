@@ -82,7 +82,6 @@ static func AddTableLeg(center :CSGShape3D, total_size :Vector3, top_thick :floa
 		center.add_child(leg)
 	return center
 
-
 ## face Y+
 ## for coin make
 static func AddCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
@@ -106,23 +105,34 @@ static func SubCoinCSG(center :CSGShape3D, raidus :float, thick :float, mat :Sta
 
 ## face Y+
 ## for coin make
-static func AddCoinTextCSG(center :CSGShape3D, raidus :float, thick :float, mat :StandardMaterial3D, front :String ="", back :String="") -> CSGShape3D:
-	if not front.is_empty():
-		var front_text := CSGMesh3D.new()
-		front_text.mesh = MakeTextMesh(raidus*1.5/back.length(), thick, mat, front)
-		front_text.material = mat
-		front_text.operation = CSGShape3D.OPERATION_UNION
-		front_text.rotate_x(-PI/2)
-		front_text.position.y = thick/2
-		center.add_child(front_text)
-	if not back.is_empty():
-		var back_text := CSGMesh3D.new()
-		back_text.mesh = MakeTextMesh(raidus*1.5/back.length(), thick, mat, back)
-		back_text.material = mat
-		back_text.operation = CSGShape3D.OPERATION_UNION
-		back_text.rotate_x(PI/2)
-		back_text.position.y = -thick/2
-		center.add_child(back_text)
+static func AddCoinTextCSG(center :CSGShape3D, fsize :float, thick :float, mat :StandardMaterial3D, front_str :String ="", back_str :String="") -> CSGShape3D:
+	if not front_str.is_empty():
+		var front_csg := MakeCSGText(fsize,thick,mat,front_str)
+		front_csg.operation = CSGShape3D.OPERATION_UNION
+		front_csg.rotate_x(-PI/2)
+		front_csg.position.y = thick/2
+		center.add_child(front_csg)
+	if not back_str.is_empty():
+		var back_csg := MakeCSGText(fsize, thick, mat, back_str)
+		back_csg.operation = CSGShape3D.OPERATION_UNION
+		back_csg.rotate_x(PI/2)
+		back_csg.position.y = -thick/2
+		center.add_child(back_csg)
+	return center
+
+static func SubCoinTextCSG(center :CSGShape3D, fsize :float, thick :float, mat :StandardMaterial3D, front_str :String ="", back_str :String="") -> CSGShape3D:
+	if not front_str.is_empty():
+		var front_csg := MakeCSGText(fsize, thick, mat, front_str)
+		front_csg.operation = CSGShape3D.OPERATION_SUBTRACTION
+		front_csg.rotate_x(-PI/2)
+		front_csg.position.y = thick/2
+		center.add_child(front_csg)
+	if not back_str.is_empty():
+		var back_csg := MakeCSGText(fsize, thick, mat, back_str)
+		back_csg.operation = CSGShape3D.OPERATION_SUBTRACTION
+		back_csg.rotate_x(PI/2)
+		back_csg.position.y = -thick/2
+		center.add_child(back_csg)
 	return center
 
 static var font := preload("res://font/HakgyoansimBareondotumR.ttf")
@@ -134,6 +144,12 @@ static func MakeTextMesh(fsize :float, fdepth :float, mat :Material, text :Strin
 	mesh.text = text
 	mesh.material = mat
 	return mesh
+
+static func MakeCSGText(fsize :float, thick :float, mat :StandardMaterial3D, text :String) -> CSGShape3D:
+	var csg := CSGMesh3D.new()
+	csg.mesh = MakeTextMesh(fsize, thick, mat, text)
+	csg.material = mat
+	return csg
 
 static func MakeCSGCylinder(raidus :float, thick :float, mat :StandardMaterial3D, side :int = 64) -> CSGShape3D:
 	var csg := CSGCylinder3D.new()

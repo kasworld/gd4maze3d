@@ -3,6 +3,8 @@ extends PanelContainer
 signal panel_hidden(s :String)
 
 func init(fsize :int, rt :Rect2, ver :String)->void:
+	if ver.is_empty() :
+		$VBoxContainer/VersionLabel.visible = false
 	position = rt.position
 	size = rt.size
 	$VBoxContainer/VersionLabel.text = ver

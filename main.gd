@@ -16,10 +16,11 @@ func on_viewport_size_changed() -> void:
 	$오른쪽패널.size = panel_size
 	$"오른쪽패널".custom_minimum_size = panel_size
 	$오른쪽패널.position = Vector2(vp_size.x/2 + 짧은길이/2, 0)
-	var msgrect := Rect2( vp_size.x * 0.1 ,vp_size.y * 0.4 , vp_size.x * 0.8 , vp_size.y * 0.25 )
-	$TimedMessage.init(vp_size.y*0.05 , msgrect, "%s %s" % [
+	$"오른쪽패널/Version".text = "%s %s" % [
 			ProjectSettings.get_setting("application/config/name"),
-			ProjectSettings.get_setting("application/config/version") ] )
+			ProjectSettings.get_setting("application/config/version") ]
+	var msgrect := Rect2( vp_size.x * 0.25 ,vp_size.y * 0.9 , vp_size.x * 0.5 , vp_size.y * 0.1)
+	$TimedMessage.init(vp_size.y*0.05 , msgrect, "")
 	if main_tower:
 		update_minimap()
 func timed_message_hidden(_s :String) -> void:
@@ -73,6 +74,10 @@ func enter_next_storey(old_storey :Storey) -> void:
 	if player.current_action.get("Action") == ActionQueue.Action.EnterStorey:
 		print_debug("already in Action.EnterStorey")
 		return
+	var storey_num := 0
+	if old_storey != null :
+		storey_num = old_storey.storey_num +1
+	$TimedMessage.show_message("enter storey %d" % storey_num)
 	var chars_tomove :Array
 	if old_storey == null:
 		chars_tomove = $CharacterContainer.get_children()

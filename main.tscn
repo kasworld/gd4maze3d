@@ -157,6 +157,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 theme = SubResource("Theme_5vw27")
 
+[node name="Version" type="Label" parent="오른쪽패널" unique_id=643840560]
+layout_mode = 2
+horizontal_alignment = 2
+
 [node name="Performance" type="Label" parent="오른쪽패널" unique_id=2024122925]
 layout_mode = 2
 horizontal_alignment = 2

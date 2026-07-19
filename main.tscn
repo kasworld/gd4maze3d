@@ -217,4 +217,4 @@ visible = false
 [connection signal="pressed" from="왼쪽패널/ButtonMove/ButtonAPSDown" to="." method="_on_button_aps_down_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonStoreyUp" to="." method="_on_button_storey_up_pressed"]
 [connection signal="pressed" from="왼쪽패널/ButtonCamera" to="." method="_on_button_camera_pressed"]
-[connection signal="pressed" from="왼쪽패널/ButtonAxis" to="." method="_on_button_storey_gap_pressed"]
+[connection signal="pressed" from="왼쪽패널/ButtonAxis" to="." method="_on_button_axis_arrow_pressed"]
